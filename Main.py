@@ -9,7 +9,7 @@ from Scheduler import Mapping
 from SystemHealthMonitoring import SystemHealthMonitor
 from TaskGraphUtilities import Task_Graph_Reports
 from TaskGraphUtilities import TG_Functions
-
+from RoutingAlgorithms import Routing
 #from SystemHealthMonitoring import SystemHealthMonitor
 # here im going to tryout my initial idea about scheduling stuff...
 # probably should import the files from the previous project...
@@ -60,10 +60,13 @@ print "PREPARING AN ARCHITECTURE GRAPH (AG)..."
 AG=networkx.DiGraph()
 PE_List = [0, 1, 2, 3]
 AG_Edge_List=[(0,1), (0,2), (1,0), (1,3), (2,0), (2,3), (3,2), (3,1)]
+AG_Edge_Port_List=[('W','E'), ('S','N'), ('E','W'), ('S','N'), ('N','S'), ('W','E'), ('E','W'), ('N','S')]
 for PE in PE_List:
     AG.add_node(PE,MappedTasks = [],Scheduling={},Utilization=0)
-for EDGE in AG_Edge_List:
-    AG.add_edge(EDGE[0],EDGE[1],MappedTasks = [],Scheduling={})  # UsedBandWidth
+
+for i in range(0,len(AG_Edge_List)):
+    EDGE = AG_Edge_List[i]
+    AG.add_edge(EDGE[0],EDGE[1],Port=AG_Edge_Port_List[i],MappedTasks = [],Scheduling={})  # UsedBandWidth
 print "\tNODES: ",AG.nodes(data=DebugDetails)
 print "\tEDGES: ",AG.edges(data=DebugDetails)
 print("ARCHITECTURE GRAPH (AG) IS READY...")
@@ -72,10 +75,14 @@ networkx.draw(AG,pos,with_labels=True,node_size=1200)
 plt.savefig("GraphDrawings/AG.png")
 plt.clf()
 ################################################
-SHM= SystemHealthMonitor.SystemHealthMap()
-SHM.SetUp_SystemHealthMap(AG)
-SHM.Report_SystemHealthMap()
+SHM = SystemHealthMonitor.SystemHealthMap()
+SHM.SetUp_NoC_SystemHealthMap(AG)
+SHM.Report_NoC_SystemHealthMap()
 print "SYSTEM IS UP..."
+print "==========================================="
+TurnModel=['E2N','E2S','W2N','W2S']
+NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,TurnModel)
+print Routing.FindRouteInRouteGraph(NoCRG,0,3)
 print "==========================================="
 ################################################
 CTG=networkx.DiGraph()   # clustered task graph
@@ -88,7 +95,7 @@ if Clustering.InitialClustering(TG, CTG, MaXBandWidth):
     Clustering.DoubleCheckCTG(TG,CTG)
     Clustering.ReportCTG(CTG,"CTG_PostOpt.png")
     print "==========================================="
-    Mapping.MakeInitialMapping(TG,CTG,AG)
+    Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG)
     Mapping.ReportMapping(AG)
     print "==========================================="
     Task_Graph_Reports.ReportTaskGraph(TG)
@@ -96,7 +103,7 @@ if Clustering.InitialClustering(TG, CTG, MaXBandWidth):
     Scheduler.ReportMappedTasks(AG)
     print "==========================================="
     Mapping.CostFunction(TG,AG,True)
-    Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,100,False)
+    Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,100,False)
 else :
     print "Initial Clustering Failed...."
 

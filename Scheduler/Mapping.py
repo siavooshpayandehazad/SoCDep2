@@ -4,16 +4,16 @@ __author__ = 'siavoosh'
 import Scheduler
 import random
 import copy
-from RoutingAlgorithms import Routing_XY
+from RoutingAlgorithms import Routing
 
-def MakeInitialMapping(TG,CTG,AG):
+def MakeInitialMapping(TG,CTG,AG,NoCRG):
     print "STARTING INITIAL MAPPING..."
     Itteration=0
     for Cluster in CTG.nodes():
         DestNode = random.choice(AG.nodes())
-        while not AddClusterToNode(TG,CTG,AG,Cluster,DestNode,True):
+        while not AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,DestNode,True):
             Itteration+=1
-            RemoveClusterFromNode(TG,CTG,AG,Cluster,DestNode,True)
+            RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,DestNode,True)
             if Itteration == 10* len(CTG.nodes()):
                 print "INITIAL MAPPING FAILED..."
                 ClearMapping(TG,CTG,AG)
@@ -21,7 +21,7 @@ def MakeInitialMapping(TG,CTG,AG):
     print "INITIAL MAPPING READY..."
     return True
 
-def OptimizeMappingLocalSearch(TG,CTG,AG,ItterationNum,Report):
+def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,ItterationNum,Report):
     print "STARTING MAPPING OPTIMIZATION..."
     BestTG=copy.deepcopy(TG)
     BestAG=copy.deepcopy(AG)
@@ -31,14 +31,14 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,ItterationNum,Report):
         if Report:print "\tITERATION:",Itteration
         ClusterToMove= random.choice(CTG.nodes())
         CurrentNode=CTG.node[ClusterToMove]['Node']
-        RemoveClusterFromNode(TG,CTG,AG,ClusterToMove,CurrentNode,Report)
+        RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,Report)
         DestNode = random.choice(AG.nodes())
-        while not AddClusterToNode(TG,CTG,AG,ClusterToMove,DestNode,Report):
-            RemoveClusterFromNode(TG,CTG,AG,ClusterToMove,DestNode,Report)
+        while not AddClusterToNode(TG,CTG,AG,NoCRG,ClusterToMove,DestNode,Report):
+            RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,DestNode,Report)
             AddClusterToNode(TG,CTG,AG,ClusterToMove,CurrentNode,Report)
             ClusterToMove= random.choice(CTG.nodes())
             CurrentNode=CTG.node[ClusterToMove]['Node']
-            RemoveClusterFromNode(TG,CTG,AG,ClusterToMove,CurrentNode,Report)
+            RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,Report)
             DestNode = random.choice(AG.nodes())
 
         Scheduler.ClearScheduling(AG,TG)
@@ -58,7 +58,7 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,ItterationNum,Report):
     CostFunction(TG,AG,True)
     return True
 
-def AddClusterToNode(TG,CTG,AG,Cluster,Node,Report):
+def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
     print "\tADDING CLUSTER:",Cluster,"TO NODE:",Node
     CTG.node[Cluster]['Node'] = Node
     for Task in CTG.node[Cluster]['TaskList']:
@@ -72,7 +72,7 @@ def AddClusterToNode(TG,CTG,AG,Cluster,Node,Report):
             DestNode=CTG.node[Edge[1]]['Node']
             if SourceNode is not None and DestNode is not None: #check if both ends of this edge is mapped
                 if SourceNode != DestNode:
-                    ListOfLinks=Routing_XY.ReturnPath(AG,SourceNode,DestNode) #Find the links to be used
+                    ListOfLinks=Routing.FindRouteInRouteGraph(NoCRG,SourceNode,DestNode) #Find the links to be used
                     ListOfEdges=[]
                     for edge in TG.edges(): #find all the edges in TaskGraph that contribute to this edge in CTG
                         if TG.node[edge[0]]['Cluster']== Edge[0] and TG.node[edge[1]]['Cluster']==Edge[1]:
@@ -91,7 +91,7 @@ def AddClusterToNode(TG,CTG,AG,Cluster,Node,Report):
                         if Report:print "NOTHING TO BE MAPPED..."
     return True
 
-def RemoveClusterFromNode(TG,CTG,AG,Cluster,Node,Report):
+def RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
     print "\tREMOVING CLUSTER:",Cluster,"FROM NODE:",Node
     for Edge in CTG.edges():
         if Cluster in Edge: # find all the edges that are connected to Cluster
@@ -99,7 +99,7 @@ def RemoveClusterFromNode(TG,CTG,AG,Cluster,Node,Report):
             DestNode=CTG.node[Edge[1]]['Node']
             if SourceNode is not None and DestNode is not None: #check if both ends of this edge is mapped
                 if SourceNode != DestNode:
-                    ListOfLinks=Routing_XY.ReturnPath(AG,SourceNode,DestNode) #Find the links to be used
+                    ListOfLinks=Routing.FindRouteInRouteGraph(NoCRG,SourceNode,DestNode) #Find the links to be used
                     ListOfEdges=[]
                     for edge in TG.edges(): #find all the edges in TaskGraph that contribute to this edge in CTG
                         if TG.node[edge[0]]['Cluster']==Edge[0] and TG.node[edge[1]]['Cluster']==Edge[1]:
