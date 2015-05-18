@@ -15,7 +15,7 @@ def MakeInitialMapping(TG,CTG,AG,NoCRG):
             Itteration+=1
             RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,DestNode,True)
             if Itteration == 10* len(CTG.nodes()):
-                print "INITIAL MAPPING FAILED..."
+                print "\033[31mERROR::\033[0m INITIAL MAPPING FAILED..."
                 ClearMapping(TG,CTG,AG)
                 return False
     print "INITIAL MAPPING READY..."
@@ -96,7 +96,7 @@ def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
                                 AG.edge[Link[0]][Link[1]]['MappedTasks'].append(Edge)
                                 TG.edge[Edge[0]][Edge[1]]['Link'].append(Link)
                     else:
-                        if Report:print "\033[33mWARNING\033[0m NOTHING TO BE MAPPED..."
+                        if Report:print "\t\033[33mWARNING\033[0m NOTHING TO BE MAPPED..."
                         return False
     return True
 
@@ -124,7 +124,7 @@ def RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
                                     AG.edge[Link[0]][Link[1]]['MappedTasks'].remove(Edge)
                                     TG.edge[Edge[0]][Edge[1]]['Link'].remove(Link)
                     else:
-                        print " \033[33mWARNING\033[0m NOTHING TO BE REMOVED..."
+                        print "\t\033[33mWARNING\033[0m NOTHING TO BE REMOVED..."
     CTG.node[Cluster]['Node'] = None
     for Task in CTG.node[Cluster]['TaskList']:
         TG.node[Task]['Node'] = None

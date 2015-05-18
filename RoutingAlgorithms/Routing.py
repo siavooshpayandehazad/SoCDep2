@@ -98,9 +98,9 @@ def FindRouteInRouteGraph(NoCRG,SourceNode,DestinationNode):
         for i in range (0,len(paths)-1):
             if paths[i][0] != paths[i+1][0]:
                 links.append((int(paths[i][0]),int(paths[i+1][0])))
-        print "FINDIGN PATH FROM: ",Source,"TO:", Destination," ==>",links
+        print "\t\tFINDIGN PATH FROM: ",Source,"TO:", Destination," ==>",links
         return links
     else:
-        print "NO PATH FOUND FROM: ",Source,"TO:", Destination
+        print "\t\tNO PATH FOUND FROM: ",Source,"TO:", Destination
         return None
 
