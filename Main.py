@@ -81,6 +81,7 @@ SHM.Report_NoC_SystemHealthMap()
 print "SYSTEM IS UP..."
 print "==========================================="
 TurnModel=['E2N','E2S','W2N','W2S']
+SHM.SHM.edge[0][1]['LinkHealth']=False
 NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,TurnModel)
 print Routing.FindRouteInRouteGraph(NoCRG,0,3)
 print "==========================================="
@@ -95,15 +96,18 @@ if Clustering.InitialClustering(TG, CTG, MaXBandWidth):
     Clustering.DoubleCheckCTG(TG,CTG)
     Clustering.ReportCTG(CTG,"CTG_PostOpt.png")
     print "==========================================="
-    Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG)
-    Mapping.ReportMapping(AG)
-    print "==========================================="
-    Task_Graph_Reports.ReportTaskGraph(TG)
-    Scheduler.ScheduleAll(TG,AG,True)
-    Scheduler.ReportMappedTasks(AG)
-    print "==========================================="
-    Mapping.CostFunction(TG,AG,True)
-    Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,100,False)
+    if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG):
+        Mapping.ReportMapping(AG)
+        print "==========================================="
+        Task_Graph_Reports.ReportTaskGraph(TG)
+        Scheduler.ScheduleAll(TG,AG,True)
+        Scheduler.ReportMappedTasks(AG)
+        print "==========================================="
+        Mapping.CostFunction(TG,AG,True)
+        Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,100,False)
+    else:
+        Mapping.ReportMapping(AG)
+        print "==========================================="
 else :
     print "Initial Clustering Failed...."
 

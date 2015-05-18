@@ -7,7 +7,7 @@ import copy
 
 
 def ScheduleAll(TG,AG,Report):
-    print "STARTING SCHEDULING PROCESS..."
+    print "\t\tSTARTING SCHEDULING PROCESS..."
     TaskToSchedule=TG_Functions.FindSourceNodes(TG)
     SuccessorsList=[]
     priority=0
@@ -74,7 +74,7 @@ def ScheduleAll(TG,AG,Report):
         TaskToSchedule = copy.deepcopy(SuccessorsList)
         SuccessorsList=[]
         priority+=1
-    print "DONE SCHEDULING..."
+    print "\t\tDONE SCHEDULING..."
     return None
 
 def FindScheduleMakeSpan(AG):

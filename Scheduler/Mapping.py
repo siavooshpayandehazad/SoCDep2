@@ -33,14 +33,22 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,ItterationNum,Report):
         CurrentNode=CTG.node[ClusterToMove]['Node']
         RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,Report)
         DestNode = random.choice(AG.nodes())
+        TryCounter=0
         while not AddClusterToNode(TG,CTG,AG,NoCRG,ClusterToMove,DestNode,Report):
             RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,DestNode,Report)
-            AddClusterToNode(TG,CTG,AG,ClusterToMove,CurrentNode,Report)
+            AddClusterToNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,Report)
             ClusterToMove= random.choice(CTG.nodes())
             CurrentNode=CTG.node[ClusterToMove]['Node']
             RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,Report)
             DestNode = random.choice(AG.nodes())
-
+            if TryCounter >= 3*len(AG.nodes()):
+                print "CAN NOT FIND ANY SOLUTION... ABORTING MAPPING..."
+                TG=copy.deepcopy(BestTG)
+                AG=copy.deepcopy(BestAG)
+                CTG=copy.deepcopy(BestCTG)
+                Scheduler.ReportMappedTasks(AG)
+                CostFunction(TG,AG,True)
+                return False
         Scheduler.ClearScheduling(AG,TG)
         Scheduler.ScheduleAll(TG,AG,Report)
         CurrentCost=CostFunction(TG,AG,Report)
@@ -79,7 +87,7 @@ def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
                             ListOfEdges.append(edge)
 
                     #add edges from list of edges to all links from list of links
-                    if len(ListOfLinks)>0 and len(ListOfEdges)>0:
+                    if ListOfLinks is not None and len(ListOfEdges)>0:
                         if Report:print "\t\t\tADDING PATH FROM NODE:",SourceNode,"TO NODE",DestNode
                         if Report:print "\t\t\tLIST OF LINKS:",ListOfLinks
                         if Report:print "\t\t\tLIST OF EDGES:",ListOfEdges
@@ -88,7 +96,8 @@ def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
                                 AG.edge[Link[0]][Link[1]]['MappedTasks'].append(Edge)
                                 TG.edge[Edge[0]][Edge[1]]['Link'].append(Link)
                     else:
-                        if Report:print "NOTHING TO BE MAPPED..."
+                        if Report:print "\033[33mWARNING\033[0m NOTHING TO BE MAPPED..."
+                        return False
     return True
 
 def RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
@@ -105,16 +114,17 @@ def RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
                         if TG.node[edge[0]]['Cluster']==Edge[0] and TG.node[edge[1]]['Cluster']==Edge[1]:
                             ListOfEdges.append(edge)
                     #remove edges from list of edges to all links from list of links
-                    if len(ListOfLinks)>0 and len(ListOfEdges)>0:
+                    if ListOfLinks is not None and len(ListOfEdges)>0:
                         if Report:print "\t\t\tREMOVING PATH FROM NODE:",SourceNode,"TO NODE",DestNode
                         if Report:print "\t\t\tLIST OF LINKS:",ListOfLinks
                         if Report:print "\t\t\tLIST OF EDGES:",ListOfEdges
                         for Link in ListOfLinks:
                             for Edge in ListOfEdges:
-                                AG.edge[Link[0]][Link[1]]['MappedTasks'].remove(Edge)
-                                TG.edge[Edge[0]][Edge[1]]['Link'].remove(Link)
+                                if Edge in AG.edge[Link[0]][Link[1]]['MappedTasks']:
+                                    AG.edge[Link[0]][Link[1]]['MappedTasks'].remove(Edge)
+                                    TG.edge[Edge[0]][Edge[1]]['Link'].remove(Link)
                     else:
-                        print "NOTHING TO BE REMOVED..."
+                        print " \033[33mWARNING\033[0m NOTHING TO BE REMOVED..."
     CTG.node[Cluster]['Node'] = None
     for Task in CTG.node[Cluster]['TaskList']:
         TG.node[Task]['Node'] = None
@@ -135,7 +145,7 @@ def ReportMapping(AG):
 def ClearMapping(TG,CTG,AG):
     for node in TG.nodes():
         TG.node[node]['Node'] = None
-    for Edge in TG.edges:
+    for Edge in TG.edges():
         TG.edge[Edge[0]][Edge[1]]['Link']=None
     for cluster in CTG.nodes():
         CTG.node[cluster]['Node'] = None

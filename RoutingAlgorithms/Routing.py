@@ -60,9 +60,12 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel):
 
     for link in AG.edges(): # here we should connect connections between routers
         Port=AG.edge[link[0]][link[1]]['Port']
-        print "CONNECTING LINK:",link,"BY CONNECTING:",str(link[0])+str(Port[0])+str('-Out'),"TO:",\
-            str(link[1])+str(Port[1])+str('-In')
-        NoCRG.add_edge(str(link[0])+str(Port[0])+str('O'),str(link[1])+str(Port[1])+str('I'))
+        if SystemHealthMap.SHM[link[0]][link[1]]['LinkHealth']:
+            print "CONNECTING LINK:",link,"BY CONNECTING:",str(link[0])+str(Port[0])+str('-Out'),"TO:",\
+                str(link[1])+str(Port[1])+str('-In')
+            NoCRG.add_edge(str(link[0])+str(Port[0])+str('O'),str(link[1])+str(Port[1])+str('I'))
+        else:
+            print "BROKEN LINK:",link
     print "ROUTE GRAPH IS READY... "
     return NoCRG
 
@@ -89,11 +92,15 @@ def FindRouteInRouteGraph(NoCRG,SourceNode,DestinationNode):
     Source=str(SourceNode)+str('L')+str('I')
     Destination=str(DestinationNode)+str('L')+str('O')
 
-    paths=networkx.shortest_path(NoCRG,Source,Destination)
-    links=[]
-    for i in range (0,len(paths)-1):
-        if paths[i][0] != paths[i+1][0]:
-            links.append((int(paths[i][0]),int(paths[i+1][0])))
-    #print "FINDIGN PATH FROM: ",Source,"TO:", Destination," ==>",links
-    return links
+    if networkx.has_path(NoCRG,Source,Destination):
+        paths=networkx.shortest_path(NoCRG,Source,Destination)
+        links=[]
+        for i in range (0,len(paths)-1):
+            if paths[i][0] != paths[i+1][0]:
+                links.append((int(paths[i][0]),int(paths[i+1][0])))
+        print "FINDIGN PATH FROM: ",Source,"TO:", Destination," ==>",links
+        return links
+    else:
+        print "NO PATH FOUND FROM: ",Source,"TO:", Destination
+        return None
 
