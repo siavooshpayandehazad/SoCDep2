@@ -1,3 +1,7 @@
 .png
 .DS_Store
 .pyc
+
+*.png
+
+*.pyc
