@@ -178,7 +178,7 @@ def AddTaskToCTG(TG,CTG,Task,Cluster,MaXBandWidth):
                         #print "\t\tEDGE", SrcCluster, DstCluster, "DOES NOT EXISTS... ADDING EDGE WITH WEIGHT:", \
                         #TG.edge[Edge[0]][Edge[1]]['ComWeight']
                         CTG.add_edge(SrcCluster, DstCluster, Weight=WeightToAdd)
-    for cluster in CTG.nodes():
+    """for cluster in CTG.nodes():
         if CTG.node[cluster]['Utilization'] > 100:
             print "\t\033[33mWARNING\033[0m::OVER UTILIZATION... REVERTING THE PROCESS"
             return False
@@ -186,6 +186,7 @@ def AddTaskToCTG(TG,CTG,Task,Cluster,MaXBandWidth):
         if CTG.edge[edge[0]][edge[1]]['Weight'] > MaXBandWidth:
             print "\t\033[33mWARNING\033[0m::BANDWIDTH VIOLATION... REVERTING THE PROCESS"
             return False
+    """
     return True
 
 def CostFunction(CTG):

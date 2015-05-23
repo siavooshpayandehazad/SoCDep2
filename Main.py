@@ -95,7 +95,7 @@ if Clustering.InitialClustering(TG, CTG, MaXBandWidth):
     CTG= copy.deepcopy(BestSolution)
     Clustering.DoubleCheckCTG(TG,CTG)
     Clustering.ReportCTG(CTG,"CTG_PostOpt.png")
-    print "==========================================="
+    """print "==========================================="
     if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG):
         Mapping.ReportMapping(AG)
         print "==========================================="
@@ -108,6 +108,7 @@ if Clustering.InitialClustering(TG, CTG, MaXBandWidth):
     else:
         Mapping.ReportMapping(AG)
         print "==========================================="
+        """
 else :
     print "Initial Clustering Failed...."
 

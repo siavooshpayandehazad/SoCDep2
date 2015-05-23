@@ -8,15 +8,15 @@ from RoutingAlgorithms import Routing
 
 def MakeInitialMapping(TG,CTG,AG,NoCRG):
     print "STARTING INITIAL MAPPING..."
-    Itteration=0
     for Cluster in CTG.nodes():
         DestNode = random.choice(AG.nodes())
+        Itteration=0
         while not AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,DestNode,True):
             Itteration+=1
             RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,DestNode,True)
-            DestNode = random.choice(AG.nodes())
-            print "-------------------------"
-            print "MAPPING ATTEMPT: #",Itteration+1
+            DestNode = random.choice(AG.nodes())        #try another node
+            print "\t-------------------------"
+            print "\tMAPPING ATTEMPT: #",Itteration+1,"FOR CLUSTER:",Cluster
             if Itteration == 10* len(CTG.nodes()):
                 print "\033[31mERROR::\033[0m INITIAL MAPPING FAILED..."
                 ClearMapping(TG,CTG,AG)
