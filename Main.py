@@ -80,7 +80,7 @@ SHM.SetUp_NoC_SystemHealthMap(AG)
 SHM.Report_NoC_SystemHealthMap()
 print "SYSTEM IS UP..."
 print "==========================================="
-TurnModel=['E2N','E2S','W2N','W2S']
+TurnModel=['E2N','E2S','W2N','W2S']         # XY routing
 SHM.SHM.edge[0][1]['LinkHealth']=False
 NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,TurnModel)
 print Routing.FindRouteInRouteGraph(NoCRG,0,3)
@@ -110,6 +110,8 @@ if Clustering.InitialClustering(TG, CTG, MaXBandWidth):
         print "==========================================="
 else :
     print "Initial Clustering Failed...."
+
+
 
 
 

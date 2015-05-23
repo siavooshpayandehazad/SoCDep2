@@ -14,6 +14,9 @@ def MakeInitialMapping(TG,CTG,AG,NoCRG):
         while not AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,DestNode,True):
             Itteration+=1
             RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,DestNode,True)
+            DestNode = random.choice(AG.nodes())
+            print "-------------------------"
+            print "MAPPING ATTEMPT: #",Itteration+1
             if Itteration == 10* len(CTG.nodes()):
                 print "\033[31mERROR::\033[0m INITIAL MAPPING FAILED..."
                 ClearMapping(TG,CTG,AG)
@@ -87,6 +90,7 @@ def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
                             ListOfEdges.append(edge)
 
                     #add edges from list of edges to all links from list of links
+                    #Todo what if findRouteInRouteGRaph returns 2 routs??
                     if ListOfLinks is not None and len(ListOfEdges)>0:
                         if Report:print "\t\t\tADDING PATH FROM NODE:",SourceNode,"TO NODE",DestNode
                         if Report:print "\t\t\tLIST OF LINKS:",ListOfLinks
