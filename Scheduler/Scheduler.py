@@ -2,8 +2,7 @@ __author__ = 'siavoosh'
 
 from TaskGraphUtilities import TG_Functions
 import copy
-#Todo: add priority to tasks and links regarding their place in TG
-#Todo: consider predecessor's finish time...
+#Todo: move sub functions out of the file
 
 
 def ScheduleAll(TG,AG,Report):
