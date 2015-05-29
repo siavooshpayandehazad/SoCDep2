@@ -89,7 +89,7 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter,MaXBandWidth):
     print "\tINITIAL COST:", Cost
     # choose a random task from TG
     for i in range(0,NumberOfIter):
-        print "\tITERATION:",i
+        #print "\tITERATION:",i
         DoubleCheckCTG(TG,CTG)
         RandomTask = random.choice(TG.nodes())
         RandomTaskCluster = TG.node[RandomTask]['Cluster']
@@ -205,7 +205,7 @@ def CostFunction(CTG):
         ClusterUtilization.append(CTG.node[Node]['Utilization'])
 
     StandardDev=statistics.stdev(ClusterUtilization)
-    print "\tCOMWEIGHT:",CommunicationWeight,"STDEV:",StandardDev
+    #print "\tCOMWEIGHT:",CommunicationWeight,"STDEV:",StandardDev
     Cost=CommunicationWeight + StandardDev
     return Cost
 
