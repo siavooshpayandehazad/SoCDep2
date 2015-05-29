@@ -2,6 +2,7 @@
 __author__ = 'siavoosh'
 import matplotlib.pyplot as plt
 import networkx
+import os
 import copy
 from Scheduler import Clustering
 from Scheduler import Scheduler
@@ -28,6 +29,11 @@ print("DATE:    MAY 2015")
 print("THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME ")
 print("DEPENDABILITY STUFF ON DIFFERENT ARCHITECTURES....")
 print("================================================================================")
+
+GraphDirectory = "GraphDrawings"
+
+if not os.path.isdir(GraphDirectory):
+   os.makedirs(GraphDirectory)
 
 DebugDetails=False
 MaXBandWidth=10
