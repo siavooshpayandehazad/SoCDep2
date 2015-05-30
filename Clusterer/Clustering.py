@@ -1,9 +1,11 @@
 __author__ = 'siavoosh'
 
 import random
-import networkx
 import copy
-from Clustering_Functions import ReportCTG, AddTaskToCTG, RemoveTaskFromCTG, ClearClustering, DoubleCheckCTG, \
+
+import networkx
+
+from ScheduleAndDepend.Clusterer.Clustering_Functions import ReportCTG, AddTaskToCTG, RemoveTaskFromCTG, ClearClustering, DoubleCheckCTG, \
     CostFunction
 
 

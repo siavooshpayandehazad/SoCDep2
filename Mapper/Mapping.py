@@ -1,14 +1,15 @@
 
 
 __author__ = 'siavoosh'
-import Scheduler
-import Scheduling_Functions
 import random
 import copy
-from Mapping_Functions import AddClusterToNode
-from Mapping_Functions import RemoveClusterFromNode
-from Mapping_Functions import ClearMapping
-from Mapping_Functions import CostFunction
+from ScheduleAndDepend.Scheduler import Scheduler
+from ScheduleAndDepend.Scheduler import Scheduling_Functions
+from ScheduleAndDepend.Mapper.Mapping_Functions import AddClusterToNode
+from ScheduleAndDepend.Mapper.Mapping_Functions import RemoveClusterFromNode
+from ScheduleAndDepend.Mapper.Mapping_Functions import ClearMapping
+from ScheduleAndDepend.Mapper.Mapping_Functions import CostFunction
+
 
 def MakeInitialMapping(TG,CTG,AG,NoCRG):
     print "STARTING INITIAL MAPPING..."
@@ -78,3 +79,7 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,ItterationNum,Report):
     CostFunction(TG,AG,True)
     return True
 
+
+def OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,IterationNum,Report):
+
+    return True

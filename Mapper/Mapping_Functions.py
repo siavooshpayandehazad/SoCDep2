@@ -1,8 +1,8 @@
-
 __author__ = 'siavoosh'
+from ScheduleAndDepend.RoutingAlgorithms import Routing
+from ScheduleAndDepend.Scheduler import Scheduling_Functions
 import statistics
-from RoutingAlgorithms import Routing
-import Scheduling_Functions
+
 
 def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
     if Report:print "\tADDING CLUSTER:",Cluster,"TO NODE:",Node

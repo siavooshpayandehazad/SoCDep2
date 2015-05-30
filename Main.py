@@ -1,19 +1,23 @@
 
 __author__ = 'siavoosh'
-import matplotlib.pyplot as plt
-import networkx
 import os
 import copy
-from Scheduler import Clustering
-from Scheduler import Clustering_Functions
+
+import matplotlib.pyplot as plt
+import networkx
+
+from ScheduleAndDepend.Clusterer import Clustering, Clustering_Functions
 from Scheduler import Scheduler
-from Scheduler import Mapping
-from Scheduler import Mapping_Functions
+from ScheduleAndDepend.Mapper import Mapping_Functions, Mapping
 from Scheduler import Scheduling_Functions
 from SystemHealthMonitoring import SystemHealthMonitor
 from TaskGraphUtilities import Task_Graph_Reports
 from TaskGraphUtilities import TG_Functions
 from RoutingAlgorithms import Routing
+
+
+
+
 #from SystemHealthMonitoring import SystemHealthMonitor
 # here im going to tryout my initial idea about scheduling stuff...
 # probably should import the files from the previous project...
@@ -91,7 +95,7 @@ print "==========================================="
 CTG=copy.deepcopy(Clustering.TaskClusterGeneration(len(PE_List), DebugDetails))
 if Clustering.InitialClustering(TG, CTG, MaXBandWidth):
     print "==========================================="
-    (BestSolution,BestTaskGraph)=Clustering.ClusteringOptimization_LocalSearch(TG, CTG, 1000, MaXBandWidth)
+    (BestSolution,BestTaskGraph)= Clustering.ClusteringOptimization_LocalSearch(TG, CTG, 1000, MaXBandWidth)
     TG= copy.deepcopy(BestTaskGraph)
     CTG= copy.deepcopy(BestSolution)
     Clustering_Functions.DoubleCheckCTG(TG,CTG)
