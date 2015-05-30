@@ -104,5 +104,6 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter,MaXBandWidth):
             TG=copy.deepcopy(BestTaskGraph)
     print "-------------------------------------"
     print "STARTING COST:",StartingCost,"\tFINAL COST:",Cost,"\tAFTER",NumberOfIter,"ITERATIONS"
+    print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-Cost)/StartingCost),"%"
     return BestSolution,BestTaskGraph
 

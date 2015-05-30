@@ -75,6 +75,7 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,ItterationNum,Report):
             CTG=copy.deepcopy(BestCTG)
     print "-------------------------------------"
     print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost,"\tAFTER",ItterationNum,"ITERATIONS"
+    print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost),"%"
     Scheduling_Functions.ReportMappedTasks(AG)
     CostFunction(TG,AG,True)
     return True

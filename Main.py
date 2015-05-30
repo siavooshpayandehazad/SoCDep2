@@ -1,11 +1,8 @@
-
 __author__ = 'siavoosh'
 import os
 import copy
-
 import matplotlib.pyplot as plt
 import networkx
-
 from ScheduleAndDepend.Clusterer import Clustering, Clustering_Functions
 from Scheduler import Scheduler
 from ScheduleAndDepend.Mapper import Mapping_Functions, Mapping
@@ -14,13 +11,6 @@ from SystemHealthMonitoring import SystemHealthMonitor
 from TaskGraphUtilities import Task_Graph_Reports
 from TaskGraphUtilities import TG_Functions
 from RoutingAlgorithms import Routing
-
-
-
-
-#from SystemHealthMonitoring import SystemHealthMonitor
-# here im going to tryout my initial idea about scheduling stuff...
-# probably should import the files from the previous project...
 
 print "==================================================================================================================="
 
@@ -86,7 +76,8 @@ SHM.SetUp_NoC_SystemHealthMap(AG)
 SHM.Report_NoC_SystemHealthMap()
 print "SYSTEM IS UP..."
 print "==========================================="
-TurnModel=['E2N','E2S','W2N','W2S']         # XY routing
+ # here we use XY routing
+TurnModel=['E2N','E2S','W2N','W2S']
 SHM.SHM.edge[0][1]['LinkHealth']=False
 NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,TurnModel,DebugDetails)
 print "==========================================="
@@ -106,7 +97,7 @@ if Clustering.InitialClustering(TG, CTG, MaXBandWidth):
         Scheduler.ScheduleAll(TG,AG,True,DebugDetails)
         Scheduling_Functions.ReportMappedTasks(AG)
         Mapping_Functions.CostFunction(TG,AG,True)
-        Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,100,DebugDetails)
+        Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,1000,DebugDetails)
     else:
         Mapping_Functions.ReportMapping(AG)
         print "==========================================="
