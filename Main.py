@@ -45,19 +45,13 @@ print "MAXIMUM LINK BAND WIDTH:", MaXBandWidth
 print "==========================================="
 
 print("PREPARING A TASK GRAPH (TG)...")
-TG=networkx.DiGraph()
 Task_List = [0, 1, 2, 3, 4, 5, 6, 7]
 Task_WCET_List=[30, 30, 20, 40, 10, 5, 15, 20]
 Task_Criticality_List=['H', 'L', 'H', 'L', 'L', 'H', 'L', 'L']
 TG_Edge_List=[(1,2), (1,3), (2,5), (0,5), (4,7), (4,3), (1,6), (0,6)]
 TG_Edge_Weight=[5, 9, 4, 7, 5, 3, 5, 1]
-Edge_Criticality_List=['L', 'L', 'H', 'H', 'L', 'L', 'L', 'L']
 
-for i in range(0,len(Task_List)):
-    TG.add_node(Task_List[i],WCET=Task_WCET_List[i],Criticality=Task_Criticality_List[i],Cluster=None,Node=None,Priority=None)
-
-for i in range(0,len(TG_Edge_List)):
-    TG.add_edge(TG_Edge_List[i][0],TG_Edge_List[i][1],Criticality=Edge_Criticality_List[i],Link=[],ComWeight=TG_Edge_Weight[i])  # Communication weight
+TG = copy.deepcopy(TG_Functions.GenerateTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List,TG_Edge_Weight))
 TG_Functions.AssignPriorities(TG)
 print("TASK GRAPH (TG) IS READY...")
 Task_Graph_Reports.ReportTaskGraph(TG)
@@ -119,8 +113,5 @@ if Clustering.InitialClustering(TG, CTG, MaXBandWidth):
 
 else :
     print "Initial Clustering Failed...."
-
-
-
 
 
