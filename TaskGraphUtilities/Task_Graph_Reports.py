@@ -13,7 +13,6 @@ def ReportTaskGraph(TG):
     for Edge in TG.edges():
         print "EDGE:", Edge,"\tCRITICALITY:",TG.edge[Edge[0]][Edge[1]]['Criticality'],"\tLINK:",\
             TG.edge[Edge[0]][Edge[1]]['Link'], "\tCOM WEIGHTt:",TG.edge[Edge[0]][Edge[1]]['ComWeight']
-    print "==========================================="
     return None
 
 def DrawTaskGraph(TG,TG_Edge_List,TG_Edge_Weight):

@@ -9,8 +9,8 @@ from Scheduling_Functions import Add_TG_EdgeTo_link
 #Todo: move sub functions out of the file
 
 
-def ScheduleAll(TG,AG,Report):
-    if Report:print "\t\tSTARTING SCHEDULING PROCESS..."
+def ScheduleAll(TG,AG,Report,DetailedReport):
+    if Report:print "STARTING SCHEDULING PROCESS..."
     TaskToSchedule=TG_Functions.FindSourceNodes(TG)
     SuccessorsList=[]
     priority=0
@@ -20,15 +20,15 @@ def ScheduleAll(TG,AG,Report):
             if TG.node[Task]['Priority']==priority:
                 if TG.node[Task]['Criticality']=='H':
                     Node = TG.node[Task]['Node']
-                    if Report:print "\tSCHEDULING TASK",Task,"ON NODE:",Node
-                    Add_TG_TaskToNode(TG,AG,Task,Node,Report)
+                    if DetailedReport:print "\tSCHEDULING TASK",Task,"ON NODE:",Node
+                    Add_TG_TaskToNode(TG,AG,Task,Node,DetailedReport)
                     for Edge in TG.edges():
                         if Edge[0]==Task:
                             if TG.edge[Edge[0]][Edge[1]]['Criticality']=='H':
                                 if len(TG.edge[Edge[0]][Edge[1]]['Link'])>0:
                                     for Link in TG.edge[Edge[0]][Edge[1]]['Link']:
-                                        if Report:print "\tSCHEDULING EDGE",Edge,"ON Link:",Link
-                                        Add_TG_EdgeTo_link(TG,AG,Edge,Link,Report)
+                                        if DetailedReport:print "\tSCHEDULING EDGE",Edge,"ON Link:",Link
+                                        Add_TG_EdgeTo_link(TG,AG,Edge,Link,DetailedReport)
             if TG.node[Task]['Priority']==priority+1:
                 SuccessorsList.append(Task)
         TaskToSchedule = copy.deepcopy(SuccessorsList)
@@ -48,8 +48,8 @@ def ScheduleAll(TG,AG,Report):
                             if TG.edge[Edge[0]][Edge[1]]['Criticality']=='L':
                                 if len(TG.edge[Edge[0]][Edge[1]]['Link'])>0:
                                     for Link in TG.edge[Edge[0]][Edge[1]]['Link']:
-                                        if Report:print "\tSCHEDULING EDGE",Edge,"ON Link:",Link
-                                        Add_TG_EdgeTo_link(TG,AG,Edge,Link,Report)
+                                        if DetailedReport:print "\tSCHEDULING EDGE",Edge,"ON Link:",Link
+                                        Add_TG_EdgeTo_link(TG,AG,Edge,Link,DetailedReport)
             if TG.node[Task]['Priority']==priority+1:
                 SuccessorsList.append(Task)
         TaskToSchedule = copy.deepcopy(SuccessorsList)
@@ -64,19 +64,19 @@ def ScheduleAll(TG,AG,Report):
             if TG.node[Task]['Priority']==priority:
                 if TG.node[Task]['Criticality']=='L':
                     Node = TG.node[Task]['Node']
-                    if Report:print "\tSCHEDULING TASK",Task,"ON NODE:",Node
-                    Add_TG_TaskToNode(TG,AG,Task,Node,Report)
+                    if DetailedReport:print "\tSCHEDULING TASK",Task,"ON NODE:",Node
+                    Add_TG_TaskToNode(TG,AG,Task,Node,DetailedReport)
                     for Edge in TG.edges():
                         if Edge[0]==Task:
                             if len(TG.edge[Edge[0]][Edge[1]]['Link'])>0:
                                 for Link in TG.edge[Edge[0]][Edge[1]]['Link']:
-                                    if Report:print "\tSCHEDULING EDGE",Edge,"ON Link:",Link
-                                    Add_TG_EdgeTo_link(TG,AG,Edge,Link,Report)
+                                    if DetailedReport:print "\tSCHEDULING EDGE",Edge,"ON Link:",Link
+                                    Add_TG_EdgeTo_link(TG,AG,Edge,Link,DetailedReport)
             if TG.node[Task]['Priority']==priority+1:
                 SuccessorsList.append(Task)
         TaskToSchedule = copy.deepcopy(SuccessorsList)
         SuccessorsList=[]
         priority+=1
-    if Report:print "\t\tDONE SCHEDULING..."
+    if Report:print "DONE SCHEDULING..."
     return None
 

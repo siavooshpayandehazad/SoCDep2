@@ -59,7 +59,7 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,ItterationNum,Report):
                 return False
             TryCounter+=1
         Scheduling_Functions.ClearScheduling(AG,TG)
-        Scheduler.ScheduleAll(TG,AG,Report)
+        Scheduler.ScheduleAll(TG,AG,False,Report)
         CurrentCost=CostFunction(TG,AG,Report)
         if CurrentCost <= BestCost:
             if CurrentCost < BestCost:

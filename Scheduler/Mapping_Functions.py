@@ -114,6 +114,9 @@ def CostFunction(TG,AG,Report):
 
     Cost= NodeMakeSpan_Max + NodeMakeSpan_Stdev + LinkMakeSpan_Stdev + LinkMakeSpan_Max
     if Report:
+        print "==========================================="
+        print "      REPORTING MAPPING COST"
+        print "==========================================="
         print "NODES MAKE SPAN MAX:",NodeMakeSpan_Max
         print "NODES MAKE SPAN STANDARD DEVIATION:",NodeMakeSpan_Stdev
         print "LINKS MAKE SPAN MAX:",LinkMakeSpan_Max

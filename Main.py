@@ -98,11 +98,10 @@ if Clustering.InitialClustering(TG, CTG, MaXBandWidth):
     print "==========================================="
     if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG):
         Mapping_Functions.ReportMapping(AG)
-        print "==========================================="
         Task_Graph_Reports.ReportTaskGraph(TG)
-        Scheduler.ScheduleAll(TG,AG,True)
-        Scheduling_Functions.ReportMappedTasks(AG)
         print "==========================================="
+        Scheduler.ScheduleAll(TG,AG,True,DebugDetails)
+        Scheduling_Functions.ReportMappedTasks(AG)
         Mapping_Functions.CostFunction(TG,AG,True)
         Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,100,DebugDetails)
     else:
