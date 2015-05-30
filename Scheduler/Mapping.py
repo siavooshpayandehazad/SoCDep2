@@ -33,9 +33,10 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,ItterationNum,Report):
     BestTG=copy.deepcopy(TG)
     BestAG=copy.deepcopy(AG)
     BestCTG=copy.deepcopy(CTG)
-    BestCost=CostFunction(TG,AG,False)
-    for Itteration in range(0,ItterationNum):
-        if Report:print "\tITERATION:",Itteration
+    BestCost=CostFunction(TG,AG,Report)
+    StartingCost=BestCost
+    for Iteration in range(0,ItterationNum):
+        if Report:print "\tITERATION:",Iteration
         ClusterToMove= random.choice(CTG.nodes())
         CurrentNode=CTG.node[ClusterToMove]['Node']
         RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,Report)
@@ -61,7 +62,8 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,ItterationNum,Report):
         Scheduler.ScheduleAll(TG,AG,Report)
         CurrentCost=CostFunction(TG,AG,Report)
         if CurrentCost <= BestCost:
-            print "\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:",CurrentCost
+            if CurrentCost < BestCost:
+                print "\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:",CurrentCost , "\t ITERATION:",Iteration
             BestTG=copy.deepcopy(TG)
             BestAG=copy.deepcopy(AG)
             BestCTG=copy.deepcopy(CTG)
@@ -70,6 +72,8 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,ItterationNum,Report):
             TG=copy.deepcopy(BestTG)
             AG=copy.deepcopy(BestAG)
             CTG=copy.deepcopy(BestCTG)
+    print "-------------------------------------"
+    print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost,"\tAFTER",ItterationNum,"ITERATIONS"
     Scheduling_Functions.ReportMappedTasks(AG)
     CostFunction(TG,AG,True)
     return True

@@ -5,7 +5,7 @@ from RoutingAlgorithms import Routing
 import Scheduling_Functions
 
 def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
-    print "\tADDING CLUSTER:",Cluster,"TO NODE:",Node
+    if Report:print "\tADDING CLUSTER:",Cluster,"TO NODE:",Node
     CTG.node[Cluster]['Node'] = Node
     for Task in CTG.node[Cluster]['TaskList']:
         TG.node[Task]['Node'] = Node
@@ -40,7 +40,7 @@ def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
     return True
 
 def RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
-    print "\tREMOVING CLUSTER:",Cluster,"FROM NODE:",Node
+    if Report:print "\tREMOVING CLUSTER:",Cluster,"FROM NODE:",Node
     for Edge in CTG.edges():
         if Cluster in Edge: # find all the edges that are connected to Cluster
             SourceNode=CTG.node[Edge[0]]['Node']
@@ -63,7 +63,7 @@ def RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
                                     AG.edge[Link[0]][Link[1]]['MappedTasks'].remove(Edge)
                                     TG.edge[Edge[0]][Edge[1]]['Link'].remove(Link)
                     else:
-                        print "\t\033[33mWARNING\033[0m NOTHING TO BE REMOVED..."
+                        if Report:print "\t\033[33mWARNING\033[0m NOTHING TO BE REMOVED..."
     CTG.node[Cluster]['Node'] = None
     for Task in CTG.node[Cluster]['TaskList']:
         TG.node[Task]['Node'] = None
@@ -98,7 +98,7 @@ def ClearMapping(TG,CTG,AG):
     return True
 
 def CostFunction(TG,AG,Report):
-    Cost=0
+
     NodeMakeSpanList=[]
     LinkMakeSpanList=[]
     for Node in AG.nodes():

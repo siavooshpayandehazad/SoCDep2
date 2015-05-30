@@ -68,8 +68,8 @@ for PE in PE_List:
 for i in range(0,len(AG_Edge_List)):
     EDGE = AG_Edge_List[i]
     AG.add_edge(EDGE[0],EDGE[1],Port=AG_Edge_Port_List[i],MappedTasks = [],Scheduling={})  # UsedBandWidth
-print "\tNODES: ",AG.nodes(data=DebugDetails)
-print "\tEDGES: ",AG.edges(data=DebugDetails)
+print "\tNODES: ",AG.nodes(data=False)
+print "\tEDGES: ",AG.edges(data=False)
 print("ARCHITECTURE GRAPH (AG) IS READY...")
 pos=networkx.spring_layout(AG)
 networkx.draw(AG,pos,with_labels=True,node_size=1200)
@@ -83,7 +83,7 @@ print "SYSTEM IS UP..."
 print "==========================================="
 TurnModel=['E2N','E2S','W2N','W2S']         # XY routing
 SHM.SHM.edge[0][1]['LinkHealth']=False
-NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,TurnModel,False)
+NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,TurnModel,DebugDetails)
 print "==========================================="
 ################################################
 CTG=networkx.DiGraph()   # clustered task graph
@@ -103,8 +103,8 @@ if Clustering.InitialClustering(TG, CTG, MaXBandWidth):
         Scheduler.ScheduleAll(TG,AG,True)
         Scheduling_Functions.ReportMappedTasks(AG)
         print "==========================================="
-        Mapping.CostFunction(TG,AG,True)
-        Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,100,False)
+        Mapping_Functions.CostFunction(TG,AG,True)
+        Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,100,DebugDetails)
     else:
         Mapping_Functions.ReportMapping(AG)
         print "==========================================="
