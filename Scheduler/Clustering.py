@@ -111,15 +111,16 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter,MaXBandWidth):
             #    CTG.node[RandomCluster]['Utilization'] + TG.node[RandomTask]['WCET']
         NewCost=CostFunction(CTG)
         if NewCost <= Cost:
-            print "\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:",NewCost
+            if NewCost < Cost:
+                print "\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:\t",NewCost, "\t\tIteration #:",i
             BestSolution=copy.deepcopy(CTG)
             BestTaskGraph=copy.deepcopy(TG)
             Cost=NewCost
         else:
             CTG=copy.deepcopy(BestSolution)
             TG=copy.deepcopy(BestTaskGraph)
-
-    print "STARTING COST:",StartingCost,"\tFINAL COST:",Cost
+    print "-------------------------------------"
+    print "STARTING COST:",StartingCost,"\tFINAL COST:",Cost,"\tAFTER",NumberOfIter,"ITERATIONS"
     return BestSolution,BestTaskGraph
 
 def RemoveTaskFromCTG(TG,CTG,Task):

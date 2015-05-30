@@ -33,7 +33,6 @@ print("DEPENDABILITY STUFF ON DIFFERENT ARCHITECTURES....")
 print("================================================================================")
 
 GraphDirectory = "GraphDrawings"
-
 if not os.path.isdir(GraphDirectory):
    os.makedirs(GraphDirectory)
 
@@ -84,8 +83,7 @@ print "SYSTEM IS UP..."
 print "==========================================="
 TurnModel=['E2N','E2S','W2N','W2S']         # XY routing
 SHM.SHM.edge[0][1]['LinkHealth']=False
-NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,TurnModel)
-print Routing.FindRouteInRouteGraph(NoCRG,0,3)
+NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,TurnModel,False)
 print "==========================================="
 ################################################
 CTG=networkx.DiGraph()   # clustered task graph

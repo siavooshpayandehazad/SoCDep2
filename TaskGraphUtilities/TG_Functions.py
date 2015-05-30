@@ -5,12 +5,13 @@ def GenerateTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List,TG_Ed
     TG=networkx.DiGraph()
     Edge_Criticality_List=[]
     # IF both sender and receiver are critical then that transaction is critical
+    print "\tCALCULATING THE CRITICALITY OF LINKS..."
     for edge in TG_Edge_List:
         if Task_Criticality_List[Task_List.index(edge[0])]=='H' and Task_Criticality_List[Task_List.index(edge[1])]=='H' :
             Edge_Criticality_List.append('H')
         else:
             Edge_Criticality_List.append('L')
-
+    print "\tLINKS CRITICALITY CALCULATED!"
     for i in range(0,len(Task_List)):
         TG.add_node(Task_List[i],WCET=Task_WCET_List[i],Criticality=Task_Criticality_List[i],Cluster=None,Node=None,Priority=None)
 
