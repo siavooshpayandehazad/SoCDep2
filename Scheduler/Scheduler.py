@@ -1,9 +1,7 @@
-
-
 __author__ = 'siavoosh'
 
 import copy
-from ScheduleAndDepend.TaskGraphUtilities import TG_Functions
+from TaskGraphUtilities import TG_Functions
 from Scheduling_Functions import Add_TG_TaskToNode
 from Scheduling_Functions import Add_TG_EdgeTo_link
 

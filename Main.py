@@ -7,6 +7,8 @@ import copy
 from Scheduler import Clustering
 from Scheduler import Scheduler
 from Scheduler import Mapping
+from Scheduler import Mapping_Functions
+from Scheduler import Scheduling_Functions
 from SystemHealthMonitoring import SystemHealthMonitor
 from TaskGraphUtilities import Task_Graph_Reports
 from TaskGraphUtilities import TG_Functions
@@ -103,16 +105,16 @@ if Clustering.InitialClustering(TG, CTG, MaXBandWidth):
     Clustering.ReportCTG(CTG,"CTG_PostOpt.png")
     print "==========================================="
     if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG):
-        Mapping.ReportMapping(AG)
+        Mapping_Functions.ReportMapping(AG)
         print "==========================================="
         Task_Graph_Reports.ReportTaskGraph(TG)
         Scheduler.ScheduleAll(TG,AG,True)
-        Scheduler.ReportMappedTasks(AG)
+        Scheduling_Functions.ReportMappedTasks(AG)
         print "==========================================="
         Mapping.CostFunction(TG,AG,True)
         Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,100,False)
     else:
-        Mapping.ReportMapping(AG)
+        Mapping_Functions.ReportMapping(AG)
         print "==========================================="
 
 else :
