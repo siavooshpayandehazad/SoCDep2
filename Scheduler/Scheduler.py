@@ -1,9 +1,12 @@
+
+
 __author__ = 'siavoosh'
 
-from TaskGraphUtilities import TG_Functions
 import copy
+from ScheduleAndDepend.TaskGraphUtilities import TG_Functions
 from Scheduling_Functions import Add_TG_TaskToNode
 from Scheduling_Functions import Add_TG_EdgeTo_link
+
 
 #Todo: move sub functions out of the file
 
