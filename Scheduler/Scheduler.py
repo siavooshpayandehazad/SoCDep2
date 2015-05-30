@@ -10,6 +10,7 @@ from Scheduling_Functions import Add_TG_EdgeTo_link
 
 
 def ScheduleAll(TG,AG,Report,DetailedReport):
+    if Report:print "==========================================="
     if Report:print "STARTING SCHEDULING PROCESS..."
     TaskToSchedule=TG_Functions.FindSourceNodes(TG)
     SuccessorsList=[]

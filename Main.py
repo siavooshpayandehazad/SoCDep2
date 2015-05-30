@@ -5,6 +5,7 @@ import networkx
 import os
 import copy
 from Scheduler import Clustering
+from Scheduler import Clustering_Functions
 from Scheduler import Scheduler
 from Scheduler import Mapping
 from Scheduler import Mapping_Functions
@@ -86,20 +87,18 @@ SHM.SHM.edge[0][1]['LinkHealth']=False
 NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,TurnModel,DebugDetails)
 print "==========================================="
 ################################################
-CTG=networkx.DiGraph()   # clustered task graph
-Clustering.TaskClusterGeneration(TG, CTG, len(PE_List), DebugDetails)
+# clustered task graph
+CTG=copy.deepcopy(Clustering.TaskClusterGeneration(len(PE_List), DebugDetails))
 if Clustering.InitialClustering(TG, CTG, MaXBandWidth):
     print "==========================================="
     (BestSolution,BestTaskGraph)=Clustering.ClusteringOptimization_LocalSearch(TG, CTG, 1000, MaXBandWidth)
     TG= copy.deepcopy(BestTaskGraph)
     CTG= copy.deepcopy(BestSolution)
-    Clustering.DoubleCheckCTG(TG,CTG)
-    Clustering.ReportCTG(CTG,"CTG_PostOpt.png")
-    print "==========================================="
+    Clustering_Functions.DoubleCheckCTG(TG,CTG)
+    Clustering_Functions.ReportCTG(CTG,"CTG_PostOpt.png")
     if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG):
         Mapping_Functions.ReportMapping(AG)
         Task_Graph_Reports.ReportTaskGraph(TG)
-        print "==========================================="
         Scheduler.ScheduleAll(TG,AG,True,DebugDetails)
         Scheduling_Functions.ReportMappedTasks(AG)
         Mapping_Functions.CostFunction(TG,AG,True)
@@ -110,5 +109,3 @@ if Clustering.InitialClustering(TG, CTG, MaXBandWidth):
 
 else :
     print "Initial Clustering Failed...."
-
-
