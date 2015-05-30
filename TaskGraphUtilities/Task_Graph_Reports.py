@@ -22,10 +22,17 @@ def DrawTaskGraph(TG,TG_Edge_List,TG_Edge_Weight):
         if TG.node[Node]['Criticality']== 'H':
             NodeColors.append('r')
         else:
-            NodeColors.append('b')
+            NodeColors.append('white')
+    Edge_Colors=[]
+    for Edge in TG.edges():
+        if TG.edge[Edge[0]][Edge[1]]['Criticality']== 'H':
+            Edge_Colors.append('red')
+        else:
+            Edge_Colors.append('black')
+
     pos=networkx.shell_layout(TG)
     networkx.draw_networkx_nodes(TG,pos,with_labels=True,node_color=NodeColors)
-    networkx.draw_networkx_edges(TG,pos)
+    networkx.draw_networkx_edges(TG,pos,edge_color=Edge_Colors)
     networkx.draw_networkx_labels(TG,pos)
     networkx.draw_networkx_edge_labels(TG,pos,edge_labels=dict(zip(TG_Edge_List, TG_Edge_Weight)))
     plt.savefig("GraphDrawings/TG.png")
