@@ -84,3 +84,4 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,ItterationNum,Report):
 def OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,IterationNum,Report):
 
     return True
+
