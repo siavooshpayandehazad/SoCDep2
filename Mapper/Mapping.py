@@ -12,46 +12,46 @@ from ScheduleAndDepend.Mapper.Mapping_Functions import CostFunction
 
 
 def MakeInitialMapping(TG,CTG,AG,NoCRG,Report):
-    print "==========================================="
-    print "STARTING INITIAL MAPPING..."
+    if Report:print "==========================================="
+    if Report:print "STARTING INITIAL MAPPING..."
     for Cluster in CTG.nodes():
         DestNode = random.choice(AG.nodes())
         Itteration=0
-        while not AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,DestNode,True):
+        while not AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,DestNode,Report):
             Itteration+=1
-            RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,DestNode,True)
+            RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,DestNode,Report)
             DestNode = random.choice(AG.nodes())        #try another node
-            print "\t-------------------------"
-            print "\tMAPPING ATTEMPT: #",Itteration+1,"FOR CLUSTER:",Cluster
+            if Report:print "\t-------------------------"
+            if Report:print "\tMAPPING ATTEMPT: #",Itteration+1,"FOR CLUSTER:",Cluster
             if Itteration == 10* len(CTG.nodes()):
                 print "\033[31mERROR::\033[0m INITIAL MAPPING FAILED..."
                 ClearMapping(TG,CTG,AG)
                 return False
-    print "INITIAL MAPPING READY..."
+    if Report:print "INITIAL MAPPING READY..."
     if Report: ReportMapping(AG)
     return True
 
-def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,ItterationNum,Report):
-    print "==========================================="
-    print "STARTING MAPPING OPTIMIZATION..."
+def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,IterationNum,Report,DetailedReport):
+    if Report:print "==========================================="
+    if Report:print "STARTING MAPPING OPTIMIZATION..."
     BestTG=copy.deepcopy(TG)
     BestAG=copy.deepcopy(AG)
     BestCTG=copy.deepcopy(CTG)
     BestCost=CostFunction(TG,AG,Report)
     StartingCost=BestCost
-    for Iteration in range(0,ItterationNum):
-        if Report:print "\tITERATION:",Iteration
+    for Iteration in range(0,IterationNum):
+        if DetailedReport:print "\tITERATION:",Iteration
         ClusterToMove= random.choice(CTG.nodes())
         CurrentNode=CTG.node[ClusterToMove]['Node']
-        RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,Report)
+        RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,DetailedReport)
         DestNode = random.choice(AG.nodes())
         TryCounter=0
-        while not AddClusterToNode(TG,CTG,AG,NoCRG,ClusterToMove,DestNode,Report):
-            RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,DestNode,Report)
-            AddClusterToNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,Report)
+        while not AddClusterToNode(TG,CTG,AG,NoCRG,ClusterToMove,DestNode,DetailedReport):
+            RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,DestNode,DetailedReport)
+            AddClusterToNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,DetailedReport)
             ClusterToMove= random.choice(CTG.nodes())
             CurrentNode=CTG.node[ClusterToMove]['Node']
-            RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,Report)
+            RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,DetailedReport)
             DestNode = random.choice(AG.nodes())
             if TryCounter >= 3*len(AG.nodes()):
                 print "CAN NOT FIND ANY SOLUTION... ABORTING MAPPING..."
@@ -63,11 +63,11 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,ItterationNum,Report):
                 return False
             TryCounter+=1
         Scheduling_Functions.ClearScheduling(AG,TG)
-        Scheduler.ScheduleAll(TG,AG,False,Report)
-        CurrentCost=CostFunction(TG,AG,Report)
+        Scheduler.ScheduleAll(TG,AG,False,DetailedReport)
+        CurrentCost=CostFunction(TG,AG,DetailedReport)
         if CurrentCost <= BestCost:
             if CurrentCost < BestCost:
-                print "\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:",CurrentCost , "\t ITERATION:",Iteration
+                if Report:print "\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:",CurrentCost , "\t ITERATION:",Iteration
             BestTG=copy.deepcopy(TG)
             BestAG=copy.deepcopy(AG)
             BestCTG=copy.deepcopy(CTG)
@@ -76,14 +76,41 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,ItterationNum,Report):
             TG=copy.deepcopy(BestTG)
             AG=copy.deepcopy(BestAG)
             CTG=copy.deepcopy(BestCTG)
-    print "-------------------------------------"
-    print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost,"\tAFTER",ItterationNum,"ITERATIONS"
-    print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost),"%"
-    Scheduling_Functions.ReportMappedTasks(AG)
-    return True
+    if Report:print "-------------------------------------"
+    if Report:print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost,"\tAFTER",IterationNum,"ITERATIONS"
+    if Report:print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost),"%"
+    if Report:Scheduling_Functions.ReportMappedTasks(AG)
+    return (BestTG,BestCTG,BestAG)
 
 
-def OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,IterationNum,Report):
-
-    return True
+def OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,IterationNum,SubIteration,Report,DetailedReport):
+    if Report:print "==========================================="
+    if Report:print "STARTING MAPPING OPTIMIZATION...USING ITERATIVE LOCAL SEARCH..."
+    BestTG=copy.deepcopy(TG)
+    BestAG=copy.deepcopy(AG)
+    BestCTG=copy.deepcopy(CTG)
+    BestCost=CostFunction(TG,AG,False)
+    StartingCost = CostFunction(TG,AG,False)
+    if Report:print "INITIAL COST:",StartingCost
+    for Iteration in range(0,IterationNum):
+        if DetailedReport:print "\tITERATION:",Iteration
+        (CurrentTG,CurrentCTG,CurrentAG) = OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SubIteration,False,DetailedReport)
+        CurrentCost=CostFunction(TG,AG,False)
+        if CurrentCost <= BestCost:
+            if CurrentCost < BestCost:
+                if Report:print "\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:",CurrentCost , \
+                    "\t ITERATION:",Iteration
+            BestTG=copy.deepcopy(CurrentTG)
+            BestAG=copy.deepcopy(CurrentCTG)
+            BestCTG=copy.deepcopy(CurrentAG)
+            BestCost = CurrentCost
+        del CurrentTG
+        del CurrentAG
+        del CurrentCTG
+        ClearMapping(TG,CTG,AG)
+        MakeInitialMapping(TG,CTG,AG,NoCRG,False)
+    if Report:print "-------------------------------------"
+    if Report:print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost
+    if Report:print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost),"%"
+    return (BestTG,BestCTG,BestAG)
 

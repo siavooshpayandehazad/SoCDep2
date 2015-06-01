@@ -85,7 +85,7 @@ def ClearMapping(TG,CTG,AG):
     for node in TG.nodes():
         TG.node[node]['Node'] = None
     for Edge in TG.edges():
-        TG.edge[Edge[0]][Edge[1]]['Link']=None
+        TG.edge[Edge[0]][Edge[1]]['Link']=[]
     for cluster in CTG.nodes():
         CTG.node[cluster]['Node'] = None
     for node in AG.nodes():

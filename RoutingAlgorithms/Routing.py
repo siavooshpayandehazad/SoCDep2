@@ -30,6 +30,8 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report):
     # E2N is a turn that connects input of East port of the router to
     # output of north
 
+    #todo: add virtual channel support for the routing graph...
+
     print "STARTING BUILDING ROUTING ARCHITECTURE..."
     ReportTurnModel(TurnModel)
     PortList=['N','W','L','E','S'] #the order is crucial... do not change

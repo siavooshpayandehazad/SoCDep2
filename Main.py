@@ -51,6 +51,7 @@ Task_Graph_Reports.DrawTaskGraph(TG,TG_Edge_List,TG_Edge_Weight)
 
 ################################################
 print "PREPARING AN ARCHITECTURE GRAPH (AG)..."
+#todo: add virtual channel support AG...
 AG=networkx.DiGraph()
 PE_List = [0, 1, 2, 3]
 AG_Edge_List=[(0,1), (0,2), (1,0), (1,3), (2,0), (2,3), (3,2), (3,1)]
@@ -86,16 +87,25 @@ if NoCRG is not False:
     # clustered task graph
     CTG=copy.deepcopy(Clustering.TaskClusterGeneration(len(PE_List), DebugDetails))
     if Clustering.InitialClustering(TG, CTG, MaXBandWidth):
-        (BestSolution,BestTaskGraph)= Clustering.ClusteringOptimization_LocalSearch(TG, CTG, 1000, MaXBandWidth)
+        (BestClustering,BestTaskGraph)= Clustering.ClusteringOptimization_LocalSearch(TG, CTG, 1000, MaXBandWidth)
         TG= copy.deepcopy(BestTaskGraph)
-        CTG= copy.deepcopy(BestSolution)
+        CTG= copy.deepcopy(BestClustering)
+        del BestClustering
+        del BestTaskGraph
         Clustering_Functions.DoubleCheckCTG(TG,CTG)
         Clustering_Functions.ReportCTG(CTG,"CTG_PostOpt.png")
         if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG,True):
             Scheduler.ScheduleAll(TG,AG,True,DebugDetails)
             Scheduling_Functions.ReportMappedTasks(AG)
-            #Mapping_Functions.CostFunction(TG,AG,True)
-            Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,1000,DebugDetails)
+            Mapping_Functions.CostFunction(TG,AG,True)
+            #(BestTG,BestCTG,BestAG)=Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,1000,True,False)
+            (BestTG,BestCTG,BestAG)=Mapping.OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,10,100,True,False)
+            TG= copy.deepcopy(BestTG)
+            CTG= copy.deepcopy(BestCTG)
+            AG= copy.deepcopy(BestAG)
+            del BestTG
+            del BestCTG
+            del BestAG
         else:
             Mapping_Functions.ReportMapping(AG)
             print "==========================================="
