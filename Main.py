@@ -77,30 +77,34 @@ SHM.Report_NoC_SystemHealthMap()
 print "SYSTEM IS UP..."
 print "==========================================="
  # here we use XY routing
+ # the turns should be named with port 2 port naming convention...
+ # E2N is a turn that connects input of East port of the router to
+ # output of north
 TurnModel=['E2N','E2S','W2N','W2S']
 SHM.SHM.edge[0][1]['LinkHealth']=False
 NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,TurnModel,DebugDetails)
-print "==========================================="
-################################################
-# clustered task graph
-CTG=copy.deepcopy(Clustering.TaskClusterGeneration(len(PE_List), DebugDetails))
-if Clustering.InitialClustering(TG, CTG, MaXBandWidth):
+if NoCRG is not False:
     print "==========================================="
-    (BestSolution,BestTaskGraph)= Clustering.ClusteringOptimization_LocalSearch(TG, CTG, 1000, MaXBandWidth)
-    TG= copy.deepcopy(BestTaskGraph)
-    CTG= copy.deepcopy(BestSolution)
-    Clustering_Functions.DoubleCheckCTG(TG,CTG)
-    Clustering_Functions.ReportCTG(CTG,"CTG_PostOpt.png")
-    if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG):
-        Mapping_Functions.ReportMapping(AG)
-        Task_Graph_Reports.ReportTaskGraph(TG)
-        Scheduler.ScheduleAll(TG,AG,True,DebugDetails)
-        Scheduling_Functions.ReportMappedTasks(AG)
-        Mapping_Functions.CostFunction(TG,AG,True)
-        Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,1000,DebugDetails)
-    else:
-        Mapping_Functions.ReportMapping(AG)
+    ################################################
+    # clustered task graph
+    CTG=copy.deepcopy(Clustering.TaskClusterGeneration(len(PE_List), DebugDetails))
+    if Clustering.InitialClustering(TG, CTG, MaXBandWidth):
         print "==========================================="
+        (BestSolution,BestTaskGraph)= Clustering.ClusteringOptimization_LocalSearch(TG, CTG, 1000, MaXBandWidth)
+        TG= copy.deepcopy(BestTaskGraph)
+        CTG= copy.deepcopy(BestSolution)
+        Clustering_Functions.DoubleCheckCTG(TG,CTG)
+        Clustering_Functions.ReportCTG(CTG,"CTG_PostOpt.png")
+        if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG):
+            Mapping_Functions.ReportMapping(AG)
+            Task_Graph_Reports.ReportTaskGraph(TG)
+            Scheduler.ScheduleAll(TG,AG,True,DebugDetails)
+            Scheduling_Functions.ReportMappedTasks(AG)
+            Mapping_Functions.CostFunction(TG,AG,True)
+            Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,1000,DebugDetails)
+        else:
+            Mapping_Functions.ReportMapping(AG)
+            print "==========================================="
 
-else :
-    print "Initial Clustering Failed...."
+    else :
+        print "Initial Clustering Failed...."

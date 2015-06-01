@@ -25,9 +25,13 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report):
     #             |                 O/
     #             |_____I___O______I/
     #                   |   |
+    #
+    # the turns should be named with port 2 port naming convention...
+    # E2N is a turn that connects input of East port of the router to
+    # output of north
 
     print "STARTING BUILDING ROUTING ARCHITECTURE..."
-    print "USING TURN MODE: ",TurnModel
+    ReportTurnModel(TurnModel)
     PortList=['N','W','L','E','S'] #the order is crucial... do not change
     NoCRG= networkx.DiGraph()
     for node in AG.nodes():
@@ -57,7 +61,13 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report):
                 if SystemHealthMap.SHM.node[node]['TurnsHealth'][turn]:
                     InPort=turn[0]
                     OutPort=turn[2]
-                    NoCRG.add_edge(str(node)+str(InPort)+str('I'),str(node)+str(OutPort)+str('O'))
+                    if InPort != OutPort:
+                        NoCRG.add_edge(str(node)+str(InPort)+str('I'),str(node)+str(OutPort)+str('O'))
+                    else: #just for defensive programming reasons...
+                        print "\033[31mERROR::\033[0m U-TURN DETECTED!"
+                        print "TERMINATING THE PROGRAM..."
+                        print "HINT: CHECK YOUR TURN MODEL!"
+                        return False
                     if Report:print "\t",InPort,"--->",OutPort
         if Report:print "------------------------"
 
@@ -72,7 +82,20 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report):
     print "ROUTE GRAPH IS READY... "
     return NoCRG
 
+def ReportTurnModel(TurnModel):
+    print "\tUSING TURN MODE: ",TurnModel
+    print "\tPREPARING VISUALIZATION OF TURN MODEL..."
+    print  "\t",unichr(0x2197) if "S2E" in TurnModel else "\033[31m"+unichr(0x2197)+"\033[0m",\
+           unichr(0x2198) if "W2S" in TurnModel else "\033[31m"+unichr(0x2198)+"\033[0m","\t"\
+           ,unichr(0x2199) if "E2S" in TurnModel else "\033[31m"+unichr(0x2199)+"\033[0m",\
+           unichr(0x2196) if "S2W" in TurnModel else "\033[31m"+unichr(0x2196)+"\033[0m"
 
+    print   "\t",unichr(0x2196) if "E2N" in TurnModel else "\033[31m"+unichr(0x2196)+"\033[0m"\
+            ,unichr(0x2199) if "N2W" in TurnModel else "\033[31m"+unichr(0x2199)+"\033[0m","\t"\
+            ,unichr(0x2198) if "N2E" in TurnModel else "\033[31m"+unichr(0x2198)+"\033[0m"\
+            ,unichr(0x2197) if "W2N" in TurnModel else "\033[31m"+unichr(0x2197)+"\033[0m"
+    print "\t","---------------------------"
+    return None
 
 def UpdateNoCRouteGraph(SystemHealthMap,NewEvent):
     """
