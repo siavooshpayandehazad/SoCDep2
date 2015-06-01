@@ -8,6 +8,20 @@ def FindScheduleMakeSpan(AG):
                 MakeSpan=AG.node[Node]['Scheduling'][Task][1]
     return MakeSpan
 
+def ClearScheduling(AG,TG):
+    for Node in AG.nodes():
+        AG.node[Node]['Scheduling']={}
+    for Link in AG.edges():
+        AG.edge[Link[0]][Link[1]]['Scheduling']={}
+    return None
+
+##########################################################################
+#
+#                       ADDING TASK AND EDGE TO
+#                               RESOURCES
+#
+##########################################################################
+
 def Add_TG_TaskToNode(TG,AG,Task,Node,Report):
     if Report: "\t\tADDING TASK:",Task," TO NODE:",Node
     CriticalityLevel=TG.node[Task]['Criticality']
@@ -18,7 +32,20 @@ def Add_TG_TaskToNode(TG,AG,Task,Node,Report):
     TG.node[Task]['Node']=Node
     return True
 
+def Add_TG_EdgeTo_link(TG,AG,Edge,Link,Report):
+    if Report:print "\t\tADDING EDGE:",Edge," TO LINK:",Link
+    StartTime=max(FindLastAllocatedTimeOnLink(TG,AG,Link,Report),FindEdgePredecessorsFinishTime(TG,AG,Edge))
+    EndTime=StartTime+(TG.edge[Edge[0]][Edge[1]]['ComWeight'])
+    if Report:print "\t\tSTARTING TIME:",StartTime,"ENDING TIME:",EndTime
+    AG.edge[Link[0]][Link[1]]['Scheduling'][Edge]=[StartTime,EndTime]
+    return True
 
+##########################################################################
+#
+#                   CALCULATING LATEST STARTING TIME
+#                           FOR TASK BASED ON
+#                               PREDECESSORS
+##########################################################################
 def FindTaskPredecessorsFinishTime(TG,AG,Task,CriticalityLevel):
     FinishTime=0
     if len(TG.predecessors(Task))>0:
@@ -40,8 +67,6 @@ def FindTaskPredecessorsFinishTime(TG,AG,Task,CriticalityLevel):
                                     FinishTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Edge][1]
     return FinishTime
 
-
-
 def FindEdgePredecessorsFinishTime(TG,AG,Edge):
     FinishTime=0
     Node = TG.node[Edge[0]]['Node']
@@ -55,33 +80,12 @@ def FindEdgePredecessorsFinishTime(TG,AG,Edge):
 
     return FinishTime
 
-def Add_TG_EdgeTo_link(TG,AG,Edge,Link,Report):
-    if Report:print "\t\tADDING EDGE:",Edge," TO LINK:",Link
-    StartTime=max(FindLastAllocatedTimeOnLink(TG,AG,Link,Report),FindEdgePredecessorsFinishTime(TG,AG,Edge))
-    EndTime=StartTime+(TG.edge[Edge[0]][Edge[1]]['ComWeight'])
-    if Report:print "\t\tSTARTING TIME:",StartTime,"ENDING TIME:",EndTime
-    AG.edge[Link[0]][Link[1]]['Scheduling'][Edge]=[StartTime,EndTime]
-    return True
-
-def ReportMappedTasks(AG):
-    print "==========================================="
-    print "          REPORTING SCHEDULING "
-    print "==========================================="
-    for Node in AG.nodes():
-        print "NODE", Node,"CONTAINS THE FOLLOWING TASKS:",AG.node[Node]['MappedTasks'],\
-            "\tWITH SCHEDULING:",AG.node[Node]['Scheduling']
-    for Link in AG.edges():
-        print "LINK", Link,"CONTAINS THE FOLLOWING TG's Edges:",AG.edge[Link[0]][Link[1]]['MappedTasks'],\
-            "\tWITH SCHEDULING:",AG.edge[Link[0]][Link[1]]['Scheduling']
-    return None
-
-def ClearScheduling(AG,TG):
-    for Node in AG.nodes():
-        AG.node[Node]['Scheduling']={}
-    for Link in AG.edges():
-        AG.edge[Link[0]][Link[1]]['Scheduling']={}
-    return None
-
+##########################################################################
+#
+#                   CALCULATING LAST ALLOCATED TIME
+#                           FOR RESOURCES
+#
+##########################################################################
 def FindLastAllocatedTimeOnLink(TG,AG,Link,Report):
     if Report:print "\t\tFINDING LAST ALLOCATED TIME ON LINK", Link
     LastAllocatedTime=0
@@ -118,3 +122,22 @@ def FindLastAllocatedTimeOnNode(TG,AG,Node,Report):
         return 0
     if Report:print "\t\t\tLAST ALLOCATED TIME:",LastAllocatedTime
     return LastAllocatedTime
+
+##########################################################################
+#
+#                                   REPORTS
+#
+#
+##########################################################################
+
+def ReportMappedTasks(AG):
+    print "==========================================="
+    print "          REPORTING SCHEDULING "
+    print "==========================================="
+    for Node in AG.nodes():
+        print "NODE", Node,"CONTAINS THE FOLLOWING TASKS:",AG.node[Node]['MappedTasks'],\
+            "\tWITH SCHEDULING:",AG.node[Node]['Scheduling']
+    for Link in AG.edges():
+        print "LINK", Link,"CONTAINS THE FOLLOWING TG's Edges:",AG.edge[Link[0]][Link[1]]['MappedTasks'],\
+            "\tWITH SCHEDULING:",AG.edge[Link[0]][Link[1]]['Scheduling']
+    return None

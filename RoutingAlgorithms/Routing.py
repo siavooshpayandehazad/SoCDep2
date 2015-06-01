@@ -11,7 +11,7 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report):
     :return: RouteGraph
     """
 
-    # ACKNOWLEDGEMENT The Routing Graph is based on the idea from Thilo Kogge's Master Thesis
+    # ACKNOWLEDGEMENT:: The Routing Graph is based on the idea from Thilo Kogge's Master Thesis
 
     # all the links that go inside the router are called in
     #
@@ -82,6 +82,23 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report):
     print "ROUTE GRAPH IS READY... "
     return NoCRG
 
+def GenerateNoCRouteGraphFromFile(AG,SystemHealthMap,RoutingFilePath,Report):
+    """
+    This function might come very handy specially in relation to different routing algorithms that we can
+    implement to increase reachability...
+    :param AG: Architecture graph
+    :param SystemHealthMap: System health map
+    :param RoutingFilePath: is the path to a file that contains routing information for each individual router
+    :param Report: boolean, which decides if function should print reports to console?
+    :return:
+    """
+    print "STARTING BUILDING ROUTING ARCHITECTURE..."
+    PortList=['N','W','L','E','S'] #the order is crucial... do not change
+    NoCRG= networkx.DiGraph()
+    #TODO: read from file and construct the NoCRG
+
+    return NoCRG
+
 def ReportTurnModel(TurnModel):
     print "\tUSING TURN MODE: ",TurnModel
     print "\tPREPARING VISUALIZATION OF TURN MODEL..."
@@ -99,12 +116,12 @@ def ReportTurnModel(TurnModel):
 
 def UpdateNoCRouteGraph(SystemHealthMap,NewEvent):
     """
-     we would like to eliminate the path that is not working anymore...
+     we would like to eliminate the path or turn that is not working anymore...
     :param SystemHealthMap: System Health Map
     :param NewEvent: new fault that has happened...
     :return:
     """
-    #ToDo
+    #ToDo: Updating NoCRouteGraph
     return None
 
 
