@@ -24,7 +24,6 @@ def ReportCTG(CTG,filename):
     plt.savefig("GraphDrawings/"+filename)
     plt.clf()
     print "GRAPH DRAWINGS DONE, CHECK \"GraphDrawings/"+filename,"\""
-    print "==========================================="
     return None
 
 def RemoveTaskFromCTG(TG,CTG,Task):

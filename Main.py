@@ -13,7 +13,6 @@ from TaskGraphUtilities import TG_Functions
 from RoutingAlgorithms import Routing
 
 print "==================================================================================================================="
-
 print "  _________      .__               .___    .__             ____    ________                                   .___"
 print " /   _____/ ____ |  |__   ____   __| _/_ __|  |   ____    /  _ \   \______ \   ____ ______   ____   ____    __| _/"
 print " \_____  \_/ ___\|  |  \_/ __ \ / __ |  |  \  | _/ __ \   >  _ </\  |    |  \_/ __ \\\\____ \_/ __ \ /    \  / __ | "
@@ -44,7 +43,6 @@ Task_WCET_List=[30, 30, 20, 40, 10, 5, 15, 20]
 Task_Criticality_List=['H', 'L', 'H', 'L', 'L', 'H', 'L', 'L']
 TG_Edge_List=[(1,2), (1,3), (2,5), (0,5), (4,7), (4,3), (1,6), (0,6)]
 TG_Edge_Weight=[5, 9, 4, 7, 5, 3, 5, 1]
-
 TG = copy.deepcopy(TG_Functions.GenerateTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List,TG_Edge_Weight))
 TG_Functions.AssignPriorities(TG)
 print("TASK GRAPH (TG) IS READY...")
@@ -84,23 +82,19 @@ TurnModel=['E2N','E2S','W2N','W2S']
 SHM.SHM.edge[0][1]['LinkHealth']=False
 NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,TurnModel,DebugDetails)
 if NoCRG is not False:
-    print "==========================================="
     ################################################
     # clustered task graph
     CTG=copy.deepcopy(Clustering.TaskClusterGeneration(len(PE_List), DebugDetails))
     if Clustering.InitialClustering(TG, CTG, MaXBandWidth):
-        print "==========================================="
         (BestSolution,BestTaskGraph)= Clustering.ClusteringOptimization_LocalSearch(TG, CTG, 1000, MaXBandWidth)
         TG= copy.deepcopy(BestTaskGraph)
         CTG= copy.deepcopy(BestSolution)
         Clustering_Functions.DoubleCheckCTG(TG,CTG)
         Clustering_Functions.ReportCTG(CTG,"CTG_PostOpt.png")
-        if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG):
-            Mapping_Functions.ReportMapping(AG)
-            Task_Graph_Reports.ReportTaskGraph(TG)
+        if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG,True):
             Scheduler.ScheduleAll(TG,AG,True,DebugDetails)
             Scheduling_Functions.ReportMappedTasks(AG)
-            Mapping_Functions.CostFunction(TG,AG,True)
+            #Mapping_Functions.CostFunction(TG,AG,True)
             Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,1000,DebugDetails)
         else:
             Mapping_Functions.ReportMapping(AG)

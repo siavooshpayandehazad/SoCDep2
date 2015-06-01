@@ -5,13 +5,14 @@ import random
 import copy
 from ScheduleAndDepend.Scheduler import Scheduler
 from ScheduleAndDepend.Scheduler import Scheduling_Functions
-from ScheduleAndDepend.Mapper.Mapping_Functions import AddClusterToNode
+from ScheduleAndDepend.Mapper.Mapping_Functions import AddClusterToNode, ReportMapping
 from ScheduleAndDepend.Mapper.Mapping_Functions import RemoveClusterFromNode
 from ScheduleAndDepend.Mapper.Mapping_Functions import ClearMapping
 from ScheduleAndDepend.Mapper.Mapping_Functions import CostFunction
 
 
-def MakeInitialMapping(TG,CTG,AG,NoCRG):
+def MakeInitialMapping(TG,CTG,AG,NoCRG,Report):
+    print "==========================================="
     print "STARTING INITIAL MAPPING..."
     for Cluster in CTG.nodes():
         DestNode = random.choice(AG.nodes())
@@ -27,9 +28,11 @@ def MakeInitialMapping(TG,CTG,AG,NoCRG):
                 ClearMapping(TG,CTG,AG)
                 return False
     print "INITIAL MAPPING READY..."
+    if Report: ReportMapping(AG)
     return True
 
 def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,ItterationNum,Report):
+    print "==========================================="
     print "STARTING MAPPING OPTIMIZATION..."
     BestTG=copy.deepcopy(TG)
     BestAG=copy.deepcopy(AG)
@@ -77,7 +80,6 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,ItterationNum,Report):
     print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost,"\tAFTER",ItterationNum,"ITERATIONS"
     print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost),"%"
     Scheduling_Functions.ReportMappedTasks(AG)
-    CostFunction(TG,AG,True)
     return True
 
 
