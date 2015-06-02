@@ -20,7 +20,7 @@ def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
             DestNode=CTG.node[Edge[1]]['Node']
             if SourceNode is not None and DestNode is not None: #check if both ends of this edge is mapped
                 if SourceNode != DestNode:
-                    ListOfLinks=Routing.FindRouteInRouteGraph(NoCRG,SourceNode,DestNode,False) #Find the links to be used
+                    ListOfLinks=Routing.FindRouteInRouteGraph(NoCRG,SourceNode,DestNode,False,False) #Find the links to be used
                     ListOfEdges=[]
                     for edge in TG.edges(): #find all the edges in TaskGraph that contribute to this edge in CTG
                         if TG.node[edge[0]]['Cluster']== Edge[0] and TG.node[edge[1]]['Cluster']==Edge[1]:
@@ -49,7 +49,7 @@ def RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
             DestNode=CTG.node[Edge[1]]['Node']
             if SourceNode is not None and DestNode is not None: #check if both ends of this edge is mapped
                 if SourceNode != DestNode:
-                    ListOfLinks=Routing.FindRouteInRouteGraph(NoCRG,SourceNode,DestNode,False) #Find the links to be used
+                    ListOfLinks=Routing.FindRouteInRouteGraph(NoCRG,SourceNode,DestNode,False,False) #Find the links to be used
                     ListOfEdges=[]
                     for edge in TG.edges(): #find all the edges in TaskGraph that contribute to this edge in CTG
                         if TG.node[edge[0]]['Cluster']==Edge[0] and TG.node[edge[1]]['Cluster']==Edge[1]:

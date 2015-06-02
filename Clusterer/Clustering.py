@@ -17,7 +17,7 @@ def TaskClusterGeneration(NumberOfClusters, DebugDetails):
     :param DebugDetails: something for further development
     :return:
     """
-
+    print "==========================================="
     print  "PREPARING FOR CLUSTERING THE TASK GRAPH..."
     print "   NUMBER OF CLUSTERS: ", NumberOfClusters
     CTG=networkx.DiGraph()

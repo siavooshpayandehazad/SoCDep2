@@ -30,6 +30,7 @@ Network_Y_Size=2
 #          Routing  Config
 ################################################
 # Todo: introduce more turn models
+FULL_TurnModel=['E2N','E2S','W2N','W2S','S2W','S2E','N2W','N2E']
 XY_TurnModel=['E2N','E2S','W2N','W2S']
 WestFirst_TurnModel=[]
 EastFirst_TurnModel=[]

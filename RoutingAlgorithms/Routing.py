@@ -31,7 +31,7 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report,DetailedReport):
     # output of north
 
     #todo: add virtual channel support for the routing graph...
-
+    if Report:print "==========================================="
     if Report:print "STARTING BUILDING ROUTING ARCHITECTURE..."
     ReportTurnModel(TurnModel)
     PortList=['N','W','L','E','S'] #the order is crucial... do not change
@@ -132,24 +132,36 @@ def UpdateNoCRouteGraph(SystemHealthMap,NewEvent):
     #ToDo: Updating NoCRouteGraph
     return None
 
-
-def FindRouteInRouteGraph(NoCRG,SourceNode,DestinationNode,Report):
+def FindRouteInRouteGraph(NoCRG,SourceNode,DestinationNode,ReturnAllPaths,Report):
     """
-    :param NoCRG:
+    :param NoCRG: NoC Routing Graph
     :param SourceNode: Source node on AG
     :param DestinationNode: Destination node on AG
+    :param ReturnAllPaths: boolean that decides to return shortest path or all the paths between two nodes
     :return: return a path (by name of links) on AG from source to destination if possible, None if not.
     """
     Source=str(SourceNode)+str('L')+str('I')
     Destination=str(DestinationNode)+str('L')+str('O')
     if networkx.has_path(NoCRG,Source,Destination):
-        paths=networkx.shortest_path(NoCRG,Source,Destination)
-        links=[]
-        for i in range (0,len(paths)-1):
-            if paths[i][0] != paths[i+1][0]:
-                links.append((int(paths[i][0]),int(paths[i+1][0])))
-        if Report:print "\t\tFINDING PATH FROM: ",Source,"TO:", Destination," ==>",links
-        return links
+        ShortestPath=networkx.shortest_path(NoCRG,Source,Destination)
+        AllPaths=list(networkx.all_simple_paths(NoCRG,Source,Destination))
+        ShortestLinks=[]
+        for i in range (0,len(ShortestPath)-1):
+            if ShortestPath[i][0] != ShortestPath[i+1][0]:
+                ShortestLinks.append((int(ShortestPath[i][0]),int(ShortestPath[i+1][0])))
+        AllLinks=[]
+        for j in range(0, len(AllPaths)):
+            Path=AllPaths[j]
+            Links=[]
+            for i in range (0,len(Path)-1):
+                if Path[i][0] != Path[i+1][0]:
+                    Links.append((int(Path[i][0]),int(Path[i+1][0])))
+            AllLinks.append(Links)
+        if Report:print "\t\tFINDING PATH(S) FROM: ",Source,"TO:", Destination," ==>",AllLinks if ReturnAllPaths else ShortestLinks
+        if ReturnAllPaths:
+            return AllLinks
+        else:
+            return ShortestLinks
     else:
         if Report:print "\t\tNO PATH FOUND FROM: ",Source,"TO:", Destination
         return None

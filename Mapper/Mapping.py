@@ -57,7 +57,7 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,IterationNum,Report,DetailedRepor
                 CTG=copy.deepcopy(BestCTG)
                 Scheduling_Functions.ReportMappedTasks(AG)
                 CostFunction(TG,AG,True)
-                return False
+                return (False,False,False)
             TryCounter+=1
         Scheduling_Functions.ClearScheduling(AG,TG)
         Scheduler.ScheduleAll(TG,AG,False,DetailedReport)
@@ -92,15 +92,16 @@ def OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,IterationNum,SubIteratio
     for Iteration in range(0,IterationNum):
         if DetailedReport:print "\tITERATION:",Iteration
         (CurrentTG,CurrentCTG,CurrentAG) = OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SubIteration,False,DetailedReport)
-        CurrentCost=CostFunction(CurrentTG,CurrentAG,False)
-        if CurrentCost <= BestCost:
-            if CurrentCost < BestCost:
-                if Report:print "\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:",CurrentCost , \
-                    "\t ITERATION:",Iteration
-            BestTG=copy.deepcopy(CurrentTG)
-            BestAG=copy.deepcopy(CurrentAG)
-            BestCTG=copy.deepcopy(CurrentCTG)
-            BestCost = CurrentCost
+        if CurrentTG is not False:
+            CurrentCost=CostFunction(CurrentTG,CurrentAG,False)
+            if CurrentCost <= BestCost:
+                if CurrentCost < BestCost:
+                    if Report:print "\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:",CurrentCost , \
+                        "\t ITERATION:",Iteration
+                BestTG=copy.deepcopy(CurrentTG)
+                BestAG=copy.deepcopy(CurrentAG)
+                BestCTG=copy.deepcopy(CurrentCTG)
+                BestCost = CurrentCost
         del CurrentTG
         del CurrentAG
         del CurrentCTG
