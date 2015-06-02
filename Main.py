@@ -60,10 +60,12 @@ print "==========================================="
  # the turns should be named with port 2 port naming convention...
  # E2N is a turn that connects input of East port of the router to
  # output of north
-TurnModel=['E2N','E2S','W2N','W2S']
-SHM.SHM.edge[0][1]['LinkHealth']=False
-NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,TurnModel,Config.DebugInfo,Config.DebugDetails)
-AG_Functions.IntroduceAging(AG)
+
+#SHM.SHM.edge[0][1]['LinkHealth']=False
+SHM.BreakLink((0,1),True)
+NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,Config.XY_TurnModel,Config.DebugInfo,Config.DebugDetails)
+#print Routing.FindRouteInRouteGraph(NoCRG,0,3,True)
+AG_Functions.IntroduceAging(AG,1,0.3,True)
 if NoCRG is not False:
     #################################################
     # to run the following heuristics (Min_Min,Max_Min), one needs to use independent

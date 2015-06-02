@@ -1,4 +1,5 @@
 __author__ = 'siavoosh'
+from math import ceil
 
 def FindScheduleMakeSpan(AG):
     MakeSpan=0
@@ -7,7 +8,7 @@ def FindScheduleMakeSpan(AG):
             if AG.node[Node]['Scheduling'][Task][1]>MakeSpan:
                 MakeSpan=AG.node[Node]['Scheduling'][Task][1]
     return MakeSpan
-
+################################################################
 def ClearScheduling(AG,TG):
     for Node in AG.nodes():
         AG.node[Node]['Scheduling']={}
@@ -26,13 +27,15 @@ def Add_TG_TaskToNode(TG,AG,Task,Node,Report):
     if Report: "\t\tADDING TASK:",Task," TO NODE:",Node
     CriticalityLevel=TG.node[Task]['Criticality']
     StartTime=max(FindLastAllocatedTimeOnNode(TG,AG,Node,Report),FindTaskPredecessorsFinishTime(TG,AG,Task,CriticalityLevel))
-    TaskExecutionOnNode= TG.node[Task]['WCET']*(1+((100.0-AG.node[Node]["Speed"])/100))
+    # This includes the aging and lower frequency of the nodes of graph...
+    # however, we do not include fractions of a cycle so we take ceiling of the execution time
+    TaskExecutionOnNode= ceil(TG.node[Task]['WCET']*(1+((100.0-AG.node[Node]["Speed"])/100)))
     EndTime=StartTime+TaskExecutionOnNode
     if Report:print "\t\tSTARTING TIME:",StartTime,"ENDING TIME:",EndTime
     AG.node[Node]['Scheduling'][Task]=[StartTime,EndTime]
     TG.node[Task]['Node']=Node
     return True
-
+################################################################
 def Add_TG_EdgeTo_link(TG,AG,Edge,Link,Report):
     if Report:print "\t\tADDING EDGE:",Edge," TO LINK:",Link
     StartTime=max(FindLastAllocatedTimeOnLink(TG,AG,Link,Report),FindEdgePredecessorsFinishTime(TG,AG,Edge))
@@ -67,7 +70,7 @@ def FindTaskPredecessorsFinishTime(TG,AG,Task,CriticalityLevel):
                                 if AG.edge[Link[0]][Link[1]]['Scheduling'][Edge][1]>FinishTime:
                                     FinishTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Edge][1]
     return FinishTime
-
+################################################################
 def FindEdgePredecessorsFinishTime(TG,AG,Edge):
     FinishTime=0
     Node = TG.node[Edge[0]]['Node']
@@ -104,7 +107,7 @@ def FindLastAllocatedTimeOnLink(TG,AG,Link,Report):
         return 0
     if Report:print "\t\t\tLAST ALLOCATED TIME:",LastAllocatedTime
     return LastAllocatedTime
-
+################################################################
 def FindLastAllocatedTimeOnNode(TG,AG,Node,Report):
     if Report:print "\t\tFINDING LAST ALLOCATED TIME ON NODE", Node
     LastAllocatedTime=0
@@ -130,7 +133,6 @@ def FindLastAllocatedTimeOnNode(TG,AG,Node,Report):
 #
 #
 ##########################################################################
-
 def ReportMappedTasks(AG):
     print "==========================================="
     print "          REPORTING SCHEDULING "

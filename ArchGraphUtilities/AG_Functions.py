@@ -26,9 +26,8 @@ def GenerateGenericTopologyAG(Topology):
     AG=networkx.DiGraph()
     return AG
 
-def IntroduceAging(AG):
-    print "==========================================="
-    RandomNodeToAge= random.choice(AG.nodes())
-    AG.node[RandomNodeToAge]['Speed']=AG.node[RandomNodeToAge]['Speed']*90/100
-    print "NODE:",RandomNodeToAge,"SPEED DROPPED TO:",AG.node[RandomNodeToAge]['Speed'],"%"
+def IntroduceAging(AG,Node,SpeedDown,Report):
+    if Report: print "==========================================="
+    AG.node[Node]['Speed']=AG.node[Node]['Speed']*(1-SpeedDown)
+    if Report: print "NODE:",Node,"SPEED DROPPED TO:",AG.node[Node]['Speed'],"%"
     return AG

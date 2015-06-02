@@ -27,3 +27,7 @@ class SystemHealthMap:
         print "\tNODES:",self.SHM.nodes(data=True)
         print "\tEDGES:",self.SHM.edges(data=True)
         print "==========================================="
+
+    def BreakLink(self,link,Report):
+        if Report:print "BREAKING LINK:",link, "IN SYSTEM HEALTH MAP..."
+        self.SHM.edge[link[0]][link[1]]['LinkHealth']=False
