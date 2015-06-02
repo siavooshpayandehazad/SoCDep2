@@ -3,6 +3,15 @@ __author__ = 'siavoosh'
 
 DebugInfo = True
 DebugDetails = False
+################################################
+#          TG  Config
+################################################
+NumberOfTasks= 10
+NumberOfEdges= 15
+WCET_Range= 30
+EdgeWeightRange= 7
+
+
 
 ################################################
 #          Network  Config

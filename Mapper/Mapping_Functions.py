@@ -1,8 +1,9 @@
 __author__ = 'siavoosh'
 from RoutingAlgorithms import Routing
 from Scheduler import Scheduling_Functions
+import Config
 import statistics
-
+import random
 
 def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
     if Report:print "\tADDING CLUSTER:",Cluster,"TO NODE:",Node
@@ -124,3 +125,47 @@ def CostFunction(TG,AG,Report):
         print "MAPPING SCHEDULING COST:",Cost
 
     return Cost
+
+def FindUnMappedTaskWithSmallestWCET(TG,Report):
+    ShortestTasks= []
+    SmallestWCET= Config.WCET_Range
+    for Node in TG.nodes():
+        if TG.node[Node]['Node']==None:
+            if TG.node[Node]['WCET']<SmallestWCET:
+                SmallestWCET= TG.node[Node]['WCET']
+    if Report: print "THE SHORTEST WCET OF UNMAPPED TASKS IS:",SmallestWCET
+    for Nodes in TG.nodes():
+        if TG.node[Nodes]['Node']==None:
+            if TG.node[Nodes]['WCET'] == SmallestWCET:
+                ShortestTasks.append(Nodes)
+    if Report: print "THE LIST OF SHORTEST UNMAPPED TASKS:", ShortestTasks
+    return ShortestTasks
+
+def FindUnMappedTaskWithBiggestWCET(TG,Report):
+    LongestTasks= []
+    BiggestWCET= 0
+    for Node in TG.nodes():
+        if TG.node[Node]['Node']==None:
+            if TG.node[Node]['WCET']>BiggestWCET:
+                BiggestWCET= TG.node[Node]['WCET']
+    if Report: print "THE LONGEST WCET OF UNMAPPED TASKS IS:",BiggestWCET
+    for Nodes in TG.nodes():
+        if TG.node[Nodes]['Node']==None:
+            if TG.node[Nodes]['WCET'] == BiggestWCET:
+                LongestTasks.append(Nodes)
+    if Report: print "THE LIST OF LONGEST UNMAPPED TASKS:", LongestTasks
+    return LongestTasks
+
+def FindNodeWithSmallestCompletionTime(AG,TG,Task,Report):
+    FastestNodes=[]
+    RandomNode=random.choice(AG.nodes())
+    SmallestCompletionTime =  Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,RandomNode,False)
+    for Node in AG.nodes():
+        if Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False) < SmallestCompletionTime:
+            SmallestCompletionTime = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False)
+    for Node in AG.nodes():
+        if Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False)==SmallestCompletionTime:
+            FastestNodes.append(Node)
+    return FastestNodes
+
+

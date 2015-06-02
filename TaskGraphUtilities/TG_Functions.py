@@ -55,7 +55,7 @@ def GenerateRandomTG(NumberOfTasks,NumberOfEdges,WCET_Range,EdgeWeightRange):
         else:
             Edge_Criticality_List.append('L')
     print "\tLINKS CRITICALITY CALCULATED!"
-    #Todo: writing randomly generated TG
+
     for i in range(0,len(Task_List)):
         TG.add_node(Task_List[i],WCET=Task_WCET_List[i],Criticality=Task_Criticality_List[i],Cluster=None,Node=None,Priority=None)
 
@@ -67,6 +67,24 @@ def GenerateRandomTG(NumberOfTasks,NumberOfEdges,WCET_Range,EdgeWeightRange):
     print("TASK GRAPH (TG) IS READY...")
     return TG
 
+def GenerateRandomIndependentTG(NumberOfTasks,WCET_Range):
+    TG=networkx.DiGraph()
+    print("PREPARING RANDOM TASK GRAPH (TG) WITH INDEPENDENT TASKS...")
+
+    Task_List=[]
+    Task_Criticality_List=[]
+    Task_WCET_List=[]
+
+    for i in range(0,NumberOfTasks):
+        Task_List.append(i)
+        Task_Criticality_List.append(random.choice(['H','L']))
+        Task_WCET_List.append(random.randrange(1,WCET_Range))
+
+    for i in range(0,len(Task_List)):
+        TG.add_node(Task_List[i],WCET=Task_WCET_List[i],Criticality=Task_Criticality_List[i],Cluster=None,Node=None,Priority=None)
+
+    print("RANDOM TASK GRAPH (TG) WITH INDEPENDENT TASKS IS READY...")
+    return TG
 
 def FindSourceNodes(TG):
     SourceNode=[]
@@ -74,7 +92,6 @@ def FindSourceNodes(TG):
         if len(TG.predecessors(Task))==0:
             SourceNode.append(Task)
     return SourceNode
-
 
 def AssignPriorities(TG):
     print("ASSIGNING PRIORITIES TO TASK GRAPH (TG)...")

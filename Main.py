@@ -1,14 +1,16 @@
 
+
 __author__ = 'siavoosh'
 import os
 import copy
 from Clusterer import Clustering, Clustering_Functions
 from Scheduler import Scheduler,Scheduling_Functions
-from Mapper import Mapping_Functions, Mapping
+from Mapper import Mapping_Functions, Mapping,Mapping_Heuristics
 from SystemHealthMonitoring import SystemHealthMonitor
 from TaskGraphUtilities import Task_Graph_Reports,TG_Functions
 from RoutingAlgorithms import Routing
 from ArchGraphUtilities import Arch_Graph_Reports,AG_Functions
+
 
 import Config
 print "==================================================================================================================="
@@ -41,6 +43,7 @@ TG_Edge_List=[(1,2), (1,3), (2,5), (0,5), (4,7), (4,3), (1,6), (0,6)]
 TG_Edge_Weight=[5, 9, 4, 7, 5, 3, 5, 1]
 #TG = copy.deepcopy(TG_Functions.GenerateTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List,TG_Edge_Weight))
 TG = copy.deepcopy(TG_Functions.GenerateRandomTG(10,15,30,7))
+#TG = copy.deepcopy(TG_Functions.GenerateRandomIndependentTG(10,15))
 Task_Graph_Reports.ReportTaskGraph(TG)
 Task_Graph_Reports.DrawTaskGraph(TG)
 ################################################
@@ -63,8 +66,11 @@ TurnModel=['E2N','E2S','W2N','W2S']
 SHM.SHM.edge[0][1]['LinkHealth']=False
 NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,TurnModel,Config.DebugInfo,Config.DebugDetails)
 if NoCRG is not False:
+    #Mapping_Heuristics.Min_Min_Mapping (TG,AG,NoCRG,True)
+    #Mapping_Heuristics.Max_Min_Mapping (TG,AG,NoCRG,True)
     ################################################
     # clustered task graph
+
     CTG=copy.deepcopy(Clustering.TaskClusterGeneration(len(PE_List), Config.DebugInfo))
     if Clustering.InitialClustering(TG, CTG, Config.MaXBandWidth):
         (BestClustering,BestTaskGraph)= Clustering.ClusteringOptimization_LocalSearch(TG, CTG, 1000, Config.MaXBandWidth)
@@ -74,6 +80,7 @@ if NoCRG is not False:
         del BestTaskGraph
         Clustering_Functions.DoubleCheckCTG(TG,CTG)
         Clustering_Functions.ReportCTG(CTG,"CTG_PostOpt.png")
+
         if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG,Config.DebugInfo):
             Scheduler.ScheduleAll(TG,AG,Config.DebugInfo,Config.DebugDetails)
             Scheduling_Functions.ReportMappedTasks(AG)
@@ -90,6 +97,5 @@ if NoCRG is not False:
         else:
             Mapping_Functions.ReportMapping(AG)
             print "==========================================="
-
     else :
         print "Initial Clustering Failed...."
