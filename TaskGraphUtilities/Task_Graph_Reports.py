@@ -15,7 +15,7 @@ def ReportTaskGraph(TG):
             TG.edge[Edge[0]][Edge[1]]['Link'], "\tCOM WEIGHTt:",TG.edge[Edge[0]][Edge[1]]['ComWeight']
     return None
 
-def DrawTaskGraph(TG,TG_Edge_List,TG_Edge_Weight):
+def DrawTaskGraph(TG):
     NodeColors=[]
     for Node in TG.nodes():
         if TG.node[Node]['Criticality']== 'H':
@@ -28,7 +28,11 @@ def DrawTaskGraph(TG,TG_Edge_List,TG_Edge_Weight):
             Edge_Colors.append('red')
         else:
             Edge_Colors.append('black')
-
+    TG_Edge_List=[]
+    TG_Edge_Weight=[]
+    for Edge in TG.edges():
+        TG_Edge_List.append(Edge)
+        TG_Edge_Weight.append(TG.edge[Edge[0]][Edge[1]]['ComWeight'])
     pos=networkx.shell_layout(TG)
     networkx.draw_networkx_nodes(TG,pos,with_labels=True,node_color=NodeColors)
     networkx.draw_networkx_edges(TG,pos,edge_color=Edge_Colors)

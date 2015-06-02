@@ -39,15 +39,16 @@ def RemoveTaskFromCTG(TG,CTG,Task):
                     #print "\t\tREMOVING TG EDGE:", edge, "WITH WEIGHT", WeightToRemove, "FROM CLUSTER:", \
                     #    SourceCluster, "--->", DestCluster
                     if (SourceCluster,DestCluster) not in CTG.edges():
-                        print "\t\033[31mERROR\033[0m:: EDGE DOESNT EXIST"
+                        print "\t\033[31mERROR\033[0m:: EDGE ",SourceCluster, "--->", DestCluster,"DOESNT EXIST"
                         ReportCTG(CTG,"CTG_Error.png")
                         DoubleCheckCTG(TG,CTG)
-                    if CTG.edge[SourceCluster][DestCluster]['Weight'] - WeightToRemove >= 0:
-                        CTG.edge[SourceCluster][DestCluster]['Weight'] -= WeightToRemove
-                        if CTG.edge[SourceCluster][DestCluster]['Weight'] == 0:
-                            CTG.remove_edge(SourceCluster,DestCluster)
                     else:
-                        print "\t\033[31mERROR\033[0m::FINAL WEIGHT IS NEGATIVE"
+                        if CTG.edge[SourceCluster][DestCluster]['Weight'] - WeightToRemove >= 0:
+                            CTG.edge[SourceCluster][DestCluster]['Weight'] -= WeightToRemove
+                            if CTG.edge[SourceCluster][DestCluster]['Weight'] == 0:
+                                CTG.remove_edge(SourceCluster,DestCluster)
+                        else:
+                            print "\t\033[31mERROR\033[0m::FINAL WEIGHT IS NEGATIVE"
     TG.node[Task]['Cluster'] = None
     CTG.node[TaskCluster]['TaskList'].remove(Task)
     CTG.node[TaskCluster]['Utilization']-=  TG.node[Task]['WCET']

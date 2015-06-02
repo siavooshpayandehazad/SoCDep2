@@ -1,7 +1,7 @@
 __author__ = 'siavoosh'
 import networkx
 
-def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report):
+def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report,DetailedReport):
     """
     This function takes the Architecture graph and the health status of the Architecture
     and generates the route graph... route graph is a graph that has all the paths available
@@ -32,32 +32,32 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report):
 
     #todo: add virtual channel support for the routing graph...
 
-    print "STARTING BUILDING ROUTING ARCHITECTURE..."
+    if Report:print "STARTING BUILDING ROUTING ARCHITECTURE..."
     ReportTurnModel(TurnModel)
     PortList=['N','W','L','E','S'] #the order is crucial... do not change
     NoCRG= networkx.DiGraph()
     for node in AG.nodes():
-        if Report:print "GENERATING PORTS:"
+        if DetailedReport:print "GENERATING PORTS:"
         for port in PortList:
-            if Report:print "\t",str(node)+str(port)+str('I'),"&",str(node)+str(port)+str('O')
+            if DetailedReport:print "\t",str(node)+str(port)+str('I'),"&",str(node)+str(port)+str('O')
             NoCRG.add_node(str(node)+str(port)+str('I'),Node=node,Port=port,Dir='I')
             NoCRG.add_node(str(node)+str(port)+str('O'),Node=node,Port=port,Dir='O')
-        if Report:print "CONNECTING LOCAL PATHS:"
+        if DetailedReport:print "CONNECTING LOCAL PATHS:"
         for port in PortList:   #connect local to every output port
             if port != 'L':
                 NoCRG.add_edge(str(node)+str('L')+str('I'),str(node)+str(port)+str('O'))
-                if Report:print "\t",'L',"--->",port
+                if DetailedReport:print "\t",'L',"--->",port
                 NoCRG.add_edge(str(node)+str(port)+str('I'),str(node)+str('L')+str('O'))
-                if Report:print "\t",port,"--->",'L'
-        if Report:print "CONNECTING DIRECT PATHS:"
+                if DetailedReport:print "\t",port,"--->",'L'
+        if DetailedReport:print "CONNECTING DIRECT PATHS:"
         for i in range(0,int(len(PortList))): #connect direct paths
             if PortList[i] != 'L':
-                if Report:print "\t",PortList[i],"--->",PortList[len(PortList)-1-i]
+                if DetailedReport:print "\t",PortList[i],"--->",PortList[len(PortList)-1-i]
                 inID= str(node)+str(PortList[i])+str('I')
                 outID=str(node)+str(PortList[len(PortList)-1-i])+str('O')
                 NoCRG.add_edge(inID,outID)
 
-        if Report:print "CONNECTING TURNS:"
+        if DetailedReport:print "CONNECTING TURNS:"
         for turn in TurnModel:
             if turn in SystemHealthMap.SHM.node[node]['TurnsHealth']:
                 if SystemHealthMap.SHM.node[node]['TurnsHealth'][turn]:
@@ -70,18 +70,18 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report):
                         print "TERMINATING THE PROGRAM..."
                         print "HINT: CHECK YOUR TURN MODEL!"
                         return False
-                    if Report:print "\t",InPort,"--->",OutPort
-        if Report:print "------------------------"
+                    if DetailedReport:print "\t",InPort,"--->",OutPort
+        if DetailedReport:print "------------------------"
 
     for link in AG.edges(): # here we should connect connections between routers
         Port=AG.edge[link[0]][link[1]]['Port']
         if SystemHealthMap.SHM[link[0]][link[1]]['LinkHealth']:
-            if Report:print "CONNECTING LINK:",link,"BY CONNECTING:",str(link[0])+str(Port[0])+str('-Out'),"TO:",\
+            if DetailedReport:print "CONNECTING LINK:",link,"BY CONNECTING:",str(link[0])+str(Port[0])+str('-Out'),"TO:",\
                 str(link[1])+str(Port[1])+str('-In')
             NoCRG.add_edge(str(link[0])+str(Port[0])+str('O'),str(link[1])+str(Port[1])+str('I'))
         else:
-            if Report:print "BROKEN LINK:",link
-    print "ROUTE GRAPH IS READY... "
+            if DetailedReport:print "BROKEN LINK:",link
+    if Report: print "ROUTE GRAPH IS READY... "
     return NoCRG
 
 def GenerateNoCRouteGraphFromFile(AG,SystemHealthMap,RoutingFilePath,Report):
@@ -102,6 +102,12 @@ def GenerateNoCRouteGraphFromFile(AG,SystemHealthMap,RoutingFilePath,Report):
     return NoCRG
 
 def ReportTurnModel(TurnModel):
+    """
+    prints the turn model for a 2D network in the console
+    Only usable if there is a uniform Turn model over the network
+    :param TurnModel: set of allowed turns in a 2D network
+    :return: None
+    """
     print "\tUSING TURN MODE: ",TurnModel
     print "\tPREPARING VISUALIZATION OF TURN MODEL..."
     print  "\t",unichr(0x2197) if "S2E" in TurnModel else "\033[31m"+unichr(0x2197)+"\033[0m",\
