@@ -40,7 +40,7 @@ def InitialClustering(TG, CTG, MaXBandWidth):
     for Task in TG.nodes():
         Itteration=0
         DestCluster = random.choice(CTG.nodes())
-        while(not AddTaskToCTG(TG,CTG,Task,DestCluster,MaXBandWidth)):
+        while(not AddTaskToCTG(TG,CTG,Task,DestCluster)):
             RemoveTaskFromCTG(TG,CTG,Task)
             Itteration+=1
             DestCluster = random.choice(CTG.nodes())
@@ -51,8 +51,6 @@ def InitialClustering(TG, CTG, MaXBandWidth):
     print "INITIAL CLUSTERED TASK GRAPH (CTG) READY..."
     ReportCTG(CTG,"CTG_Initial.png")
     return True
-
-
 
 def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter,MaXBandWidth):
     """
@@ -81,9 +79,9 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter,MaXBandWidth):
         #randomly choose another cluster
         #move the task to the cluster and add the connections
         RandomCluster = random.choice(CTG.nodes())
-        while not AddTaskToCTG(TG,CTG,RandomTask,RandomCluster,MaXBandWidth):
+        while not AddTaskToCTG(TG,CTG,RandomTask,RandomCluster):
             RemoveTaskFromCTG(TG,CTG,RandomTask)
-            AddTaskToCTG(TG,CTG,RandomTask,RandomTaskCluster,MaXBandWidth)
+            AddTaskToCTG(TG,CTG,RandomTask,RandomTaskCluster)
             DoubleCheckCTG(TG,CTG)
             RandomTask = random.choice(TG.nodes())
             RandomTaskCluster = TG.node[RandomTask]['Cluster']
@@ -106,4 +104,3 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter,MaXBandWidth):
     print "STARTING COST:",StartingCost,"\tFINAL COST:",Cost,"\tAFTER",NumberOfIter,"ITERATIONS"
     print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-Cost)/StartingCost),"%"
     return BestSolution,BestTaskGraph
-

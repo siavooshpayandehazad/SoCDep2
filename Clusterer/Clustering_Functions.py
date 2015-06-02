@@ -23,7 +23,7 @@ def ReportCTG(CTG,filename):
     networkx.draw_networkx_labels(CTG, pos, labels=ClusterTaskListDicForDraw)
     plt.savefig("GraphDrawings/"+filename)
     plt.clf()
-    print "GRAPH DRAWINGS DONE, CHECK \"GraphDrawings/"+filename,"\""
+    print "GRAPH DRAWINGS DONE, CHECK \"GraphDrawings/"+filename+"\""
     return None
 
 def RemoveTaskFromCTG(TG,CTG,Task):
@@ -54,7 +54,7 @@ def RemoveTaskFromCTG(TG,CTG,Task):
     CTG.node[TaskCluster]['Utilization']-=  TG.node[Task]['WCET']
     return None
 
-def AddTaskToCTG(TG,CTG,Task,Cluster,MaXBandWidth):
+def AddTaskToCTG(TG,CTG,Task,Cluster):
     """
     Takes a Task from a Task Graph and adds it to a cluster in Cluster graph
     by adding related edges etc.
@@ -62,7 +62,6 @@ def AddTaskToCTG(TG,CTG,Task,Cluster,MaXBandWidth):
     :param CTG:  clustered task graph
     :param Task: Task to be added
     :param Cluster: destination cluster fro mapping the Task
-    :param MaXBandWidth: Maximum bandwidth of the links on the architecture graph
     :return: True if addition is success, False if otherwise...
     """
     #print "\tADDING TASK:", Task, " TO CLUSTER:", Cluster
@@ -83,15 +82,6 @@ def AddTaskToCTG(TG,CTG,Task,Cluster,MaXBandWidth):
                         #print "\t\tEDGE", SrcCluster, DstCluster, "DOES NOT EXISTS... ADDING EDGE WITH WEIGHT:", \
                         #TG.edge[Edge[0]][Edge[1]]['ComWeight']
                         CTG.add_edge(SrcCluster, DstCluster, Weight=WeightToAdd)
-    """for cluster in CTG.nodes():
-        if CTG.node[cluster]['Utilization'] > 100:
-            print "\t\033[33mWARNING\033[0m::OVER UTILIZATION... REVERTING THE PROCESS"
-            return False
-    for edge in CTG.edges():
-        if CTG.edge[edge[0]][edge[1]]['Weight'] > MaXBandWidth:
-            print "\t\033[33mWARNING\033[0m::BANDWIDTH VIOLATION... REVERTING THE PROCESS"
-            return False
-    """
     return True
 
 def CostFunction(CTG):

@@ -41,7 +41,6 @@ Task_WCET_List=[30, 30, 20, 40, 10, 5, 15, 20]
 Task_Criticality_List=['H', 'L', 'H', 'L', 'L', 'H', 'L', 'L']
 TG_Edge_List=[(1,2), (1,3), (2,5), (0,5), (4,7), (4,3), (1,6), (0,6)]
 TG_Edge_Weight=[5, 9, 4, 7, 5, 3, 5, 1]
-
 #TG = copy.deepcopy(TG_Functions.GenerateTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List,TG_Edge_Weight))
 TG = copy.deepcopy(TG_Functions.GenerateRandomTG(10,15,30,7))
 Task_Graph_Reports.ReportTaskGraph(TG)
