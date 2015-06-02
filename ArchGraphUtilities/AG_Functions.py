@@ -1,13 +1,13 @@
 __author__ = 'siavoosh'
 import networkx
-
+import random
 #todo: add virtual channel support AG...
 
 def GenerateAG(PE_List,AG_Edge_List,AG_Edge_Port_List):
     print "PREPARING AN ARCHITECTURE GRAPH (AG)..."
     AG=networkx.DiGraph()
     for PE in PE_List:
-        AG.add_node(PE,MappedTasks = [],Scheduling={},Utilization=0)
+        AG.add_node(PE,MappedTasks = [],Scheduling={},Utilization=0,Speed=100)
 
     for i in range(0,len(AG_Edge_List)):
         EDGE = AG_Edge_List[i]
@@ -24,4 +24,11 @@ def GenerateGenericTopologyAG(Topology):
     :return: AG
     """
     AG=networkx.DiGraph()
+    return AG
+
+def IntroduceAging(AG):
+    print "==========================================="
+    RandomNodeToAge= random.choice(AG.nodes())
+    AG.node[RandomNodeToAge]['Speed']=AG.node[RandomNodeToAge]['Speed']*90/100
+    print "NODE:",RandomNodeToAge,"SPEED DROPPED TO:",AG.node[RandomNodeToAge]['Speed'],"%"
     return AG

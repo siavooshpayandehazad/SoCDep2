@@ -3,6 +3,9 @@ import Mapping_Functions
 from Scheduler import Scheduling_Functions
 import copy
 import random
+
+# TODO: We need to add aging to system, It means that the nodes are not as fast
+
 def Min_Min_Mapping (TG,AG,NoCRG,Report):
     # this function finds the task with the smallest WCET and
     # maps it on the machine that can offer smallest completion time...
@@ -10,6 +13,7 @@ def Min_Min_Mapping (TG,AG,NoCRG,Report):
     # of the edges of the task graph on the links.
     # Note:: this is a heuristic for independent tasks... so we are not going to
     # schedule any link
+    print "==========================================="
     print "STARTING MIN-MIN MAPPING"
     ShortestTasks = Mapping_Functions.FindUnMappedTaskWithSmallestWCET(TG,False)
     while len(ShortestTasks)>0 :
@@ -37,6 +41,7 @@ def Max_Min_Mapping (TG,AG,NoCRG,Report):
     # of the edges of the task graph on the links.
     # Note:: this is a heuristic for independent tasks... so we are not going to
     # schedule any link
+    print "==========================================="
     print "STARTING MIN-MAX MAPPING"
     LongestTasks = Mapping_Functions.FindUnMappedTaskWithBiggestWCET(TG,False)
     while len(LongestTasks)>0 :

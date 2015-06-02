@@ -26,7 +26,8 @@ def Add_TG_TaskToNode(TG,AG,Task,Node,Report):
     if Report: "\t\tADDING TASK:",Task," TO NODE:",Node
     CriticalityLevel=TG.node[Task]['Criticality']
     StartTime=max(FindLastAllocatedTimeOnNode(TG,AG,Node,Report),FindTaskPredecessorsFinishTime(TG,AG,Task,CriticalityLevel))
-    EndTime=StartTime+TG.node[Task]['WCET']
+    TaskExecutionOnNode= TG.node[Task]['WCET']*(1+((100.0-AG.node[Node]["Speed"])/100))
+    EndTime=StartTime+TaskExecutionOnNode
     if Report:print "\t\tSTARTING TIME:",StartTime,"ENDING TIME:",EndTime
     AG.node[Node]['Scheduling'][Task]=[StartTime,EndTime]
     TG.node[Task]['Node']=Node

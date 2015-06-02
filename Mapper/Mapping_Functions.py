@@ -4,6 +4,7 @@ from Scheduler import Scheduling_Functions
 import Config
 import statistics
 import random
+from math import ceil
 
 def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
     if Report:print "\tADDING CLUSTER:",Cluster,"TO NODE:",Node
@@ -159,12 +160,17 @@ def FindUnMappedTaskWithBiggestWCET(TG,Report):
 def FindNodeWithSmallestCompletionTime(AG,TG,Task,Report):
     FastestNodes=[]
     RandomNode=random.choice(AG.nodes())
-    SmallestCompletionTime =  Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,RandomNode,False)
+    TaskExecutionOnNode= TG.node[Task]['WCET']*(1+((100.0-AG.node[RandomNode]["Speed"])/100))
+    SmallestCompletionTime =  Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,RandomNode,False)+TaskExecutionOnNode
     for Node in AG.nodes():
-        if Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False) < SmallestCompletionTime:
-            SmallestCompletionTime = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False)
+        TaskExecutionOnNode= TG.node[Task]['WCET']*(1+((100.0-AG.node[Node]["Speed"])/100))
+        CompletionOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False) + TaskExecutionOnNode
+        if ceil(CompletionOnNode) < SmallestCompletionTime:
+            SmallestCompletionTime = CompletionOnNode
     for Node in AG.nodes():
-        if Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False)==SmallestCompletionTime:
+        TaskExecutionOnNode= TG.node[Task]['WCET']*(1+((100.0-AG.node[Node]["Speed"])/100))
+        CompletionOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False) + TaskExecutionOnNode
+        if CompletionOnNode==SmallestCompletionTime:
             FastestNodes.append(Node)
     return FastestNodes
 
