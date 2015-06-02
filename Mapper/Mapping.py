@@ -3,12 +3,9 @@
 __author__ = 'siavoosh'
 import random
 import copy
-from ScheduleAndDepend.Scheduler import Scheduler
-from ScheduleAndDepend.Scheduler import Scheduling_Functions
-from ScheduleAndDepend.Mapper.Mapping_Functions import AddClusterToNode, ReportMapping
-from ScheduleAndDepend.Mapper.Mapping_Functions import RemoveClusterFromNode
-from ScheduleAndDepend.Mapper.Mapping_Functions import ClearMapping
-from ScheduleAndDepend.Mapper.Mapping_Functions import CostFunction
+from Scheduler import Scheduler,Scheduling_Functions
+from Mapping_Functions import AddClusterToNode, ReportMapping,RemoveClusterFromNode,CostFunction,ClearMapping
+
 
 
 def MakeInitialMapping(TG,CTG,AG,NoCRG,Report):

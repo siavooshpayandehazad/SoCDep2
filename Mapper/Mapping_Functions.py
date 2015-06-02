@@ -1,6 +1,6 @@
 __author__ = 'siavoosh'
-from ScheduleAndDepend.RoutingAlgorithms import Routing
-from ScheduleAndDepend.Scheduler import Scheduling_Functions
+from RoutingAlgorithms import Routing
+from Scheduler import Scheduling_Functions
 import statistics
 
 

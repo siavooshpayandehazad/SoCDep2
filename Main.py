@@ -2,15 +2,13 @@
 __author__ = 'siavoosh'
 import os
 import copy
-import networkx
-
-from ScheduleAndDepend.Clusterer import Clustering, Clustering_Functions
+from Clusterer import Clustering, Clustering_Functions
 from Scheduler import Scheduler,Scheduling_Functions
-from ScheduleAndDepend.Mapper import Mapping_Functions, Mapping
+from Mapper import Mapping_Functions, Mapping
 from SystemHealthMonitoring import SystemHealthMonitor
 from TaskGraphUtilities import Task_Graph_Reports,TG_Functions
 from RoutingAlgorithms import Routing
-from ScheduleAndDepend.ArchGraphUtilities import Arch_Graph_Reports,AG_Functions
+from ArchGraphUtilities import Arch_Graph_Reports,AG_Functions
 
 import Config
 print "==================================================================================================================="

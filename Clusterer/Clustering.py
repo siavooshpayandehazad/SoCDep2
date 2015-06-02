@@ -5,7 +5,7 @@ import copy
 
 import networkx
 
-from ScheduleAndDepend.Clusterer.Clustering_Functions import ReportCTG, AddTaskToCTG, RemoveTaskFromCTG, ClearClustering, DoubleCheckCTG, \
+from Clustering_Functions import ReportCTG, AddTaskToCTG, RemoveTaskFromCTG, ClearClustering, DoubleCheckCTG, \
     CostFunction
 
 
