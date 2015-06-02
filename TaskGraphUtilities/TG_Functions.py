@@ -60,6 +60,7 @@ def GenerateRandomTG(NumberOfTasks,NumberOfEdges,WCET_Range,EdgeWeightRange):
         TG.add_node(Task_List[i],WCET=Task_WCET_List[i],Criticality=Task_Criticality_List[i],Cluster=None,Node=None,Priority=None)
 
     for i in range(0,len(TG_Edge_List)):
+        # making sure that the graph is still acyclic
         if not networkx.has_path(TG,TG_Edge_List[i][1],TG_Edge_List[i][0]):
             TG.add_edge(TG_Edge_List[i][0],TG_Edge_List[i][1],Criticality=Edge_Criticality_List[i],Link=[],ComWeight=TG_Edge_Weight[i])  # Communication weight
     AssignPriorities(TG)

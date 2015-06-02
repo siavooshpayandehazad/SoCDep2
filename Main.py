@@ -81,13 +81,14 @@ if NoCRG is not False:
             Scheduling_Functions.ReportMappedTasks(AG)
             Mapping_Functions.CostFunction(TG,AG,Config.DebugInfo)
             #(BestTG,BestCTG,BestAG)=Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,1000,Config.DebugInfo,Config.DebugDetails)
-            (BestTG,BestCTG,BestAG)=Mapping.OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,10,100,Config.DebugInfo,Config.DebugDetails)
+            (BestTG,BestCTG,BestAG)=Mapping.OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,20,100,Config.DebugInfo,Config.DebugDetails)
             TG= copy.deepcopy(BestTG)
             CTG= copy.deepcopy(BestCTG)
             AG= copy.deepcopy(BestAG)
             del BestTG
             del BestCTG
             del BestAG
+            Scheduling_Functions.ReportMappedTasks(AG)
         else:
             Mapping_Functions.ReportMapping(AG)
             print "==========================================="

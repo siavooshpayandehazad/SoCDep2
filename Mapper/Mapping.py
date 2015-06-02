@@ -95,20 +95,21 @@ def OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,IterationNum,SubIteratio
     for Iteration in range(0,IterationNum):
         if DetailedReport:print "\tITERATION:",Iteration
         (CurrentTG,CurrentCTG,CurrentAG) = OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SubIteration,False,DetailedReport)
-        CurrentCost=CostFunction(TG,AG,False)
+        CurrentCost=CostFunction(CurrentTG,CurrentAG,False)
         if CurrentCost <= BestCost:
             if CurrentCost < BestCost:
                 if Report:print "\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:",CurrentCost , \
                     "\t ITERATION:",Iteration
             BestTG=copy.deepcopy(CurrentTG)
-            BestAG=copy.deepcopy(CurrentCTG)
-            BestCTG=copy.deepcopy(CurrentAG)
+            BestAG=copy.deepcopy(CurrentAG)
+            BestCTG=copy.deepcopy(CurrentCTG)
             BestCost = CurrentCost
         del CurrentTG
         del CurrentAG
         del CurrentCTG
         ClearMapping(TG,CTG,AG)
         MakeInitialMapping(TG,CTG,AG,NoCRG,False)
+        Scheduler.ScheduleAll(TG,AG,False,False)
     if Report:print "-------------------------------------"
     if Report:print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost
     if Report:print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost),"%"
