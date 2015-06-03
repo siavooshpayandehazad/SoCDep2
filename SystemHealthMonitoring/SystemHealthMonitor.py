@@ -8,9 +8,8 @@ class SystemHealthMonitor:
     def SetUp_NoC_SystemHealthMap(self,ArchGraph,TurnsHealth):
         print "==========================================="
         print "PREPARING SYSTEM HEALTH MAP..."
-        NodeHealth=True
         for nodes in ArchGraph.nodes():
-            self.SHM.add_node(nodes,TurnsHealth=copy.deepcopy(TurnsHealth),NodeHealth=NodeHealth,NodeSpeed=100)
+            self.SHM.add_node(nodes,TurnsHealth=copy.deepcopy(TurnsHealth),NodeHealth=True,NodeSpeed=100)
         for link in ArchGraph.edges():
             self.SHM.add_edge(link[0],link[1],LinkHealth=True)
         print "SYSTEM HEALTH MAP CREATED..."

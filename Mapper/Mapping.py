@@ -51,7 +51,7 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedR
             RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,DetailedReport)
             DestNode = random.choice(AG.nodes())
             if TryCounter >= 3*len(AG.nodes()):
-                print "CAN NOT FIND ANY SOLUTION... ABORTING MAPPING..."
+                print "CAN NOT FIND ANY FEASIBLE SOLUTION... ABORTING MAPPING..."
                 TG=copy.deepcopy(BestTG)
                 AG=copy.deepcopy(BestAG)
                 CTG=copy.deepcopy(BestCTG)
