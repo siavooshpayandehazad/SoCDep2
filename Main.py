@@ -8,7 +8,11 @@ from SystemHealthMonitoring import SystemHealthMonitor
 from TaskGraphUtilities import Task_Graph_Reports,TG_Functions
 from RoutingAlgorithms import Routing
 from ArchGraphUtilities import Arch_Graph_Reports,AG_Functions
+import Logger
 
+import sys
+
+sys.stdout = Logger.Logger()
 
 import Config
 print "==================================================================================================================="
@@ -28,6 +32,8 @@ print("=========================================================================
 GraphDirectory = "GraphDrawings"
 if not os.path.isdir(GraphDirectory):
    os.makedirs(GraphDirectory)
+
+
 
 print "DEBUG DETAILS:", Config.DebugDetails
 print "DEBUG INFO:", Config.DebugInfo
@@ -49,7 +55,13 @@ Task_Graph_Reports.DrawTaskGraph(TG)
 # PE_List = [0, 1, 2, 3]
 # AG_Edge_List=[(0,1), (0,2), (1,0), (1,3), (2,0), (2,3), (3,2), (3,1)]
 # AG_Edge_Port_List shows which port of each router is connected to which port of the other on every link
-# AG_Edge_Port_List=[('W','E'), ('S','N'), ('E','W'), ('S','N'), ('N','S'), ('W','E'), ('E','W'), ('N','S')]
+# AG_Edge_Port_List=[('E','W'), ('S','N'), ('W','E'), ('S','N'), ('N','S'), ('E','W'), ('W','E'), ('N','S')]
+#
+#                ^
+#                | N
+#          W <--   ---> E
+#                | S
+#
 # AG = copy.deepcopy(AG_Functions.GenerateAG(PE_List,AG_Edge_List,AG_Edge_Port_List))
 ################################################
 # Generate Generic AG

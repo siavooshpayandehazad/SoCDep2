@@ -109,17 +109,6 @@ def ReportTurnModel(TurnModel):
     :return: None
     """
     print "\tUSING TURN MODE: ",TurnModel
-    print "\tPREPARING VISUALIZATION OF TURN MODEL..."
-    print  "\t",unichr(0x2197) if "S2E" in TurnModel else "\033[31m"+unichr(0x2197)+"\033[0m",\
-           unichr(0x2198) if "W2S" in TurnModel else "\033[31m"+unichr(0x2198)+"\033[0m","\t"\
-           ,unichr(0x2199) if "E2S" in TurnModel else "\033[31m"+unichr(0x2199)+"\033[0m",\
-           unichr(0x2196) if "S2W" in TurnModel else "\033[31m"+unichr(0x2196)+"\033[0m"
-
-    print   "\t",unichr(0x2196) if "E2N" in TurnModel else "\033[31m"+unichr(0x2196)+"\033[0m"\
-            ,unichr(0x2199) if "N2W" in TurnModel else "\033[31m"+unichr(0x2199)+"\033[0m","\t"\
-            ,unichr(0x2198) if "N2E" in TurnModel else "\033[31m"+unichr(0x2198)+"\033[0m"\
-            ,unichr(0x2197) if "W2N" in TurnModel else "\033[31m"+unichr(0x2197)+"\033[0m"
-    print "\t","---------------------------"
     return None
 
 def UpdateNoCRouteGraph(SystemHealthMap,NewEvent):
