@@ -11,7 +11,7 @@ def GenerateAG(PE_List,AG_Edge_List,AG_Edge_Port_List):
 
     for i in range(0,len(AG_Edge_List)):
         EDGE = AG_Edge_List[i]
-        AG.add_edge(EDGE[0],EDGE[1],Port=AG_Edge_Port_List[i],MappedTasks = [],Scheduling={})  # UsedBandWidth
+        AG.add_edge(EDGE[0],EDGE[1],Port=AG_Edge_Port_List[i],MappedTasks = [],Scheduling={})
     print "\tNODES: ",AG.nodes(data=False)
     print "\tEDGES: ",AG.edges(data=False)
     print("ARCHITECTURE GRAPH (AG) IS READY...")

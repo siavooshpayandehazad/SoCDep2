@@ -1,10 +1,10 @@
 __author__ = 'siavoosh'
 import networkx
 import copy
-class SystemHealthMap:
+class SystemHealthMonitor:
 
     def __init__(self):
-        self.SHM = networkx.DiGraph()
+        self.SHM = networkx.DiGraph()   #System Health Map
 
     def SetUp_NoC_SystemHealthMap(self,ArchGraph):
 
