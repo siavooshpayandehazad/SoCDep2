@@ -35,4 +35,8 @@ XY_TurnModel=['E2N','E2S','W2N','W2S']
 WestFirst_TurnModel=[]
 EastFirst_TurnModel=[]
 
-
+################################################
+#          SHM  Config
+################################################
+TurnsHealth={"N2W":True,"N2E":True,"S2W":True,"S2E":True,
+            "W2N":True,"W2S":True,"E2N":True,"E2S":True}

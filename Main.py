@@ -45,14 +45,19 @@ TG = copy.deepcopy(TG_Functions.GenerateRandomTG(10,15,30,7))
 Task_Graph_Reports.ReportTaskGraph(TG)
 Task_Graph_Reports.DrawTaskGraph(TG)
 ################################################
-PE_List = [0, 1, 2, 3]
-AG_Edge_List=[(0,1), (0,2), (1,0), (1,3), (2,0), (2,3), (3,2), (3,1)]
-AG_Edge_Port_List=[('W','E'), ('S','N'), ('E','W'), ('S','N'), ('N','S'), ('W','E'), ('E','W'), ('N','S')]
-AG = copy.deepcopy(AG_Functions.GenerateAG(PE_List,AG_Edge_List,AG_Edge_Port_List))
+# Generating Manually Defined AG
+# PE_List = [0, 1, 2, 3]
+# AG_Edge_List=[(0,1), (0,2), (1,0), (1,3), (2,0), (2,3), (3,2), (3,1)]
+# AG_Edge_Port_List shows which port of each router is connected to which port of the other on every link
+# AG_Edge_Port_List=[('W','E'), ('S','N'), ('E','W'), ('S','N'), ('N','S'), ('W','E'), ('E','W'), ('N','S')]
+# AG = copy.deepcopy(AG_Functions.GenerateAG(PE_List,AG_Edge_List,AG_Edge_Port_List))
+################################################
+# Generate Generic AG
+AG = copy.deepcopy(AG_Functions.GenerateGenericTopologyAG('2DMesh',2,2,0,Config.DebugDetails))
 Arch_Graph_Reports.DrawArchGraph(AG)
 ################################################
 SHM = SystemHealthMonitor.SystemHealthMonitor()
-SHM.SetUp_NoC_SystemHealthMap(AG)
+SHM.SetUp_NoC_SystemHealthMap(AG,Config.TurnsHealth)
 SHM.Report_NoC_SystemHealthMap()
 print "==========================================="
 print "SYSTEM IS UP..."
@@ -60,7 +65,6 @@ print "SYSTEM IS UP..."
  # the turns should be named with port 2 port naming convention...
  # E2N is a turn that connects input of East port of the router to
  # output of north
-
 SHM.BreakLink((0,1),True)
 SHM.BreakTrun(1,'W2S',True)
 SHM.IntroduceAging(1,0.3,True)
@@ -76,7 +80,7 @@ if NoCRG is not False:
     #################################################
     # clustered task graph
 
-    CTG=copy.deepcopy(Clustering.TaskClusterGeneration(len(PE_List), Config.DebugInfo))
+    CTG=copy.deepcopy(Clustering.TaskClusterGeneration(len(AG.nodes()), Config.DebugInfo))
     if Clustering.InitialClustering(TG, CTG, Config.MaXBandWidth):
         # Clustered Task Graph Optimization
         (BestClustering,BestTaskGraph)= Clustering.ClusteringOptimization_LocalSearch(TG, CTG, 1000, Config.MaXBandWidth)
