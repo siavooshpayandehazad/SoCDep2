@@ -27,9 +27,9 @@ if not os.path.isdir(LoGDirectory):
 ####################################################################
 # preparing to setup Logging
 logging.basicConfig(filename=os.path.join(os.path.join(os.path.curdir,LoGDirectory),'Logging_Log_'+str(time.time())+'.log'),level=logging.DEBUG)
-logging.debug('This message should go to the log file')
-logging.info('This message should go to the log file')
-logging.warning('This message should go to the log file')
+
+logging.info('Starting logging...')
+
 ####################################################################
 import Config
 print("===================================================================================================================")
@@ -54,16 +54,16 @@ print "DEBUG DETAILS:", Config.DebugDetails
 print "DEBUG INFO:", Config.DebugInfo
 print "MAXIMUM LINK BAND WIDTH:", Config.MaXBandWidth
 print "==========================================="
-# TODO: can we get these specifications automatically??
-Task_List = [0, 1, 2, 3, 4, 5, 6, 7]
-Task_WCET_List=[30, 30, 20, 40, 10, 5, 15, 20]
-Task_Criticality_List=['H', 'L', 'H', 'L', 'L', 'H', 'L', 'L']
-TG_Edge_List=[(1,2), (1,3), (2,5), (0,5), (4,7), (4,3), (1,6), (0,6)]
-TG_Edge_Weight=[5, 9, 4, 7, 5, 3, 5, 1]
+# TODO: can we get these specifications automatically from some benchmark alg??
+# Task_List = [0, 1, 2, 3, 4, 5, 6, 7]
+# Task_WCET_List=[30, 30, 20, 40, 10, 5, 15, 20]
+# Task_Criticality_List=['H', 'L', 'H', 'L', 'L', 'H', 'L', 'L']
+# TG_Edge_List=[(1,2), (1,3), (2,5), (0,5), (4,7), (4,3), (1,6), (0,6)]
+# TG_Edge_Weight=[5, 9, 4, 7, 5, 3, 5, 1]
 # TG = copy.deepcopy(TG_Functions.GenerateTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List,TG_Edge_Weight))
 TG = copy.deepcopy(TG_Functions.GenerateRandomTG(10,15,30,7))
 #TG = copy.deepcopy(TG_Functions.GenerateRandomIndependentTG(10,15))
-Task_Graph_Reports.ReportTaskGraph(TG)
+Task_Graph_Reports.ReportTaskGraph(TG,logging)
 Task_Graph_Reports.DrawTaskGraph(TG)
 ################################################
 # Generating Manually Defined AG
@@ -80,7 +80,7 @@ Task_Graph_Reports.DrawTaskGraph(TG)
 # AG = copy.deepcopy(AG_Functions.GenerateAG(PE_List,AG_Edge_List,AG_Edge_Port_List))
 ################################################
 # Generate Generic AG
-AG = copy.deepcopy(AG_Functions.GenerateGenericTopologyAG('2DMesh',2,2,0,Config.DebugDetails))
+AG = copy.deepcopy(AG_Functions.GenerateGenericTopologyAG('2DMesh',2,2,0,logging))
 Arch_Graph_Reports.DrawArchGraph(AG)
 ################################################
 SHM = SystemHealthMonitor.SystemHealthMonitor()
@@ -138,3 +138,6 @@ if NoCRG is not False:
             print "==========================================="
     else :
         print "Initial Clustering Failed...."
+
+
+logging.info('Logging finished...')

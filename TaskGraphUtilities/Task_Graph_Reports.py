@@ -2,17 +2,23 @@ __author__ = 'siavoosh'
 import networkx
 import matplotlib.pyplot as plt
 
-def ReportTaskGraph(TG):
+def ReportTaskGraph(TG,logging):
+
     print "==========================================="
     print "      REPORTING TASK GRAPH"
     print "==========================================="
+    logging.info('TASK GRAPH REPORT:')
     for Node in TG.nodes():
-        print "TASK:",Node,"\tWCET:", TG.node[Node]['WCET'],"\tCRITICALITY:",TG.node[Node]['Criticality'],\
-            "\tCLUSTER:",TG.node[Node]['Cluster'],"\tNODE:",TG.node[Node]['Node'],"PRIORITY:",TG.node[Node]['Priority']
+        massage = "TASK:"+str(Node)+"\tWCET:"+ str(TG.node[Node]['WCET'])+"\tCRITICALITY:"+str(TG.node[Node]['Criticality'])+\
+            "\tCLUSTER:"+str(TG.node[Node]['Cluster'])+"\tNODE:"+str(TG.node[Node]['Node'])+"PRIORITY:"+str(TG.node[Node]['Priority'])
+        logging.info(massage)
+        print massage
     print "===================="
     for Edge in TG.edges():
-        print "EDGE:", Edge,"\tCRITICALITY:",TG.edge[Edge[0]][Edge[1]]['Criticality'],"\tLINK:",\
-            TG.edge[Edge[0]][Edge[1]]['Link'], "\tCOM WEIGHTt:",TG.edge[Edge[0]][Edge[1]]['ComWeight']
+        massage= "EDGE:"+ str(Edge)+"\tCRITICALITY:"+str(TG.edge[Edge[0]][Edge[1]]['Criticality'])+"\tLINK:"+\
+            str(TG.edge[Edge[0]][Edge[1]]['Link'])+"\tCOM WEIGHTt:"+str(TG.edge[Edge[0]][Edge[1]]['ComWeight'])
+        logging.info(massage)
+        print massage
     return None
 
 def DrawTaskGraph(TG):

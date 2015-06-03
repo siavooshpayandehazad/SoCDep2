@@ -1,6 +1,7 @@
 __author__ = 'siavoosh'
 from math import ceil
 
+
 def FindScheduleMakeSpan(AG):
     MakeSpan=0
     for Node in AG.nodes():
