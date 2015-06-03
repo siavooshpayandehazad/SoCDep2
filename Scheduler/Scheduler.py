@@ -5,7 +5,7 @@ from TaskGraphUtilities import TG_Functions
 from Scheduling_Functions import Add_TG_TaskToNode
 from Scheduling_Functions import Add_TG_EdgeTo_link
 
-def ScheduleAll(TG,AG,Report,DetailedReport):
+def ScheduleAll(TG,AG,SHM,Report,DetailedReport):
     if Report:print "==========================================="
     if Report:print "STARTING SCHEDULING PROCESS..."
     TaskToSchedule=TG_Functions.FindSourceNodes(TG)
@@ -18,7 +18,7 @@ def ScheduleAll(TG,AG,Report,DetailedReport):
                 if TG.node[Task]['Criticality']=='H':
                     Node = TG.node[Task]['Node']
                     if DetailedReport:print "\tSCHEDULING TASK",Task,"ON NODE:",Node
-                    Add_TG_TaskToNode(TG,AG,Task,Node,DetailedReport)
+                    Add_TG_TaskToNode(TG,AG,SHM,Task,Node,DetailedReport)
                     for Edge in TG.edges():
                         if Edge[0]==Task:
                             if TG.edge[Edge[0]][Edge[1]]['Criticality']=='H':
@@ -62,7 +62,7 @@ def ScheduleAll(TG,AG,Report,DetailedReport):
                 if TG.node[Task]['Criticality']=='L':
                     Node = TG.node[Task]['Node']
                     if DetailedReport:print "\tSCHEDULING TASK",Task,"ON NODE:",Node
-                    Add_TG_TaskToNode(TG,AG,Task,Node,DetailedReport)
+                    Add_TG_TaskToNode(TG,AG,SHM,Task,Node,DetailedReport)
                     for Edge in TG.edges():
                         if Edge[0]==Task:
                             if len(TG.edge[Edge[0]][Edge[1]]['Link'])>0:

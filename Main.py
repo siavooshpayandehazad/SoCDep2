@@ -40,8 +40,8 @@ Task_Criticality_List=['H', 'L', 'H', 'L', 'L', 'H', 'L', 'L']
 TG_Edge_List=[(1,2), (1,3), (2,5), (0,5), (4,7), (4,3), (1,6), (0,6)]
 TG_Edge_Weight=[5, 9, 4, 7, 5, 3, 5, 1]
 # TG = copy.deepcopy(TG_Functions.GenerateTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List,TG_Edge_Weight))
-TG = copy.deepcopy(TG_Functions.GenerateRandomTG(10,15,30,7))
-# TG = copy.deepcopy(TG_Functions.GenerateRandomIndependentTG(10,15))
+#TG = copy.deepcopy(TG_Functions.GenerateRandomTG(10,15,30,7))
+TG = copy.deepcopy(TG_Functions.GenerateRandomIndependentTG(10,15))
 Task_Graph_Reports.ReportTaskGraph(TG)
 Task_Graph_Reports.DrawTaskGraph(TG)
 ################################################
@@ -61,22 +61,20 @@ print "SYSTEM IS UP..."
  # E2N is a turn that connects input of East port of the router to
  # output of north
 
-#SHM.SHM.edge[0][1]['LinkHealth']=False
 SHM.BreakLink((0,1),True)
 SHM.BreakTrun(1,'W2S',True)
 NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,Config.XY_TurnModel,Config.DebugInfo,Config.DebugDetails)
 #print Routing.FindRouteInRouteGraph(NoCRG,0,3,True,True)
-AG_Functions.IntroduceAging(AG,1,0.3,True)
-
+SHM.IntroduceAging(1,0.3,True)
 if NoCRG is not False:
     #################################################
     # to run the following heuristics (Min_Min,Max_Min), one needs to use independent
     # tasks... Please use: GenerateRandomIndependentTG
-    #Mapping_Heuristics.Min_Min_Mapping (TG,AG,NoCRG,True)
-    # Mapping_Heuristics.Max_Min_Mapping (TG,AG,NoCRG,True)
+    #Mapping_Heuristics.Min_Min_Mapping (TG,AG,NoCRG,SHM,True)
+    Mapping_Heuristics.Max_Min_Mapping (TG,AG,NoCRG,SHM,True)
     #################################################
     # clustered task graph
-
+    """
     CTG=copy.deepcopy(Clustering.TaskClusterGeneration(len(PE_List), Config.DebugInfo))
     if Clustering.InitialClustering(TG, CTG, Config.MaXBandWidth):
         # Clustered Task Graph Optimization
@@ -90,11 +88,11 @@ if NoCRG is not False:
         # Mapping CTG on AG
         if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG,Config.DebugInfo):
             # Schedule all tasks
-            Scheduler.ScheduleAll(TG,AG,Config.DebugInfo,Config.DebugDetails)
+            Scheduler.ScheduleAll(TG,AG,SHM,Config.DebugInfo,Config.DebugDetails)
             Scheduling_Functions.ReportMappedTasks(AG)
             Mapping_Functions.CostFunction(TG,AG,Config.DebugInfo)
             #(BestTG,BestCTG,BestAG)=Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,1000,Config.DebugInfo,Config.DebugDetails)
-            (BestTG,BestCTG,BestAG)=Mapping.OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,20,100,Config.DebugInfo,Config.DebugDetails)
+            (BestTG,BestCTG,BestAG)=Mapping.OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,SHM,20,100,Config.DebugInfo,Config.DebugDetails)
             TG= copy.deepcopy(BestTG)
             CTG= copy.deepcopy(BestCTG)
             AG= copy.deepcopy(BestAG)
@@ -107,4 +105,4 @@ if NoCRG is not False:
             Mapping_Functions.ReportMapping(AG)
             print "==========================================="
     else :
-        print "Initial Clustering Failed...."
+        print "Initial Clustering Failed...." """""

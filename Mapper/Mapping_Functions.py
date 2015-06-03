@@ -27,8 +27,9 @@ def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
                             ListOfEdges.append(edge)
 
                     #add edges from list of edges to all links from list of links
-                    #Todo what if findRouteInRouteGRaph returns 2 routs??
+                    # todo: I have to think more... this is not enough to add all the links there...
                     if ListOfLinks is not None and len(ListOfEdges)>0:
+
                         if Report:print "\t\t\tADDING PATH FROM NODE:",SourceNode,"TO NODE",DestNode
                         if Report:print "\t\t\tLIST OF LINKS:",ListOfLinks
                         if Report:print "\t\t\tLIST OF EDGES:",ListOfEdges
@@ -36,6 +37,7 @@ def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
                             for Edge in ListOfEdges:
                                 AG.edge[Link[0]][Link[1]]['MappedTasks'].append(Edge)
                                 TG.edge[Edge[0]][Edge[1]]['Link'].append(Link)
+
                     else:
                         if Report:print "\t\033[33mWARNING\033[0m NOTHING TO BE MAPPED..."
                         return False
@@ -56,6 +58,7 @@ def RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
                             ListOfEdges.append(edge)
                     #remove edges from list of edges to all links from list of links
                     if ListOfLinks is not None and len(ListOfEdges)>0:
+
                         if Report:print "\t\t\tREMOVING PATH FROM NODE:",SourceNode,"TO NODE",DestNode
                         if Report:print "\t\t\tLIST OF LINKS:",ListOfLinks
                         if Report:print "\t\t\tLIST OF EDGES:",ListOfEdges
@@ -157,18 +160,21 @@ def FindUnMappedTaskWithBiggestWCET(TG,Report):
     if Report: print "THE LIST OF LONGEST UNMAPPED TASKS:", LongestTasks
     return LongestTasks
 
-def FindNodeWithSmallestCompletionTime(AG,TG,Task,Report):
+def FindNodeWithSmallestCompletionTime(AG,TG,SHM,Task,Report):
     FastestNodes=[]
     RandomNode=random.choice(AG.nodes())
-    TaskExecutionOnNode= TG.node[Task]['WCET']*(1+((100.0-AG.node[RandomNode]["Speed"])/100))
+    NodeSpeedDown= 1+((100.0-SHM.SHM.node[RandomNode]['NodeSpeed'])/100)
+    TaskExecutionOnNode= TG.node[Task]['WCET']* NodeSpeedDown
     SmallestCompletionTime =  Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,RandomNode,False)+TaskExecutionOnNode
     for Node in AG.nodes():
-        TaskExecutionOnNode= TG.node[Task]['WCET']*(1+((100.0-AG.node[Node]["Speed"])/100))
+        NodeSpeedDown= 1+((100.0-SHM.SHM.node[Node]['NodeSpeed'])/100)
+        TaskExecutionOnNode= TG.node[Task]['WCET']*NodeSpeedDown
         CompletionOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False) + TaskExecutionOnNode
         if ceil(CompletionOnNode) < SmallestCompletionTime:
             SmallestCompletionTime = CompletionOnNode
     for Node in AG.nodes():
-        TaskExecutionOnNode= TG.node[Task]['WCET']*(1+((100.0-AG.node[Node]["Speed"])/100))
+        NodeSpeedDown= 1+((100.0-SHM.SHM.node[Node]['NodeSpeed'])/100)
+        TaskExecutionOnNode= TG.node[Task]['WCET']* NodeSpeedDown
         CompletionOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False) + TaskExecutionOnNode
         if CompletionOnNode==SmallestCompletionTime:
             FastestNodes.append(Node)

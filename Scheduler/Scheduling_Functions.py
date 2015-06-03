@@ -23,13 +23,15 @@ def ClearScheduling(AG,TG):
 #
 ##########################################################################
 
-def Add_TG_TaskToNode(TG,AG,Task,Node,Report):
+def Add_TG_TaskToNode(TG,AG,SHM,Task,Node,Report):
     if Report: "\t\tADDING TASK:",Task," TO NODE:",Node
     CriticalityLevel=TG.node[Task]['Criticality']
     StartTime=max(FindLastAllocatedTimeOnNode(TG,AG,Node,Report),FindTaskPredecessorsFinishTime(TG,AG,Task,CriticalityLevel))
     # This includes the aging and lower frequency of the nodes of graph...
     # however, we do not include fractions of a cycle so we take ceiling of the execution time
-    TaskExecutionOnNode= ceil(TG.node[Task]['WCET']*(1+((100.0-AG.node[Node]["Speed"])/100)))
+
+    NodeSpeedDown= 1+((100.0-SHM.SHM.node[Node]['NodeSpeed'])/100)
+    TaskExecutionOnNode= ceil(TG.node[Task]['WCET']* NodeSpeedDown)
     EndTime=StartTime+TaskExecutionOnNode
     if Report:print "\t\tSTARTING TIME:",StartTime,"ENDING TIME:",EndTime
     AG.node[Node]['Scheduling'][Task]=[StartTime,EndTime]

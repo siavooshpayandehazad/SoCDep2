@@ -28,7 +28,7 @@ def MakeInitialMapping(TG,CTG,AG,NoCRG,Report):
     if Report: ReportMapping(AG)
     return True
 
-def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,IterationNum,Report,DetailedReport):
+def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedReport):
     if Report:print "==========================================="
     if Report:print "STARTING MAPPING OPTIMIZATION..."
     BestTG=copy.deepcopy(TG)
@@ -60,7 +60,7 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,IterationNum,Report,DetailedRepor
                 return (False,False,False)
             TryCounter+=1
         Scheduling_Functions.ClearScheduling(AG,TG)
-        Scheduler.ScheduleAll(TG,AG,False,DetailedReport)
+        Scheduler.ScheduleAll(TG,AG,SHM,False,DetailedReport)
         CurrentCost=CostFunction(TG,AG,DetailedReport)
         if CurrentCost <= BestCost:
             if CurrentCost < BestCost:
@@ -80,7 +80,7 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,IterationNum,Report,DetailedRepor
     return (BestTG,BestCTG,BestAG)
 
 
-def OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,IterationNum,SubIteration,Report,DetailedReport):
+def OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,SubIteration,Report,DetailedReport):
     if Report:print "==========================================="
     if Report:print "STARTING MAPPING OPTIMIZATION...USING ITERATIVE LOCAL SEARCH..."
     BestTG=copy.deepcopy(TG)
@@ -91,7 +91,7 @@ def OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,IterationNum,SubIteratio
     if Report:print "INITIAL COST:",StartingCost
     for Iteration in range(0,IterationNum):
         if DetailedReport:print "\tITERATION:",Iteration
-        (CurrentTG,CurrentCTG,CurrentAG) = OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SubIteration,False,DetailedReport)
+        (CurrentTG,CurrentCTG,CurrentAG) = OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,SubIteration,False,DetailedReport)
         if CurrentTG is not False:
             CurrentCost=CostFunction(CurrentTG,CurrentAG,False)
             if CurrentCost <= BestCost:
@@ -107,7 +107,7 @@ def OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,IterationNum,SubIteratio
         del CurrentCTG
         ClearMapping(TG,CTG,AG)
         MakeInitialMapping(TG,CTG,AG,NoCRG,False)
-        Scheduler.ScheduleAll(TG,AG,False,False)
+        Scheduler.ScheduleAll(TG,AG,SHM,False,False)
     if Report:print "-------------------------------------"
     if Report:print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost
     if Report:print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost),"%"

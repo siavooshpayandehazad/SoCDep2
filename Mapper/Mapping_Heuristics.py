@@ -4,9 +4,7 @@ from Scheduler import Scheduling_Functions
 import copy
 import random
 
-# TODO: We need to add aging to system, It means that the nodes are not as fast
-
-def Min_Min_Mapping (TG,AG,NoCRG,Report):
+def Min_Min_Mapping (TG,AG,NoCRG,SHM,Report):
     # this function finds the task with the smallest WCET and
     # maps it on the machine that can offer smallest completion time...
     # this means that the mapping algorithm has to take into account the mapping
@@ -19,14 +17,14 @@ def Min_Min_Mapping (TG,AG,NoCRG,Report):
     while len(ShortestTasks)>0 :
         TaskToBeMapped = ShortestTasks.pop()
         # map the task on the Node that yields smallest Completion time
-        CandidateNodes=Mapping_Functions.FindNodeWithSmallestCompletionTime(AG,TG,TaskToBeMapped,True)
+        CandidateNodes=Mapping_Functions.FindNodeWithSmallestCompletionTime(AG,TG,SHM,TaskToBeMapped,True)
         print "\tCANDIDATE NODES FOR MAPPING:",CandidateNodes
         if len(CandidateNodes)>0:
             ChosenNode=random.choice(CandidateNodes)
             print "\t\tMAPPING TASK",TaskToBeMapped, "ON NODE:",ChosenNode
             TG.node[TaskToBeMapped]['Node'] = ChosenNode
             AG.node[ChosenNode]['MappedTasks'].append(TaskToBeMapped)
-            Scheduling_Functions.Add_TG_TaskToNode(TG,AG,TaskToBeMapped,ChosenNode,False)
+            Scheduling_Functions.Add_TG_TaskToNode(TG,AG,SHM,TaskToBeMapped,ChosenNode,False)
         if len(ShortestTasks) == 0:
             ShortestTasks = Mapping_Functions.FindUnMappedTaskWithSmallestWCET(TG,False)
     print "MIN-MIN MAPPING FINISHED..."
@@ -34,7 +32,7 @@ def Min_Min_Mapping (TG,AG,NoCRG,Report):
     return None
 
 
-def Max_Min_Mapping (TG,AG,NoCRG,Report):
+def Max_Min_Mapping (TG,AG,NoCRG,SHM,Report):
     # this function finds the task with the biggest WCET and
     # maps it on the machine that can offer smallest completion time...
     # this means that the mapping algorithm has to take into account the mapping
@@ -47,14 +45,14 @@ def Max_Min_Mapping (TG,AG,NoCRG,Report):
     while len(LongestTasks)>0 :
         TaskToBeMapped = LongestTasks.pop()
         # map the task on the Node that yields smallest Completion time
-        CandidateNodes=Mapping_Functions.FindNodeWithSmallestCompletionTime(AG,TG,TaskToBeMapped,True)
+        CandidateNodes=Mapping_Functions.FindNodeWithSmallestCompletionTime(AG,TG,SHM,TaskToBeMapped,True)
         print "CANDIDATE NODES FOR MAPPING:",CandidateNodes
         if len(CandidateNodes)>0:
             ChosenNode=random.choice(CandidateNodes)
             print "\tMAPPING TASK",TaskToBeMapped, "ON NODE:",ChosenNode
             TG.node[TaskToBeMapped]['Node'] = ChosenNode
             AG.node[ChosenNode]['MappedTasks'].append(TaskToBeMapped)
-            Scheduling_Functions.Add_TG_TaskToNode(TG,AG,TaskToBeMapped,ChosenNode,False)
+            Scheduling_Functions.Add_TG_TaskToNode(TG,AG,SHM,TaskToBeMapped,ChosenNode,False)
         if len(LongestTasks) == 0:
             LongestTasks = Mapping_Functions.FindUnMappedTaskWithBiggestWCET(TG,False)
     print "MIN-MAX MAPPING FINISHED..."
