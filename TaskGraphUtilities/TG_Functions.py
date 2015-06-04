@@ -1,7 +1,7 @@
 __author__ = 'siavoosh'
 import networkx
 import random
-def GenerateTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List,TG_Edge_Weight):
+def GenerateManualTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List,TG_Edge_Weight):
     print("PREPARING TASK GRAPH (TG)...")
     TG=networkx.DiGraph()
     Edge_Criticality_List=[]
@@ -107,3 +107,4 @@ def AssignPriorities(TG):
                     ShortestPaths=networkx.shortest_path(TG,Source,Task)
                     distance.append(len(ShortestPaths)-1)
             TG.node[Task]['Priority']=min(distance)
+

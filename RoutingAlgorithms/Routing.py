@@ -1,5 +1,6 @@
 __author__ = 'siavoosh'
 import networkx
+import os
 
 def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report,DetailedReport):
     """
@@ -69,7 +70,7 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report,DetailedReport):
                         print "\033[31mERROR::\033[0m U-TURN DETECTED!"
                         print "TERMINATING THE PROGRAM..."
                         print "HINT: CHECK YOUR TURN MODEL!"
-                        return False
+                        raise ValueError('U-TURN DETECTED IN TRUN MODEL!')
                     if DetailedReport:print "\t",InPort,"--->",OutPort
         if DetailedReport:print "------------------------"
 

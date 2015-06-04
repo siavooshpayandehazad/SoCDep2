@@ -12,6 +12,7 @@ import logging
 import time
 import Logger
 import sys
+import networkx
 
 
 ####################################################################
@@ -54,17 +55,26 @@ print "DEBUG DETAILS:", Config.DebugDetails
 print "DEBUG INFO:", Config.DebugInfo
 print "MAXIMUM LINK BAND WIDTH:", Config.MaXBandWidth
 print "==========================================="
+################################################
 # TODO: can we get these specifications automatically from some benchmark alg??
-# Task_List = [0, 1, 2, 3, 4, 5, 6, 7]
-# Task_WCET_List=[30, 30, 20, 40, 10, 5, 15, 20]
-# Task_Criticality_List=['H', 'L', 'H', 'L', 'L', 'H', 'L', 'L']
-# TG_Edge_List=[(1,2), (1,3), (2,5), (0,5), (4,7), (4,3), (1,6), (0,6)]
-# TG_Edge_Weight=[5, 9, 4, 7, 5, 3, 5, 1]
-# TG = copy.deepcopy(TG_Functions.GenerateTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List,TG_Edge_Weight))
-TG = copy.deepcopy(TG_Functions.GenerateRandomTG(10,15,30,7))
-#TG = copy.deepcopy(TG_Functions.GenerateRandomIndependentTG(10,15))
+if Config.TG_Type=='RandomDependent':
+    TG = copy.deepcopy(TG_Functions.GenerateRandomTG(10,15,30,7))
+elif Config.TG_Type=='RandomIndependent':
+    TG = copy.deepcopy(TG_Functions.GenerateRandomIndependentTG(10,15))
+elif Config.TG_Type=='Manual':
+    Task_List = [0, 1, 2, 3, 4, 5, 6, 7]
+    Task_WCET_List=[30, 30, 20, 40, 10, 5, 15, 20]
+    Task_Criticality_List=['H', 'L', 'H', 'L', 'L', 'H', 'L', 'L']
+    TG_Edge_List=[(1,2), (1,3), (2,5), (0,5), (4,7), (4,3), (1,6), (0,6)]
+    TG_Edge_Weight=[5, 9, 4, 7, 5, 3, 5, 1]
+    TG = copy.deepcopy(TG_Functions.GenerateManualTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List,TG_Edge_Weight))
+
 Task_Graph_Reports.ReportTaskGraph(TG,logging)
 Task_Graph_Reports.DrawTaskGraph(TG)
+if  not networkx.is_directed_acyclic_graph(TG):
+    raise ValueError('TASK GRAPH HAS CYCLES..!!!')
+else:
+    logging.info("TG IS AN ACYCLIC DIRECTED GRAPH... ALL IS GOOD...")
 ################################################
 # Generating Manually Defined AG
 # PE_List = [0, 1, 2, 3]
@@ -98,27 +108,26 @@ SHM.IntroduceAging(1,0.3,True)
 NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,Config.XY_TurnModel,Config.DebugInfo,Config.DebugDetails)
 # print Routing.FindRouteInRouteGraph(NoCRG,0,3,True,True)
 
-if NoCRG is not False:
-    #################################################
-    # to run the following heuristics (Min_Min,Max_Min), one needs to use independent
-    # tasks... Please use: GenerateRandomIndependentTG
-    # Mapping_Heuristics.Min_Min_Mapping (TG,AG,NoCRG,SHM,True)
-    # Mapping_Heuristics.Max_Min_Mapping (TG,AG,NoCRG,SHM,True)
-    #################################################
-    # clustered task graph
+#################################################
+# to run the following heuristics (Min_Min,Max_Min), one needs to use independent
+# tasks... Please use: GenerateRandomIndependentTG
+# Mapping_Heuristics.Min_Min_Mapping (TG,AG,NoCRG,SHM,True)
+# Mapping_Heuristics.Max_Min_Mapping (TG,AG,NoCRG,SHM,True)
+#################################################
 
-    CTG=copy.deepcopy(Clustering.TaskClusterGeneration(len(AG.nodes()), Config.DebugInfo))
-    if Clustering.InitialClustering(TG, CTG, Config.MaXBandWidth):
-        # Clustered Task Graph Optimization
-        (BestClustering,BestTaskGraph)= Clustering.ClusteringOptimization_LocalSearch(TG, CTG, 1000, Config.MaXBandWidth)
-        TG= copy.deepcopy(BestTaskGraph)
-        CTG= copy.deepcopy(BestClustering)
-        del BestClustering
-        del BestTaskGraph
-        Clustering_Functions.DoubleCheckCTG(TG,CTG)
-        Clustering_Functions.ReportCTG(CTG,"CTG_PostOpt.png")
-        # Mapping CTG on AG
-        if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG,Config.DebugInfo):
+# clustered task graph
+CTG=copy.deepcopy(Clustering.TaskClusterGeneration(len(AG.nodes()), Config.DebugInfo))
+if Clustering.InitialClustering(TG, CTG, Config.MaXBandWidth):
+    # Clustered Task Graph Optimization
+    (BestClustering,BestTaskGraph)= Clustering.ClusteringOptimization_LocalSearch(TG, CTG, 1000, Config.MaXBandWidth)
+    TG= copy.deepcopy(BestTaskGraph)
+    CTG= copy.deepcopy(BestClustering)
+    del BestClustering
+    del BestTaskGraph
+    Clustering_Functions.DoubleCheckCTG(TG,CTG)
+    Clustering_Functions.ReportCTG(CTG,"CTG_PostOpt.png")
+    # Mapping CTG on AG
+    if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG,Config.DebugInfo):
             # Schedule all tasks
             Scheduler.ScheduleAll(TG,AG,SHM,Config.DebugInfo,Config.DebugDetails)
             Scheduling_Functions.ReportMappedTasks(AG)
@@ -133,11 +142,11 @@ if NoCRG is not False:
             del BestAG
             Scheduling_Functions.ReportMappedTasks(AG)
             Mapping_Functions.CostFunction(TG,AG,True)
-        else:
-            Mapping_Functions.ReportMapping(AG)
-            print "==========================================="
-    else :
-        print "Initial Clustering Failed...."
+    else:
+        Mapping_Functions.ReportMapping(AG)
+        print "==========================================="
+else :
+    print "Initial Clustering Failed...."
 
 
 logging.info('Logging finished...')

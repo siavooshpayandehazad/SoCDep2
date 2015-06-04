@@ -1,6 +1,7 @@
 __author__ = 'siavoosh'
 import networkx
 import matplotlib.pyplot as plt
+import Config
 
 def ReportTaskGraph(TG,logging):
 
@@ -8,6 +9,7 @@ def ReportTaskGraph(TG,logging):
     print "      REPORTING TASK GRAPH"
     print "==========================================="
     logging.info('TASK GRAPH REPORT:')
+    logging.info('TASK GRAPH Type:\t'+str(Config.TG_Type))
     for Node in TG.nodes():
         massage = "TASK:"+str(Node)+"\tWCET:"+ str(TG.node[Node]['WCET'])+"\tCRITICALITY:"+str(TG.node[Node]['Criticality'])+\
             "\tCLUSTER:"+str(TG.node[Node]['Cluster'])+"\tNODE:"+str(TG.node[Node]['Node'])+"PRIORITY:"+str(TG.node[Node]['Priority'])

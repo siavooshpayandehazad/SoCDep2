@@ -9,6 +9,8 @@ DebugDetails = False
 ################################################
 #          TG  Config
 ################################################
+# TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
+TG_Type='RandomDependent'
 NumberOfTasks= 10
 NumberOfEdges= 15
 WCET_Range= 30
