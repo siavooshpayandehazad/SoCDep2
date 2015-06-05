@@ -92,8 +92,13 @@ print "SYSTEM IS UP..."
  # output of north
 for Link in Config.ListOfBrokenLinks:
     SHM.BreakLink(Link,True)
-SHM.BreakTrun(1,'W2S',True)
-SHM.IntroduceAging(1,0.3,True)
+
+for NodeWithBrokenTrun in Config.ListOfBrokenTurns:
+    SHM.BreakTrun(NodeWithBrokenTrun,Config.ListOfBrokenTurns[NodeWithBrokenTrun],True)
+
+for AgedPE in Config.ListOfAgedPEs:
+    SHM.IntroduceAging(AgedPE, Config.ListOfAgedPEs[AgedPE],True)
+
 NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,Config.XY_TurnModel,Config.DebugInfo,Config.DebugDetails)
 # print Routing.FindRouteInRouteGraph(NoCRG,0,3,True,True)
 
@@ -102,13 +107,13 @@ NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,Config.XY_TurnModel,Config.DebugInfo,
 # tasks... Please use: GenerateRandomIndependentTG
 if Config.Mapping_Function=='MinMin':
     if Config.TG_Type=='RandomIndependent':
-        Mapping_Heuristics.Min_Min_Mapping (TG,AG,NoCRG,SHM,True)
+        Mapping_Heuristics.Min_Min_Mapping (TG,AG,NoCRG,SHM,logging)
     else:
         raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
 elif Config.Mapping_Function=='MaxMin':
     if Config.TG_Type=='RandomIndependent':
-        Mapping_Heuristics.Max_Min_Mapping (TG,AG,NoCRG,SHM,True)
+        Mapping_Heuristics.Max_Min_Mapping (TG,AG,NoCRG,SHM,logging)
     else:
         raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
@@ -125,23 +130,38 @@ elif Config.Mapping_Function=='LocalSearch' or Config.Mapping_Function=='Iterati
         Clustering_Functions.DoubleCheckCTG(TG,CTG)
         Clustering_Functions.ReportCTG(CTG,"CTG_PostOpt.png")
         # Mapping CTG on AG
-        if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG,Config.DebugInfo):
-                # Schedule all tasks
-                Scheduler.ScheduleAll(TG,AG,SHM,Config.DebugInfo,Config.DebugDetails)
-                Scheduling_Functions.ReportMappedTasks(AG)
-                Mapping_Functions.CostFunction(TG,AG,Config.DebugInfo)
-                if Config.Mapping_Function=='LocalSearch':
-                    (BestTG,BestCTG,BestAG)=Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,1000,Config.DebugInfo,Config.DebugDetails)
-                elif Config.Mapping_Function=='IterativeLocalSearch':
-                    (BestTG,BestCTG,BestAG)=Mapping.OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,SHM,20,100,Config.DebugInfo,Config.DebugDetails)
+        if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG,logging):
+            Mapping_Functions.ReportMapping(AG)
+            # Schedule all tasks
+            Scheduler.ScheduleAll(TG,AG,SHM,Config.DebugInfo,Config.DebugDetails)
+            Scheduling_Functions.ReportMappedTasks(AG)
+            Mapping_Functions.CostFunction(TG,AG,Config.DebugInfo)
+            if Config.Mapping_Function=='LocalSearch':
+                (BestTG,BestCTG,BestAG)=Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,
+                                                                            Config.LocalSearchIteration,
+                                                                            Config.DebugInfo,Config.DebugDetails,
+                                                                            logging)
                 TG= copy.deepcopy(BestTG)
                 CTG= copy.deepcopy(BestCTG)
                 AG= copy.deepcopy(BestAG)
                 del BestTG
                 del BestCTG
                 del BestAG
-                Scheduling_Functions.ReportMappedTasks(AG)
-                Mapping_Functions.CostFunction(TG,AG,True)
+            elif Config.Mapping_Function=='IterativeLocalSearch':
+                (BestTG,BestCTG,BestAG)=Mapping.OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,SHM,
+                                                                                    Config.IterativeLocalSearchIterations,
+                                                                                    Config.LocalSearchIteration,
+                                                                                    Config.DebugInfo,
+                                                                                    Config.DebugDetails,
+                                                                                    logging)
+                TG= copy.deepcopy(BestTG)
+                CTG= copy.deepcopy(BestCTG)
+                AG= copy.deepcopy(BestAG)
+                del BestTG
+                del BestCTG
+                del BestAG
+            Scheduling_Functions.ReportMappedTasks(AG)
+            Mapping_Functions.CostFunction(TG,AG,True)
         else:
             Mapping_Functions.ReportMapping(AG)
             print "==========================================="

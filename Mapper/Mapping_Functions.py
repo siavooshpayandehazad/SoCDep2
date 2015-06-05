@@ -6,8 +6,8 @@ import statistics
 import random
 from math import ceil
 
-def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
-    if Report:print "\tADDING CLUSTER:",Cluster,"TO NODE:",Node
+def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,logging):
+    logging.info( "\tADDING CLUSTER:"+str(Cluster)+"TO NODE:"+str(Node))
     CTG.node[Cluster]['Node'] = Node
     for Task in CTG.node[Cluster]['TaskList']:
         TG.node[Task]['Node'] = Node
@@ -15,7 +15,7 @@ def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
     AG.node[Node]['Utilization']+=CTG.node[Cluster]['Utilization']
     for Edge in CTG.edges():
         if Cluster in Edge: # find all the edges that are connected to Cluster
-            if Report:print "\t\tEDGE:",Edge,"CONTAINS CLUSTER:",Cluster
+            logging.info("\t\tEDGE:"+str(Edge)+"CONTAINS CLUSTER:"+str(Cluster))
             SourceNode=CTG.node[Edge[0]]['Node']
             DestNode=CTG.node[Edge[1]]['Node']
             if SourceNode is not None and DestNode is not None: #check if both ends of this edge is mapped
@@ -30,21 +30,21 @@ def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
                     # todo: I have to think more... this is not enough to add all the links there...
                     if ListOfLinks is not None and len(ListOfEdges)>0:
 
-                        if Report:print "\t\t\tADDING PATH FROM NODE:",SourceNode,"TO NODE",DestNode
-                        if Report:print "\t\t\tLIST OF LINKS:",ListOfLinks
-                        if Report:print "\t\t\tLIST OF EDGES:",ListOfEdges
+                        logging.info("\t\t\tADDING PATH FROM NODE:"+str(SourceNode)+"TO NODE"+str(DestNode))
+                        logging.info("\t\t\tLIST OF LINKS:"+str(ListOfLinks))
+                        logging.info("\t\t\tLIST OF EDGES:"+str(ListOfEdges))
                         for Link in ListOfLinks:
                             for Edge in ListOfEdges:
                                 AG.edge[Link[0]][Link[1]]['MappedTasks'].append(Edge)
                                 TG.edge[Edge[0]][Edge[1]]['Link'].append(Link)
 
                     else:
-                        if Report:print "\t\033[33mWARNING\033[0m NOTHING TO BE MAPPED..."
+                        logging.warning( "\tNOTHING TO BE MAPPED...")
                         return False
     return True
 
-def RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
-    if Report:print "\tREMOVING CLUSTER:",Cluster,"FROM NODE:",Node
+def RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,Node,logging):
+    logging.info("\tREMOVING CLUSTER:"+str(Cluster)+"FROM NODE:"+str(Node))
     for Edge in CTG.edges():
         if Cluster in Edge: # find all the edges that are connected to Cluster
             SourceNode=CTG.node[Edge[0]]['Node']
@@ -59,16 +59,16 @@ def RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,Node,Report):
                     #remove edges from list of edges to all links from list of links
                     if ListOfLinks is not None and len(ListOfEdges)>0:
 
-                        if Report:print "\t\t\tREMOVING PATH FROM NODE:",SourceNode,"TO NODE",DestNode
-                        if Report:print "\t\t\tLIST OF LINKS:",ListOfLinks
-                        if Report:print "\t\t\tLIST OF EDGES:",ListOfEdges
+                        logging.info( "\t\t\tREMOVING PATH FROM NODE:"+str(SourceNode)+"TO NODE"+str(DestNode))
+                        logging.info( "\t\t\tLIST OF LINKS:"+str(ListOfLinks))
+                        logging.info( "\t\t\tLIST OF EDGES:"+str(ListOfEdges))
                         for Link in ListOfLinks:
                             for Edge in ListOfEdges:
                                 if Edge in AG.edge[Link[0]][Link[1]]['MappedTasks']:
                                     AG.edge[Link[0]][Link[1]]['MappedTasks'].remove(Edge)
                                     TG.edge[Edge[0]][Edge[1]]['Link'].remove(Link)
                     else:
-                        if Report:print "\t\033[33mWARNING\033[0m NOTHING TO BE REMOVED..."
+                        logging.warning("\tNOTHING TO BE REMOVED...")
     CTG.node[Cluster]['Node'] = None
     for Task in CTG.node[Cluster]['TaskList']:
         TG.node[Task]['Node'] = None
@@ -130,37 +130,45 @@ def CostFunction(TG,AG,Report):
 
     return Cost
 
-def FindUnMappedTaskWithSmallestWCET(TG,Report):
+def FindUnMappedTaskWithSmallestWCET(TG,logging):
     ShortestTasks= []
     SmallestWCET= Config.WCET_Range
     for Node in TG.nodes():
         if TG.node[Node]['Node']==None:
             if TG.node[Node]['WCET']<SmallestWCET:
                 SmallestWCET= TG.node[Node]['WCET']
-    if Report: print "THE SHORTEST WCET OF UNMAPPED TASKS IS:",SmallestWCET
+    logging.info( "THE SHORTEST WCET OF UNMAPPED TASKS IS:"+str(SmallestWCET))
     for Nodes in TG.nodes():
         if TG.node[Nodes]['Node']==None:
             if TG.node[Nodes]['WCET'] == SmallestWCET:
                 ShortestTasks.append(Nodes)
-    if Report: print "THE LIST OF SHORTEST UNMAPPED TASKS:", ShortestTasks
+    logging.info("THE LIST OF SHORTEST UNMAPPED TASKS:"+str(ShortestTasks))
     return ShortestTasks
 
-def FindUnMappedTaskWithBiggestWCET(TG,Report):
+def FindUnMappedTaskWithBiggestWCET(TG,logging):
     LongestTasks= []
     BiggestWCET= 0
     for Node in TG.nodes():
         if TG.node[Node]['Node']==None:
             if TG.node[Node]['WCET']>BiggestWCET:
                 BiggestWCET= TG.node[Node]['WCET']
-    if Report: print "THE LONGEST WCET OF UNMAPPED TASKS IS:",BiggestWCET
+    logging.info( "THE LONGEST WCET OF UNMAPPED TASKS IS:"+str(BiggestWCET))
     for Nodes in TG.nodes():
         if TG.node[Nodes]['Node']==None:
             if TG.node[Nodes]['WCET'] == BiggestWCET:
                 LongestTasks.append(Nodes)
-    if Report: print "THE LIST OF LONGEST UNMAPPED TASKS:", LongestTasks
+    logging.info("THE LIST OF LONGEST UNMAPPED TASKS:"+str(LongestTasks))
     return LongestTasks
 
-def FindNodeWithSmallestCompletionTime(AG,TG,SHM,Task,Report):
+def FindNodeWithSmallestCompletionTime(AG,TG,SHM,Task):
+    """
+    THIS FUNCTION CAN BE STRICTLY USED FOR INDEPENDENT TGs
+    :param AG: Arch Graph
+    :param TG: Task Graph
+    :param SHM: System Health Monitor
+    :param Task: Task number
+    :return: list of nodes with smallest completion time for Task
+    """
     FastestNodes=[]
     RandomNode=random.choice(AG.nodes())
     NodeSpeedDown= 1+((100.0-SHM.SHM.node[RandomNode]['NodeSpeed'])/100)

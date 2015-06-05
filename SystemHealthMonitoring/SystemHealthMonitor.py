@@ -23,15 +23,15 @@ class SystemHealthMonitor:
 
     def BreakLink(self,link,Report):
         if Report:print "==========================================="
-        if Report:print "BREAKING LINK:",link, "IN SYSTEM HEALTH MAP..."
+        if Report:print "\033[33mSYSTEM HEALTH MAP::\033[0m BREAKING LINK:",link
         self.SHM.edge[link[0]][link[1]]['LinkHealth']=False
 
     def BreakTrun(self,Node,Turn,Report):
         if Report:print "==========================================="
-        if Report:print "BREAKING TURN:",Turn, "IN SYSTEM HEALTH MAP..."
+        if Report:print "\033[33mSYSTEM HEALTH MAP::\033[0m BREAKING TURN:",Turn, "IN NODE",Node
         self.SHM.node[Node]['TurnsHealth'][Turn]=False
 
     def IntroduceAging(self,Node,SpeedDown,Report):
         if Report: print "==========================================="
         self.SHM.node[Node]['NodeSpeed']=self.SHM.node[Node]['NodeSpeed']*(1-SpeedDown)
-        if Report: print "AGEING NODE:",Node,"SPEED DROPPED TO:",self.SHM.node[Node]['NodeSpeed'],"%"
+        if Report: print "\033[33mSYSTEM HEALTH MAP::\033[0m AGEING NODE:",Node,"... SPEED DROPPED TO:",self.SHM.node[Node]['NodeSpeed'],"%"
