@@ -53,21 +53,18 @@ if not os.path.isdir(GraphDirectory):
 
 print "DEBUG DETAILS:", Config.DebugDetails
 print "DEBUG INFO:", Config.DebugInfo
-print "MAXIMUM LINK BAND WIDTH:", Config.MaXBandWidth
 print "==========================================="
 ################################################
 # TODO: can we get these specifications automatically from some benchmark alg??
 if Config.TG_Type=='RandomDependent':
-    TG = copy.deepcopy(TG_Functions.GenerateRandomTG(10,15,30,7))
+    TG = copy.deepcopy(TG_Functions.GenerateRandomTG(Config.NumberOfTasks,Config.NumberOfEdges,
+                                                     Config.WCET_Range,Config.WCET_Range))
 elif Config.TG_Type=='RandomIndependent':
-    TG = copy.deepcopy(TG_Functions.GenerateRandomIndependentTG(10,15))
+    TG = copy.deepcopy(TG_Functions.GenerateRandomIndependentTG(Config.NumberOfTasks,Config.WCET_Range))
 elif Config.TG_Type=='Manual':
-    Task_List = [0, 1, 2, 3, 4, 5, 6, 7]
-    Task_WCET_List=[30, 30, 20, 40, 10, 5, 15, 20]
-    Task_Criticality_List=['H', 'L', 'H', 'L', 'L', 'H', 'L', 'L']
-    TG_Edge_List=[(1,2), (1,3), (2,5), (0,5), (4,7), (4,3), (1,6), (0,6)]
-    TG_Edge_Weight=[5, 9, 4, 7, 5, 3, 5, 1]
-    TG = copy.deepcopy(TG_Functions.GenerateManualTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List,TG_Edge_Weight))
+    TG = copy.deepcopy(TG_Functions.GenerateManualTG(Config.Task_List,Config.TG_Edge_List,
+                                                     Config.Task_Criticality_List,Config.Task_WCET_List,
+                                                     Config.TG_Edge_Weight))
 
 Task_Graph_Reports.ReportTaskGraph(TG,logging)
 Task_Graph_Reports.DrawTaskGraph(TG)
@@ -75,22 +72,13 @@ if  not networkx.is_directed_acyclic_graph(TG):
     raise ValueError('TASK GRAPH HAS CYCLES..!!!')
 else:
     logging.info("TG IS AN ACYCLIC DIRECTED GRAPH... ALL IS GOOD...")
+
 ################################################
-# Generating Manually Defined AG
-# PE_List = [0, 1, 2, 3]
-# AG_Edge_List=[(0,1), (0,2), (1,0), (1,3), (2,0), (2,3), (3,2), (3,1)]
-# AG_Edge_Port_List shows which port of each router is connected to which port of the other on every link
-# AG_Edge_Port_List=[('E','W'), ('S','N'), ('W','E'), ('S','N'), ('N','S'), ('E','W'), ('W','E'), ('N','S')]
-#
-#                ^
-#                | N
-#          W <--   ---> E
-#                | S
-#
-# AG = copy.deepcopy(AG_Functions.GenerateAG(PE_List,AG_Edge_List,AG_Edge_Port_List))
-################################################
-# Generate Generic AG
-AG = copy.deepcopy(AG_Functions.GenerateGenericTopologyAG('2DMesh',2,2,0,logging))
+if Config.AG_Type=='Generic':
+    AG = copy.deepcopy(AG_Functions.GenerateGenericTopologyAG(Config.NetworkTopology,Config.Network_X_Size,
+                                                          Config.Network_Y_Size,Config.Network_Z_Size,logging))
+elif Config.AG_Type=='Manual':
+    AG = copy.deepcopy(AG_Functions.GenerateAG(Config.PE_List,Config.AG_Edge_List,Config.AG_Edge_Port_List))
 Arch_Graph_Reports.DrawArchGraph(AG)
 ################################################
 SHM = SystemHealthMonitor.SystemHealthMonitor()
@@ -102,7 +90,8 @@ print "SYSTEM IS UP..."
  # the turns should be named with port 2 port naming convention...
  # E2N is a turn that connects input of East port of the router to
  # output of north
-SHM.BreakLink((0,1),True)
+for Link in Config.ListOfBrokenLinks:
+    SHM.BreakLink(Link,True)
 SHM.BreakTrun(1,'W2S',True)
 SHM.IntroduceAging(1,0.3,True)
 NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,Config.XY_TurnModel,Config.DebugInfo,Config.DebugDetails)
@@ -111,42 +100,53 @@ NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,Config.XY_TurnModel,Config.DebugInfo,
 #################################################
 # to run the following heuristics (Min_Min,Max_Min), one needs to use independent
 # tasks... Please use: GenerateRandomIndependentTG
-# Mapping_Heuristics.Min_Min_Mapping (TG,AG,NoCRG,SHM,True)
-# Mapping_Heuristics.Max_Min_Mapping (TG,AG,NoCRG,SHM,True)
-#################################################
-
-# clustered task graph
-CTG=copy.deepcopy(Clustering.TaskClusterGeneration(len(AG.nodes()), Config.DebugInfo))
-if Clustering.InitialClustering(TG, CTG, Config.MaXBandWidth):
-    # Clustered Task Graph Optimization
-    (BestClustering,BestTaskGraph)= Clustering.ClusteringOptimization_LocalSearch(TG, CTG, 1000, Config.MaXBandWidth)
-    TG= copy.deepcopy(BestTaskGraph)
-    CTG= copy.deepcopy(BestClustering)
-    del BestClustering
-    del BestTaskGraph
-    Clustering_Functions.DoubleCheckCTG(TG,CTG)
-    Clustering_Functions.ReportCTG(CTG,"CTG_PostOpt.png")
-    # Mapping CTG on AG
-    if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG,Config.DebugInfo):
-            # Schedule all tasks
-            Scheduler.ScheduleAll(TG,AG,SHM,Config.DebugInfo,Config.DebugDetails)
-            Scheduling_Functions.ReportMappedTasks(AG)
-            Mapping_Functions.CostFunction(TG,AG,Config.DebugInfo)
-            # (BestTG,BestCTG,BestAG)=Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,1000,Config.DebugInfo,Config.DebugDetails)
-            (BestTG,BestCTG,BestAG)=Mapping.OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,SHM,20,100,Config.DebugInfo,Config.DebugDetails)
-            TG= copy.deepcopy(BestTG)
-            CTG= copy.deepcopy(BestCTG)
-            AG= copy.deepcopy(BestAG)
-            del BestTG
-            del BestCTG
-            del BestAG
-            Scheduling_Functions.ReportMappedTasks(AG)
-            Mapping_Functions.CostFunction(TG,AG,True)
+if Config.Mapping_Function=='MinMin':
+    if Config.TG_Type=='RandomIndependent':
+        Mapping_Heuristics.Min_Min_Mapping (TG,AG,NoCRG,SHM,True)
     else:
-        Mapping_Functions.ReportMapping(AG)
-        print "==========================================="
-else :
-    print "Initial Clustering Failed...."
+        raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
+elif Config.Mapping_Function=='MaxMin':
+    if Config.TG_Type=='RandomIndependent':
+        Mapping_Heuristics.Max_Min_Mapping (TG,AG,NoCRG,SHM,True)
+    else:
+        raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
+elif Config.Mapping_Function=='LocalSearch' or Config.Mapping_Function=='IterativeLocalSearch':
+# clustered task graph
+    CTG=copy.deepcopy(Clustering.TaskClusterGeneration(len(AG.nodes())))
+    if Clustering.InitialClustering(TG, CTG):
+        # Clustered Task Graph Optimization
+        (BestClustering,BestTaskGraph)= Clustering.ClusteringOptimization_LocalSearch(TG, CTG, 1000)
+        TG= copy.deepcopy(BestTaskGraph)
+        CTG= copy.deepcopy(BestClustering)
+        del BestClustering
+        del BestTaskGraph
+        Clustering_Functions.DoubleCheckCTG(TG,CTG)
+        Clustering_Functions.ReportCTG(CTG,"CTG_PostOpt.png")
+        # Mapping CTG on AG
+        if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG,Config.DebugInfo):
+                # Schedule all tasks
+                Scheduler.ScheduleAll(TG,AG,SHM,Config.DebugInfo,Config.DebugDetails)
+                Scheduling_Functions.ReportMappedTasks(AG)
+                Mapping_Functions.CostFunction(TG,AG,Config.DebugInfo)
+                if Config.Mapping_Function=='LocalSearch':
+                    (BestTG,BestCTG,BestAG)=Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,1000,Config.DebugInfo,Config.DebugDetails)
+                elif Config.Mapping_Function=='IterativeLocalSearch':
+                    (BestTG,BestCTG,BestAG)=Mapping.OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,SHM,20,100,Config.DebugInfo,Config.DebugDetails)
+                TG= copy.deepcopy(BestTG)
+                CTG= copy.deepcopy(BestCTG)
+                AG= copy.deepcopy(BestAG)
+                del BestTG
+                del BestCTG
+                del BestAG
+                Scheduling_Functions.ReportMappedTasks(AG)
+                Mapping_Functions.CostFunction(TG,AG,True)
+        else:
+            Mapping_Functions.ReportMapping(AG)
+            print "==========================================="
+    else :
+        print "Initial Clustering Failed...."
+elif Config.Mapping_Function=='SimulatedAnnealing':
+    None
 logging.info('Logging finished...')

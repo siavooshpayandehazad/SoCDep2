@@ -9,12 +9,11 @@ from Clustering_Functions import ReportCTG, AddTaskToCTG, RemoveTaskFromCTG, Cle
     CostFunction
 
 
-def TaskClusterGeneration(NumberOfClusters, DebugDetails):
+def TaskClusterGeneration(NumberOfClusters):
     """
     Generates a clustered task graph without any edges or tasks assigned to clusters.
     the number of clusters should be the same as the number of nodes in Architecture graph.
     :param NumberOfClusters: Number of clusters to be generated
-    :param DebugDetails: something for further development
     :return:
     """
     print "==========================================="
@@ -27,12 +26,11 @@ def TaskClusterGeneration(NumberOfClusters, DebugDetails):
     return CTG
 
 
-def InitialClustering(TG, CTG, MaXBandWidth):
+def InitialClustering(TG, CTG):
     """
     Randomly assign the tasks to clusters to make the initial solution for optimization...
     :param TG: Task Graph
     :param CTG: Clustered Task Graph
-    :param MaXBandWidth: Maximum Band Width of Architecture Graph Links
     :return: None
     """
     print "==========================================="
@@ -52,13 +50,12 @@ def InitialClustering(TG, CTG, MaXBandWidth):
     ReportCTG(CTG,"CTG_Initial.png")
     return True
 
-def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter,MaXBandWidth):
+def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter):
     """
     Local Search optimization for reducing the cost of a clustering solution
     :param TG: Task Graph
     :param CTG: Clustered Task Graph
     :param NumberOfIter: Number of iterations for local search
-    :param MaXBandWidth: maximum bandwidth of Architecture Graph links
     :return: best answer (CTG) found by the search
     """
     print "==========================================="
