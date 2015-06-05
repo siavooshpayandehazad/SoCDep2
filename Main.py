@@ -130,7 +130,7 @@ elif Config.Mapping_Function=='LocalSearch' or Config.Mapping_Function=='Iterati
         Clustering_Functions.DoubleCheckCTG(TG,CTG)
         Clustering_Functions.ReportCTG(CTG,"CTG_PostOpt.png")
         # Mapping CTG on AG
-        if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG,logging):
+        if Mapping.MakeInitialMapping(TG,CTG,AG,NoCRG,True,logging):
             Mapping_Functions.ReportMapping(AG)
             # Schedule all tasks
             Scheduler.ScheduleAll(TG,AG,SHM,Config.DebugInfo,Config.DebugDetails)

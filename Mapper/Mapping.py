@@ -6,23 +6,25 @@ from Mapping_Functions import AddClusterToNode, ReportMapping,RemoveClusterFromN
 
 
 
-def MakeInitialMapping(TG,CTG,AG,NoCRG,logging):
-    print "==========================================="
-    print "STARTING INITIAL MAPPING..."
+def MakeInitialMapping(TG,CTG,AG,NoCRG,Report,logging):
+    if Report:print "==========================================="
+    if Report:print "STARTING INITIAL MAPPING..."
+    Itteration=0
     for Cluster in CTG.nodes():
         DestNode = random.choice(AG.nodes())
-        Itteration=0
         while not AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,DestNode,logging):
             Itteration+=1
             RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,DestNode,logging)
             DestNode = random.choice(AG.nodes())        #try another node
-            print "\t-------------------------"
-            print "\tMAPPING ATTEMPT: #",Itteration+1,"FOR CLUSTER:",Cluster
+            #print "\t-------------------------"
+            logging.info( "\tMAPPING ATTEMPT: #"+str(Itteration+1)+"FOR CLUSTER:"+str(Cluster))
             if Itteration == 10* len(CTG.nodes()):
-                print "\033[31mERROR::\033[0m INITIAL MAPPING FAILED..."
+                if Report: print "\033[33mWARNING::\033[0m INITIAL MAPPING FAILED... AFTER",Itteration,"ITERATIONS"
+                logging.warning("INITIAL MAPPING FAILED...")
                 ClearMapping(TG,CTG,AG)
                 return False
-    print "INITIAL MAPPING READY..."
+        Itteration=0
+    if Report:print "INITIAL MAPPING READY... "
     return True
 
 def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedReport,logging):
@@ -48,12 +50,12 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedR
             RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,logging)
             DestNode = random.choice(AG.nodes())
             if TryCounter >= 3*len(AG.nodes()):
-                print "CAN NOT FIND ANY FEASIBLE SOLUTION... ABORTING MAPPING..."
+                if Report:print "CAN NOT FIND ANY FEASIBLE SOLUTION... ABORTING LOCAL SEARCH..."
                 TG=copy.deepcopy(BestTG)
                 AG=copy.deepcopy(BestAG)
                 CTG=copy.deepcopy(BestCTG)
-                Scheduling_Functions.ReportMappedTasks(AG)
-                CostFunction(TG,AG,True)
+                if Report:Scheduling_Functions.ReportMappedTasks(AG)
+                if Report:CostFunction(TG,AG,True)
                 return (False,False,False)
             TryCounter+=1
         Scheduling_Functions.ClearScheduling(AG,TG)
@@ -104,12 +106,23 @@ def OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,SubIter
         del CurrentAG
         del CurrentCTG
         ClearMapping(TG,CTG,AG)
-
-        while not MakeInitialMapping(TG,CTG,AG,NoCRG,logging):
-            #todo: this is a bad fix. we can do better...
-            None
-        Scheduler.ScheduleAll(TG,AG,SHM,False,False)
-
+        counter=0
+        Schedule=True
+        while not MakeInitialMapping(TG,CTG,AG,NoCRG,False,logging):
+            if counter == 10:   # we try 10 times to find some initial solution... how ever if it fails...
+                Schedule=False
+                break
+            counter+=1
+        if Schedule:
+            Scheduler.ScheduleAll(TG,AG,SHM,False,False)
+        else:
+            if Report:print "\033[33mWARNING::\033[0m CAN NOT FIND ANOTHER FEASIBLE SOLUTION... " \
+                            "ABORTING ITERATIVE LOCAL SEARCH..."
+            logging.info("CAN NOT FIND ANOTHER FEASIBLE SOLUTION... ABORTING ITERATIVE LOCAL SEARCH...")
+            if Report:print "-------------------------------------"
+            if Report:print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost
+            if Report:print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost),"%"
+            return (BestTG,BestCTG,BestAG)
     if Report:print "-------------------------------------"
     if Report:print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost
     if Report:print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost),"%"
