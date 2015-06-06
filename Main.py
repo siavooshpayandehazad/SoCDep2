@@ -121,6 +121,8 @@ elif Config.Mapping_Function=='MaxMin':
         raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
 elif Config.Mapping_Function=='LocalSearch' or Config.Mapping_Function=='IterativeLocalSearch':
+    if Config.TG_Type!='RandomDependent':
+        raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomDependent')
 # clustered task graph
     CTG=copy.deepcopy(Clustering.TaskClusterGeneration(len(AG.nodes())))
     if Clustering.InitialClustering(TG, CTG):

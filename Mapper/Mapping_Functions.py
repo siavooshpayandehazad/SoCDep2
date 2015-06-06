@@ -8,7 +8,7 @@ from math import ceil
 
 def AddClusterToNode(TG,CTG,AG,SHM,NoCRG,Cluster,Node,logging):
     if not SHM.SHM.node[Node]['NodeHealth']:
-        logging.info("CAN NOT MAP ON BROKEN NODE: "+str(Node)+"TRYING ANOTHER NODE...")
+        logging.info("CAN NOT MAP ON BROKEN NODE: "+str(Node))
         return False
 
     # Adding The cluster to Node...
@@ -179,21 +179,25 @@ def FindNodeWithSmallestCompletionTime(AG,TG,SHM,Task):
     """
     FastestNodes=[]
     RandomNode=random.choice(AG.nodes())
+    while not SHM.SHM.node[RandomNode]['NodeHealth']:
+        RandomNode=random.choice(AG.nodes())
     NodeSpeedDown= 1+((100.0-SHM.SHM.node[RandomNode]['NodeSpeed'])/100)
     TaskExecutionOnNode= TG.node[Task]['WCET']* NodeSpeedDown
     SmallestCompletionTime =  Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,RandomNode,False)+TaskExecutionOnNode
     for Node in AG.nodes():
-        NodeSpeedDown= 1+((100.0-SHM.SHM.node[Node]['NodeSpeed'])/100)
-        TaskExecutionOnNode= TG.node[Task]['WCET']*NodeSpeedDown
-        CompletionOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False) + TaskExecutionOnNode
-        if ceil(CompletionOnNode) < SmallestCompletionTime:
-            SmallestCompletionTime = CompletionOnNode
+        if SHM.SHM.node[Node]['NodeHealth']:
+            NodeSpeedDown= 1+((100.0-SHM.SHM.node[Node]['NodeSpeed'])/100)
+            TaskExecutionOnNode= TG.node[Task]['WCET']*NodeSpeedDown
+            CompletionOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False) + TaskExecutionOnNode
+            if ceil(CompletionOnNode) < SmallestCompletionTime:
+                SmallestCompletionTime = CompletionOnNode
     for Node in AG.nodes():
-        NodeSpeedDown= 1+((100.0-SHM.SHM.node[Node]['NodeSpeed'])/100)
-        TaskExecutionOnNode= TG.node[Task]['WCET']* NodeSpeedDown
-        CompletionOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False) + TaskExecutionOnNode
-        if CompletionOnNode==SmallestCompletionTime:
-            FastestNodes.append(Node)
+        if SHM.SHM.node[Node]['NodeHealth']:
+            NodeSpeedDown= 1+((100.0-SHM.SHM.node[Node]['NodeSpeed'])/100)
+            TaskExecutionOnNode= TG.node[Task]['WCET']* NodeSpeedDown
+            CompletionOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False) + TaskExecutionOnNode
+            if CompletionOnNode==SmallestCompletionTime:
+                FastestNodes.append(Node)
     return FastestNodes
 
 

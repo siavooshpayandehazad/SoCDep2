@@ -12,7 +12,7 @@ def ReportTaskGraph(TG,logging):
     logging.info('TASK GRAPH Type:\t'+str(Config.TG_Type))
     for Node in TG.nodes():
         massage = "TASK:"+str(Node)+"\tWCET:"+ str(TG.node[Node]['WCET'])+"\tCRITICALITY:"+str(TG.node[Node]['Criticality'])+\
-            "\tCLUSTER:"+str(TG.node[Node]['Cluster'])+"\tNODE:"+str(TG.node[Node]['Node'])+"PRIORITY:"+str(TG.node[Node]['Priority'])
+            "\tCLUSTER:"+str(TG.node[Node]['Cluster'])+"\tNODE:"+str(TG.node[Node]['Node'])+"\tPRIORITY:"+str(TG.node[Node]['Priority'])
         logging.info(massage)
         print massage
     print "===================="
