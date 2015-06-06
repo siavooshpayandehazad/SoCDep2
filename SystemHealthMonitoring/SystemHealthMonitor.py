@@ -35,3 +35,8 @@ class SystemHealthMonitor:
         if Report: print "==========================================="
         self.SHM.node[Node]['NodeSpeed']=self.SHM.node[Node]['NodeSpeed']*(1-SpeedDown)
         if Report: print "\033[33mSYSTEM HEALTH MAP::\033[0m AGEING NODE:",Node,"... SPEED DROPPED TO:",self.SHM.node[Node]['NodeSpeed'],"%"
+
+    def BreakNode(self,Node,Report):
+        if Report: print "==========================================="
+        self.SHM.node[Node]['NodeHealth']=False
+        if Report: print "\033[33mSYSTEM HEALTH MAP::\033[0m NODE:",Node,"IS BROKEN..."

@@ -6,16 +6,21 @@ from Mapping_Functions import AddClusterToNode, ReportMapping,RemoveClusterFromN
 
 
 
-def MakeInitialMapping(TG,CTG,AG,NoCRG,Report,logging):
+def MakeInitialMapping(TG,CTG,AG,SHM,NoCRG,Report,logging):
     if Report:print "==========================================="
     if Report:print "STARTING INITIAL MAPPING..."
     Itteration=0
     for Cluster in CTG.nodes():
         DestNode = random.choice(AG.nodes())
+        while not SHM.SHM.node[DestNode]['NodeHealth']:
+            logging.info("CAN NOT MAP ON BROKEN NODE: "+str(DestNode)+"TRYING ANOTHER NODE...")
+            DestNode = random.choice(AG.nodes())
         while not AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,DestNode,logging):
             Itteration+=1
             RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,DestNode,logging)
             DestNode = random.choice(AG.nodes())        #try another node
+            while not SHM.SHM.node[DestNode]['NodeHealth']:
+                DestNode = random.choice(AG.nodes())
             #print "\t-------------------------"
             logging.info( "\tMAPPING ATTEMPT: #"+str(Itteration+1)+"FOR CLUSTER:"+str(Cluster))
             if Itteration == 10* len(CTG.nodes()):
@@ -41,6 +46,9 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedR
         CurrentNode=CTG.node[ClusterToMove]['Node']
         RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,logging)
         DestNode = random.choice(AG.nodes())
+        while not SHM.SHM.node[DestNode]['NodeHealth']:
+            logging.info("CAN NOT MAP ON BROKEN NODE: "+str(DestNode)+"TRYING ANOTHER NODE...")
+            DestNode = random.choice(AG.nodes())
         TryCounter=0
         while not AddClusterToNode(TG,CTG,AG,NoCRG,ClusterToMove,DestNode,logging):
             RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,DestNode,logging)
@@ -49,6 +57,9 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedR
             CurrentNode=CTG.node[ClusterToMove]['Node']
             RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,logging)
             DestNode = random.choice(AG.nodes())
+            while not SHM.SHM.node[DestNode]['NodeHealth']:
+                logging.info("CAN NOT MAP ON BROKEN NODE: "+str(DestNode)+"TRYING ANOTHER NODE...")
+                DestNode = random.choice(AG.nodes())
             if TryCounter >= 3*len(AG.nodes()):
                 if Report:print "CAN NOT FIND ANY FEASIBLE SOLUTION... ABORTING LOCAL SEARCH..."
                 TG=copy.deepcopy(BestTG)
@@ -108,7 +119,7 @@ def OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,SubIter
         ClearMapping(TG,CTG,AG)
         counter=0
         Schedule=True
-        while not MakeInitialMapping(TG,CTG,AG,NoCRG,False,logging):
+        while not MakeInitialMapping(TG,CTG,AG,SHM,NoCRG,False,logging):
             if counter == 10:   # we try 10 times to find some initial solution... how ever if it fails...
                 Schedule=False
                 break

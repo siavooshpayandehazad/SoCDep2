@@ -61,6 +61,8 @@ TurnsHealth={"N2W":True,"N2E":True,"S2W":True,"S2E":True,
             "W2N":True,"W2S":True,"E2N":True,"E2S":True}
 # Here you can break things...
 ListOfBrokenLinks = [(0, 1), (0, 2)]
+# List of broken PE
+ListOfBrokenPEs=[1]
 # I know its a dictionary
 ListOfBrokenTurns = {1: 'W2S', 2: 'W2S'}
 # I know its a dictionary too
