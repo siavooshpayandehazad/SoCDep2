@@ -6,13 +6,19 @@ import statistics
 import random
 from math import ceil
 
-def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,logging):
+def AddClusterToNode(TG,CTG,AG,SHM,NoCRG,Cluster,Node,logging):
+    if not SHM.SHM.node[Node]['NodeHealth']:
+        logging.info("CAN NOT MAP ON BROKEN NODE: "+str(Node)+"TRYING ANOTHER NODE...")
+        return False
+
+    # Adding The cluster to Node...
     logging.info( "\tADDING CLUSTER:"+str(Cluster)+"TO NODE:"+str(Node))
     CTG.node[Cluster]['Node'] = Node
     for Task in CTG.node[Cluster]['TaskList']:
         TG.node[Task]['Node'] = Node
         AG.node[Node]['MappedTasks'].append(Task)
     AG.node[Node]['Utilization']+=CTG.node[Cluster]['Utilization']
+
     for Edge in CTG.edges():
         if Cluster in Edge: # find all the edges that are connected to Cluster
             logging.info("\t\tEDGE:"+str(Edge)+"CONTAINS CLUSTER:"+str(Cluster))
@@ -26,7 +32,7 @@ def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,logging):
                         if TG.node[edge[0]]['Cluster']== Edge[0] and TG.node[edge[1]]['Cluster']==Edge[1]:
                             ListOfEdges.append(edge)
 
-                    #add edges from list of edges to all links from list of links
+                    # add edges from list of edges to all links from list of links
                     # todo: I have to think more... this is not enough to add all the links there...
                     if ListOfLinks is not None and len(ListOfEdges)>0:
 
@@ -39,7 +45,9 @@ def AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,Node,logging):
                                 TG.edge[Edge[0]][Edge[1]]['Link'].append(Link)
 
                     else:
-                        logging.warning( "\tNOTHING TO BE MAPPED...")
+                        logging.warning( "\tNO PATH FOUND FROM SOURCE TO DESTINATION...")
+                        logging.info("REMOVING ALL THE MAPPED CONNECTIONS FOR CLUSTER "+str(Cluster))
+                        RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,Node,logging)
                         return False
     return True
 

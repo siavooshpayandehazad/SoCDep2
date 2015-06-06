@@ -2,7 +2,7 @@ __author__ = 'siavoosh'
 import random
 import copy
 from Scheduler import Scheduler,Scheduling_Functions
-from Mapping_Functions import AddClusterToNode, ReportMapping,RemoveClusterFromNode,CostFunction,ClearMapping
+from Mapping_Functions import AddClusterToNode,RemoveClusterFromNode,CostFunction,ClearMapping
 
 
 
@@ -12,16 +12,9 @@ def MakeInitialMapping(TG,CTG,AG,SHM,NoCRG,Report,logging):
     Itteration=0
     for Cluster in CTG.nodes():
         DestNode = random.choice(AG.nodes())
-        while not SHM.SHM.node[DestNode]['NodeHealth']:
-            logging.info("CAN NOT MAP ON BROKEN NODE: "+str(DestNode)+"TRYING ANOTHER NODE...")
-            DestNode = random.choice(AG.nodes())
-        while not AddClusterToNode(TG,CTG,AG,NoCRG,Cluster,DestNode,logging):
+        while not AddClusterToNode(TG,CTG,AG,SHM,NoCRG,Cluster,DestNode,logging):
             Itteration+=1
-            RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,DestNode,logging)
             DestNode = random.choice(AG.nodes())        #try another node
-            while not SHM.SHM.node[DestNode]['NodeHealth']:
-                DestNode = random.choice(AG.nodes())
-            #print "\t-------------------------"
             logging.info( "\tMAPPING ATTEMPT: #"+str(Itteration+1)+"FOR CLUSTER:"+str(Cluster))
             if Itteration == 10* len(CTG.nodes()):
                 if Report: print "\033[33mWARNING::\033[0m INITIAL MAPPING FAILED... AFTER",Itteration,"ITERATIONS"
@@ -46,20 +39,16 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedR
         CurrentNode=CTG.node[ClusterToMove]['Node']
         RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,logging)
         DestNode = random.choice(AG.nodes())
-        while not SHM.SHM.node[DestNode]['NodeHealth']:
-            logging.info("CAN NOT MAP ON BROKEN NODE: "+str(DestNode)+"TRYING ANOTHER NODE...")
-            DestNode = random.choice(AG.nodes())
         TryCounter=0
-        while not AddClusterToNode(TG,CTG,AG,NoCRG,ClusterToMove,DestNode,logging):
-            RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,DestNode,logging)
-            AddClusterToNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,logging)
+        while not AddClusterToNode(TG,CTG,AG,SHM,NoCRG,ClusterToMove,DestNode,logging):
+            # If AddClusterToNode fails it automatically removes all the connections...
+            # we need to add the cluster to the old place...
+            AddClusterToNode(TG,CTG,AG,SHM,NoCRG,ClusterToMove,CurrentNode,logging)
+            # choosing another cluster to move
             ClusterToMove= random.choice(CTG.nodes())
             CurrentNode=CTG.node[ClusterToMove]['Node']
             RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,logging)
             DestNode = random.choice(AG.nodes())
-            while not SHM.SHM.node[DestNode]['NodeHealth']:
-                logging.info("CAN NOT MAP ON BROKEN NODE: "+str(DestNode)+"TRYING ANOTHER NODE...")
-                DestNode = random.choice(AG.nodes())
             if TryCounter >= 3*len(AG.nodes()):
                 if Report:print "CAN NOT FIND ANY FEASIBLE SOLUTION... ABORTING LOCAL SEARCH..."
                 TG=copy.deepcopy(BestTG)
