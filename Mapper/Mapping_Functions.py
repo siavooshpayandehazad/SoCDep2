@@ -201,3 +201,8 @@ def FindNodeWithSmallestCompletionTime(AG,TG,SHM,Task):
     return FastestNodes
 
 
+def MappingIntoString(TG):
+    MappingString=""
+    for Task in TG.nodes():
+        MappingString+=str(TG.node[Task]['Node'])
+    return MappingString

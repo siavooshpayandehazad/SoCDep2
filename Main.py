@@ -14,7 +14,6 @@ import Logger
 import sys
 import networkx
 
-
 ####################################################################
 #
 #                       Logging Material
@@ -174,4 +173,5 @@ elif Config.Mapping_Function=='LocalSearch' or Config.Mapping_Function=='Iterati
         print "Initial Clustering Failed...."
 elif Config.Mapping_Function=='SimulatedAnnealing':
     None
+
 logging.info('Logging finished...')
