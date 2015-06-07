@@ -10,7 +10,7 @@ DebugDetails = False
 #          TG  Config
 ################################################
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
-TG_Type='RandomIndependent'
+TG_Type='RandomDependent'
 #For Random TG_Type:
 NumberOfTasks= 10
 NumberOfEdges= 15
@@ -77,4 +77,4 @@ IterativeLocalSearchIterations= 20
 #          Mapping Function  Config
 ################################################
 # AG_Type can be : 'MinMin','MaxMin','LocalSearch','IterativeLocalSearch'
-Mapping_Function='MinMin'
+Mapping_Function='IterativeLocalSearch'

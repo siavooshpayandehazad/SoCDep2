@@ -1,6 +1,7 @@
 __author__ = 'siavoosh'
 import networkx
 import random
+import Config
 def GenerateManualTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List,TG_Edge_Weight):
     print("PREPARING TASK GRAPH (TG)...")
     TG=networkx.DiGraph()
@@ -108,3 +109,16 @@ def AssignPriorities(TG):
                     distance.append(len(ShortestPaths)-1)
             TG.node[Task]['Priority']=min(distance)
 
+########################################################
+def GenerateTG():
+    if Config.TG_Type=='RandomDependent':
+        return GenerateRandomTG(Config.NumberOfTasks,Config.NumberOfEdges,
+                                                     Config.WCET_Range,Config.WCET_Range)
+    elif Config.TG_Type=='RandomIndependent':
+        return GenerateRandomIndependentTG(Config.NumberOfTasks,Config.WCET_Range)
+    elif Config.TG_Type=='Manual':
+        return GenerateManualTG(Config.Task_List,Config.TG_Edge_List,
+                                                     Config.Task_Criticality_List,Config.Task_WCET_List,
+                                                     Config.TG_Edge_Weight)
+    else:
+        raise ValueError('TG TYPE DOESNT EXIST...!!!')

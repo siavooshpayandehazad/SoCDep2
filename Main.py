@@ -54,30 +54,17 @@ print "DEBUG DETAILS:", Config.DebugDetails
 print "DEBUG INFO:", Config.DebugInfo
 print "==========================================="
 ################################################
-# TODO: can we get these specifications automatically from some benchmark alg??
-if Config.TG_Type=='RandomDependent':
-    TG = copy.deepcopy(TG_Functions.GenerateRandomTG(Config.NumberOfTasks,Config.NumberOfEdges,
-                                                     Config.WCET_Range,Config.WCET_Range))
-elif Config.TG_Type=='RandomIndependent':
-    TG = copy.deepcopy(TG_Functions.GenerateRandomIndependentTG(Config.NumberOfTasks,Config.WCET_Range))
-elif Config.TG_Type=='Manual':
-    TG = copy.deepcopy(TG_Functions.GenerateManualTG(Config.Task_List,Config.TG_Edge_List,
-                                                     Config.Task_Criticality_List,Config.Task_WCET_List,
-                                                     Config.TG_Edge_Weight))
-
+# TODO: can we get TG specifications automatically from some benchmark alg??
+TG = copy.deepcopy(TG_Functions.GenerateTG())
 Task_Graph_Reports.ReportTaskGraph(TG,logging)
 Task_Graph_Reports.DrawTaskGraph(TG)
-if  not networkx.is_directed_acyclic_graph(TG):
+if not networkx.is_directed_acyclic_graph(TG):
     raise ValueError('TASK GRAPH HAS CYCLES..!!!')
 else:
     logging.info("TG IS AN ACYCLIC DIRECTED GRAPH... ALL IS GOOD...")
 
 ################################################
-if Config.AG_Type=='Generic':
-    AG = copy.deepcopy(AG_Functions.GenerateGenericTopologyAG(Config.NetworkTopology,Config.Network_X_Size,
-                                                          Config.Network_Y_Size,Config.Network_Z_Size,logging))
-elif Config.AG_Type=='Manual':
-    AG = copy.deepcopy(AG_Functions.GenerateAG(Config.PE_List,Config.AG_Edge_List,Config.AG_Edge_Port_List))
+AG = copy.deepcopy(AG_Functions.GenerateAG(logging))
 Arch_Graph_Reports.DrawArchGraph(AG)
 ################################################
 SHM = SystemHealthMonitor.SystemHealthMonitor()
@@ -85,15 +72,12 @@ SHM.SetUp_NoC_SystemHealthMap(AG,Config.TurnsHealth)
 SHM.Report_NoC_SystemHealthMap()
 print "==========================================="
 print "SYSTEM IS UP..."
- # here we use XY routing
- # the turns should be named with port 2 port naming convention...
- # E2N is a turn that connects input of East port of the router to
- # output of north
+# Here we are applying initial faults of the system
 for BrokenLink in Config.ListOfBrokenLinks:
     SHM.BreakLink(BrokenLink,True)
 
-for NodeWithBrokenTrun in Config.ListOfBrokenTurns:
-    SHM.BreakTrun(NodeWithBrokenTrun,Config.ListOfBrokenTurns[NodeWithBrokenTrun],True)
+for NodeWithBrokenTurn in Config.ListOfBrokenTurns:
+    SHM.BreakTrun(NodeWithBrokenTurn,Config.ListOfBrokenTurns[NodeWithBrokenTurn],True)
 
 for AgedPE in Config.ListOfAgedPEs:
     SHM.IntroduceAging(AgedPE, Config.ListOfAgedPEs[AgedPE],True)

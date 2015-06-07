@@ -1,8 +1,9 @@
 __author__ = 'siavoosh'
 import networkx
+import Config
 #todo: add virtual channel support AG...
 
-def GenerateAG(PE_List,AG_Edge_List,AG_Edge_Port_List):
+def GenerateManualAG(PE_List,AG_Edge_List,AG_Edge_Port_List):
     print "==========================================="
     print "PREPARING AN ARCHITECTURE GRAPH (AG)..."
     AG=networkx.DiGraph()
@@ -105,3 +106,11 @@ def GenerateGenericTopologyAG(Topology,SizeX,SizeY,SizeZ,logging):
     print("ARCHITECTURE GRAPH (AG) IS READY...")
     return AG
 
+def GenerateAG(logging):
+    if Config.AG_Type=='Generic':
+        return GenerateGenericTopologyAG(Config.NetworkTopology,Config.Network_X_Size,
+                                                          Config.Network_Y_Size,Config.Network_Z_Size,logging)
+    elif Config.AG_Type=='Manual':
+        return GenerateManualAG(Config.PE_List,Config.AG_Edge_List,Config.AG_Edge_Port_List)
+    else:
+        raise ValueError('AG TYPE DOESNT EXIST...!!!')
