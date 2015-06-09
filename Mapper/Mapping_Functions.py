@@ -25,8 +25,6 @@ def MakeInitialMapping(TG,CTG,AG,SHM,NoCRG,Report,logging):
     if Report:print "INITIAL MAPPING READY... "
     return True
 
-
-
 def AddClusterToNode(TG,CTG,AG,SHM,NoCRG,Cluster,Node,logging):
     if not SHM.SHM.node[Node]['NodeHealth']:
         logging.info("CAN NOT MAP ON BROKEN NODE: "+str(Node))
@@ -132,7 +130,6 @@ def ClearMapping(TG,CTG,AG):
     return True
 
 def CostFunction(TG,AG,Report):
-
     NodeMakeSpanList=[]
     LinkMakeSpanList=[]
     for Node in AG.nodes():
@@ -156,7 +153,6 @@ def CostFunction(TG,AG,Report):
         print "LINKS MAKE SPAN MAX:",LinkMakeSpan_Max
         print "LINKS MAKE SPAN STANDARD DEVIATION:",LinkMakeSpan_Stdev
         print "MAPPING SCHEDULING COST:",Cost
-
     return Cost
 
 def FindUnMappedTaskWithSmallestWCET(TG,logging):

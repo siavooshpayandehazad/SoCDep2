@@ -30,7 +30,7 @@ def Min_Min_Mapping (TG,AG,NoCRG,SHM,logging):
             ShortestTasks = Mapping_Functions.FindUnMappedTaskWithSmallestWCET(TG,logging)
     print "MIN-MIN MAPPING FINISHED..."
     Scheduling_Functions.ReportMappedTasks(AG)
-    return None
+    return TG, AG
 
 
 def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
@@ -61,7 +61,7 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
             LongestTasks = Mapping_Functions.FindUnMappedTaskWithBiggestWCET(TG,logging)
     print "MIN-MAX MAPPING FINISHED..."
     Scheduling_Functions.ReportMappedTasks(AG)
-    return None
+    return TG, AG
 
 
 

@@ -59,7 +59,7 @@ EastFirst_TurnModel=[]
 # Do not change if you have conventional 2D NoC
 TurnsHealth={"N2W":True,"N2E":True,"S2W":True,"S2E":True,
             "W2N":True,"W2S":True,"E2N":True,"E2S":True}
-# Here you can break things...
+# Here you can break things as initial defects...
 ListOfBrokenLinks = [(0, 1), (0, 2)]
 # List of broken PE
 ListOfBrokenPEs=[1]
