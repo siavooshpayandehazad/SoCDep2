@@ -6,6 +6,27 @@ import statistics
 import random
 from math import ceil
 
+def MakeInitialMapping(TG,CTG,AG,SHM,NoCRG,Report,logging):
+    if Report:print "==========================================="
+    if Report:print "STARTING INITIAL MAPPING..."
+    Itteration=0
+    for Cluster in CTG.nodes():
+        DestNode = random.choice(AG.nodes())
+        while not AddClusterToNode(TG,CTG,AG,SHM,NoCRG,Cluster,DestNode,logging):
+            Itteration+=1
+            DestNode = random.choice(AG.nodes())        #try another node
+            logging.info( "\tMAPPING ATTEMPT: #"+str(Itteration+1)+"FOR CLUSTER:"+str(Cluster))
+            if Itteration == 10* len(CTG.nodes()):
+                if Report: print "\033[33mWARNING::\033[0m INITIAL MAPPING FAILED... AFTER",Itteration,"ITERATIONS"
+                logging.warning("INITIAL MAPPING FAILED...")
+                ClearMapping(TG,CTG,AG)
+                return False
+        Itteration=0
+    if Report:print "INITIAL MAPPING READY... "
+    return True
+
+
+
 def AddClusterToNode(TG,CTG,AG,SHM,NoCRG,Cluster,Node,logging):
     if not SHM.SHM.node[Node]['NodeHealth']:
         logging.info("CAN NOT MAP ON BROKEN NODE: "+str(Node))

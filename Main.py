@@ -1,18 +1,23 @@
 __author__ = 'siavoosh'
 import os
 import copy
+import logging
+import time
+import sys
+
+import networkx
+
 from Clusterer import Clustering, Clustering_Functions
 from Scheduler import Scheduler,Scheduling_Functions
-from Mapper import Mapping_Functions, Mapping,Mapping_Heuristics
+from Mapper import Mapping_Functions
+from ScheduleAndDepend.Mapper.Mapping_Heuristics import MinMin_MaxMin
 from SystemHealthMonitoring import SystemHealthMonitor
 from TaskGraphUtilities import Task_Graph_Reports,TG_Functions
 from RoutingAlgorithms import Routing
 from ArchGraphUtilities import Arch_Graph_Reports,AG_Functions
-import logging
-import time
 import Logger
-import sys
-import networkx
+from Mapper.Mapping_Heuristics import Local_Search
+
 
 ####################################################################
 #
@@ -93,13 +98,13 @@ NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,Config.XY_TurnModel,Config.DebugInfo,
 # tasks... Please use: GenerateRandomIndependentTG
 if Config.Mapping_Function=='MinMin':
     if Config.TG_Type=='RandomIndependent':
-        Mapping_Heuristics.Min_Min_Mapping (TG,AG,NoCRG,SHM,logging)
+        MinMin_MaxMin.Min_Min_Mapping (TG,AG,NoCRG,SHM,logging)
     else:
         raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
 elif Config.Mapping_Function=='MaxMin':
     if Config.TG_Type=='RandomIndependent':
-        Mapping_Heuristics.Max_Min_Mapping (TG,AG,NoCRG,SHM,logging)
+        MinMin_MaxMin.Max_Min_Mapping (TG,AG,NoCRG,SHM,logging)
     else:
         raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
@@ -118,14 +123,14 @@ elif Config.Mapping_Function=='LocalSearch' or Config.Mapping_Function=='Iterati
         Clustering_Functions.DoubleCheckCTG(TG,CTG)
         Clustering_Functions.ReportCTG(CTG,"CTG_PostOpt.png")
         # Mapping CTG on AG
-        if Mapping.MakeInitialMapping(TG,CTG,AG,SHM,NoCRG,True,logging):
+        if Mapping_Functions.MakeInitialMapping(TG,CTG,AG,SHM,NoCRG,True,logging):
             Mapping_Functions.ReportMapping(AG)
             # Schedule all tasks
             Scheduler.ScheduleAll(TG,AG,SHM,Config.DebugInfo,Config.DebugDetails)
             Scheduling_Functions.ReportMappedTasks(AG)
             Mapping_Functions.CostFunction(TG,AG,Config.DebugInfo)
             if Config.Mapping_Function=='LocalSearch':
-                (BestTG,BestCTG,BestAG)=Mapping.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,
+                (BestTG,BestCTG,BestAG)=Local_Search.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,
                                                                             Config.LocalSearchIteration,
                                                                             Config.DebugInfo,Config.DebugDetails,
                                                                             logging)
@@ -136,7 +141,7 @@ elif Config.Mapping_Function=='LocalSearch' or Config.Mapping_Function=='Iterati
                 del BestCTG
                 del BestAG
             elif Config.Mapping_Function=='IterativeLocalSearch':
-                (BestTG,BestCTG,BestAG)=Mapping.OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,SHM,
+                (BestTG,BestCTG,BestAG)=Local_Search.OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,SHM,
                                                                                     Config.IterativeLocalSearchIterations,
                                                                                     Config.LocalSearchIteration,
                                                                                     Config.DebugInfo,

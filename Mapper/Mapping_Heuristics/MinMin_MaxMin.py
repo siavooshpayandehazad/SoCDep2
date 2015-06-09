@@ -1,5 +1,6 @@
+
 __author__ = 'siavoosh'
-import Mapping_Functions
+from Mapper import Mapping_Functions
 from Scheduler import Scheduling_Functions
 import copy
 import random
@@ -61,3 +62,8 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
     print "MIN-MAX MAPPING FINISHED..."
     Scheduling_Functions.ReportMappedTasks(AG)
     return None
+
+
+
+
+
