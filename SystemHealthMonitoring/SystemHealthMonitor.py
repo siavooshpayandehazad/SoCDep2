@@ -2,6 +2,7 @@ __author__ = 'siavoosh'
 import networkx
 import hashlib
 import copy
+import Config
 from Mapper import Mapping_Functions
 
 class SystemHealthMonitor:
@@ -109,5 +110,17 @@ class SystemHealthMonitor:
         self.MPM={}
         return None
     ##################################################
+    def ApplyInitialFaults(self):
+        for BrokenLink in Config.ListOfBrokenLinks:
+            self.BreakLink(BrokenLink,True)
+
+        for NodeWithBrokenTurn in Config.ListOfBrokenTurns:
+            self.BreakTrun(NodeWithBrokenTurn,Config.ListOfBrokenTurns[NodeWithBrokenTurn],True)
+
+        for AgedPE in Config.ListOfAgedPEs:
+            self.IntroduceAging(AgedPE, Config.ListOfAgedPEs[AgedPE],True)
+
+        for BrokenNode in Config.ListOfBrokenPEs:
+            self.BreakNode(BrokenNode,True)
 
 

@@ -78,18 +78,7 @@ SHM.Report_NoC_SystemHealthMap()
 print "==========================================="
 print "SYSTEM IS UP..."
 # Here we are applying initial faults of the system
-for BrokenLink in Config.ListOfBrokenLinks:
-    SHM.BreakLink(BrokenLink,True)
-
-for NodeWithBrokenTurn in Config.ListOfBrokenTurns:
-    SHM.BreakTrun(NodeWithBrokenTurn,Config.ListOfBrokenTurns[NodeWithBrokenTurn],True)
-
-for AgedPE in Config.ListOfAgedPEs:
-    SHM.IntroduceAging(AgedPE, Config.ListOfAgedPEs[AgedPE],True)
-
-for BrokenNode in Config.ListOfBrokenPEs:
-    SHM.BreakNode(BrokenNode,True)
-
+SHM.ApplyInitialFaults()
 NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,Config.XY_TurnModel,Config.DebugInfo,Config.DebugDetails)
 # print Routing.FindRouteInRouteGraph(NoCRG,0,3,True,True)
 
