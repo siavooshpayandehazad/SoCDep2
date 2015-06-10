@@ -12,8 +12,6 @@ def Min_Min_Mapping (TG,AG,NoCRG,SHM,logging):
     # of the edges of the task graph on the links.
     # Note:: this is a heuristic for independent tasks... so we are not going to
     # schedule any link
-    # todo: Note 2: There is no task release time implemented at the moment
-
     print "==========================================="
     print "STARTING MIN-MIN MAPPING"
     ShortestTasks = Mapping_Functions.FindUnMappedTaskWithSmallestWCET(TG,logging)
@@ -24,7 +22,7 @@ def Min_Min_Mapping (TG,AG,NoCRG,SHM,logging):
         print "\tCANDIDATE NODES FOR MAPPING:",CandidateNodes
         if len(CandidateNodes)>0:
             ChosenNode=random.choice(CandidateNodes)
-            print "\t\tMAPPING TASK",TaskToBeMapped, "ON NODE:",ChosenNode
+            print "\t\tMAPPING TASK",TaskToBeMapped,"WITH RELEASE:",TG.node[TaskToBeMapped]['Release'], "---> NODE:",ChosenNode
             TG.node[TaskToBeMapped]['Node'] = ChosenNode
             AG.node[ChosenNode]['MappedTasks'].append(TaskToBeMapped)
             Scheduling_Functions.Add_TG_TaskToNode(TG,AG,SHM,TaskToBeMapped,ChosenNode,False)
@@ -54,9 +52,10 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
         if len(CandidateNodes)>0:
             ChosenNode=random.choice(CandidateNodes)
             if len(CandidateNodes)>1:
-                print "\tMAPPING TASK",TaskToBeMapped, "ON NODE:",ChosenNode,"(RANDOMLY CHOSEN FROM CANDIDATES)"
+                print "\tMAPPING TASK",TaskToBeMapped,"WITH RELEASE:",TG.node[TaskToBeMapped]['Release']\
+                    , "---> NODE:",ChosenNode,"(RANDOMLY CHOSEN FROM CANDIDATES)"
             else:
-                print "\tMAPPING TASK",TaskToBeMapped, "ON NODE:",ChosenNode
+                print "\tMAPPING TASK",TaskToBeMapped,"WITH RELEASE:",TG.node[TaskToBeMapped]['Release'], "---> NODE:",ChosenNode
             TG.node[TaskToBeMapped]['Node'] = ChosenNode
             AG.node[ChosenNode]['MappedTasks'].append(TaskToBeMapped)
             Scheduling_Functions.Add_TG_TaskToNode(TG,AG,SHM,TaskToBeMapped,ChosenNode,False)
@@ -67,7 +66,7 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
     return TG, AG
 
 def MinExecutionTime(TG,AG,SHM):
-    # this sounds stupid because there are no release times...
+    # this sounds stupid because there are job specific machines...
     print "==========================================="
     print "STARTING MIN EXECUTION TIME MAPPING"
     for TaskToBeMapped in TG.nodes():
@@ -75,6 +74,7 @@ def MinExecutionTime(TG,AG,SHM):
         TG.node[TaskToBeMapped]['Node'] = ChosenNode
         AG.node[ChosenNode]['MappedTasks'].append(TaskToBeMapped)
         Scheduling_Functions.Add_TG_TaskToNode(TG,AG,SHM,TaskToBeMapped,ChosenNode,False)
+        print "\tTASK",TaskToBeMapped,"MAPPED ON NODE:",ChosenNode
     print "MIN EXECUTION TIME MAPPING FINISHED..."
     Scheduling_Functions.ReportMappedTasks(AG)
     return TG,AG

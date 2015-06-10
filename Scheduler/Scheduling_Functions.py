@@ -27,7 +27,9 @@ def ClearScheduling(AG,TG):
 def Add_TG_TaskToNode(TG,AG,SHM,Task,Node,Report):
     if Report: "\t\tADDING TASK:",Task," TO NODE:",Node
     CriticalityLevel=TG.node[Task]['Criticality']
-    StartTime=max(FindLastAllocatedTimeOnNode(TG,AG,Node,Report),FindTaskPredecessorsFinishTime(TG,AG,Task,CriticalityLevel))
+    StartTime=max(FindLastAllocatedTimeOnNode(TG,AG,Node,Report),
+                  FindTaskPredecessorsFinishTime(TG,AG,Task,CriticalityLevel),
+                  TG.node[Task]['Release'])
     # This includes the aging and lower frequency of the nodes of graph...
     # however, we do not include fractions of a cycle so we take ceiling of the execution time
 
@@ -66,7 +68,7 @@ def FindTaskPredecessorsFinishTime(TG,AG,Task,CriticalityLevel):
     for Edge in TG.edges():
         if Edge[1]==Task:
             if TG.edge[Edge[0]][Edge[1]]['Criticality']==CriticalityLevel:
-                if len(TG.edge[Edge[0]][Edge[1]]['Link'])>0:
+                if len(TG.edge[Edge[0]][Edge[1]]['Link'])>0: # if the edge is mapped
                     for Link in  TG.edge[Edge[0]][Edge[1]]['Link']: #for each link that this edge goes through
                         if len(AG.edge[Link[0]][Link[1]]['Scheduling'])>0:
                             if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']: #if this edge is scheduled

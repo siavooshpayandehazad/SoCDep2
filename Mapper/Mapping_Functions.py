@@ -202,20 +202,34 @@ def FindNodeWithSmallestCompletionTime(AG,TG,SHM,Task):
         RandomNode=random.choice(AG.nodes())
     NodeSpeedDown= 1+((100.0-SHM.SHM.node[RandomNode]['NodeSpeed'])/100)
     TaskExecutionOnNode= TG.node[Task]['WCET']* NodeSpeedDown
-    SmallestCompletionTime =  Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,RandomNode,False)+TaskExecutionOnNode
+    LastAllocatedTimeOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,RandomNode,False)
+    if LastAllocatedTimeOnNode < TG.node[Task]['Release']:
+        SmallestCompletionTime = TG.node[Task]['Release'] + TaskExecutionOnNode
+    else:
+        SmallestCompletionTime = LastAllocatedTimeOnNode + TaskExecutionOnNode
     for Node in AG.nodes():
         if SHM.SHM.node[Node]['NodeHealth']:
             NodeSpeedDown= 1+((100.0-SHM.SHM.node[Node]['NodeSpeed'])/100)
             TaskExecutionOnNode= TG.node[Task]['WCET']*NodeSpeedDown
-            CompletionOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False) + TaskExecutionOnNode
+            LastAllocatedTimeOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False)
+            if LastAllocatedTimeOnNode < TG.node[Task]['Release']:
+                CompletionOnNode = TG.node[Task]['Release'] + TaskExecutionOnNode
+            else:
+                CompletionOnNode = LastAllocatedTimeOnNode + TaskExecutionOnNode
+
             if ceil(CompletionOnNode) < SmallestCompletionTime:
                 SmallestCompletionTime = CompletionOnNode
     for Node in AG.nodes():
         if SHM.SHM.node[Node]['NodeHealth']:
             NodeSpeedDown= 1+((100.0-SHM.SHM.node[Node]['NodeSpeed'])/100)
+            LastAllocatedTimeOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False)
             TaskExecutionOnNode= TG.node[Task]['WCET']* NodeSpeedDown
-            CompletionOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False) + TaskExecutionOnNode
-            if CompletionOnNode==SmallestCompletionTime:
+            CompletionOnNode = 0
+            if LastAllocatedTimeOnNode < TG.node[Task]['Release']:
+                CompletionOnNode = TG.node[Task]['Release'] + TaskExecutionOnNode
+            else:
+                CompletionOnNode = LastAllocatedTimeOnNode + TaskExecutionOnNode
+            if CompletionOnNode == SmallestCompletionTime:
                 NodesWithSmallestCT.append(Node)
     return NodesWithSmallestCT
 

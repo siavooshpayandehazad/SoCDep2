@@ -16,12 +16,14 @@ NumberOfTasks= 10
 NumberOfEdges= 15
 WCET_Range= 30
 EdgeWeightRange= 7
+Release_Range = 10
 #Only for Manual TG_Type:
 Task_List = [0, 1, 2, 3, 4, 5, 6, 7]
 Task_WCET_List=[30, 30, 20, 40, 10, 5, 15, 20]
 Task_Criticality_List=['H', 'L', 'H', 'L', 'L', 'H', 'L', 'L']
 TG_Edge_List=[(1,2), (1,3), (2,5), (0,5), (4,7), (4,3), (1,6), (0,6)]
 TG_Edge_Weight=[5, 9, 4, 7, 5, 3, 5, 1]
+
 
 ################################################
 #          AG  Config
@@ -78,4 +80,4 @@ IterativeLocalSearchIterations= 20
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch',
-Mapping_Function='MinimumCompletionTime'
+Mapping_Function='MinMin'

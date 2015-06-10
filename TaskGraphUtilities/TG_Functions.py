@@ -16,7 +16,8 @@ def GenerateManualTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List
             Edge_Criticality_List.append('L')
     print "\tLINKS CRITICALITY CALCULATED!"
     for i in range(0,len(Task_List)):
-        TG.add_node(Task_List[i],WCET=Task_WCET_List[i],Criticality=Task_Criticality_List[i],Cluster=None,Node=None,Priority=None)
+        TG.add_node(Task_List[i],WCET=Task_WCET_List[i],Criticality=Task_Criticality_List[i],
+                    Cluster=None,Node=None,Priority=None,Release=0)
 
     for i in range(0,len(TG_Edge_List)):
         TG.add_edge(TG_Edge_List[i][0],TG_Edge_List[i][1],Criticality=Edge_Criticality_List[i],Link=[],ComWeight=TG_Edge_Weight[i])  # Communication weight
@@ -58,32 +59,36 @@ def GenerateRandomTG(NumberOfTasks,NumberOfEdges,WCET_Range,EdgeWeightRange):
             Edge_Criticality_List.append('L')
     print "\tLINKS CRITICALITY CALCULATED!"
 
+
     for i in range(0,len(Task_List)):
-        TG.add_node(Task_List[i],WCET=Task_WCET_List[i],Criticality=Task_Criticality_List[i],Cluster=None,Node=None,Priority=None)
+        TG.add_node(Task_List[i], WCET = Task_WCET_List[i], Criticality = Task_Criticality_List[i],
+                    Cluster = None, Node = None, Priority = None, Release = 0)
 
     for i in range(0,len(TG_Edge_List)):
         # making sure that the graph is still acyclic
         if not networkx.has_path(TG,TG_Edge_List[i][1],TG_Edge_List[i][0]):
-            TG.add_edge(TG_Edge_List[i][0],TG_Edge_List[i][1],Criticality=Edge_Criticality_List[i],Link=[],ComWeight=TG_Edge_Weight[i])  # Communication weight
+            TG.add_edge(TG_Edge_List[i][0],TG_Edge_List[i][1],Criticality=Edge_Criticality_List[i],
+                        Link=[],ComWeight=TG_Edge_Weight[i])  # Communication weight
     AssignPriorities(TG)
     print("TASK GRAPH (TG) IS READY...")
     return TG
 
-def GenerateRandomIndependentTG(NumberOfTasks,WCET_Range):
+def GenerateRandomIndependentTG(NumberOfTasks,WCET_Range,Release_Range):
     TG=networkx.DiGraph()
     print("PREPARING RANDOM TASK GRAPH (TG) WITH INDEPENDENT TASKS...")
 
     Task_List=[]
     Task_Criticality_List=[]
     Task_WCET_List=[]
-
+    TG_Release_List= []
     for i in range(0,NumberOfTasks):
         Task_List.append(i)
         Task_Criticality_List.append(random.choice(['H','L']))
         Task_WCET_List.append(random.randrange(1,WCET_Range))
-
+        TG_Release_List.append(random.randrange(0,Release_Range))
     for i in range(0,len(Task_List)):
-        TG.add_node(Task_List[i],WCET=Task_WCET_List[i],Criticality=Task_Criticality_List[i],Cluster=None,Node=None,Priority=None)
+        TG.add_node(Task_List[i],WCET=Task_WCET_List[i],Criticality=Task_Criticality_List[i],
+                    Cluster=None,Node=None,Priority=None,Release = TG_Release_List[i])
 
     print("RANDOM TASK GRAPH (TG) WITH INDEPENDENT TASKS IS READY...")
     return TG
@@ -116,7 +121,7 @@ def GenerateTG():
         return GenerateRandomTG(Config.NumberOfTasks,Config.NumberOfEdges,
                                                      Config.WCET_Range,Config.WCET_Range)
     elif Config.TG_Type=='RandomIndependent':
-        return GenerateRandomIndependentTG(Config.NumberOfTasks,Config.WCET_Range)
+        return GenerateRandomIndependentTG(Config.NumberOfTasks,Config.WCET_Range,Config.Release_Range)
     elif Config.TG_Type=='Manual':
         return GenerateManualTG(Config.Task_List,Config.TG_Edge_List,
                                                      Config.Task_Criticality_List,Config.Task_WCET_List,

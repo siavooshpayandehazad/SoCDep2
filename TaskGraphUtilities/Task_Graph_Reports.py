@@ -12,7 +12,8 @@ def ReportTaskGraph(TG,logging):
     logging.info('TASK GRAPH Type:\t'+str(Config.TG_Type))
     for Node in TG.nodes():
         massage = "TASK:"+str(Node)+"\tWCET:"+ str(TG.node[Node]['WCET'])+"\tCRITICALITY:"+str(TG.node[Node]['Criticality'])+\
-            "\tCLUSTER:"+str(TG.node[Node]['Cluster'])+"\tNODE:"+str(TG.node[Node]['Node'])+"\tPRIORITY:"+str(TG.node[Node]['Priority'])
+            "\tCLUSTER:"+str(TG.node[Node]['Cluster'])+"\tNODE:"+str(TG.node[Node]['Node'])+"\tPRIORITY:"+\
+                  str(TG.node[Node]['Priority']) + "\tRELEASE:"+str(TG.node[Node]['Release'])
         logging.info(massage)
         print massage
     print "===================="
@@ -29,7 +30,7 @@ def DrawTaskGraph(TG):
         if TG.node[Node]['Criticality']== 'H':
             NodeColors.append('r')
         else:
-            NodeColors.append('white')
+            NodeColors.append('#A0CBE2')
     Edge_Colors=[]
     for Edge in TG.edges():
         if TG.edge[Edge[0]][Edge[1]]['Criticality']== 'H':

@@ -2,10 +2,14 @@ __author__ = 'siavoosh'
 
 import matplotlib.pyplot as plt
 import networkx
+import Config
 
 def DrawArchGraph(AG):
-    pos=networkx.spring_layout(AG)
-    networkx.draw(AG,pos,with_labels=True,node_size=1200)
+    POS ={}
+    for Node in AG.nodes():
+        POS[Node]= [(Node%(Config.Network_X_Size))*100,(Node/(Config.Network_X_Size))*100]
+    #pos=networkx.spring_layout(AG)
+    networkx.draw(AG,POS,with_labels=True,node_size=1000,node_color='#A0CBE2')
     plt.savefig("GraphDrawings/AG.png")
     plt.clf()
     return None
