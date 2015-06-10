@@ -55,7 +55,6 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedR
     if Report:print "-------------------------------------"
     if Report:print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost,"\tAFTER",IterationNum,"ITERATIONS"
     if Report:print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost),"%"
-    if Report:Scheduling_Functions.ReportMappedTasks(AG)
     return (BestTG,BestCTG,BestAG)
 
 

@@ -3,7 +3,6 @@ import os,sys
 import copy
 import logging
 import time
-import networkx
 from Mapper import Mapping
 from SystemHealthMonitoring import SystemHealthMonitor
 from TaskGraphUtilities import Task_Graph_Reports,TG_Functions
@@ -58,6 +57,6 @@ if BestAG is not None and BestTG is not None:
     AG = copy.deepcopy(BestAG)
     del BestTG, BestAG
     SHM.AddCurrentMappingToMPM(TG)
-#SHM.RandomFaultInjection()
-#SHM.ReportMPM()
+# SHM.RandomFaultInjection()
+# SHM.ReportMPM()
 logging.info('Logging finished...')
