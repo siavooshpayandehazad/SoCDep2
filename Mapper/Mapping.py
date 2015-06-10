@@ -1,7 +1,7 @@
 __author__ = 'siavoosh'
 import Config,Scheduler,Mapping_Functions
 from Clusterer import Clustering_Functions,Clustering
-from Mapping_Heuristics import MinMin_MaxMin,Local_Search
+from Mapping_Heuristics import SimpleGreedy,Local_Search
 from Scheduler import Scheduling_Functions,Scheduler
 import copy
 
@@ -10,13 +10,25 @@ def Mapping (TG,AG,NoCRG,SHM,logging):
     # tasks... Please use: GenerateRandomIndependentTG
     if Config.Mapping_Function=='MinMin':
         if Config.TG_Type=='RandomIndependent':
-            return MinMin_MaxMin.Min_Min_Mapping (TG,AG,NoCRG,SHM,logging)
+            return SimpleGreedy.Min_Min_Mapping (TG,AG,NoCRG,SHM,logging)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
     elif Config.Mapping_Function=='MaxMin':
         if Config.TG_Type=='RandomIndependent':
-            return MinMin_MaxMin.Max_Min_Mapping (TG,AG,NoCRG,SHM,logging)
+            return SimpleGreedy.Max_Min_Mapping (TG,AG,NoCRG,SHM,logging)
+        else:
+            raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
+
+    elif Config.Mapping_Function=='MinExecutionTime':
+        if Config.TG_Type=='RandomIndependent':
+            return SimpleGreedy.MinExecutionTime(TG,AG,SHM)
+        else:
+            raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
+
+    elif Config.Mapping_Function=='MinimumCompletionTime':
+        if Config.TG_Type=='RandomIndependent':
+            return SimpleGreedy.MinimumCompletionTime(TG,AG,SHM)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 

@@ -72,12 +72,13 @@ NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,Config.XY_TurnModel,Config.DebugInfo,
 # print Routing.FindRouteInRouteGraph(NoCRG,0,3,True,True)
 
 ####################################################################
+
 BestTG,BestAG = Mapping.Mapping(TG,AG,NoCRG,SHM,logging)
 if BestAG is not None:
     TG = copy.deepcopy(BestTG)
     AG = copy.deepcopy(BestAG)
     del BestTG, BestAG
     SHM.AddCurrentMappingToMPM(TG)
-    SHM.ReportMPM()
-SHM.RandomFaultInjection()
+#SHM.RandomFaultInjection()
+#SHM.ReportMPM()
 logging.info('Logging finished...')

@@ -196,7 +196,7 @@ def FindNodeWithSmallestCompletionTime(AG,TG,SHM,Task):
     :param Task: Task number
     :return: list of nodes with smallest completion time for Task
     """
-    FastestNodes=[]
+    NodesWithSmallestCT=[]
     RandomNode=random.choice(AG.nodes())
     while not SHM.SHM.node[RandomNode]['NodeHealth']:
         RandomNode=random.choice(AG.nodes())
@@ -216,8 +216,22 @@ def FindNodeWithSmallestCompletionTime(AG,TG,SHM,Task):
             TaskExecutionOnNode= TG.node[Task]['WCET']* NodeSpeedDown
             CompletionOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False) + TaskExecutionOnNode
             if CompletionOnNode==SmallestCompletionTime:
-                FastestNodes.append(Node)
+                NodesWithSmallestCT.append(Node)
+    return NodesWithSmallestCT
+
+def FindFastestNodes(AG,SHM,TaskToBeMapped):
+    # todo: we need to add some accelerator nodes which have some specific purpose and
+    # enable different tasks to behave differently on them.
+    FastestNodes = []
+    MaxSpeedup = 0
+    for Node in AG.nodes():
+        if SHM.SHM.node[Node]['NodeSpeed'] > MaxSpeedup:
+            MaxSpeedup = SHM.SHM.node[Node]['NodeSpeed']
+    for Node in AG.nodes():
+        if SHM.SHM.node[Node]['NodeSpeed'] == MaxSpeedup:
+            FastestNodes.append(Node)
     return FastestNodes
+
 
 
 def MappingIntoString(TG):

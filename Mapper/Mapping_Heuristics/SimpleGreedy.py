@@ -12,6 +12,8 @@ def Min_Min_Mapping (TG,AG,NoCRG,SHM,logging):
     # of the edges of the task graph on the links.
     # Note:: this is a heuristic for independent tasks... so we are not going to
     # schedule any link
+    # todo: Note 2: There is no task release time implemented at the moment
+
     print "==========================================="
     print "STARTING MIN-MIN MAPPING"
     ShortestTasks = Mapping_Functions.FindUnMappedTaskWithSmallestWCET(TG,logging)
@@ -40,6 +42,7 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
     # of the edges of the task graph on the links.
     # Note:: this is a heuristic for independent tasks... so we are not going to
     # schedule any link
+    # todo: Note 2: There is no task release time implemented at the moment
     print "==========================================="
     print "STARTING MIN-MAX MAPPING"
     LongestTasks = Mapping_Functions.FindUnMappedTaskWithBiggestWCET(TG,logging)
@@ -63,7 +66,36 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
     Scheduling_Functions.ReportMappedTasks(AG)
     return TG, AG
 
+def MinExecutionTime(TG,AG,SHM):
+    print "==========================================="
+    print "STARTING MIN EXECUTION TIME MAPPING"
+    for TaskToBeMapped in TG.nodes():
+        ChosenNode=random.choice(Mapping_Functions.FindFastestNodes(AG,SHM,TaskToBeMapped))
+        TG.node[TaskToBeMapped]['Node'] = ChosenNode
+        AG.node[ChosenNode]['MappedTasks'].append(TaskToBeMapped)
+        Scheduling_Functions.Add_TG_TaskToNode(TG,AG,SHM,TaskToBeMapped,ChosenNode,False)
+    print "MIN EXECUTION TIME MAPPING FINISHED..."
+    Scheduling_Functions.ReportMappedTasks(AG)
+    return TG,AG
 
+def MinimumCompletionTime(TG,AG,SHM):
+    print "==========================================="
+    print "STARTING MIN COMPLETION TIME MAPPING"
+    for TaskToBeMapped in TG.nodes():
+        ChosenNode=random.choice(Mapping_Functions.FindNodeWithSmallestCompletionTime(AG,TG,SHM,TaskToBeMapped))
+        TG.node[TaskToBeMapped]['Node'] = ChosenNode
+        AG.node[ChosenNode]['MappedTasks'].append(TaskToBeMapped)
+        Scheduling_Functions.Add_TG_TaskToNode(TG,AG,SHM,TaskToBeMapped,ChosenNode,False)
+        print "\tTASK",TaskToBeMapped,"MAPPED ON NODE:",ChosenNode
+    print "MIN COMPLETION TIME MAPPING FINISHED..."
+    Scheduling_Functions.ReportMappedTasks(AG)
+    return TG,AG
 
+def FirstFree(TG,AG,SHM):
+    print "==========================================="
+    print "STARTING FIRST FREE MAPPING"
+    # Todo: to write the function
 
-
+    print "FIRST FREE MAPPING FINISHED..."
+    Scheduling_Functions.ReportMappedTasks(AG)
+    return TG,AG
