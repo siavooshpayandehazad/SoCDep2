@@ -2,6 +2,7 @@ __author__ = 'siavoosh'
 import networkx
 import random
 import Config
+# TODO: we need to add release time for independent TG
 def GenerateManualTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List,TG_Edge_Weight):
     print("PREPARING TASK GRAPH (TG)...")
     TG=networkx.DiGraph()

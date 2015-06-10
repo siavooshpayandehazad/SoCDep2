@@ -67,6 +67,7 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
     return TG, AG
 
 def MinExecutionTime(TG,AG,SHM):
+    # this sounds stupid because there are no release times...
     print "==========================================="
     print "STARTING MIN EXECUTION TIME MAPPING"
     for TaskToBeMapped in TG.nodes():
