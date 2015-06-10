@@ -35,8 +35,8 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedR
                 AG=copy.deepcopy(BestAG)
                 CTG=copy.deepcopy(BestCTG)
                 if Report:Scheduling_Functions.ReportMappedTasks(AG)
-                if Report:Mapping_Functions.CostFunction(TG,AG,True)
-                return (False,False,False)
+                if Report:Mapping_Functions.CostFunction(TG,AG,SHM,True)
+                return (BestTG,BestCTG,BestAG)
             TryCounter+=1
         Scheduling_Functions.ClearScheduling(AG,TG)
         Scheduler.ScheduleAll(TG,AG,SHM,False,DetailedReport)
