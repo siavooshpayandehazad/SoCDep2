@@ -4,6 +4,9 @@ import sys
 import os
 import time
 class Logger(object):
+    """
+    This Class is for redirecting the console messages to a log file...
+    """
     def __init__(self):
         LoGDirectory = "LOGS"
         if not os.path.isdir(LoGDirectory):

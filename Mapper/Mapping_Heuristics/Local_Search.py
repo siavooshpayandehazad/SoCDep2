@@ -11,7 +11,7 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedR
     BestTG=copy.deepcopy(TG)
     BestAG=copy.deepcopy(AG)
     BestCTG=copy.deepcopy(CTG)
-    BestCost=Mapping_Functions.CostFunction(TG,AG,Report)
+    BestCost=Mapping_Functions.CostFunction(TG,AG,SHM,Report)
     StartingCost=BestCost
     for Iteration in range(0,IterationNum):
         if DetailedReport:print "\tITERATION:",Iteration
@@ -40,7 +40,7 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedR
             TryCounter+=1
         Scheduling_Functions.ClearScheduling(AG,TG)
         Scheduler.ScheduleAll(TG,AG,SHM,False,DetailedReport)
-        CurrentCost=Mapping_Functions.CostFunction(TG,AG,DetailedReport)
+        CurrentCost=Mapping_Functions.CostFunction(TG,AG,SHM,DetailedReport)
         if CurrentCost <= BestCost:
             if CurrentCost < BestCost:
                 if Report:print "\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:",CurrentCost , "\t ITERATION:",Iteration
@@ -65,15 +65,15 @@ def OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,SubIter
     BestTG=copy.deepcopy(TG)
     BestAG=copy.deepcopy(AG)
     BestCTG=copy.deepcopy(CTG)
-    BestCost=Mapping_Functions.CostFunction(TG,AG,False)
-    StartingCost = Mapping_Functions.CostFunction(TG,AG,False)
+    BestCost=Mapping_Functions.CostFunction(TG,AG,SHM,False)
+    StartingCost = BestCost
     if Report:print "INITIAL COST:",StartingCost
     for Iteration in range(0,IterationNum):
         if DetailedReport:print "\tITERATION:",Iteration
         (CurrentTG,CurrentCTG,CurrentAG) = OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,SubIteration,
                                                                       False,DetailedReport,logging)
         if CurrentTG is not False:
-            CurrentCost= Mapping_Functions.CostFunction(CurrentTG,CurrentAG,False)
+            CurrentCost= Mapping_Functions.CostFunction(CurrentTG,CurrentAG,SHM,False)
             if CurrentCost <= BestCost:
                 if CurrentCost < BestCost:
                     if Report:print "\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:",CurrentCost , \

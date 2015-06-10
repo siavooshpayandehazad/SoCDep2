@@ -57,7 +57,6 @@ if not networkx.is_directed_acyclic_graph(TG):
     raise ValueError('TASK GRAPH HAS CYCLES..!!!')
 else:
     logging.info("TG IS AN ACYCLIC DIRECTED GRAPH... ALL IS GOOD...")
-
 ####################################################################
 AG = copy.deepcopy(AG_Functions.GenerateAG(logging))
 Arch_Graph_Reports.DrawArchGraph(AG)
@@ -73,9 +72,6 @@ NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,Config.XY_TurnModel,Config.DebugInfo,
 # print Routing.FindRouteInRouteGraph(NoCRG,0,3,True,True)
 
 ####################################################################
-# to run the following heuristics (Min_Min,Max_Min), one needs to use independent
-# tasks... Please use: GenerateRandomIndependentTG
-
 BestTG,BestAG = Mapping.Mapping(TG,AG,NoCRG,SHM,logging)
 if BestAG is not None:
     TG = copy.deepcopy(BestTG)

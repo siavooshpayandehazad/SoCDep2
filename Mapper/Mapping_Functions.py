@@ -129,13 +129,15 @@ def ClearMapping(TG,CTG,AG):
         AG.edge[link[0]][link[1]]['Scheduling']={}
     return True
 
-def CostFunction(TG,AG,Report):
+def CostFunction(TG,AG,SHM,Report):
     NodeMakeSpanList=[]
     LinkMakeSpanList=[]
     for Node in AG.nodes():
-        NodeMakeSpanList.append(Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False))
+        if SHM.SHM.node[Node]['NodeHealth']:
+            NodeMakeSpanList.append(Scheduling_Functions.FindLastAllocatedTimeOnNode(TG,AG,Node,False))
     for link in AG.edges():
-        LinkMakeSpanList.append(Scheduling_Functions.FindLastAllocatedTimeOnLink(TG,AG,link,False))
+        if SHM.SHM.edge[link[0]][link[1]]['LinkHealth']:
+            LinkMakeSpanList.append(Scheduling_Functions.FindLastAllocatedTimeOnLink(TG,AG,link,False))
 
     NodeMakeSpan_Stdev=statistics.stdev(NodeMakeSpanList)
     NodeMakeSpan_Max=max(NodeMakeSpanList)

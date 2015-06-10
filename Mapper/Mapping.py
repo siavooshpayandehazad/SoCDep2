@@ -6,6 +6,8 @@ from Scheduler import Scheduling_Functions,Scheduler
 import copy
 
 def Mapping (TG,AG,NoCRG,SHM,logging):
+    # to run the following heuristics (Min_Min,Max_Min), one needs to use independent
+    # tasks... Please use: GenerateRandomIndependentTG
     if Config.Mapping_Function=='MinMin':
         if Config.TG_Type=='RandomIndependent':
             return MinMin_MaxMin.Min_Min_Mapping (TG,AG,NoCRG,SHM,logging)
@@ -37,7 +39,7 @@ def Mapping (TG,AG,NoCRG,SHM,logging):
                 # Schedule all tasks
                 Scheduler.ScheduleAll(TG,AG,SHM,Config.DebugInfo,Config.DebugDetails)
                 Scheduling_Functions.ReportMappedTasks(AG)
-                Mapping_Functions.CostFunction(TG,AG,Config.DebugInfo)
+                Mapping_Functions.CostFunction(TG,AG,SHM,Config.DebugInfo)
                 if Config.Mapping_Function=='LocalSearch':
                     (BestTG,BestCTG,BestAG)=Local_Search.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,
                                                                                 Config.LocalSearchIteration,
@@ -57,10 +59,9 @@ def Mapping (TG,AG,NoCRG,SHM,logging):
                     AG= copy.deepcopy(BestAG)
                     del BestTG,BestCTG,BestAG
                 Scheduling_Functions.ReportMappedTasks(AG)
-                Mapping_Functions.CostFunction(TG,AG,True)
+                Mapping_Functions.CostFunction(TG,AG,SHM,True)
                 return TG,AG
             else:
-                print "Initial Mapping Failed...."
                 Mapping_Functions.ReportMapping(AG)
                 print "==========================================="
                 return None, None

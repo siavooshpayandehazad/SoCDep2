@@ -37,7 +37,7 @@ class SystemHealthMonitor:
         if Report:print "\033[33mSYSTEM HEALTH MAP::\033[0m LINK:",link,"RESTORED..."
         self.SHM.edge[link[0]][link[1]]['LinkHealth']=True
     ##################################################
-    def BreakTrun(self,Node,Turn,Report):
+    def BreakTurn(self,Node,Turn,Report):
         if Report:print "==========================================="
         if Report:print "\033[33mSYSTEM HEALTH MAP::\033[0m BREAKING TURN:",Turn, "IN NODE",Node
         self.SHM.node[Node]['TurnsHealth'][Turn]=False
@@ -115,7 +115,7 @@ class SystemHealthMonitor:
             self.BreakLink(BrokenLink,True)
 
         for NodeWithBrokenTurn in Config.ListOfBrokenTurns:
-            self.BreakTrun(NodeWithBrokenTurn,Config.ListOfBrokenTurns[NodeWithBrokenTurn],True)
+            self.BreakTurn(NodeWithBrokenTurn,Config.ListOfBrokenTurns[NodeWithBrokenTurn],True)
 
         for AgedPE in Config.ListOfAgedPEs:
             self.IntroduceAging(AgedPE, Config.ListOfAgedPEs[AgedPE],True)
