@@ -144,3 +144,9 @@ def DoubleCheckCTG(TG,CTG):
             print "CLUSTER", Cluster," DOESNT EXIST...!!!"
             ReportCTG(CTG,"CTG_DoubleCheckError.png")
     return True
+
+def DeleteEmptyClusters (CTG):
+    for Cluster in CTG.nodes():
+        if len(CTG.node[Cluster]['TaskList']) == 0:
+            CTG.remove_node(Cluster)
+    return None

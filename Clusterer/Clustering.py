@@ -6,7 +6,7 @@ import copy
 import networkx
 
 from Clustering_Functions import ReportCTG, AddTaskToCTG, RemoveTaskFromCTG, ClearClustering, DoubleCheckCTG, \
-    CostFunction
+    CostFunction,DeleteEmptyClusters
 
 
 def TaskClusterGeneration(NumberOfClusters):
@@ -97,6 +97,7 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter):
         else:
             CTG=copy.deepcopy(BestSolution)
             TG=copy.deepcopy(BestTaskGraph)
+    DeleteEmptyClusters(BestSolution)
     print "-------------------------------------"
     print "STARTING COST:",StartingCost,"\tFINAL COST:",Cost,"\tAFTER",NumberOfIter,"ITERATIONS"
     print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-Cost)/StartingCost),"%"

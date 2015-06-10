@@ -17,6 +17,7 @@ def ReportTaskGraph(TG,logging):
         logging.info(massage)
         print massage
     print "===================="
+    print "EDGES:"
     for Edge in TG.edges():
         massage= "EDGE:"+ str(Edge)+"\tCRITICALITY:"+str(TG.edge[Edge[0]][Edge[1]]['Criticality'])+"\tLINK:"+\
             str(TG.edge[Edge[0]][Edge[1]]['Link'])+"\tCOM WEIGHTt:"+str(TG.edge[Edge[0]][Edge[1]]['ComWeight'])
@@ -42,6 +43,7 @@ def DrawTaskGraph(TG):
     for Edge in TG.edges():
         TG_Edge_List.append(Edge)
         TG_Edge_Weight.append(TG.edge[Edge[0]][Edge[1]]['ComWeight'])
+
     pos=networkx.shell_layout(TG)
     networkx.draw_networkx_nodes(TG,pos,with_labels=True,node_color=NodeColors)
     networkx.draw_networkx_edges(TG,pos,edge_color=Edge_Colors)
