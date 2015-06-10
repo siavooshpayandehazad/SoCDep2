@@ -1,7 +1,7 @@
 __author__ = 'siavoosh'
 import networkx
 import hashlib
-import copy
+import copy,random
 import Config
 from Mapper import Mapping_Functions
 
@@ -122,5 +122,20 @@ class SystemHealthMonitor:
 
         for BrokenNode in Config.ListOfBrokenPEs:
             self.BreakNode(BrokenNode,True)
-
-
+    ##################################################
+    def RandomFaultInjection(self):
+        ChosenFault = random.choice(['Link','Turn','PE','Age'])
+        if ChosenFault == 'Link':
+            ChosenLink =  random.choice(self.SHM.edges())
+            self.BreakLink(ChosenLink,True)
+        elif ChosenFault == 'Turn':
+            ChosenNode = random.choice(self.SHM.nodes())
+            ChosenTurn = random.choice(self.SHM.node[ChosenNode]['TurnsHealth'].keys())
+            self.BreakTurn(ChosenNode,ChosenTurn,True)
+        elif ChosenFault == 'PE':
+            ChosenNode = random.choice(self.SHM.nodes())
+            self.BreakNode(ChosenNode,True)
+        elif ChosenFault == 'Age':
+            ChosenNode = random.choice(self.SHM.nodes())
+            RandomSpeedDown= random.choice([0.3, 0.25, 0.2, 0.15, 0.1, 0.05])
+            self.IntroduceAging(ChosenNode, RandomSpeedDown ,True)

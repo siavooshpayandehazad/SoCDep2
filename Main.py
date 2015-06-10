@@ -79,5 +79,5 @@ if BestAG is not None:
     del BestTG, BestAG
     SHM.AddCurrentMappingToMPM(TG)
     SHM.ReportMPM()
-
+SHM.RandomFaultInjection()
 logging.info('Logging finished...')
