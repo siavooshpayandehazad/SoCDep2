@@ -160,11 +160,17 @@ def GenerateGantCharts(TG,AG):
         NodeMakeSpanList.append(FindLastAllocatedTimeOnNode(TG,AG,Node,False))
     for link in AG.edges():
         LinkMakeSpanList.append(FindLastAllocatedTimeOnLink(TG,AG,link,False))
-    MAX_Time_Link = max(LinkMakeSpanList)
-    MAX_Time_Node = max(NodeMakeSpanList)
+    if len(LinkMakeSpanList)>0:
+        MAX_Time_Link = max(LinkMakeSpanList)
+    else:
+        MAX_Time_Link = 0
+    if len(NodeMakeSpanList)>0:
+        MAX_Time_Node = max(NodeMakeSpanList)
+    else:
+        MAX_Time_Node = 0
     Max_Time = max(MAX_Time_Link,MAX_Time_Node)
-
     fig = plt.figure()
+    plt.subplots_adjust(hspace=0.1)
     NodeCounter = 0
     EdgeCounter = 0
     for Node in AG.nodes():
@@ -180,7 +186,7 @@ def GenerateGantCharts(TG,AG):
         PE_P.append(0)
         PE_T.append(0)
         if len(AG.node[Node]['MappedTasks'])>0:
-            ax1 = fig.add_subplot(NodeCounter+EdgeCounter + 1 ,1,Count)
+            ax1 = fig.add_subplot(NodeCounter + EdgeCounter + 1 ,1,Count)
             for Task in AG.node[Node]['MappedTasks']:
                     if Task in AG.node[Node]['Scheduling']:
                         StartTime=AG.node[Node]['Scheduling'][Task][0]
@@ -195,18 +201,19 @@ def GenerateGantCharts(TG,AG):
                         PE_P.append(0)
             PE_T.append(Max_Time)
             PE_P.append(0)
+            plt.setp(ax1.get_yticklabels(), visible=False)
+            if Count < EdgeCounter + NodeCounter:
+                plt.setp(ax1.get_xticklabels(), visible=False)
             ax1.fill_between(PE_T, PE_P, 0 , color='b', edgecolor='k')
             ax1.set_ylabel(r'PE'+str(Node), size=14, rotation=0)
             Count += 1
-    # TODO: Fix the Links reports also...
-
     for Link in AG.edges():
         PE_T = []
         PE_P = []
         PE_P.append(0)
         PE_T.append(0)
         if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
-            ax1 = fig.add_subplot(EdgeCounter+EdgeCounter + 1,1,Count)
+            ax1 = fig.add_subplot(EdgeCounter + EdgeCounter + 1,1,Count)
             for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
                 if AG.edge[Link[0]][Link[1]]['Scheduling']:
                         StartTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
@@ -221,16 +228,14 @@ def GenerateGantCharts(TG,AG):
                         PE_P.append(0)
             PE_T.append(Max_Time)
             PE_P.append(0)
+            plt.setp(ax1.get_yticklabels(), visible=False)
+            if Count < EdgeCounter+NodeCounter:
+                plt.setp(ax1.get_xticklabels(), visible=False)
             ax1.fill_between(PE_T, PE_P, 0 , color='r', edgecolor='k')
-            ax1.set_ylabel(r'L'+str(Link), size=10, rotation=0)
+            ax1.set_ylabel(r'L'+str(Link), size=14, rotation=0)
             Count += 1
-    # plot 1
-
-    for ax in [ax1]:
-        #ax.set_ylim(0,0.1)
-        #ax.spines['right'].set_visible(False)
-        #ax.spines['top'].set_visible(False)
-        ax.yaxis.set_ticks_position('left')
-        ax.xaxis.set_ticks_position('bottom')
-    plt.show()
+    if EdgeCounter+EdgeCounter>0:
+        ax1.xaxis.set_ticks_position('bottom')
+    plt.savefig("GraphDrawings/SCHEDULING.png")
+    plt.clf()
     return None
