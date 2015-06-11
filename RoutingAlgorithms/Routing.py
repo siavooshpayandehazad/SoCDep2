@@ -199,8 +199,9 @@ def FindRouteInRouteGraph(NoCRG,SourceNode,DestinationNode,ReturnAllPaths,Report
         AllPaths = list(networkx.all_simple_paths(NoCRG,Source,Destination))
         ShortestLinks = []
         for i in range (0,len(ShortestPath)-1):
-            if ShortestPath[i][0] != ShortestPath[i+1][0]:
-                ShortestLinks.append((int(ShortestPath[i][0]),int(ShortestPath[i+1][0])))
+            #if ShortestPath[i][0] != ShortestPath[i+1][0]:
+            if int(re.search(r'\d+', ShortestPath[i]).group()) != int(re.search(r'\d+', ShortestPath[i+1]).group()):
+                ShortestLinks.append((int(re.search(r'\d+', ShortestPath[i]).group()),int(re.search(r'\d+', ShortestPath[i+1]).group())))
         AllLinks = []
         for j in range(0, len(AllPaths)):
             Path = AllPaths[j]

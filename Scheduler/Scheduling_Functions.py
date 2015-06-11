@@ -152,55 +152,84 @@ def ReportMappedTasks(AG):
 
     return None
 
-def GenerateGantCharts(AG):
-    fig = plt.figure()
+def GenerateGantCharts(TG,AG):
 
+    NodeMakeSpanList=[]
+    LinkMakeSpanList=[]
+    for Node in AG.nodes():
+        NodeMakeSpanList.append(FindLastAllocatedTimeOnNode(TG,AG,Node,False))
+    for link in AG.edges():
+        LinkMakeSpanList.append(FindLastAllocatedTimeOnLink(TG,AG,link,False))
+    MAX_Time_Link = max(LinkMakeSpanList)
+    MAX_Time_Node = max(NodeMakeSpanList)
+    Max_Time = max(MAX_Time_Link,MAX_Time_Node)
+
+    fig = plt.figure()
+    NodeCounter = 0
+    EdgeCounter = 0
+    for Node in AG.nodes():
+        if len(AG.node[Node]['MappedTasks'])>0:
+            NodeCounter += 1
+    for Link in AG.edges():
+        if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
+            EdgeCounter += 1
+    Count = 1
     for Node in AG.nodes():
         PE_T = []
         PE_P = []
-        for Task in AG.node[Node]['MappedTasks']:
-            if Task in AG.node[Node]['Scheduling']:
-                StartTime=AG.node[Node]['Scheduling'][Task][0]
-                EndTime=AG.node[Node]['Scheduling'][Task][1]
-                PE_T.append(StartTime)
-                PE_P.append(0)
-                PE_T.append(StartTime)
-                PE_P.append(1)
-                PE_T.append(EndTime)
-                PE_P.append(1)
-                PE_T.append(EndTime)
-                PE_P.append(0)
-        ax1 = fig.add_subplot(len(AG.nodes()),1,Node)
-        ax1.fill_between(PE_T, PE_P, 0 , color='b', edgecolor='k')
-        ax1.set_ylabel(r'PE'+str(Node), size=14, rotation=0)
-
+        PE_P.append(0)
+        PE_T.append(0)
+        if len(AG.node[Node]['MappedTasks'])>0:
+            ax1 = fig.add_subplot(NodeCounter+EdgeCounter + 1 ,1,Count)
+            for Task in AG.node[Node]['MappedTasks']:
+                    if Task in AG.node[Node]['Scheduling']:
+                        StartTime=AG.node[Node]['Scheduling'][Task][0]
+                        EndTime=AG.node[Node]['Scheduling'][Task][1]
+                        PE_T.append(StartTime)
+                        PE_P.append(0)
+                        PE_T.append(StartTime)
+                        PE_P.append(0.1)
+                        PE_T.append(EndTime)
+                        PE_P.append(0.1)
+                        PE_T.append(EndTime)
+                        PE_P.append(0)
+            PE_T.append(Max_Time)
+            PE_P.append(0)
+            ax1.fill_between(PE_T, PE_P, 0 , color='b', edgecolor='k')
+            ax1.set_ylabel(r'PE'+str(Node), size=14, rotation=0)
+            Count += 1
     # TODO: Fix the Links reports also...
-    """
+
     for Link in AG.edges():
         PE_T = []
         PE_P = []
-        for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
-
-            if AG.edge[Link[0]][Link[1]]['Scheduling']:
-                StartTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
-                EndTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1]
-                PE_T.append(StartTime)
-                PE_P.append(0)
-                PE_T.append(StartTime)
-                PE_P.append(1)
-                PE_T.append(EndTime)
-                PE_P.append(1)
-                PE_T.append(EndTime)
-                PE_P.append(0)
-        ax2 = fig.add_subplot(len(AG.edges()),1,Link)
-        ax2.fill_between(PE_T, PE_P, 0 , color='b', edgecolor='k')
-        ax2.set_ylabel(r'Link'+str(Link), size=14, rotation=0)
+        PE_P.append(0)
+        PE_T.append(0)
+        if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
+            ax1 = fig.add_subplot(EdgeCounter+EdgeCounter + 1,1,Count)
+            for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
+                if AG.edge[Link[0]][Link[1]]['Scheduling']:
+                        StartTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
+                        EndTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1]
+                        PE_T.append(StartTime)
+                        PE_P.append(0)
+                        PE_T.append(StartTime)
+                        PE_P.append(0.1)
+                        PE_T.append(EndTime)
+                        PE_P.append(0.1)
+                        PE_T.append(EndTime)
+                        PE_P.append(0)
+            PE_T.append(Max_Time)
+            PE_P.append(0)
+            ax1.fill_between(PE_T, PE_P, 0 , color='r', edgecolor='k')
+            ax1.set_ylabel(r'L'+str(Link), size=10, rotation=0)
+            Count += 1
     # plot 1
-    """
+
     for ax in [ax1]:
-        ax.set_ylim(0,1)
-        ax.spines['right'].set_visible(False)
-        ax.spines['top'].set_visible(False)
+        #ax.set_ylim(0,0.1)
+        #ax.spines['right'].set_visible(False)
+        #ax.spines['top'].set_visible(False)
         ax.yaxis.set_ticks_position('left')
         ax.xaxis.set_ticks_position('bottom')
     plt.show()

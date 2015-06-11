@@ -54,7 +54,6 @@ def AddClusterToNode(TG,CTG,AG,SHM,NoCRG,Cluster,Node,logging):
                     # add edges from list of edges to all links from list of links
                     # todo: I have to think more... this is not enough to add all the links there...
                     if ListOfLinks is not None and len(ListOfEdges)>0:
-
                         logging.info("\t\t\tADDING PATH FROM NODE:"+str(SourceNode)+"TO NODE"+str(DestNode))
                         logging.info("\t\t\tLIST OF LINKS:"+str(ListOfLinks))
                         logging.info("\t\t\tLIST OF EDGES:"+str(ListOfEdges))

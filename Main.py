@@ -62,5 +62,5 @@ if BestAG is not None and BestTG is not None:
     SHM.AddCurrentMappingToMPM(TG)
 # SHM.RandomFaultInjection()
 # SHM.ReportMPM()
-Scheduling_Functions.GenerateGantCharts(AG)
+Scheduling_Functions.GenerateGantCharts(TG,AG)
 logging.info('Logging finished...')
