@@ -66,6 +66,7 @@ def GenerateGenericTopologyAG(Topology,SizeX,SizeY,SizeZ,logging):
                 logging.info( "CONNECTING  "+str((j+1)*SizeX+i)+" TO "+str(j*SizeX+i))
                 AG.add_edge(j*SizeX+i ,(j+1)*SizeX+i,Port=('N','S'),MappedTasks = [],Scheduling={})
                 AG.add_edge((j+1)*SizeX+i,j*SizeX+i,Port=('S','N'),MappedTasks = [],Scheduling={})
+    ##############################################################
     if Topology=='2DMesh':
         for i in range(0,SizeX*SizeY):
             AG.add_node(i,MappedTasks = [],Scheduling={},Utilization=0,Speed=100)
@@ -81,6 +82,7 @@ def GenerateGenericTopologyAG(Topology,SizeX,SizeY,SizeZ,logging):
                 logging.info( "CONNECTING  "+str((j+1)*SizeX+i)+" TO "+str(j*SizeX+i))
                 AG.add_edge(j*SizeX+i ,(j+1)*SizeX+i,Port=('N','S'),MappedTasks = [],Scheduling={})
                 AG.add_edge((j+1)*SizeX+i,j*SizeX+i,Port=('S','N'),MappedTasks = [],Scheduling={})
+    ##############################################################
     elif Topology=='2DRing':
         for i in range(0,SizeX*SizeY):
             AG.add_node(i,MappedTasks = [],Scheduling={},Utilization=0,Speed=100)
@@ -94,6 +96,7 @@ def GenerateGenericTopologyAG(Topology,SizeX,SizeY,SizeZ,logging):
                 logging.info( "CONNECTING  "+str(j*(SizeX)+i+1)+" TO "+str(j*(SizeX)+i))
                 AG.add_edge(j*(SizeX)+i,j*(SizeX)+i+1,Port=('E','W'),MappedTasks = [],Scheduling={})
                 AG.add_edge(j*(SizeX)+i+1,j*(SizeX)+i,Port=('W','E'),MappedTasks = [],Scheduling={})
+    ##############################################################
     elif Topology=='2DLine':
         for i in range(0,SizeX*SizeY):
             AG.add_node(i,MappedTasks = [],Scheduling={},Utilization=0,Speed=100)

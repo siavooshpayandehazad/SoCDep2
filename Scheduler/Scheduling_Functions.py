@@ -1,6 +1,7 @@
 __author__ = 'siavoosh'
 from math import ceil
-
+import matplotlib.pyplot as plt
+import Config
 
 def FindScheduleMakeSpan(AG):
     MakeSpan=0
@@ -148,4 +149,59 @@ def ReportMappedTasks(AG):
     for Link in AG.edges():
         print "LINK", Link,"CONTAINS THE FOLLOWING TG's Edges:",AG.edge[Link[0]][Link[1]]['MappedTasks'],\
             "\tWITH SCHEDULING:",AG.edge[Link[0]][Link[1]]['Scheduling']
+
+    return None
+
+def GenerateGantCharts(AG):
+    fig = plt.figure()
+
+    for Node in AG.nodes():
+        PE_T = []
+        PE_P = []
+        for Task in AG.node[Node]['MappedTasks']:
+            if Task in AG.node[Node]['Scheduling']:
+                StartTime=AG.node[Node]['Scheduling'][Task][0]
+                EndTime=AG.node[Node]['Scheduling'][Task][1]
+                PE_T.append(StartTime)
+                PE_P.append(0)
+                PE_T.append(StartTime)
+                PE_P.append(1)
+                PE_T.append(EndTime)
+                PE_P.append(1)
+                PE_T.append(EndTime)
+                PE_P.append(0)
+        ax1 = fig.add_subplot(len(AG.nodes()),1,Node)
+        ax1.fill_between(PE_T, PE_P, 0 , color='b', edgecolor='k')
+        ax1.set_ylabel(r'PE'+str(Node), size=14, rotation=0)
+
+    # TODO: Fix the Links reports also...
+    """
+    for Link in AG.edges():
+        PE_T = []
+        PE_P = []
+        for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
+
+            if AG.edge[Link[0]][Link[1]]['Scheduling']:
+                StartTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
+                EndTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1]
+                PE_T.append(StartTime)
+                PE_P.append(0)
+                PE_T.append(StartTime)
+                PE_P.append(1)
+                PE_T.append(EndTime)
+                PE_P.append(1)
+                PE_T.append(EndTime)
+                PE_P.append(0)
+        ax2 = fig.add_subplot(len(AG.edges()),1,Link)
+        ax2.fill_between(PE_T, PE_P, 0 , color='b', edgecolor='k')
+        ax2.set_ylabel(r'Link'+str(Link), size=14, rotation=0)
+    # plot 1
+    """
+    for ax in [ax1]:
+        ax.set_ylim(0,1)
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.yaxis.set_ticks_position('left')
+        ax.xaxis.set_ticks_position('bottom')
+    plt.show()
     return None

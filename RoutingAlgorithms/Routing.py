@@ -1,6 +1,7 @@
 __author__ = 'siavoosh'
 import networkx
 import os
+import re
 
 def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report,DetailedReport):
     """
@@ -36,6 +37,7 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report,DetailedReport):
     if Report:print "STARTING BUILDING ROUTING ARCHITECTURE..."
     ReportTurnModel(TurnModel)
     PortList = ['N','W','L','E','S']  # the order is crucial... do not change
+                                      # to find out why its important, check: connect direct paths
     NoCRG = networkx.DiGraph()
     for node in AG.nodes():
         if DetailedReport:print "GENERATING PORTS:"
@@ -85,21 +87,81 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report,DetailedReport):
     if Report: print "ROUTE GRAPH IS READY... "
     return NoCRG
 
-def GenerateNoCRouteGraphFromFile(AG,SystemHealthMap,RoutingFilePath,Report):
+def GenerateNoCRouteGraphFromFile(AG,SystemHealthMap,RoutingFilePath,Report,DetailedReport):
     """
     This function might come very handy specially in relation to different routing algorithms that we can
-    implement to increase reachability...
+    implement to increase reachability... (for example odd-even)
     :param AG: Architecture graph
     :param SystemHealthMap: System health map
     :param RoutingFilePath: is the path to a file that contains routing information for each individual router
     :param Report: boolean, which decides if function should print reports to console?
     :return:
     """
-    print "STARTING BUILDING ROUTING ARCHITECTURE..."
-    PortList = ['N', 'W', 'L', 'E', 'S']  # the order is crucial... do not change
+    if Report:print "==========================================="
+    if Report:print "STARTING BUILDING ROUTING ARCHITECTURE..."
     NoCRG= networkx.DiGraph()
     # TODO: read from file and construct the NoCRG
+    try:
+        RoutingFile = open(RoutingFilePath, 'r')
+    except IOError:
+        print 'CANN NOT OPEN', RoutingFilePath
 
+    while True:
+        line = RoutingFile.readline()
+        if "Ports" in line:
+            Ports = RoutingFile.readline()
+            PortList = Ports.split( )
+            if DetailedReport: PortList
+        if "Node" in line:
+            NodeID = int(re.search(r'\d+', line).group())
+            if DetailedReport:print "NodeID",NodeID
+            if DetailedReport:print "GENERATING PORTS:"
+            for port in PortList:
+                if DetailedReport:print "\t",str(NodeID)+str(port)+str('I'),"&",str(NodeID)+str(port)+str('O')
+                NoCRG.add_node(str(NodeID)+str(port)+str('I'),Node=NodeID,Port=port,Dir='I')
+                NoCRG.add_node(str(NodeID)+str(port)+str('O'),Node=NodeID,Port=port,Dir='O')
+            if DetailedReport:print "CONNECTING LOCAL PATHS:"
+            for port in PortList:       # connect local to every output port
+                if port != 'L':
+                    NoCRG.add_edge(str(NodeID)+str('L')+str('I'),str(NodeID)+str(port)+str('O'))
+                    if DetailedReport:print "\t", 'L', "--->", port
+                    NoCRG.add_edge(str(NodeID)+str(port)+str('I'),str(NodeID)+str('L')+str('O'))
+                    if DetailedReport:print "\t", port, "--->", 'L'
+            if DetailedReport:print "CONNECTING DIRECT PATHS:"
+            for i in range(0,int(len(PortList))):   # connect direct paths
+                if PortList[i] != 'L':
+                    if DetailedReport:print "\t", PortList[i], "--->", PortList[len(PortList)-1-i]
+                    inID= str(NodeID)+str(PortList[i])+str('I')
+                    outID=str(NodeID)+str(PortList[len(PortList)-1-i])+str('O')
+                    NoCRG.add_edge(inID,outID)
+            if DetailedReport:print "CONNECTING TURNS:"
+            line = RoutingFile.readline()
+            TurnsList = line.split()
+            for turn in TurnsList:
+                if turn in SystemHealthMap.SHM.node[NodeID]['TurnsHealth']:
+                    if SystemHealthMap.SHM.node[NodeID]['TurnsHealth'][turn]:
+                        InPort=turn[0]
+                        OutPort=turn[2]
+                        if InPort != OutPort:
+                            NoCRG.add_edge(str(NodeID)+str(InPort)+str('I'),str(NodeID)+str(OutPort)+str('O'))
+                        else: #just for defensive programming reasons...
+                            print "\033[31mERROR::\033[0m U-TURN DETECTED!"
+                            print "TERMINATING THE PROGRAM..."
+                            print "HINT: CHECK YOUR TURN MODEL!"
+                            raise ValueError('U-TURN DETECTED IN TURN MODEL!')
+                        if DetailedReport:print "\t", InPort, "--->", OutPort
+            if DetailedReport:print "------------------------"
+        if line == '':
+            break
+    for link in AG.edges(): # here we should connect connections between routers
+        Port=AG.edge[link[0]][link[1]]['Port']
+        if SystemHealthMap.SHM[link[0]][link[1]]['LinkHealth']:
+            if DetailedReport:print "CONNECTING LINK:", link, "BY CONNECTING:", str(link[0])+str(Port[0])+str('-Out'),\
+                "TO:", str(link[1])+str(Port[1])+str('-In')
+            NoCRG.add_edge(str(link[0])+str(Port[0])+str('O'), str(link[1])+str(Port[1])+str('I'))
+        else:
+            if DetailedReport:print "BROKEN LINK:", link
+    if Report: print "ROUTE GRAPH IS READY... "
     return NoCRG
 
 def ReportTurnModel(TurnModel):

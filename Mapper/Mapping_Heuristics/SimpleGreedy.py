@@ -40,7 +40,6 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
     # of the edges of the task graph on the links.
     # Note:: this is a heuristic for independent tasks... so we are not going to
     # schedule any link
-    # todo: Note 2: There is no task release time implemented at the moment
     print "==========================================="
     print "STARTING MIN-MAX MAPPING"
     LongestTasks = Mapping_Functions.FindUnMappedTaskWithBiggestWCET(TG,logging)
@@ -66,7 +65,9 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
     return TG, AG
 
 def MinExecutionTime(TG,AG,SHM):
-    # this sounds stupid because there are job specific machines...
+    # this sounds a little stupid because there are no job specific machines...
+    # we can Add Specific Accelerators or define different run time on different
+    # PEs so this becomes more interesting...
     print "==========================================="
     print "STARTING MIN EXECUTION TIME MAPPING"
     for TaskToBeMapped in TG.nodes():
@@ -80,6 +81,8 @@ def MinExecutionTime(TG,AG,SHM):
     return TG,AG
 
 def MinimumCompletionTime(TG,AG,SHM):
+    # The difference with Min Min or Max Min is that we don't add priorities to
+    # tasks based on their WCET but we randomly choose a task and schedule it...
     print "==========================================="
     print "STARTING MIN COMPLETION TIME MAPPING"
     for TaskToBeMapped in TG.nodes():

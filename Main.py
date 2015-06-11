@@ -4,6 +4,7 @@ import copy
 import logging
 import time
 from Mapper import Mapping
+from Scheduler import Scheduling_Functions
 from SystemHealthMonitoring import SystemHealthMonitor
 from TaskGraphUtilities import Task_Graph_Reports,TG_Functions
 from RoutingAlgorithms import Routing
@@ -48,9 +49,11 @@ print "==========================================="
 print "SYSTEM IS UP..."
 # Here we are injecting initial faults of the system
 SHM.ApplyInitialFaults()
-NoCRG=Routing.GenerateNoCRouteGraph(AG,SHM,Config.XY_TurnModel,Config.DebugInfo,Config.DebugDetails)
+NoCRG = Routing.GenerateNoCRouteGraph(AG,SHM,Config.XY_TurnModel,Config.DebugInfo,Config.DebugDetails)
+# NoCRG = Routing.GenerateNoCRouteGraphFromFile(AG,SHM,Config.RoutingFilePath,Config.DebugInfo,Config.DebugDetails)
 # print Routing.FindRouteInRouteGraph(NoCRG,0,3,True,True)
 ####################################################################
+
 BestTG,BestAG = Mapping.Mapping(TG,AG,NoCRG,SHM,logging)
 if BestAG is not None and BestTG is not None:
     TG = copy.deepcopy(BestTG)
@@ -59,4 +62,5 @@ if BestAG is not None and BestTG is not None:
     SHM.AddCurrentMappingToMPM(TG)
 # SHM.RandomFaultInjection()
 # SHM.ReportMPM()
+Scheduling_Functions.GenerateGantCharts(AG)
 logging.info('Logging finished...')
