@@ -33,7 +33,6 @@ if not os.path.isdir(GraphDirectory):
 ####################################################################
 misc.DrawLogo()
 ####################################################################
-# TODO: can we get TG specifications automatically from some benchmark alg??
 TG = copy.deepcopy(TG_Functions.GenerateTG())
 Task_Graph_Reports.ReportTaskGraph(TG,logging)
 Task_Graph_Reports.DrawTaskGraph(TG)
@@ -63,6 +62,5 @@ if BestAG is not None and BestTG is not None:
 # SHM.RandomFaultInjection()
 # SHM.ReportMPM()
 Scheduling_Reports.GenerateGanttCharts(TG,AG)
-# ToDO: I want to run a Reliability Analysis of the system... so we can have a sense about the state of the system state...
-# ToDo: can we generate some file based on scheduling to feed in Noxim?
+
 logging.info('Logging finished...')

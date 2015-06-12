@@ -22,7 +22,7 @@
 ==============================================================================
 AUTHOR:  SIAVOOSH PAYANDEH AZAD
 DATE:    MAY 2015
-LICENSE: GNU GPL
+LICENSE: GNU GENERAL PUBLIC LICENSE Version 2
 PYTHON VER: 2.6.9
 THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME DEPENDABILITY 
 STUFF ON DIFFERENT ARCHITECTURES....
@@ -45,3 +45,12 @@ How To generate RoutingFile.txt:
 	The path to file should be specified in Config file by setting
 	RoutingFilePath properly.
 ===============================================================================
+
+ToDo:
+
+    - I want to run a Reliability Analysis of the system... so we can have
+      a sense about the state of the system state...
+
+    - can we generate some file based on scheduling to feed in Noxim?
+
+    - can we get TG specifications automatically from some benchmark alg??
