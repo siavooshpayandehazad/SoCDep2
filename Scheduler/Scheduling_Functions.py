@@ -179,6 +179,7 @@ def GenerateGantCharts(TG,AG):
     for Link in AG.edges():
         if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
             EdgeCounter += 1
+    NumberOfPlots = NodeCounter + EdgeCounter
     Count = 1
     for Node in AG.nodes():
         PE_T = []
@@ -186,7 +187,7 @@ def GenerateGantCharts(TG,AG):
         PE_P.append(0)
         PE_T.append(0)
         if len(AG.node[Node]['MappedTasks'])>0:
-            ax1 = fig.add_subplot(NodeCounter + EdgeCounter + 1 ,1,Count)
+            ax1 = fig.add_subplot(NumberOfPlots ,1,Count)
             for Task in AG.node[Node]['MappedTasks']:
                     if Task in AG.node[Node]['Scheduling']:
                         StartTime=AG.node[Node]['Scheduling'][Task][0]
@@ -213,7 +214,7 @@ def GenerateGantCharts(TG,AG):
         PE_P.append(0)
         PE_T.append(0)
         if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
-            ax1 = fig.add_subplot(EdgeCounter + EdgeCounter + 1,1,Count)
+            ax1 = fig.add_subplot(NumberOfPlots,1,Count)
             for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
                 if AG.edge[Link[0]][Link[1]]['Scheduling']:
                         StartTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
