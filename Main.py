@@ -59,9 +59,10 @@ if BestAG is not None and BestTG is not None:
     TG = copy.deepcopy(BestTG)
     AG = copy.deepcopy(BestAG)
     del BestTG, BestAG
-    SHM.AddCurrentMappingToMPM(TG)
+    # SHM.AddCurrentMappingToMPM(TG)
 # SHM.RandomFaultInjection()
 # SHM.ReportMPM()
 Scheduling_Reports.GenerateGanttCharts(TG,AG)
 # ToDO: I want to run a Reliability Analysis of the system... so we can have a sense about the state of the system state...
+# ToDo: can we generate some file based on scheduling to feed in Noxim?
 logging.info('Logging finished...')
