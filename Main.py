@@ -63,4 +63,5 @@ if BestAG is not None and BestTG is not None:
 # SHM.RandomFaultInjection()
 # SHM.ReportMPM()
 Scheduling_Reports.GenerateGanttCharts(TG,AG)
+# ToDO: I want to run a Reliability Analysis of the system... so we can have a sense about the state of the system state...
 logging.info('Logging finished...')

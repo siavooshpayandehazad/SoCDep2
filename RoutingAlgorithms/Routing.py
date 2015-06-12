@@ -104,8 +104,7 @@ def GenerateNoCRouteGraphFromFile(AG,SystemHealthMap,RoutingFilePath,Report,Deta
     try:
         RoutingFile = open(RoutingFilePath, 'r')
     except IOError:
-        print 'CANN NOT OPEN', RoutingFilePath
-
+        print 'CAN NOT OPEN', RoutingFilePath
     while True:
         line = RoutingFile.readline()
         if "Ports" in line:
