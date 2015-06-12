@@ -1,4 +1,5 @@
-__author__ = 'siavoosh'
+# Copyright (C) 2015 Siavoosh Payandeh Azad 
+
 import os,sys
 import copy
 import logging
@@ -7,7 +8,7 @@ from Mapper import Mapping
 from Scheduler import Scheduling_Functions,Scheduling_Reports
 from SystemHealthMonitoring import SystemHealthMonitor
 from TaskGraphUtilities import Task_Graph_Reports,TG_Functions
-from RoutingAlgorithms import Routing
+from RoutingAlgorithms import Routing,Calculate_Reachability
 from ArchGraphUtilities import Arch_Graph_Reports,AG_Functions
 import misc
 import Logger
@@ -62,5 +63,5 @@ if BestAG is not None and BestTG is not None:
 # SHM.RandomFaultInjection()
 # SHM.ReportMPM()
 Scheduling_Reports.GenerateGanttCharts(TG,AG)
-
+Calculate_Reachability.CalculateReachability(AG,NoCRG)
 logging.info('Logging finished...')

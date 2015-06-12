@@ -26,6 +26,7 @@ LICENSE: GNU GENERAL PUBLIC LICENSE Version 2
 PYTHON VER: 2.6.9
 THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME DEPENDABILITY 
 STUFF ON DIFFERENT ARCHITECTURES....
+Copyright (C) 2015 Siavoosh Payandeh Azad
 ===============================================================================
 How To generate RoutingFile.txt:
     This file is made to enable user to manually control routing algorithm

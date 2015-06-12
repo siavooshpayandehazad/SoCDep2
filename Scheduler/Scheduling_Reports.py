@@ -1,4 +1,5 @@
-__author__ = 'siavoosh'
+# Copyright (C) 2015 Siavoosh Payandeh Azad
+
 import matplotlib.pyplot as plt
 from Scheduling_Functions import FindLastAllocatedTimeOnNode,FindLastAllocatedTimeOnLink
 ##########################################################################

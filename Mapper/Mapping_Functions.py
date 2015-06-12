@@ -1,4 +1,5 @@
-__author__ = 'siavoosh'
+# Copyright (C) 2015 Siavoosh Payandeh Azad
+
 from RoutingAlgorithms import Routing
 from Scheduler import Scheduling_Functions
 import Config

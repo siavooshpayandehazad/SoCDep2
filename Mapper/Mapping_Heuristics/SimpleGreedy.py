@@ -1,5 +1,5 @@
+# Copyright (C) 2015 Siavoosh Payandeh Azad 
 
-__author__ = 'siavoosh'
 from Mapper import Mapping_Functions
 from Scheduler import Scheduling_Functions,Scheduling_Reports
 import copy

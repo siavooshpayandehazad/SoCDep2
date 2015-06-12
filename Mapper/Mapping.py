@@ -1,4 +1,5 @@
-__author__ = 'siavoosh'
+# Copyright (C) 2015 Siavoosh Payandeh Azad
+
 import Config,Scheduler,Mapping_Functions
 from Clusterer import Clustering_Functions,Clustering
 from Mapping_Heuristics import SimpleGreedy,Local_Search
