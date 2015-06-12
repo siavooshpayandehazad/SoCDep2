@@ -63,5 +63,7 @@ if BestAG is not None and BestTG is not None:
 # SHM.RandomFaultInjection()
 # SHM.ReportMPM()
 Scheduling_Reports.GenerateGanttCharts(TG,AG)
-Calculate_Reachability.CalculateReachability(AG,NoCRG)
+
+#Calculate_Reachability.CalculateReachability(AG,NoCRG)
+#Calculate_Reachability.ReportReachability(AG)
 logging.info('Logging finished...')

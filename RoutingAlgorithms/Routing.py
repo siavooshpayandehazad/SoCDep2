@@ -207,8 +207,8 @@ def FindRouteInRouteGraph(NoCRG,SourceNode,DestinationNode,ReturnAllPaths,Report
             Path = AllPaths[j]
             Links = []
             for i in range (0,len(Path)-1):
-                if Path[i][0] != Path[i+1][0]:
-                    Links.append((int(Path[i][0]),int(Path[i+1][0])))
+                if int(re.search(r'\d+', Path[i]).group()) != int(re.search(r'\d+', Path[i+1]).group()):
+                    Links.append((int(re.search(r'\d+', Path[i]).group()),int(re.search(r'\d+', Path[i+1]).group())))
             AllLinks.append(Links)
         if Report:print "\t\tFINDING PATH(S) FROM: ", Source, "TO:", Destination," ==>", AllLinks if ReturnAllPaths else ShortestLinks
         if ReturnAllPaths:

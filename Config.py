@@ -31,8 +31,8 @@ VirtualChannelNum = 0
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing
 NetworkTopology='2DMesh'
-Network_X_Size = 4
-Network_Y_Size = 4
+Network_X_Size = 6
+Network_Y_Size = 6
 Network_Z_Size = 0
 # Only for Manual AG_Type:
 PE_List = [0, 1, 2, 3]
@@ -58,7 +58,9 @@ RoutingFilePath = "USER_INPUTS/RoutingFile.txt"
 TurnsHealth = {"N2W":True,"N2E":True,"S2W":True,"S2E":True,
             "W2N":True,"W2S":True,"E2N":True,"E2S":True}
 # Here you can break things as initial defects...
-ListOfBrokenLinks = [(0, 1), (0, 4)]
+#ListOfBrokenLinks = [(0, 1), (0, 4)]
+ListOfBrokenLinks = [(35, 29), (34, 28), (33,27),(26,27),(20,21),(14,15),(9,15),(10,16),(11,17)]
+
 # List of broken PE
 ListOfBrokenPEs = [1]
 # I know its a dictionary
