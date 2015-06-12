@@ -8,6 +8,7 @@ def FindScheduleMakeSpan(AG):
             if AG.node[Node]['Scheduling'][Task][1]>MakeSpan:
                 MakeSpan=AG.node[Node]['Scheduling'][Task][1]
     return MakeSpan
+
 ################################################################
 def ClearScheduling(AG,TG):
     for Node in AG.nodes():

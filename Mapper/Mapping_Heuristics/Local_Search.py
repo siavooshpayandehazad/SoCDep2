@@ -2,7 +2,7 @@ __author__ = 'siavoosh'
 
 import random
 import copy
-from Scheduler import Scheduler,Scheduling_Functions
+from Scheduler import Scheduler,Scheduling_Functions,Scheduling_Reports
 from Mapper import Mapping_Functions
 
 def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedReport,logging):
@@ -34,7 +34,7 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedR
                 TG=copy.deepcopy(BestTG)
                 AG=copy.deepcopy(BestAG)
                 CTG=copy.deepcopy(BestCTG)
-                if Report:Scheduling_Functions.ReportMappedTasks(AG)
+                if Report:Scheduling_Reports.ReportMappedTasks(AG)
                 if Report:Mapping_Functions.CostFunction(TG,AG,SHM,True)
                 return (BestTG,BestCTG,BestAG)
             TryCounter+=1

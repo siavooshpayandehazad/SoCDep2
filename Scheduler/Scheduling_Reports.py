@@ -19,9 +19,8 @@ def ReportMappedTasks(AG):
             "\tWITH SCHEDULING:",AG.edge[Link[0]][Link[1]]['Scheduling']
 
     return None
-
-def GenerateGantCharts(TG,AG):
-
+##########################################################################
+def GenerateGanttCharts(TG,AG):
     NodeMakeSpanList=[]
     LinkMakeSpanList=[]
     for Node in AG.nodes():
