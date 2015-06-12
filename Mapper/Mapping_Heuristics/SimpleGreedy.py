@@ -1,7 +1,7 @@
 
 __author__ = 'siavoosh'
 from Mapper import Mapping_Functions
-from Scheduler import Scheduling_Functions
+from Scheduler import Scheduling_Functions,Scheduling_Reports
 import copy
 import random
 
@@ -29,7 +29,7 @@ def Min_Min_Mapping (TG,AG,NoCRG,SHM,logging):
         if len(ShortestTasks) == 0:
             ShortestTasks = Mapping_Functions.FindUnMappedTaskWithSmallestWCET(TG,logging)
     print "MIN-MIN MAPPING FINISHED..."
-    Scheduling_Functions.ReportMappedTasks(AG)
+    Scheduling_Reports.ReportMappedTasks(AG)
     return TG, AG
 
 
@@ -61,7 +61,7 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
         if len(LongestTasks) == 0:
             LongestTasks = Mapping_Functions.FindUnMappedTaskWithBiggestWCET(TG,logging)
     print "MIN-MAX MAPPING FINISHED..."
-    Scheduling_Functions.ReportMappedTasks(AG)
+    Scheduling_Reports.ReportMappedTasks(AG)
     return TG, AG
 
 def MinExecutionTime(TG,AG,SHM):
@@ -77,7 +77,7 @@ def MinExecutionTime(TG,AG,SHM):
         Scheduling_Functions.Add_TG_TaskToNode(TG,AG,SHM,TaskToBeMapped,ChosenNode,False)
         print "\tTASK",TaskToBeMapped,"MAPPED ON NODE:",ChosenNode
     print "MIN EXECUTION TIME MAPPING FINISHED..."
-    Scheduling_Functions.ReportMappedTasks(AG)
+    Scheduling_Reports.ReportMappedTasks(AG)
     return TG,AG
 
 def MinimumCompletionTime(TG,AG,SHM):
@@ -92,7 +92,7 @@ def MinimumCompletionTime(TG,AG,SHM):
         Scheduling_Functions.Add_TG_TaskToNode(TG,AG,SHM,TaskToBeMapped,ChosenNode,False)
         print "\tTASK",TaskToBeMapped,"MAPPED ON NODE:",ChosenNode
     print "MIN COMPLETION TIME MAPPING FINISHED..."
-    Scheduling_Functions.ReportMappedTasks(AG)
+    Scheduling_Reports.ReportMappedTasks(AG)
     return TG,AG
 
 def FirstFree(TG,AG,SHM):
@@ -101,5 +101,5 @@ def FirstFree(TG,AG,SHM):
     # Todo: to write the function
 
     print "FIRST FREE MAPPING FINISHED..."
-    Scheduling_Functions.ReportMappedTasks(AG)
+    Scheduling_Reports.ReportMappedTasks(AG)
     return TG,AG

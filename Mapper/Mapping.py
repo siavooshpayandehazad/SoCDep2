@@ -2,7 +2,7 @@ __author__ = 'siavoosh'
 import Config,Scheduler,Mapping_Functions
 from Clusterer import Clustering_Functions,Clustering
 from Mapping_Heuristics import SimpleGreedy,Local_Search
-from Scheduler import Scheduling_Functions,Scheduler
+from Scheduler import Scheduling_Functions,Scheduler,Scheduling_Reports
 import copy
 
 def Mapping (TG,AG,NoCRG,SHM,logging):
@@ -50,7 +50,7 @@ def Mapping (TG,AG,NoCRG,SHM,logging):
                 Mapping_Functions.ReportMapping(AG)
                 # Schedule all tasks
                 Scheduler.ScheduleAll(TG,AG,SHM,Config.DebugInfo,Config.DebugDetails)
-                Scheduling_Functions.ReportMappedTasks(AG)
+                Scheduling_Reports.ReportMappedTasks(AG)
                 Mapping_Functions.CostFunction(TG,AG,SHM,Config.DebugInfo)
                 if Config.Mapping_Function=='LocalSearch':
                     (BestTG,BestCTG,BestAG)=Local_Search.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,
@@ -70,7 +70,7 @@ def Mapping (TG,AG,NoCRG,SHM,logging):
                     TG= copy.deepcopy(BestTG)
                     AG= copy.deepcopy(BestAG)
                     del BestTG,BestCTG,BestAG
-                Scheduling_Functions.ReportMappedTasks(AG)
+                Scheduling_Reports.ReportMappedTasks(AG)
                 Mapping_Functions.CostFunction(TG,AG,SHM,True)
                 return TG,AG
             else:

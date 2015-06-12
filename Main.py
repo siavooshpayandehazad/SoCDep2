@@ -4,7 +4,7 @@ import copy
 import logging
 import time
 from Mapper import Mapping
-from Scheduler import Scheduling_Functions
+from Scheduler import Scheduling_Functions,Scheduling_Reports
 from SystemHealthMonitoring import SystemHealthMonitor
 from TaskGraphUtilities import Task_Graph_Reports,TG_Functions
 from RoutingAlgorithms import Routing
@@ -62,5 +62,5 @@ if BestAG is not None and BestTG is not None:
     SHM.AddCurrentMappingToMPM(TG)
 # SHM.RandomFaultInjection()
 # SHM.ReportMPM()
-Scheduling_Functions.GenerateGantCharts(TG,AG)
+Scheduling_Reports.GenerateGantCharts(TG,AG)
 logging.info('Logging finished...')
