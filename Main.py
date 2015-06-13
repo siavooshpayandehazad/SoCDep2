@@ -49,7 +49,7 @@ print "==========================================="
 print "SYSTEM IS UP..."
 # Here we are injecting initial faults of the system
 SHM.ApplyInitialFaults()
-NoCRG = Routing.GenerateNoCRouteGraph(AG,SHM,Config.XY_TurnModel,Config.DebugInfo,Config.DebugDetails)
+NoCRG = Routing.GenerateNoCRouteGraph(AG,SHM,Config.WestFirst_TurnModel,Config.DebugInfo,Config.DebugDetails)
 # NoCRG = Routing.GenerateNoCRouteGraphFromFile(AG,SHM,Config.RoutingFilePath,Config.DebugInfo,Config.DebugDetails)
 # print Routing.FindRouteInRouteGraph(NoCRG,0,3,True,True)
 ####################################################################
@@ -63,7 +63,8 @@ if BestAG is not None and BestTG is not None:
 # SHM.RandomFaultInjection()
 # SHM.ReportMPM()
 Scheduling_Reports.GenerateGanttCharts(TG,AG)
-
-#Calculate_Reachability.CalculateReachability(AG,NoCRG)
-#Calculate_Reachability.ReportReachability(AG)
+"""
+Calculate_Reachability.CalculateReachability(AG,NoCRG)
+Calculate_Reachability.ReportReachability(AG)
+"""
 logging.info('Logging finished...')

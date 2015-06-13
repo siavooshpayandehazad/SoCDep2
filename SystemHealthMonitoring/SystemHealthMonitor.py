@@ -25,8 +25,15 @@ class SystemHealthMonitor:
         print "==========================================="
         print "      REPORTING SYSTEM HEALTH MAP"
         print "==========================================="
-        print "\tNODES:",self.SHM.nodes(data=True)
-        print "\tEDGES:",self.SHM.edges(data=True)
+        for Node in self.SHM.nodes():
+            print "\tNODE:" ,Node
+            print "\t\tNODE HEALTH:",self.SHM.node[Node]['NodeHealth']
+            print "\t\tNODE SPEED:",self.SHM.node[Node]['NodeSpeed']
+            print "\t\tTURNS:",self.SHM.node[Node]['TurnsHealth']
+            print "\t=============="
+        for Edge in self.SHM.edges():
+            print "\tLINK:",Edge,"\t",self.SHM.edge[Edge[0]][Edge[1]]['LinkHealth']
+
     ##################################################
     def BreakLink(self,link,Report):
         if Report:print "==========================================="
@@ -37,6 +44,7 @@ class SystemHealthMonitor:
         if Report:print "==========================================="
         if Report:print "\033[33mSYSTEM HEALTH MAP::\033[0m LINK:",link,"RESTORED..."
         self.SHM.edge[link[0]][link[1]]['LinkHealth']=True
+
     ##################################################
     def BreakTurn(self,Node,Turn,Report):
         if Report:print "==========================================="
@@ -47,11 +55,15 @@ class SystemHealthMonitor:
         if Report:print "==========================================="
         if Report:print "\033[33mSYSTEM HEALTH MAP::\033[0m TURN:",Turn, "IN NODE",Node,"RESTORED"
         self.SHM.node[Node]['TurnsHealth'][Turn]=True
+
     ##################################################
     def IntroduceAging(self,Node,SpeedDown,Report):
         if Report: print "==========================================="
         self.SHM.node[Node]['NodeSpeed']=self.SHM.node[Node]['NodeSpeed']*(1-SpeedDown)
         if Report: print "\033[33mSYSTEM HEALTH MAP::\033[0m AGEING NODE:",Node,"... SPEED DROPPED TO:",self.SHM.node[Node]['NodeSpeed'],"%"
+        if self.SHM.node[Node]['NodeSpeed'] == 0:
+            self.BreakNode(Node, True)
+
     ##################################################
     def BreakNode(self,Node,Report):
         if Report: print "==========================================="

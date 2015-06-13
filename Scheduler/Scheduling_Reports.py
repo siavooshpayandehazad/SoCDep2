@@ -48,6 +48,8 @@ def GenerateGanttCharts(TG,AG):
         if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
             EdgeCounter += 1
     NumberOfPlots = NodeCounter + EdgeCounter
+    if NumberOfPlots<10:
+        NumberOfPlots=10
     Count = 1
     for Node in AG.nodes():
         PE_T = []
@@ -68,12 +70,18 @@ def GenerateGanttCharts(TG,AG):
                         PE_P.append(0.1)
                         PE_T.append(EndTime)
                         PE_P.append(0)
+
             PE_T.append(Max_Time)
             PE_P.append(0)
             plt.setp(ax1.get_yticklabels(), visible=False)
             if Count < EdgeCounter + NodeCounter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
             ax1.fill_between(PE_T, PE_P, 0 , color='b', edgecolor='k')
+            for Task in AG.node[Node]['MappedTasks']:
+                    if Task in AG.node[Node]['Scheduling']:
+                        StartTime=AG.node[Node]['Scheduling'][Task][0]
+                        EndTime=AG.node[Node]['Scheduling'][Task][1]
+                        ax1.text((StartTime+EndTime)/2, 0.05, str(Task), fontsize=10)
             ax1.set_ylabel(r'PE'+str(Node), size=14, rotation=0)
             Count += 1
     for Link in AG.edges():
@@ -101,6 +109,12 @@ def GenerateGanttCharts(TG,AG):
             if Count < EdgeCounter+NodeCounter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
             ax1.fill_between(PE_T, PE_P, 0 , color='r', edgecolor='k')
+            for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
+                if AG.edge[Link[0]][Link[1]]['Scheduling']:
+                        StartTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
+                        EndTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1]
+                        stringToDisplay= str(Task[0])+"/"+str(Task[1])
+                        ax1.text((StartTime+EndTime)/2, 0.05, stringToDisplay, fontsize=10)
             ax1.set_ylabel(r'L'+str(Link), size=14, rotation=0)
             Count += 1
     if EdgeCounter+EdgeCounter>0:

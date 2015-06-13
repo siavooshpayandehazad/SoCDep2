@@ -62,7 +62,6 @@ def AddClusterToNode(TG,CTG,AG,SHM,NoCRG,Cluster,Node,logging):
                             for Edge in ListOfEdges:
                                 AG.edge[Link[0]][Link[1]]['MappedTasks'].append(Edge)
                                 TG.edge[Edge[0]][Edge[1]]['Link'].append(Link)
-
                     else:
                         logging.warning( "\tNO PATH FOUND FROM SOURCE TO DESTINATION...")
                         logging.info("REMOVING ALL THE MAPPED CONNECTIONS FOR CLUSTER "+str(Cluster))
