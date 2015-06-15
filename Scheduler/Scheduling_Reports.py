@@ -8,16 +8,17 @@ from Scheduling_Functions import FindLastAllocatedTimeOnNode,FindLastAllocatedTi
 #
 #
 ##########################################################################
-def ReportMappedTasks(AG):
-    print "==========================================="
-    print "          REPORTING SCHEDULING "
-    print "==========================================="
+def ReportMappedTasks(AG,logging):
+    logging.info( "===========================================")
+    logging.info( "          REPORTING SCHEDULING ")
+    logging.info( "===========================================")
     for Node in AG.nodes():
-        print "NODE", Node,"CONTAINS THE FOLLOWING TASKS:",AG.node[Node]['MappedTasks'],\
-            "\tWITH SCHEDULING:",AG.node[Node]['Scheduling']
+        logging.info( "NODE"+str(Node)+"CONTAINS THE FOLLOWING TASKS:"+str(AG.node[Node]['MappedTasks'])+
+            "\tWITH SCHEDULING:"+str(AG.node[Node]['Scheduling']))
     for Link in AG.edges():
-        print "LINK", Link,"CONTAINS THE FOLLOWING TG's Edges:",AG.edge[Link[0]][Link[1]]['MappedTasks'],\
-            "\tWITH SCHEDULING:",AG.edge[Link[0]][Link[1]]['Scheduling']
+        logging.info( "LINK" + str(Link)+"CONTAINS THE FOLLOWING TG's Edges:" +
+                      str(AG.edge[Link[0]][Link[1]]['MappedTasks']) + "\tWITH SCHEDULING:" +
+                      str(AG.edge[Link[0]][Link[1]]['Scheduling']))
 
     return None
 
@@ -29,6 +30,8 @@ def ReportMappedTasks(AG):
 ##########################################################################
 
 def GenerateGanttCharts(TG,AG):
+    print "==========================================="
+    print "GENERATING SCHEDULING GANTT CHARTS..."
     NodeMakeSpanList=[]
     LinkMakeSpanList=[]
     for Node in AG.nodes():
@@ -128,4 +131,5 @@ def GenerateGanttCharts(TG,AG):
         ax1.xaxis.set_ticks_position('bottom')
     plt.savefig("GraphDrawings/Scheduling.png")
     plt.clf()
+    print  "SCHEDULING GANTT CHARTS READY..."
     return None

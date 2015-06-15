@@ -83,11 +83,11 @@ ListOfAgedPEs = {1: 0.3, 2: 0.1}
 ################################################
 #          Clustering Function  Config
 ################################################
-LocalSearchIteration = 100
+LocalSearchIteration = 20
 IterativeLocalSearchIterations = 20
 ################################################
 #          Mapping Function  Config
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch',
-Mapping_Function='LocalSearch'
+Mapping_Function='IterativeLocalSearch'

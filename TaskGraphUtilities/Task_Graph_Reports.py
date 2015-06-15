@@ -6,7 +6,6 @@ import Config
 import TG_Functions
 
 def ReportTaskGraph(TG,logging):
-
     print "==========================================="
     print "      REPORTING TASK GRAPH"
     print "==========================================="
@@ -28,6 +27,7 @@ def ReportTaskGraph(TG,logging):
     return None
 
 def DrawTaskGraph(TG):
+    print "DRAWING TASK GRAPH..."
     NodeColors=[]
     for Node in TG.nodes():
         if TG.node[Node]['Criticality']== 'H':
@@ -46,16 +46,19 @@ def DrawTaskGraph(TG):
         TG_Edge_List.append(Edge)
         TG_Edge_Weight.append(TG.edge[Edge[0]][Edge[1]]['ComWeight'])
 
-    #pos=networkx.shell_layout(TG)
-    pos = {}
-    MaxPriority = TG_Functions.CalculateMaxPriority(TG)
-    for CurrentPriority in range(0,MaxPriority+1):
-        Counter = 0
-        for node in TG.nodes():
-            Priority=TG.node[node]['Priority']
-            if CurrentPriority == Priority:
-                Counter+=1
-                pos[node] = (Counter, MaxPriority-CurrentPriority)
+
+    if Config.TG_Type == "RandomIndependent":
+        pos=networkx.shell_layout(TG)
+    else:
+        pos = {}
+        MaxPriority = TG_Functions.CalculateMaxPriority(TG)
+        for CurrentPriority in range(0,MaxPriority+1):
+            Counter = 0
+            for node in TG.nodes():
+                Priority=TG.node[node]['Priority']
+                if CurrentPriority == Priority:
+                    Counter+=1
+                    pos[node] = (Counter, MaxPriority-CurrentPriority)
 
     networkx.draw_networkx_nodes(TG,pos,with_labels=True,node_color=NodeColors)
     networkx.draw_networkx_edges(TG,pos,edge_color=Edge_Colors)
@@ -63,5 +66,6 @@ def DrawTaskGraph(TG):
     networkx.draw_networkx_edge_labels(TG,pos,edge_labels=dict(zip(TG_Edge_List, TG_Edge_Weight)))
     plt.savefig("GraphDrawings/TG.png")
     plt.clf()
+    print "TASK GRAPH DRAWINGS READY..."
     return None
 

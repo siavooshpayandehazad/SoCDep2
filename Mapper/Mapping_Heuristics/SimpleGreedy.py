@@ -29,7 +29,7 @@ def Min_Min_Mapping (TG,AG,NoCRG,SHM,logging):
         if len(ShortestTasks) == 0:
             ShortestTasks = Mapping_Functions.FindUnMappedTaskWithSmallestWCET(TG,logging)
     print "MIN-MIN MAPPING FINISHED..."
-    Scheduling_Reports.ReportMappedTasks(AG)
+    Scheduling_Reports.ReportMappedTasks(AG,logging)
     return TG, AG
 
 
@@ -41,7 +41,7 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
     # Note:: this is a heuristic for independent tasks... so we are not going to
     # schedule any link
     print "==========================================="
-    print "STARTING MIN-MAX MAPPING"
+    print "STARTING MAX-MIN MAPPING"
     LongestTasks = Mapping_Functions.FindUnMappedTaskWithBiggestWCET(TG,logging)
     while len(LongestTasks)>0 :
         TaskToBeMapped = LongestTasks.pop()
@@ -61,10 +61,10 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
         if len(LongestTasks) == 0:
             LongestTasks = Mapping_Functions.FindUnMappedTaskWithBiggestWCET(TG,logging)
     print "MIN-MAX MAPPING FINISHED..."
-    Scheduling_Reports.ReportMappedTasks(AG)
+    Scheduling_Reports.ReportMappedTasks(AG,logging)
     return TG, AG
 
-def MinExecutionTime(TG,AG,SHM):
+def MinExecutionTime(TG,AG,SHM,logging):
     # this sounds a little stupid because there are no job specific machines...
     # we can Add Specific Accelerators or define different run time on different
     # PEs so this becomes more interesting...
@@ -77,10 +77,10 @@ def MinExecutionTime(TG,AG,SHM):
         Scheduling_Functions.Add_TG_TaskToNode(TG,AG,SHM,TaskToBeMapped,ChosenNode,False)
         print "\tTASK",TaskToBeMapped,"MAPPED ON NODE:",ChosenNode
     print "MIN EXECUTION TIME MAPPING FINISHED..."
-    Scheduling_Reports.ReportMappedTasks(AG)
+    Scheduling_Reports.ReportMappedTasks(AG,logging)
     return TG,AG
 
-def MinimumCompletionTime(TG,AG,SHM):
+def MinimumCompletionTime(TG,AG,SHM,logging):
     # The difference with Min Min or Max Min is that we don't add priorities to
     # tasks based on their WCET but we randomly choose a task and schedule it...
     print "==========================================="
@@ -92,14 +92,14 @@ def MinimumCompletionTime(TG,AG,SHM):
         Scheduling_Functions.Add_TG_TaskToNode(TG,AG,SHM,TaskToBeMapped,ChosenNode,False)
         print "\tTASK",TaskToBeMapped,"MAPPED ON NODE:",ChosenNode
     print "MIN COMPLETION TIME MAPPING FINISHED..."
-    Scheduling_Reports.ReportMappedTasks(AG)
+    Scheduling_Reports.ReportMappedTasks(AG,logging)
     return TG,AG
 
-def FirstFree(TG,AG,SHM):
+def FirstFree(TG,AG,SHM,logging):
     print "==========================================="
     print "STARTING FIRST FREE MAPPING"
     # Todo: to write the function
 
     print "FIRST FREE MAPPING FINISHED..."
-    Scheduling_Reports.ReportMappedTasks(AG)
+    Scheduling_Reports.ReportMappedTasks(AG,logging)
     return TG,AG

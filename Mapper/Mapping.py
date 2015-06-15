@@ -23,13 +23,13 @@ def Mapping (TG,AG,NoCRG,SHM,logging):
 
     elif Config.Mapping_Function=='MinExecutionTime':
         if Config.TG_Type=='RandomIndependent':
-            return SimpleGreedy.MinExecutionTime(TG,AG,SHM)
+            return SimpleGreedy.MinExecutionTime(TG,AG,SHM,logging)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
     elif Config.Mapping_Function=='MinimumCompletionTime':
         if Config.TG_Type=='RandomIndependent':
-            return SimpleGreedy.MinimumCompletionTime(TG,AG,SHM)
+            return SimpleGreedy.MinimumCompletionTime(TG,AG,SHM,logging)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
@@ -50,10 +50,10 @@ def Mapping (TG,AG,NoCRG,SHM,logging):
             Clustering_Functions.ReportCTG(CTG,"CTG_PostOpt.png")
             # Mapping CTG on AG
             if Mapping_Functions.MakeInitialMapping(TG,CTG,AG,SHM,NoCRG,True,logging):
-                Mapping_Functions.ReportMapping(AG)
+                Mapping_Functions.ReportMapping(AG,logging)
                 # Schedule all tasks
                 Scheduler.ScheduleAll(TG,AG,SHM,Config.DebugInfo,Config.DebugDetails)
-                Scheduling_Reports.ReportMappedTasks(AG)
+                Scheduling_Reports.ReportMappedTasks(AG,logging)
                 Mapping_Functions.CostFunction(TG,AG,SHM,Config.DebugInfo)
                 if Config.Mapping_Function=='LocalSearch':
                     (BestTG,BestCTG,BestAG)=Local_Search.OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,
@@ -73,11 +73,11 @@ def Mapping (TG,AG,NoCRG,SHM,logging):
                     TG= copy.deepcopy(BestTG)
                     AG= copy.deepcopy(BestAG)
                     del BestTG,BestCTG,BestAG
-                Scheduling_Reports.ReportMappedTasks(AG)
+                Scheduling_Reports.ReportMappedTasks(AG,logging)
                 Mapping_Functions.CostFunction(TG,AG,SHM,True)
                 return TG,AG
             else:
-                Mapping_Functions.ReportMapping(AG)
+                Mapping_Functions.ReportMapping(AG,logging)
                 print "==========================================="
                 return None, None
         else :

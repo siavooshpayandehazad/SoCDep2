@@ -102,14 +102,14 @@ def RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,Node,logging):
     AG.node[Node]['Utilization']-=CTG.node[Cluster]['Utilization']
     return True
 
-def ReportMapping(AG):
-    print "==========================================="
-    print "      REPORTING MAPPING RESULT"
-    print "==========================================="
+def ReportMapping(AG,logging):
+    logging.info( "===========================================")
+    logging.info( "      REPORTING MAPPING RESULT")
+    logging.info( "===========================================")
     for Node in AG.nodes():
-        print "NODE:",Node,"CONTAINS:",AG.node[Node]['MappedTasks']
+        logging.info( "NODE:" + str(Node)+"CONTAINS:"+str(AG.node[Node]['MappedTasks']))
     for link in AG.edges():
-         print "LINK:",link,"CONTAINS:",AG.edge[link[0]][link[1]]['MappedTasks']
+         logging.info( "LINK:" + str(link) + "CONTAINS:" + str(AG.edge[link[0]][link[1]]['MappedTasks']))
     return None
 
 def ClearMapping(TG,CTG,AG):
