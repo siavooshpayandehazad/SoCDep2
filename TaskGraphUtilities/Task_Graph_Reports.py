@@ -48,7 +48,6 @@ def DrawTaskGraph(TG):
 
     #pos=networkx.shell_layout(TG)
     pos = {}
-
     MaxPriority = TG_Functions.CalculateMaxPriority(TG)
     for CurrentPriority in range(0,MaxPriority+1):
         Counter = 0

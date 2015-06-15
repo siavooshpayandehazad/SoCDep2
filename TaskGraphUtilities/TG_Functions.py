@@ -112,12 +112,12 @@ def AssignPriorities(TG):
         if Task not in SourceNodes:
             for Source in SourceNodes:
                 if networkx.has_path(TG,Source,Task):
+
                     #ShortestPaths=networkx.shortest_path(TG,Source,Task)
                     #distance.append(len(ShortestPaths)-1)
                     for path in networkx.all_simple_paths(TG,Source,Task):
-                        print path
                         distance.append(len(path))
-            TG.node[Task]['Priority']=max(distance)
+            TG.node[Task]['Priority']=max(distance)-1
 
 ########################################################
 def GenerateTG():
