@@ -15,13 +15,20 @@ def CalculateReachability (AG,NoCRG):
                         #print "No Path From", SourceNode,Port,"To",DestinationNode
                         AG.node[SourceNode]['Unreachable'][Port].append(DestinationNode)
 
-
 def ReportReachability (AG):
     for Node in AG.nodes():
         print "NODE",Node,"UNREACHABLE NODES:"
         for Port in AG.node[Node]['Unreachable']:
             print "Port:",Port," ==>",AG.node[Node]['Unreachable'][Port]
 
+def ReportReachabilityInFile (AG,FileName):
+    ReachabilityFile = open('Generated_Files/'+FileName+".txt",'w')
+    for Node in AG.nodes():
+        ReachabilityFile.write( "=====================================\n")
+        ReachabilityFile.write( "NODE "+str(Node)+" UNREACHABLE NODES:\n")
+        for Port in AG.node[Node]['Unreachable']:
+            ReachabilityFile.write("Port: "+str(Port)+" ==> "+str(AG.node[Node]['Unreachable'][Port])+"\n")
+    ReachabilityFile.close()
 
 def IsDestinationReachableViaPort(NoCRG,SourceNode,Port,DestinationNode,ReturnAllPaths,Report):
     """

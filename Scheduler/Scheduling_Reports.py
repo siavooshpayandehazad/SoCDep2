@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from Scheduling_Functions import FindLastAllocatedTimeOnNode,FindLastAllocatedTimeOnLink
 ##########################################################################
 #
-#                                   REPORTS
+#                           SCHEDULING REPORT
 #
 #
 ##########################################################################
@@ -20,7 +20,14 @@ def ReportMappedTasks(AG):
             "\tWITH SCHEDULING:",AG.edge[Link[0]][Link[1]]['Scheduling']
 
     return None
+
 ##########################################################################
+#
+#
+#                   Generating Gantt Charts
+#
+##########################################################################
+
 def GenerateGanttCharts(TG,AG):
     NodeMakeSpanList=[]
     LinkMakeSpanList=[]

@@ -15,7 +15,7 @@ NumberOfTasks = 10
 NumberOfEdges = 15
 WCET_Range = 30
 EdgeWeightRange = 7
-Release_Range = 20      # task release time range
+Release_Range = 5      # task release time range
 # The following is only for Manual TG_Type:
 Task_List = [0, 1, 2, 3, 4, 5, 6, 7]
 Task_WCET_List = [30, 30, 20, 40, 10, 5, 15, 20]
@@ -31,8 +31,8 @@ VirtualChannelNum = 0
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing
 NetworkTopology='2DMesh'
-Network_X_Size = 4
-Network_Y_Size = 4
+Network_X_Size = 6
+Network_Y_Size = 6
 Network_Z_Size = 0
 # Only for Manual AG_Type:
 PE_List = [0, 1, 2, 3]
@@ -50,7 +50,7 @@ XY_TurnModel = ['E2N','E2S','W2N','W2S']
 WestFirst_TurnModel = ['E2N','E2S','W2N','W2S','S2E','N2E']
 NorthLast_TurnModel = ['E2N','E2S','W2N','W2S','N2W','N2E']
 # this is for manually setting turns for routers
-RoutingFilePath = "USER_INPUTS/RoutingFile.txt"
+RoutingFilePath = "User_Inputs/RoutingFile.txt"
 ################################################
 #          SHM  Config
 ################################################
@@ -62,13 +62,13 @@ TurnsHealth = {"N2W":True,"N2E":True,"S2W":True,"S2E":True,
 # ListOfBrokenLinks = [(0, 1), (0, 2)]
 
 # For 4X4 network:
-# ListOfBrokenLinks = [(0, 1), (0, 4)]
+#ListOfBrokenLinks = [(0, 1), (0, 4)]
 
 # For 6X6 network:
-# ListOfBrokenLinks = [(35, 29), (34, 28), (33,27),(26,27),(20,21),(14,15),(9,15),(10,16),(11,17)]
+ListOfBrokenLinks = [(35, 29), (34, 28), (33,27),(26,27),(20,21),(14,15),(9,15),(10,16),(11,17)]
 
 # For those who don't need broken links
-ListOfBrokenLinks = []
+#ListOfBrokenLinks = []
 
 # List of broken PE
 ListOfBrokenPEs = [1]

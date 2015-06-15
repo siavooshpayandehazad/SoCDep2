@@ -31,6 +31,10 @@ logging.info('Starting logging...')
 GraphDirectory = "GraphDrawings"
 if not os.path.isdir(GraphDirectory):
    os.makedirs(GraphDirectory)
+
+GeneratedFilesDirectory = "Generated_Files"
+if not os.path.isdir(GeneratedFilesDirectory):
+   os.makedirs(GeneratedFilesDirectory)
 ####################################################################
 misc.DrawLogo()
 ####################################################################
@@ -63,6 +67,10 @@ if BestAG is not None and BestTG is not None:
 # SHM.RandomFaultInjection()
 # SHM.ReportMPM()
 Scheduling_Reports.GenerateGanttCharts(TG,AG)
+
+Calculate_Reachability.CalculateReachability(AG,NoCRG)
+Calculate_Reachability.ReportReachabilityInFile(AG,"ReachAbilityReport")
+
 """
 Calculate_Reachability.CalculateReachability(AG,NoCRG)
 Calculate_Reachability.ReportReachability(AG)
