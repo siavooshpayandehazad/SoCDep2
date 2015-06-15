@@ -48,7 +48,7 @@ Arch_Graph_Reports.DrawArchGraph(AG)
 ####################################################################
 SHM = SystemHealthMonitor.SystemHealthMonitor()
 SHM.SetUp_NoC_SystemHealthMap(AG,Config.TurnsHealth)
-SHM.Report_NoC_SystemHealthMap()
+#SHM.Report_NoC_SystemHealthMap()
 print "==========================================="
 print "SYSTEM IS UP..."
 # Here we are injecting initial faults of the system
@@ -68,11 +68,10 @@ if BestAG is not None and BestTG is not None:
 # SHM.ReportMPM()
 Scheduling_Reports.GenerateGanttCharts(TG,AG)
 
-Calculate_Reachability.CalculateReachability(AG,NoCRG)
-Calculate_Reachability.ReportReachabilityInFile(AG,"ReachAbilityReport")
-
 """
 Calculate_Reachability.CalculateReachability(AG,NoCRG)
 Calculate_Reachability.ReportReachability(AG)
+Calculate_Reachability.ReportReachabilityInFile(AG,"ReachAbilityReport")
+
 """
 logging.info('Logging finished...')

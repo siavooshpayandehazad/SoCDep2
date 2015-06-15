@@ -34,7 +34,9 @@ def Mapping (TG,AG,NoCRG,SHM,logging):
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
     elif Config.Mapping_Function=='LocalSearch' or Config.Mapping_Function=='IterativeLocalSearch':
-        if Config.TG_Type!='RandomDependent':
+        if Config.TG_Type =='RandomDependent' or Config.TG_Type =='Manual':
+            None
+        else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomDependent')
     # clustered task graph
         CTG=copy.deepcopy(Clustering.TaskClusterGeneration(len(AG.nodes())))

@@ -3,6 +3,7 @@
 import networkx
 import matplotlib.pyplot as plt
 import Config
+import TG_Functions
 
 def ReportTaskGraph(TG,logging):
 
@@ -45,7 +46,18 @@ def DrawTaskGraph(TG):
         TG_Edge_List.append(Edge)
         TG_Edge_Weight.append(TG.edge[Edge[0]][Edge[1]]['ComWeight'])
 
-    pos=networkx.shell_layout(TG)
+    #pos=networkx.shell_layout(TG)
+    pos = {}
+
+    MaxPriority = TG_Functions.CalculateMaxPriority(TG)
+    for CurrentPriority in range(0,MaxPriority+1):
+        Counter = 0
+        for node in TG.nodes():
+            Priority=TG.node[node]['Priority']
+            if CurrentPriority == Priority:
+                Counter+=1
+                pos[node] = (Counter, MaxPriority-CurrentPriority)
+
     networkx.draw_networkx_nodes(TG,pos,with_labels=True,node_color=NodeColors)
     networkx.draw_networkx_edges(TG,pos,edge_color=Edge_Colors)
     networkx.draw_networkx_labels(TG,pos)
@@ -53,3 +65,4 @@ def DrawTaskGraph(TG):
     plt.savefig("GraphDrawings/TG.png")
     plt.clf()
     return None
+
