@@ -10,6 +10,7 @@ from SystemHealthMonitoring import SystemHealthMonitor
 from TaskGraphUtilities import Task_Graph_Reports,TG_Functions
 from RoutingAlgorithms import Routing,Calculate_Reachability
 from ArchGraphUtilities import Arch_Graph_Reports,AG_Functions
+from Scheduler import TrafficTableGenerator
 import misc
 import Logger
 import Config
@@ -67,7 +68,8 @@ if BestAG is not None and BestTG is not None:
 # SHM.RandomFaultInjection()
 # SHM.ReportMPM()
 Scheduling_Reports.GenerateGanttCharts(TG,AG)
-
+TrafficTableGenerator.GenerateNoximTrafficTable()
+TrafficTableGenerator.GenerateGSNoCTrafficTable(AG,TG)
 """
 Calculate_Reachability.CalculateReachability(AG,NoCRG)
 Calculate_Reachability.ReportReachability(AG)

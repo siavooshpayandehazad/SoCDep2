@@ -90,4 +90,4 @@ IterativeLocalSearchIterations = 20
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch',
-Mapping_Function='IterativeLocalSearch'
+Mapping_Function='LocalSearch'
