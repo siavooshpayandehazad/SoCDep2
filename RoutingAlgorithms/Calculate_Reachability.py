@@ -10,7 +10,7 @@ def CalculateReachability (AG,NoCRG):
         for Port in PortList:
             AG.node[SourceNode]['Unreachable'][Port]=[]
         for DestinationNode in AG.nodes():
-            if SourceNode != DestinationNode:
+            #if SourceNode != DestinationNode:
                 for Port in PortList:
                     if not IsDestinationReachableViaPort(NoCRG,SourceNode,Port,DestinationNode,False,False):
                         #print "No Path From", SourceNode,Port,"To",DestinationNode

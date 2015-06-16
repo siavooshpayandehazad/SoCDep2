@@ -59,7 +59,7 @@ TurnsHealth = {"N2W":True,"N2E":True,"S2W":True,"S2E":True,
             "W2N":True,"W2S":True,"E2N":True,"E2S":True}
 
 # Number of Unreachable-Rectangles
-NumberOfRects = 4
+NumberOfRects = 3
 
 # Here you can break things as initial defects...
 # For 2X2 network:
