@@ -52,11 +52,15 @@ def OptimizeReachabilityRectangles(AG, NumberOfRects):
     return None
 
 def MergeNodeWithRectangles (RectangleList,UnreachableNodeList):
+    # todo: in this function if we can not perform any loss-less merge, we terminate the process...
+    # which is bad... we need to make sure that this node is covered
     for UnreachableNode in UnreachableNodeList:
+        Covered = False
         for Rectangle in RectangleList:
             if RectangleList [Rectangle][0] == None:
+                # there is no entry, this is the first node to get in...
                 RectangleList [Rectangle] = (UnreachableNode,UnreachableNode)
-                #print "Generated Entry..."
+                Covered = True
                 break
             else:
                 RX1 = RectangleList [Rectangle][0] % Config.Network_X_Size
@@ -66,7 +70,8 @@ def MergeNodeWithRectangles (RectangleList,UnreachableNodeList):
                 NodeX = UnreachableNode % Config.Network_X_Size
                 NodeY = UnreachableNode / Config.Network_X_Size
                 if NodeX >= RX1 and NodeX <= RX2 and NodeY <= RY1 and NodeY >= RY2:
-                    #print " node is contained inside the rectangle"
+                    # node is contained inside the rectangle
+                    Covered = True
                     break
                 else:
                     MergedX1 = min(RX1,NodeX)
@@ -76,18 +81,20 @@ def MergeNodeWithRectangles (RectangleList,UnreachableNodeList):
                     #print "Merged:" ,MergedY1 * Config.Network_X_Size + MergedX1, MergedY2 * Config.Network_X_Size + MergedX2
                     LossLessMerge = True
                     for NetworkNode_X in range(MergedX1,MergedX2 +1):
-                        for NetworkNode_Y in range(MergedY2,MergedY1 +1):
+                        for NetworkNode_Y in range(MergedY2,MergedY1 +1):       # MergedY2 < MergedY1
                             NodeNumber = NetworkNode_Y * Config.Network_X_Size + NetworkNode_X
-                            if NodeNumber in UnreachableNodeList:
-                                pass
-                            else:
+                            if NodeNumber not in UnreachableNodeList:
                                 LossLessMerge = False
                                 break
-                    if LossLessMerge:
+                    if LossLessMerge:       # if we are not losing any Node, we perform Merge...
                         Merged1 = MergedY1 * Config.Network_X_Size + MergedX1
                         Merged2 = MergedY2 * Config.Network_X_Size + MergedX2
                         RectangleList [Rectangle] = copy.deepcopy((Merged1,Merged2))
+                        Covered = True
                         break
+        if not Covered:
+            print "COULD NOT PERFORM ANY LOSS_LESS MERGE FOR:",UnreachableNode
+            print RectangleList
     return RectangleList
 
 def IsDestinationReachableViaPort(NoCRG,SourceNode,Port,DestinationNode,ReturnAllPaths,Report):
