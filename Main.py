@@ -64,16 +64,19 @@ if BestAG is not None and BestTG is not None:
     TG = copy.deepcopy(BestTG)
     AG = copy.deepcopy(BestAG)
     del BestTG, BestAG
-    # SHM.AddCurrentMappingToMPM(TG)
-# SHM.RandomFaultInjection()
-# SHM.ReportMPM()
+    #SHM.AddCurrentMappingToMPM(TG)
+#SHM.RandomFaultInjection()
+#SHM.ReportMPM()
+
 Scheduling_Reports.GenerateGanttCharts(TG,AG)
 TrafficTableGenerator.GenerateNoximTrafficTable()
 TrafficTableGenerator.GenerateGSNoCTrafficTable(AG,TG)
-"""
-Calculate_Reachability.CalculateReachability(AG,NoCRG)
-Calculate_Reachability.ReportReachability(AG)
-Calculate_Reachability.ReportReachabilityInFile(AG,"ReachAbilityReport")
 
-"""
+Calculate_Reachability.CalculateReachability(AG,NoCRG)
+#Calculate_Reachability.ReportReachability(AG)
+Calculate_Reachability.ReportReachabilityInFile(AG,"ReachAbilityNodeReport")
+Calculate_Reachability.OptimizeReachabilityRectangles(AG,3)
+#Calculate_Reachability.ReportReachability(AG)
+Calculate_Reachability.ReportReachabilityInFile(AG,"ReachAbilityRectReport")
+
 logging.info('Logging finished...')

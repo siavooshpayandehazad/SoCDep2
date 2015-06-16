@@ -4,6 +4,15 @@ __author__ = 'siavoosh'
 def GenerateNoximTrafficTable ():
     # here we should generate a traffic Table for Noxim Simulator to double
     # check our experiments with it.
+
+    # Note that the node numbering in Noxim is as follows:
+    #   Y
+    #
+    #   |   ? ? ?
+    #   |
+    #   |
+    #       ---------- X
+
     TrafficTableFile = open('Generated_Files/NoximTrafficTable.txt','w')
     TrafficTableFile.write("")
     return None
@@ -12,7 +21,7 @@ def GenerateNoximTrafficTable ():
 def GenerateGSNoCTrafficTable (AG, TG):
     # here we should generate a traffic Table for GSNoC Simulator to double
     # check our experiments with it.
-    # This is the format of the application file:
+    # This is the format of the application file called GSPA:
     # n.N. | n.T | T.exe. | N.e | w |  bw | St | Dt | Sn |  Dn
     # Where:
     # n.N.: Node Number

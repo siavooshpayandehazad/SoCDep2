@@ -1,7 +1,8 @@
 # Copyright (C) Siavoosh Payandeh Azad
 
 from Routing import FindRouteInRouteGraph
-import networkx,re
+import networkx,re,copy
+import Config
 
 def CalculateReachability (AG,NoCRG):
     PortList = ['N','E','W','S']
@@ -16,6 +17,7 @@ def CalculateReachability (AG,NoCRG):
                         AG.node[SourceNode]['Unreachable'][Port].append(DestinationNode)
 
 def ReportReachability (AG):
+    print "====================================="
     for Node in AG.nodes():
         print "NODE",Node,"UNREACHABLE NODES:"
         for Port in AG.node[Node]['Unreachable']:
@@ -29,6 +31,64 @@ def ReportReachabilityInFile (AG,FileName):
         for Port in AG.node[Node]['Unreachable']:
             ReachabilityFile.write("Port: "+str(Port)+" ==> "+str(AG.node[Node]['Unreachable'][Port])+"\n")
     ReachabilityFile.close()
+
+def OptimizeReachabilityRectangles(AG, NumberOfRects):
+    # the idea of merging is that we make a rectangle with representing 2 vertex of it,
+    # namely north-west and south-east vertex.
+    # Then we try to generate optimal rectangle set that covers all of the nodes...
+    print "====================================="
+    print "STARTING RECTANGLE OPTIMIZATION..."
+    for Node in AG.nodes():
+        for Port in AG.node[Node]['Unreachable']:
+            RectangleList= {}
+            for i in range(0,NumberOfRects):
+                RectangleList[i] = (None, None)
+            if len( AG.node[Node]['Unreachable'][Port]) == Config.Network_X_Size * Config.Network_Y_Size - 1:
+                RectangleList[0]=(Config.Network_X_Size * (Config.Network_Y_Size-1), Config.Network_X_Size -1)
+            else:
+                RectangleList = copy.deepcopy(MergeNodeWithRectangles(RectangleList,AG.node[Node]['Unreachable'][Port]))
+            AG.node[Node]['Unreachable'][Port] = RectangleList
+    print "RECTANGLE OPTIMIZATION FINISHED..."
+    return None
+
+def MergeNodeWithRectangles (RectangleList,UnreachableNodeList):
+    for UnreachableNode in UnreachableNodeList:
+        for Rectangle in RectangleList:
+            if RectangleList [Rectangle][0] == None:
+                RectangleList [Rectangle] = (UnreachableNode,UnreachableNode)
+                #print "Generated Entry..."
+                break
+            else:
+                RX1 = RectangleList [Rectangle][0] % Config.Network_X_Size
+                RY1 = RectangleList [Rectangle][0] / Config.Network_X_Size
+                RX2 = RectangleList [Rectangle][1] % Config.Network_X_Size
+                RY2 = RectangleList [Rectangle][1] / Config.Network_X_Size
+                NodeX = UnreachableNode % Config.Network_X_Size
+                NodeY = UnreachableNode / Config.Network_X_Size
+                if NodeX >= RX1 and NodeX <= RX2 and NodeY <= RY1 and NodeY >= RY2:
+                    #print " node is contained inside the rectangle"
+                    break
+                else:
+                    MergedX1 = min(RX1,NodeX)
+                    MergedY1 = max(RY1,NodeY)
+                    MergedX2 = max(RX2,NodeX)
+                    MergedY2 = min(RY2,NodeY)
+                    #print "Merged:" ,MergedY1 * Config.Network_X_Size + MergedX1, MergedY2 * Config.Network_X_Size + MergedX2
+                    LossLessMerge = True
+                    for NetworkNode_X in range(MergedX1,MergedX2 +1):
+                        for NetworkNode_Y in range(MergedY2,MergedY1 +1):
+                            NodeNumber = NetworkNode_Y * Config.Network_X_Size + NetworkNode_X
+                            if NodeNumber in UnreachableNodeList:
+                                pass
+                            else:
+                                LossLessMerge = False
+                                break
+                    if LossLessMerge:
+                        Merged1 = MergedY1 * Config.Network_X_Size + MergedX1
+                        Merged2 = MergedY2 * Config.Network_X_Size + MergedX2
+                        RectangleList [Rectangle] = copy.deepcopy((Merged1,Merged2))
+                        break
+    return RectangleList
 
 def IsDestinationReachableViaPort(NoCRG,SourceNode,Port,DestinationNode,ReturnAllPaths,Report):
     """
