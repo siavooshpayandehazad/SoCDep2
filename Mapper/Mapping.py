@@ -42,7 +42,7 @@ def Mapping (TG,AG,NoCRG,SHM,logging):
         CTG=copy.deepcopy(Clustering.TaskClusterGeneration(len(AG.nodes())))
         if Clustering.InitialClustering(TG, CTG):
             # Clustered Task Graph Optimization
-            (BestClustering,BestTaskGraph)= Clustering.ClusteringOptimization_LocalSearch(TG, CTG, 1000)
+            (BestClustering,BestTaskGraph)= Clustering.ClusteringOptimization_LocalSearch(TG, CTG, Config.ClusteringIteration)
             TG= copy.deepcopy(BestTaskGraph)
             CTG= copy.deepcopy(BestClustering)
             del BestClustering, BestTaskGraph

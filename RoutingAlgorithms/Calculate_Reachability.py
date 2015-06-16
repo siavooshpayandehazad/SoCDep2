@@ -16,6 +16,22 @@ def CalculateReachability (AG,NoCRG):
                         #print "No Path From", SourceNode,Port,"To",DestinationNode
                         AG.node[SourceNode]['Unreachable'][Port].append(DestinationNode)
 
+def IsDestinationReachableViaPort(NoCRG,SourceNode,Port,DestinationNode,ReturnAllPaths,Report):
+    """
+    :param NoCRG: NoC Routing Graph
+    :param SourceNode: Source node on AG
+    :param DestinationNode: Destination node on AG
+    :param ReturnAllPaths: boolean that decides to return shortest path or all the paths between two nodes
+    :return: return a path (by name of links) on AG from source to destination if possible, None if not.
+    """
+    Source = str(SourceNode) + str(Port) + str('O')
+    Destination = str(DestinationNode) + str('L') + str('O')
+    if networkx.has_path(NoCRG,Source,Destination):
+        return True
+    else:
+        if Report:print "\t\tNO PATH FOUND FROM: ", Source, "TO:", Destination
+        return False
+
 def ReportReachability (AG):
     print "====================================="
     for Node in AG.nodes():
@@ -97,18 +113,3 @@ def MergeNodeWithRectangles (RectangleList,UnreachableNodeList):
             print RectangleList
     return RectangleList
 
-def IsDestinationReachableViaPort(NoCRG,SourceNode,Port,DestinationNode,ReturnAllPaths,Report):
-    """
-    :param NoCRG: NoC Routing Graph
-    :param SourceNode: Source node on AG
-    :param DestinationNode: Destination node on AG
-    :param ReturnAllPaths: boolean that decides to return shortest path or all the paths between two nodes
-    :return: return a path (by name of links) on AG from source to destination if possible, None if not.
-    """
-    Source = str(SourceNode) + str(Port) + str('O')
-    Destination = str(DestinationNode) + str('L') + str('O')
-    if networkx.has_path(NoCRG,Source,Destination):
-        return True
-    else:
-        if Report:print "\t\tNO PATH FOUND FROM: ", Source, "TO:", Destination
-        return False

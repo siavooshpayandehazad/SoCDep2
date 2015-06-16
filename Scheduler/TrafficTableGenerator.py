@@ -12,7 +12,19 @@ def GenerateNoximTrafficTable ():
     #   |
     #   |
     #       ---------- X
-
+    #
+    # ---------------------------------------------------
+    # The file format is:
+    # src   dst     pir    por	    t_on    t_off   t_period
+    # where:
+    #   src:		ID of the source node (PE)
+    #   dst:		ID of the destination node (PE)
+    #   t pir:	Packet Injection Rate for the link
+    #   t por:    Probability Of Retransmission for the link
+    #   t_on:		Time (in cycles) at which activity begins
+    #   t_off:    Time (in cycles) at which activity ends
+    #   t_period:	Period after which activity starts again
+    # ---------------------------------------------------
     TrafficTableFile = open('Generated_Files/NoximTrafficTable.txt','w')
     TrafficTableFile.write("")
     return None
@@ -24,16 +36,16 @@ def GenerateGSNoCTrafficTable (AG, TG):
     # This is the format of the application file called GSPA:
     # n.N. | n.T | T.exe. | N.e | w |  bw | St | Dt | Sn |  Dn
     # Where:
-    # n.N.: Node Number
-    # n.T: Task Number
-    # T.exe.: Task Execution Time
-    # N.e: Edge Number
-    # w: Weight counted as number of NoC flits
-    # bw: counted as the percentage number of the maximum NoC physical channel bandwidth capability
-    # St: Source Task
-    # Dt: Destination Task
-    # Sn: Source Node
-    # Dn :Destination Node
+    #   n.N.: Node Number
+    #   n.T: Task Number
+    #   T.exe.: Task Execution Time
+    #   N.e: Edge Number
+    #   w: Weight counted as number of NoC flits
+    #   bw: counted as the percentage number of the maximum NoC physical channel bandwidth capability
+    #   St: Source Task
+    #   Dt: Destination Task
+    #   Sn: Source Node
+    #   Dn :Destination Node
     # Note that the node numbering in GSNoC is as follows:
     #   Y
     #   ^

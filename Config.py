@@ -57,6 +57,10 @@ RoutingFilePath = "User_Inputs/RoutingFile.txt"
 # Do not change if you have conventional 2D NoC
 TurnsHealth = {"N2W":True,"N2E":True,"S2W":True,"S2E":True,
             "W2N":True,"W2S":True,"E2N":True,"E2S":True}
+
+# Number of Unreachable-Rectangles
+NumberOfRects = 4
+
 # Here you can break things as initial defects...
 # For 2X2 network:
 # ListOfBrokenLinks = [(0, 1), (0, 2)]
@@ -83,11 +87,12 @@ ListOfAgedPEs = {1: 0.3, 2: 0.1}
 ################################################
 #          Clustering Function  Config
 ################################################
-LocalSearchIteration = 20
-IterativeLocalSearchIterations = 20
+ClusteringIteration = 1000
 ################################################
 #          Mapping Function  Config
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch',
 Mapping_Function='LocalSearch'
+LocalSearchIteration = 20
+IterativeLocalSearchIterations = 20

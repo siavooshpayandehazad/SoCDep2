@@ -75,7 +75,7 @@ TrafficTableGenerator.GenerateGSNoCTrafficTable(AG,TG)
 Calculate_Reachability.CalculateReachability(AG,NoCRG)
 #Calculate_Reachability.ReportReachability(AG)
 Calculate_Reachability.ReportReachabilityInFile(AG,"ReachAbilityNodeReport")
-Calculate_Reachability.OptimizeReachabilityRectangles(AG,4)
+Calculate_Reachability.OptimizeReachabilityRectangles(AG,Config.NumberOfRects)
 #Calculate_Reachability.ReportReachability(AG)
 Calculate_Reachability.ReportReachabilityInFile(AG,"ReachAbilityRectReport")
 
