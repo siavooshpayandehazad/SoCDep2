@@ -57,7 +57,6 @@ print "SYSTEM IS UP..."
 SHM.ApplyInitialFaults()
 NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.WestFirst_TurnModel, Config.DebugInfo, Config.DebugDetails))
 # NoCRG = Routing.GenerateNoCRouteGraphFromFile(AG, SHM, Config.RoutingFilePath, Config.DebugInfo, Config.DebugDetails)
-# print Routing.FindRouteInRouteGraph(NoCRG, 0,3, True, True)
 ####################################################################
 BestTG, BestAG = Mapping.Mapping(TG, AG, NoCRG, SHM, logging)
 if BestAG is not None and BestTG is not None:
