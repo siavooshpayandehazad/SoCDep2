@@ -9,7 +9,7 @@ DebugDetails = False
 #          TG  Config
 ################################################
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
-TG_Type = 'RandomIndependent'
+TG_Type = 'RandomDependent'
 # For Random TG_Type:
 NumberOfTasks = 10
 NumberOfEdges = 15
@@ -41,13 +41,13 @@ AG_Edge_List = [(0, 1), (0, 2), (1, 0), (1, 3), (2, 0), (2, 3), (3, 2), (3, 1)]
 AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'), ('E', 'W'), ('W', 'E'), ('N', 'S')]
 # Critical Region Nodes:
 # for 6X6 network
-CriticalRegionNodes = [16, 17, 21, 22, 23, 28, 29]
-GateToNonCritical = [15, 27]
-GateToCritical = [20]
+# CriticalRegionNodes = [16, 17, 21, 22, 23, 28, 29]
+# GateToNonCritical = [15, 27]
+# GateToCritical = [20]
 # No regions:
-# CriticalRegionNodes = []
-# GateToNonCritical = []
-# GateToCritical = []
+CriticalRegionNodes = []
+GateToNonCritical = []
+GateToCritical = []
 ################################################
 #          Routing  Config
 ################################################
@@ -78,13 +78,16 @@ NumberOfRects = 5
 # ListOfBrokenLinks = [(0, 1), (0, 4)]
 
 # For 6X6 network: (This is the Example scenario no. 2 in ReCoSoC paper)
-ListOfBrokenLinks = [(35, 29), (29, 35), (34, 28), (28, 34), (33, 27), (11, 17), (17, 11), (10, 16), (16, 10),
-                      (9, 15), (14, 15), (20, 26), (20, 19), (20, 14), (26, 27)]
-VirtualBrokenLinksForNonCritical = [(20, 21), (27, 28), (27, 21), (15, 21), (15, 16)]
-VirtualBrokenLinksForCritical = [(27, 33), (27, 26), (15, 14), (15, 9)]
+#ListOfBrokenLinks = [(35, 29), (29, 35), (34, 28), (28, 34), (33, 27), (11, 17), (17, 11), (10, 16), (16, 10),
+#                      (9, 15), (14, 15), (20, 26), (20, 19), (20, 14), (26, 27)]
+# the virtual broken links for Non critical is not quite right in the paper for the case of gateways
+#VirtualBrokenLinksForNonCritical = [(20, 21), (27, 28), (27, 21), (15, 21), (15, 16)]
+#VirtualBrokenLinksForCritical = [(27, 33), (27, 26), (15, 14), (15, 9)]
 
 # For those who don't need broken links
-# ListOfBrokenLinks = []
+ListOfBrokenLinks = []
+VirtualBrokenLinksForNonCritical = []
+VirtualBrokenLinksForCritical = []
 
 # List of broken PE
 ListOfBrokenPEs = [1]
@@ -105,6 +108,6 @@ ClusteringIteration = 1000
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch',
-Mapping_Function = 'MinMin'
+Mapping_Function = 'LocalSearch'
 LocalSearchIteration = 20
 IterativeLocalSearchIterations = 20

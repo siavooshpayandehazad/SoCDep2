@@ -36,7 +36,7 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report,DetailedReport):
     # todo: add virtual channel support for the routing graph...
     if Report:print "==========================================="
     if Report:print "STARTING BUILDING ROUTING ARCHITECTURE..."
-    ReportTurnModel(TurnModel)
+    if Report:ReportTurnModel(TurnModel)
     PortList = ['N','W','L','E','S']  # the order is crucial... do not change
                                       # to find out why its important, check: connect direct paths
     NoCRG = networkx.DiGraph()
@@ -101,7 +101,6 @@ def GenerateNoCRouteGraphFromFile(AG,SystemHealthMap,RoutingFilePath,Report,Deta
     if Report:print "==========================================="
     if Report:print "STARTING BUILDING ROUTING ARCHITECTURE..."
     NoCRG= networkx.DiGraph()
-    # TODO: read from file and construct the NoCRG
     try:
         RoutingFile = open(RoutingFilePath, 'r')
     except IOError:
@@ -171,7 +170,7 @@ def ReportTurnModel(TurnModel):
     :param TurnModel: set of allowed turns in a 2D network
     :return: None
     """
-    print "\tUSING TURN MODE: ", TurnModel
+    print "\tUSING TURN MODEL: ", TurnModel
     return None
 
 def UpdateNoCRouteGraph(SystemHealthMap,NewEvent):
