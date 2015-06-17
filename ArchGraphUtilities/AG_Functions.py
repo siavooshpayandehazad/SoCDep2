@@ -118,7 +118,7 @@ def GenerateAG(logging):
     """
     if Config.AG_Type == 'Generic':
         return GenerateGenericTopologyAG(Config.NetworkTopology, Config.Network_X_Size,
-                                                          Config.Network_Y_Size, Config.Network_Z_Size, logging)
+                                         Config.Network_Y_Size, Config.Network_Z_Size, logging)
     elif Config.AG_Type == 'Manual':
         return GenerateManualAG(Config.PE_List, Config.AG_Edge_List, Config.AG_Edge_Port_List)
     else:
