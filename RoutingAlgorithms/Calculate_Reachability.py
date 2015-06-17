@@ -63,7 +63,7 @@ def OptimizeReachabilityRectangles(AG, NumberOfRects):
             RectangleList = {}
             for i in range(0, NumberOfRects):
                 RectangleList[i] = (None, None)
-            if len( AG.node[Node]['Unreachable'][Port]) == Config.Network_X_Size * Config.Network_Y_Size - 1:
+            if len( AG.node[Node]['Unreachable'][Port]) == Config.Network_X_Size * Config.Network_Y_Size:
                 RectangleList[0] = (Config.Network_X_Size*(Config.Network_Y_Size-1), Config.Network_X_Size -1)
             else:
                 RectangleList = copy.deepcopy(MergeNodeWithRectangles(RectangleList,AG.node[Node]['Unreachable'][Port]))
