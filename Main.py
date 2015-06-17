@@ -25,58 +25,57 @@ sys.stdout = Logger.Logger()
 ##############################
 # preparing to setup Logging
 LoGDirectory = "LOGS"
-logging.basicConfig(filename=os.path.join(os.path.join(os.path.curdir,LoGDirectory),
-                                          'Logging_Log_'+str(time.time())+'.log'),level=logging.DEBUG)
+logging.basicConfig(filename=os.path.join(os.path.join(os.path.curdir, LoGDirectory),
+                                          'Logging_Log_'+str(time.time())+'.log'), level=logging.DEBUG)
 logging.info('Starting logging...')
 ####################################################################
 GraphDirectory = "GraphDrawings"
 if not os.path.isdir(GraphDirectory):
-   os.makedirs(GraphDirectory)
+    os.makedirs(GraphDirectory)
 
 GeneratedFilesDirectory = "Generated_Files"
 if not os.path.isdir(GeneratedFilesDirectory):
-   os.makedirs(GeneratedFilesDirectory)
+    os.makedirs(GeneratedFilesDirectory)
 ####################################################################
 misc.DrawLogo()
 ####################################################################
 TG = copy.deepcopy(TG_Functions.GenerateTG())
-Task_Graph_Reports.ReportTaskGraph(TG,logging)
+Task_Graph_Reports.ReportTaskGraph(TG, logging)
 Task_Graph_Reports.DrawTaskGraph(TG)
-TG_Functions.CheckAcyclic(TG,logging)
+TG_Functions.CheckAcyclic(TG, logging)
 ####################################################################
 AG = copy.deepcopy(AG_Functions.GenerateAG(logging))
 Arch_Graph_Reports.DrawArchGraph(AG)
 ####################################################################
 SHM = SystemHealthMonitor.SystemHealthMonitor()
-SHM.SetUp_NoC_SystemHealthMap(AG,Config.TurnsHealth)
-#SHM.Report_NoC_SystemHealthMap()
+SHM.SetUp_NoC_SystemHealthMap(AG, Config.TurnsHealth)
+# SHM.Report_NoC_SystemHealthMap()
 print "==========================================="
 print "SYSTEM IS UP..."
 # Here we are injecting initial faults of the system
 SHM.ApplyInitialFaults()
-NoCRG = Routing.GenerateNoCRouteGraph(AG,SHM,Config.WestFirst_TurnModel,Config.DebugInfo,Config.DebugDetails)
-# NoCRG = Routing.GenerateNoCRouteGraphFromFile(AG,SHM,Config.RoutingFilePath,Config.DebugInfo,Config.DebugDetails)
-# print Routing.FindRouteInRouteGraph(NoCRG,0,3,True,True)
+NoCRG = Routing.GenerateNoCRouteGraph(AG, SHM, Config.WestFirst_TurnModel, Config.DebugInfo, Config.DebugDetails)
+# NoCRG = Routing.GenerateNoCRouteGraphFromFile(AG, SHM, Config.RoutingFilePath, Config.DebugInfo, Config.DebugDetails)
+# print Routing.FindRouteInRouteGraph(NoCRG, 0,3, True, True)
 ####################################################################
-
-BestTG,BestAG = Mapping.Mapping(TG,AG,NoCRG,SHM,logging)
+BestTG, BestAG = Mapping.Mapping(TG, AG, NoCRG, SHM, logging)
 if BestAG is not None and BestTG is not None:
     TG = copy.deepcopy(BestTG)
     AG = copy.deepcopy(BestAG)
     del BestTG, BestAG
-    #SHM.AddCurrentMappingToMPM(TG)
-#SHM.RandomFaultInjection()
-#SHM.ReportMPM()
+    # SHM.AddCurrentMappingToMPM(TG)
+# SHM.RandomFaultInjection()
+# SHM.ReportMPM()
 
-Scheduling_Reports.GenerateGanttCharts(TG,AG)
+Scheduling_Reports.GenerateGanttCharts(TG, AG)
 TrafficTableGenerator.GenerateNoximTrafficTable()
-TrafficTableGenerator.GenerateGSNoCTrafficTable(AG,TG)
+TrafficTableGenerator.GenerateGSNoCTrafficTable(AG, TG)
 
-Calculate_Reachability.CalculateReachability(AG,NoCRG)
-#Calculate_Reachability.ReportReachability(AG)
-Calculate_Reachability.ReportReachabilityInFile(AG,"ReachAbilityNodeReport")
-Calculate_Reachability.OptimizeReachabilityRectangles(AG,Config.NumberOfRects)
-#Calculate_Reachability.ReportReachability(AG)
-Calculate_Reachability.ReportReachabilityInFile(AG,"ReachAbilityRectReport")
+Calculate_Reachability.CalculateReachability(AG, NoCRG)
+# Calculate_Reachability.ReportReachability(AG)
+Calculate_Reachability.ReportReachabilityInFile(AG, "ReachAbilityNodeReport")
+Calculate_Reachability.OptimizeReachabilityRectangles(AG, Config.NumberOfRects)
+# Calculate_Reachability.ReportReachability(AG)
+Calculate_Reachability.ReportReachabilityInFile(AG, "ReachAbilityRectReport")
 
 logging.info('Logging finished...')

@@ -188,7 +188,8 @@ def FindUnMappedTaskWithBiggestWCET(TG, logging):
     logging.info("THE LIST OF LONGEST UNMAPPED TASKS:"+str(LongestTasks))
     return LongestTasks
 
-def FindNodeWithSmallestCompletionTime(AG,TG,SHM,Task):
+
+def FindNodeWithSmallestCompletionTime(AG, TG, SHM, Task):
     """
     THIS FUNCTION CAN BE STRICTLY USED FOR INDEPENDENT TGs
     :param AG: Arch Graph
