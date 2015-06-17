@@ -80,7 +80,7 @@ NumberOfRects = 5
 # For 6X6 network: (This is the Example scenario no. 2 in ReCoSoC paper)
 ListOfBrokenLinks = [(35, 29), (29, 35), (34, 28), (28, 34), (33, 27), (11, 17), (17, 11), (10, 16), (16, 10),
                       (9, 15), (14, 15), (20, 26), (20, 19), (20, 14), (26, 27)]
-VirtualBrokenLinksForNonCritical = [(20, 21)]
+VirtualBrokenLinksForNonCritical = [(20, 21), (27, 28), (27, 21), (15, 21), (15, 16)]
 VirtualBrokenLinksForCritical = [(27, 33), (27, 26), (15, 14), (15, 9)]
 
 # For those who don't need broken links
