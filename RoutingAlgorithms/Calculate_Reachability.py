@@ -163,9 +163,12 @@ def CalculateReachabilityWithRegions(AG,SHM, NoCRG):
     CalculateReachability(AG, NonCriticalRG)
     # save Non Critical rectangles somewhere
     NonCriticalRect={}
+    GateWayRect={}
     for Node in AG.nodes():
         if Node not in Config.CriticalRegionNodes:
             NonCriticalRect[Node] = copy.deepcopy(AG.node[Node]['Unreachable'])
+    for Node in Config.GateToNonCritical:
+        GateWayRect[Node] = copy.deepcopy(AG.node[Node]['Unreachable'])
     # Restore the VirtualBrokenLinksForNonCritical
     for VirtualBrokenLink in Config.VirtualBrokenLinksForNonCritical:
         SHM.RestoreBrokenLink(VirtualBrokenLink,True)
@@ -179,15 +182,23 @@ def CalculateReachabilityWithRegions(AG,SHM, NoCRG):
     CalculateReachability(AG, CriticalRG)
     # save Critical rectangles somewhere
     CriticalRect={}
+
     for Node in Config.CriticalRegionNodes:
         CriticalRect[Node] = copy.deepcopy(AG.node[Node]['Unreachable'])
+    for Node in Config.GateToCritical:
+        GateWayRect[Node] = copy.deepcopy(AG.node[Node]['Unreachable'])
     # Restore the VirtualBrokenLinksForNonCritical
     for VirtualBrokenLink in Config.VirtualBrokenLinksForCritical:
         SHM.RestoreBrokenLink(VirtualBrokenLink,True)
-    # Combine both Lists
+
+    # Combine Lists
     for Node in AG.nodes():
         if Node in CriticalRect:
             AG.node[Node]['Unreachable'] = copy.deepcopy(CriticalRect[Node])
+        elif Node in Config.GateToCritical:
+            AG.node[Node]['Unreachable'] = copy.deepcopy(GateWayRect[Node])
+        elif Node in Config.GateToNonCritical:
+            AG.node[Node]['Unreachable'] = copy.deepcopy(GateWayRect[Node])
         else:
             AG.node[Node]['Unreachable'] = copy.deepcopy(NonCriticalRect[Node])
     # optimize the results
