@@ -68,6 +68,63 @@ How To generate RoutingFile.txt:
 	The path to file should be specified in Config file by setting
 	RoutingFilePath properly.
 ===============================================================================
+Project Directory Map:
+
+ScheduleAndDepend
+ |
+ |------ArchGraphUtilities
+ |          |
+ |          |------- AG_Functions
+ |          |------- Arch_Graph_Reports
+ |
+ |------Clusterer
+ |          |
+ |          |------- Clustering
+ |          |------- Clustering_Functions
+ |
+ |------Generated_Files
+ |------GraphDrawings
+ |------LOGS
+ |------Mapper
+ |          |
+ |          |------------------- Mapping_Heuristics
+ |          |                           |
+ |          |                           |------- GeneticsAlgorithm
+ |          |                           |------- Local_Search
+ |          |----- Mapping              |------- SimpleGreedy
+ |          |----- Mapping_Functions    |------- SimulatedAnnealing
+ |
+ |------RoutingAlgorithms
+ |          |
+ |          |----- Calculate_Reachability
+ |          |----- Routing
+ |
+ |------Scheduler
+ |          |
+ |          |----- Scheduler
+ |          |----- Scheduling_Functions
+ |          |----- Scheduling_Reports
+ |          |----- TrafficTableGenerator
+ |
+ |------SystmHealthMonitoring
+ |          |
+ |          |----- SystemHealthMonitor
+ |
+ |------TaskGraphUtilities
+ |          |
+ |          |----- Task_Graph_Reports
+ |          |----- TG_Functions
+ |
+ |------UserInputs
+ |          |
+ |          |----- RoutingFile
+ |
+ |-- Config
+ |-- Logger
+ |-- Main
+ |-- misc
+
+===============================================================================
 
 ToDo:
 
