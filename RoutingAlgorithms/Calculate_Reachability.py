@@ -1,4 +1,7 @@
 # Copyright (C) Siavoosh Payandeh Azad
+# the main idea of reach-ability is from the following paper:
+# NoCDepend: A flexible and scalable Dependability Technique for 3D Networks-on-Chip
+# how ever, at the moment we only implemented a 2D version of it.
 
 from Routing import FindRouteInRouteGraph
 import networkx,re,copy
@@ -49,6 +52,7 @@ def ReportReachabilityInFile (AG,FileName):
     ReachabilityFile.close()
 
 def OptimizeReachabilityRectangles(AG, NumberOfRects):
+
     # the idea of merging is that we make a rectangle with representing 2 vertex of it,
     # namely north-west and south-east vertex.
     # Then we try to generate optimal rectangle set that covers all of the nodes...
