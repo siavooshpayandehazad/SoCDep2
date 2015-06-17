@@ -10,10 +10,10 @@ def ScheduleAll(TG,AG,SHM,Report,DetailedReport):
     if Report:print "==========================================="
     if Report:print "STARTING SCHEDULING PROCESS..."
     #first schedule the high critical tasks and their high critical transactions
-    MaxPriority = TG_Functions.CalculateMaxPriority(TG) + 1
-    for priority in range(0 , MaxPriority):
+    MaxDistance = TG_Functions.CalculateMaxDistance(TG) + 1
+    for Distance in range(0 , MaxDistance):
          for Task in TG.nodes():
-            if TG.node[Task]['Priority'] == priority:
+            if TG.node[Task]['Distance'] == Distance:
                 if TG.node[Task]['Criticality']=='H':
                     Node = TG.node[Task]['Node']
                     if DetailedReport:print "\tSCHEDULING TASK",Task,"ON NODE:",Node
@@ -26,9 +26,9 @@ def ScheduleAll(TG,AG,SHM,Report,DetailedReport):
                                         if DetailedReport:print "\tSCHEDULING EDGE",Edge,"ON Link:",Link
                                         Add_TG_EdgeTo_link(TG,AG,Edge,Link,DetailedReport)
 
-    for priority in range(0 , MaxPriority):
+    for Distance in range(0 , MaxDistance):
          for Task in TG.nodes():
-            if TG.node[Task]['Priority'] == priority:
+            if TG.node[Task]['Distance'] == Distance:
                 if TG.node[Task]['Criticality']=='H':
                     for Edge in TG.edges():
                         if Edge[0]==Task:
@@ -38,9 +38,9 @@ def ScheduleAll(TG,AG,SHM,Report,DetailedReport):
                                         if DetailedReport:print "\tSCHEDULING EDGE",Edge,"ON Link:",Link
                                         Add_TG_EdgeTo_link(TG,AG,Edge,Link,DetailedReport)
 
-    for priority in range(0 , MaxPriority):
+    for Distance in range(0 , MaxDistance):
          for Task in TG.nodes():
-            if TG.node[Task]['Priority'] == priority:
+            if TG.node[Task]['Distance'] == Distance:
                 if TG.node[Task]['Criticality']=='L':
                     Node = TG.node[Task]['Node']
                     if DetailedReport:print "\tSCHEDULING TASK",Task,"ON NODE:",Node

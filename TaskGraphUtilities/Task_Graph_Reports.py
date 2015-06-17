@@ -51,14 +51,14 @@ def DrawTaskGraph(TG):
         pos=networkx.shell_layout(TG)
     else:
         pos = {}
-        MaxPriority = TG_Functions.CalculateMaxPriority(TG)
-        for CurrentPriority in range(0,MaxPriority+1):
+        MaxDistance = TG_Functions.CalculateMaxDistance(TG)
+        for CurrentDistance in range(0,MaxDistance+1):
             Counter = 0
             for node in TG.nodes():
-                Priority=TG.node[node]['Priority']
-                if CurrentPriority == Priority:
+                Distance=TG.node[node]['Distance']
+                if CurrentDistance== Distance:
                     Counter+=1
-                    pos[node] = (Counter, MaxPriority-CurrentPriority)
+                    pos[node] = (Counter, MaxDistance-CurrentDistance)
 
     networkx.draw_networkx_nodes(TG,pos,with_labels=True,node_color=NodeColors)
     networkx.draw_networkx_edges(TG,pos,edge_color=Edge_Colors)

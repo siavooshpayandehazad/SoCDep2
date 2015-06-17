@@ -16,7 +16,7 @@ class SystemHealthMonitor:
         print "==========================================="
         print "PREPARING SYSTEM HEALTH MAP..."
         for nodes in ArchGraph.nodes():
-            self.SHM.add_node(nodes,TurnsHealth=copy.deepcopy(TurnsHealth),NodeHealth=True,NodeSpeed=100)
+            self.SHM.add_node(nodes, TurnsHealth=copy.deepcopy(TurnsHealth), NodeHealth=True, NodeSpeed=100)
         for link in ArchGraph.edges():
             self.SHM.add_edge(link[0],link[1],LinkHealth=True)
         print "SYSTEM HEALTH MAP CREATED..."

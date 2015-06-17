@@ -5,7 +5,7 @@
 
 import networkx,re,copy
 import Config
-
+import Routing
 
 def CalculateReachability(AG, NoCRG):
     PortList = ['N', 'E', 'W', 'S']
@@ -19,7 +19,8 @@ def CalculateReachability(AG, NoCRG):
                         # print "No Path From", SourceNode,Port,"To",DestinationNode
                         AG.node[SourceNode]['Unreachable'][Port].append(DestinationNode)
 
-def IsDestinationReachableViaPort(NoCRG,SourceNode,Port,DestinationNode,ReturnAllPaths,Report):
+
+def IsDestinationReachableViaPort(NoCRG, SourceNode, Port, DestinationNode, ReturnAllPaths, Report):
     """
     :param NoCRG: NoC Routing Graph
     :param SourceNode: Source node on AG
@@ -51,8 +52,42 @@ def ReportReachabilityInFile (AG,FileName):
             ReachabilityFile.write("Port: "+str(Port)+" ==> "+str(AG.node[Node]['Unreachable'][Port])+"\n")
     ReachabilityFile.close()
 
-def OptimizeReachabilityRectangles(AG, NumberOfRects):
+def ReportGSNoCFriendlyReachabilityInFile (AG):
+    ReachabilityFile = open("Generated_Files/GSNoC_RectangleFile.txt",'w')
+    for Node in AG.nodes():
+        NodeX = Node % Config.Network_X_Size
+        NodeY = Node / Config.Network_X_Size
+        NodeZ = Node / (Config.Network_Y_Size * Config.Network_X_Size)
+        for Port in AG.node[Node]['Unreachable']:
+            if Port == "S":
+                Direction = "SOUTH"
+            elif Port == "N":
+                Direction = "NORTH"
+            elif Port == "W":
+                Direction = "WEST"
+            else:
+                Direction = "EAST"
+            for Entry in AG.node[Node]['Unreachable'][Port]:
+                ReachabilityFile.write( "["+str(NodeX)+","+str(NodeY)+","+str(NodeZ)+"] ")
+                UnreachableArea = AG.node[Node]['Unreachable'][Port][Entry]
+                if UnreachableArea[0] is not None:
+                    UnreachableX = UnreachableArea[0] % Config.Network_X_Size
+                    UnreachableY = UnreachableArea[0] / Config.Network_X_Size
+                    UnreachableZ = UnreachableArea[0] / (Config.Network_Y_Size * Config.Network_X_Size)
+                    ReachabilityFile.write(str(Direction)+" NetLocCube(ll=["+str(UnreachableX)+","+str(UnreachableY)+
+                                           ","+str(UnreachableZ)+"],")
+                    UnreachableX = UnreachableArea[1] % Config.Network_X_Size
+                    UnreachableY = UnreachableArea[1] / Config.Network_X_Size
+                    UnreachableZ = UnreachableArea[1] / (Config.Network_Y_Size * Config.Network_X_Size)
+                    ReachabilityFile.write("ur=["+str(UnreachableX)+","+str(UnreachableY)+
+                                           ","+str(UnreachableZ)+"])\n")
+                else:
+                    ReachabilityFile.write(str(Direction)+" NetLocCube(invalid)\n")
 
+        ReachabilityFile.write("\n")
+    ReachabilityFile.close()
+
+def OptimizeReachabilityRectangles(AG, NumberOfRects):
     # the idea of merging is that we make a rectangle with representing 2 vertex of it,
     # namely north-west and south-east vertex.
     # Then we try to generate optimal rectangle set that covers all of the nodes...
@@ -64,7 +99,7 @@ def OptimizeReachabilityRectangles(AG, NumberOfRects):
             for i in range(0, NumberOfRects):
                 RectangleList[i] = (None, None)
             if len( AG.node[Node]['Unreachable'][Port]) == Config.Network_X_Size * Config.Network_Y_Size:
-                RectangleList[0] = (Config.Network_X_Size*(Config.Network_Y_Size-1), Config.Network_X_Size -1)
+                RectangleList[0] = ( 0 , Config.Network_X_Size*Config.Network_Y_Size -1)
             else:
                 RectangleList = copy.deepcopy(MergeNodeWithRectangles(RectangleList,AG.node[Node]['Unreachable'][Port]))
             AG.node[Node]['Unreachable'][Port] = RectangleList
@@ -89,19 +124,19 @@ def MergeNodeWithRectangles (RectangleList,UnreachableNodeList):
                 RY2 = RectangleList[Rectangle][1] / Config.Network_X_Size
                 NodeX = UnreachableNode % Config.Network_X_Size
                 NodeY = UnreachableNode / Config.Network_X_Size
-                if NodeX >= RX1 and NodeX <= RX2 and NodeY <= RY1 and NodeY >= RY2:
+                if NodeX >= RX1 and NodeX <= RX2 and NodeY >= RY1 and NodeY <= RY2:
                     # node is contained inside the rectangle
                     Covered = True
                     break
                 else:
                     MergedX1 = min(RX1, NodeX)
-                    MergedY1 = max(RY1, NodeY)
+                    MergedY1 = min(RY1, NodeY)
                     MergedX2 = max(RX2, NodeX)
-                    MergedY2 = min(RY2, NodeY)
+                    MergedY2 = max(RY2, NodeY)
                     # print "Merged:" ,MergedY1 * Config.Network_X_Size + MergedX1, MergedY2 * Config.Network_X_Size + MergedX2
                     LossLessMerge = True
                     for NetworkNode_X in range(MergedX1, MergedX2+1):
-                        for NetworkNode_Y in range(MergedY2, MergedY1+1):       # MergedY2 < MergedY1
+                        for NetworkNode_Y in range(MergedY1, MergedY2+1):       # MergedY2 < MergedY1
                             NodeNumber = NetworkNode_Y*Config.Network_X_Size+NetworkNode_X
                             if NodeNumber not in UnreachableNodeList:
                                 LossLessMerge = False
@@ -118,3 +153,43 @@ def MergeNodeWithRectangles (RectangleList,UnreachableNodeList):
             print RectangleList
     return RectangleList
 
+def CalculateReachabilityWithRegions(AG,SHM, NoCRG):
+    # first Add the VirtualBrokenLinksForNonCritical
+    for VirtualBrokenLink in Config.VirtualBrokenLinksForNonCritical:
+        SHM.BreakLink(VirtualBrokenLink,True)
+    # Construct The RoutingGraph
+    NonCriticalRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.WestFirst_TurnModel, False, False))
+    # calculate the rectangles for Non-Critical
+    CalculateReachability(AG, NonCriticalRG)
+    # save Non Critical rectangles somewhere
+    NonCriticalRect={}
+    for Node in AG.nodes():
+        if Node not in Config.CriticalRegionNodes:
+            NonCriticalRect[Node] = copy.deepcopy(AG.node[Node]['Unreachable'])
+    # Restore the VirtualBrokenLinksForNonCritical
+    for VirtualBrokenLink in Config.VirtualBrokenLinksForNonCritical:
+        SHM.RestoreBrokenLink(VirtualBrokenLink,True)
+
+    # Add VirtualBrokenLinksForCritical
+    for VirtualBrokenLink in Config.VirtualBrokenLinksForCritical:
+        SHM.BreakLink(VirtualBrokenLink,True)
+    # Construct The RoutingGraph
+    CriticalRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.WestFirst_TurnModel, False, False))
+    # calculate the rectangles for Critical
+    CalculateReachability(AG, CriticalRG)
+    # save Critical rectangles somewhere
+    CriticalRect={}
+    for Node in Config.CriticalRegionNodes:
+        CriticalRect[Node] = copy.deepcopy(AG.node[Node]['Unreachable'])
+    # Restore the VirtualBrokenLinksForNonCritical
+    for VirtualBrokenLink in Config.VirtualBrokenLinksForCritical:
+        SHM.RestoreBrokenLink(VirtualBrokenLink,True)
+    # Combine both Lists
+    for Node in AG.nodes():
+        if Node in CriticalRect:
+            AG.node[Node]['Unreachable'] = copy.deepcopy(CriticalRect[Node])
+        else:
+            AG.node[Node]['Unreachable'] = copy.deepcopy(NonCriticalRect[Node])
+    # optimize the results
+    OptimizeReachabilityRectangles(AG, Config.NumberOfRects)
+    return None

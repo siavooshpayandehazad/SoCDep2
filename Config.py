@@ -9,7 +9,7 @@ DebugDetails = False
 #          TG  Config
 ################################################
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
-TG_Type = 'RandomDependent'
+TG_Type = 'RandomIndependent'
 # For Random TG_Type:
 NumberOfTasks = 10
 NumberOfEdges = 15
@@ -39,6 +39,15 @@ PE_List = [0, 1, 2, 3]
 AG_Edge_List = [(0, 1), (0, 2), (1, 0), (1, 3), (2, 0), (2, 3), (3, 2), (3, 1)]
 # AG_Edge_Port_List shows which port of each router is connected to which port of the other on every link
 AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'), ('E', 'W'), ('W', 'E'), ('N', 'S')]
+# Critical Region Nodes:
+# for 6X6 network
+CriticalRegionNodes = [16, 17, 21, 22, 23, 28, 29]
+GateToNonCritical = [15, 27]
+GateToCritical = [20]
+# No regions:
+# CriticalRegionNodes = []
+# GateToNonCritical = []
+# GateToCritical = []
 ################################################
 #          Routing  Config
 ################################################
@@ -59,7 +68,7 @@ TurnsHealth = {"N2W": True, "N2E": True, "S2W": True, "S2E": True,
                "W2N": True, "W2S": True, "E2N": True, "E2S": True}
 
 # Number of Unreachable-Rectangles
-NumberOfRects = 3
+NumberOfRects = 5
 
 # Here you can break things as initial defects...
 # For 2X2 network:
@@ -68,8 +77,11 @@ NumberOfRects = 3
 # For 4X4 network:
 # ListOfBrokenLinks = [(0, 1), (0, 4)]
 
-# For 6X6 network:
-ListOfBrokenLinks = [(35, 29), (34, 28), (33, 27), (26, 27), (20, 21), (14, 15), (9, 15), (10, 16), (11, 17)]
+# For 6X6 network: (This is the Example scenario no. 2 in ReCoSoC paper)
+ListOfBrokenLinks = [(35, 29), (29, 35), (34, 28), (28, 34), (33, 27), (11, 17), (17, 11), (10, 16), (16, 10),
+                      (9, 15), (14, 15), (20, 26), (20, 19), (20, 14), (26, 27)]
+VirtualBrokenLinksForNonCritical = [(20, 21)]
+VirtualBrokenLinksForCritical = [(27, 33), (27, 26), (15, 14), (15, 9)]
 
 # For those who don't need broken links
 # ListOfBrokenLinks = []
@@ -93,6 +105,6 @@ ClusteringIteration = 1000
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch',
-Mapping_Function = 'LocalSearch'
+Mapping_Function = 'MinMin'
 LocalSearchIteration = 20
 IterativeLocalSearchIterations = 20

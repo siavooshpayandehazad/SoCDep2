@@ -17,11 +17,11 @@ def GenerateManualTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List
             Edge_Criticality_List.append('L')
     print "\tLINKS CRITICALITY CALCULATED!"
     for i in range(0,len(Task_List)):
-        TG.add_node(Task_List[i],WCET=Task_WCET_List[i],Criticality=Task_Criticality_List[i],
-                    Cluster=None,Node=None,Priority=None,Release=0)
+        TG.add_node(Task_List[i], WCET=Task_WCET_List[i], Criticality=Task_Criticality_List[i],
+                    Cluster=None, Node=None, Priority=None, Distance=None , Release=0)
 
     for i in range(0,len(TG_Edge_List)):
-        TG.add_edge(TG_Edge_List[i][0],TG_Edge_List[i][1],Criticality=Edge_Criticality_List[i],Link=[],ComWeight=TG_Edge_Weight[i])  # Communication weight
+        TG.add_edge(TG_Edge_List[i][0], TG_Edge_List[i][1], Criticality=Edge_Criticality_List[i], Link=[], ComWeight=TG_Edge_Weight[i])  # Communication weight
     AssignPriorities(TG)
     print("TASK GRAPH (TG) IS READY...")
     return TG
@@ -63,7 +63,7 @@ def GenerateRandomTG(NumberOfTasks,NumberOfEdges,WCET_Range,EdgeWeightRange):
 
     for i in range(0,len(Task_List)):
         TG.add_node(Task_List[i], WCET = Task_WCET_List[i], Criticality = Task_Criticality_List[i],
-                    Cluster = None, Node = None, Priority = None, Release = 0)
+                    Cluster = None, Node = None, Priority = None, Distance=None ,Release = 0)
 
     for i in range(0,len(TG_Edge_List)):
         # making sure that the graph is still acyclic
@@ -88,8 +88,8 @@ def GenerateRandomIndependentTG(NumberOfTasks,WCET_Range,Release_Range):
         Task_WCET_List.append(random.randrange(1,WCET_Range))
         TG_Release_List.append(random.randrange(0,Release_Range))
     for i in range(0,len(Task_List)):
-        TG.add_node(Task_List[i],WCET=Task_WCET_List[i],Criticality=Task_Criticality_List[i],
-                    Cluster=None,Node=None,Priority=None,Release = TG_Release_List[i])
+        TG.add_node(Task_List[i], WCET=Task_WCET_List[i], Criticality=Task_Criticality_List[i],
+                    Cluster=None, Node=None, Priority=None, Distance=None ,Release = TG_Release_List[i])
 
     print("RANDOM TASK GRAPH (TG) WITH INDEPENDENT TASKS IS READY...")
     return TG
@@ -105,7 +105,7 @@ def AssignPriorities(TG):
     print("ASSIGNING PRIORITIES TO TASK GRAPH (TG)...")
     SourceNodes=FindSourceNodes(TG)
     for Task in SourceNodes:
-        TG.node[Task]['Priority']=0
+        TG.node[Task]['Distance']=0
 
     for Task in TG.nodes():
         distance=[]
@@ -117,7 +117,7 @@ def AssignPriorities(TG):
                     #distance.append(len(ShortestPaths)-1)
                     for path in networkx.all_simple_paths(TG,Source,Task):
                         distance.append(len(path))
-            TG.node[Task]['Priority']=max(distance)-1
+            TG.node[Task]['Distance']=max(distance)-1
 
 ########################################################
 def GenerateTG():
@@ -140,9 +140,9 @@ def CheckAcyclic(TG,logging):
         logging.info("TG IS AN ACYCLIC DIRECTED GRAPH... ALL IS GOOD...")
     return None
 ########################################################
-def CalculateMaxPriority(TG):
-    MaxPriority = 0
+def CalculateMaxDistance(TG):
+    MaxDistance = 0
     for Task in TG:
-        if TG.node[Task]['Priority']> MaxPriority :
-            MaxPriority = TG.node[Task]['Priority']
-    return MaxPriority
+        if TG.node[Task]['Distance']> MaxDistance :
+            MaxDistance = TG.node[Task]['Distance']
+    return MaxDistance

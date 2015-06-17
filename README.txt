@@ -55,3 +55,7 @@ ToDo:
     - can we generate some file based on scheduling to feed in Noxim?
 
     - can we get TG specifications automatically from some benchmark alg??
+
+    - Generate multiple levels of priority levels for Non/Mid-critical tasks
+
+    - Add partitioning to AG

@@ -45,6 +45,7 @@ Task_Graph_Reports.DrawTaskGraph(TG)
 TG_Functions.CheckAcyclic(TG, logging)
 ####################################################################
 AG = copy.deepcopy(AG_Functions.GenerateAG(logging))
+AG_Functions.UpdateAGRegions(AG)
 Arch_Graph_Reports.DrawArchGraph(AG)
 ####################################################################
 SHM = SystemHealthMonitor.SystemHealthMonitor()
@@ -54,7 +55,7 @@ print "==========================================="
 print "SYSTEM IS UP..."
 # Here we are injecting initial faults of the system
 SHM.ApplyInitialFaults()
-NoCRG = Routing.GenerateNoCRouteGraph(AG, SHM, Config.WestFirst_TurnModel, Config.DebugInfo, Config.DebugDetails)
+NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.WestFirst_TurnModel, Config.DebugInfo, Config.DebugDetails))
 # NoCRG = Routing.GenerateNoCRouteGraphFromFile(AG, SHM, Config.RoutingFilePath, Config.DebugInfo, Config.DebugDetails)
 # print Routing.FindRouteInRouteGraph(NoCRG, 0,3, True, True)
 ####################################################################
@@ -77,5 +78,8 @@ Calculate_Reachability.ReportReachabilityInFile(AG, "ReachAbilityNodeReport")
 Calculate_Reachability.OptimizeReachabilityRectangles(AG, Config.NumberOfRects)
 # Calculate_Reachability.ReportReachability(AG)
 Calculate_Reachability.ReportReachabilityInFile(AG, "ReachAbilityRectReport")
+Calculate_Reachability.ReportGSNoCFriendlyReachabilityInFile(AG)
+# Calculate_Reachability.CalculateReachabilityWithRegions(AG,SHM,NoCRG)
+# Calculate_Reachability.ReportGSNoCFriendlyReachabilityInFile(AG)
 
 logging.info('Logging finished...')
