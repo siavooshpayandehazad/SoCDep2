@@ -6,6 +6,7 @@
 import networkx,re,copy
 import Config
 import Routing
+from ArchGraphUtilities import AG_Functions
 
 def CalculateReachability(AG, NoCRG):
     PortList = ['N', 'E', 'W', 'S']
@@ -55,9 +56,7 @@ def ReportReachabilityInFile (AG,FileName):
 def ReportGSNoCFriendlyReachabilityInFile (AG):
     ReachabilityFile = open("Generated_Files/GSNoC_RectangleFile.txt",'w')
     for Node in AG.nodes():
-        NodeX = Node % Config.Network_X_Size
-        NodeY = Node / Config.Network_X_Size
-        NodeZ = Node / (Config.Network_Y_Size * Config.Network_X_Size)
+        NodeX, NodeY, NodeZ = AG_Functions.ReturnNodeLocation(Node)
         for Port in AG.node[Node]['Unreachable']:
             if Port == "S":
                 Direction = "SOUTH"
@@ -65,25 +64,20 @@ def ReportGSNoCFriendlyReachabilityInFile (AG):
                 Direction = "NORTH"
             elif Port == "W":
                 Direction = "WEST"
-            else:
+            elif Port == "E":
                 Direction = "EAST"
             for Entry in AG.node[Node]['Unreachable'][Port]:
                 ReachabilityFile.write( "["+str(NodeX)+","+str(NodeY)+","+str(NodeZ)+"] ")
                 UnreachableArea = AG.node[Node]['Unreachable'][Port][Entry]
                 if UnreachableArea[0] is not None:
-                    UnreachableX = UnreachableArea[0] % Config.Network_X_Size
-                    UnreachableY = UnreachableArea[0] / Config.Network_X_Size
-                    UnreachableZ = UnreachableArea[0] / (Config.Network_Y_Size * Config.Network_X_Size)
+                    UnreachableX, UnreachableY, UnreachableZ = AG_Functions.ReturnNodeLocation(UnreachableArea[0])
                     ReachabilityFile.write(str(Direction)+" NetLocCube(ll=["+str(UnreachableX)+","+str(UnreachableY)+
                                            ","+str(UnreachableZ)+"],")
-                    UnreachableX = UnreachableArea[1] % Config.Network_X_Size
-                    UnreachableY = UnreachableArea[1] / Config.Network_X_Size
-                    UnreachableZ = UnreachableArea[1] / (Config.Network_Y_Size * Config.Network_X_Size)
+                    UnreachableX, UnreachableY, UnreachableZ = AG_Functions.ReturnNodeLocation(UnreachableArea[1])
                     ReachabilityFile.write("ur=["+str(UnreachableX)+","+str(UnreachableY)+
                                            ","+str(UnreachableZ)+"])\n")
                 else:
                     ReachabilityFile.write(str(Direction)+" NetLocCube(invalid)\n")
-
         ReachabilityFile.write("\n")
     ReachabilityFile.close()
 
@@ -118,33 +112,30 @@ def MergeNodeWithRectangles (RectangleList,UnreachableNodeList):
                 Covered = True
                 break
             else:
-                RX1 = RectangleList[Rectangle][0] % Config.Network_X_Size
-                RY1 = RectangleList[Rectangle][0] / Config.Network_X_Size
-                RX2 = RectangleList[Rectangle][1] % Config.Network_X_Size
-                RY2 = RectangleList[Rectangle][1] / Config.Network_X_Size
-                NodeX = UnreachableNode % Config.Network_X_Size
-                NodeY = UnreachableNode / Config.Network_X_Size
+                RX1, RY1, _ = AG_Functions.ReturnNodeLocation(RectangleList[Rectangle][0])
+                RX2, RY2, _ = AG_Functions.ReturnNodeLocation(RectangleList[Rectangle][1])
+                NodeX, NodeY, _ = AG_Functions.ReturnNodeLocation(UnreachableNode)
                 if NodeX >= RX1 and NodeX <= RX2 and NodeY >= RY1 and NodeY <= RY2:
                     # node is contained inside the rectangle
                     Covered = True
                     break
                 else:
-                    MergedX1 = min(RX1, NodeX)
-                    MergedY1 = min(RY1, NodeY)
-                    MergedX2 = max(RX2, NodeX)
-                    MergedY2 = max(RY2, NodeY)
+                    MergedX1, MergedY1, MergedZ1, MergedX2, MergedY2, MergedZ2 = MergedRectangle(RectangleList[Rectangle][0],
+                                                                                   RectangleList[Rectangle][1],
+                                                                                   UnreachableNode)
                     # print "Merged:" ,MergedY1 * Config.Network_X_Size + MergedX1, MergedY2 * Config.Network_X_Size + MergedX2
                     LossLessMerge = True
                     for NetworkNode_X in range(MergedX1, MergedX2+1):
-                        for NetworkNode_Y in range(MergedY1, MergedY2+1):       # MergedY2 < MergedY1
-                            NodeNumber = NetworkNode_Y*Config.Network_X_Size+NetworkNode_X
-                            if NodeNumber not in UnreachableNodeList:
-                                LossLessMerge = False
-                                break
+                        for NetworkNode_Y in range(MergedY1, MergedY2+1):
+                            for NetworkNode_Z in range(MergedZ1, MergedZ2+1):
+                                NodeNumber = AG_Functions.ReturnNodeNumber(NetworkNode_X,NetworkNode_Y, NetworkNode_Z)
+                                if NodeNumber not in UnreachableNodeList:
+                                    LossLessMerge = False
+                                    break
                     # if we are not losing any Node, we perform Merge...
                     if LossLessMerge:
-                        Merged1 = MergedY1*Config.Network_X_Size+MergedX1
-                        Merged2 = MergedY2*Config.Network_X_Size+MergedX2
+                        Merged1 = AG_Functions.ReturnNodeNumber(MergedX1,MergedY1, MergedZ1)
+                        Merged2 = AG_Functions.ReturnNodeNumber(MergedX2,MergedY2, MergedZ2)
                         RectangleList[Rectangle] = copy.deepcopy((Merged1, Merged2))
                         Covered = True
                         break
@@ -152,6 +143,18 @@ def MergeNodeWithRectangles (RectangleList,UnreachableNodeList):
             print "COULD NOT PERFORM ANY LOSS_LESS MERGE FOR:", UnreachableNode
             print RectangleList
     return RectangleList
+
+def MergedRectangle(Rect_ll, Rect_ur, Node):
+    X1, Y1, Z1 = AG_Functions.ReturnNodeLocation(Rect_ll)
+    X2, Y2, Z2 = AG_Functions.ReturnNodeLocation(Rect_ur)
+    NodeX, NodeY, NodeZ = AG_Functions.ReturnNodeLocation(Node)
+    MergedX1 = min(X1, NodeX)
+    MergedY1 = min(Y1, NodeY)
+    MergedZ1 = min(Z1, NodeZ)
+    MergedX2 = max(X2, NodeX)
+    MergedY2 = max(Y2, NodeY)
+    MergedZ2 = max(Z2, NodeZ)
+    return MergedX1,MergedY1,MergedZ1, MergedX2, MergedY2, MergedZ2
 
 def ClearReachabilityCalculations(AG):
     for Node in AG.nodes():

@@ -110,10 +110,11 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
     print("ARCHITECTURE GRAPH (AG) IS READY...")
     return AG
 
+
 def GenerateAG(logging):
     """
     This function generates the architecture graph based on the configuration in Config File
-    :param logging:
+    :param logging: logging file
     :return: returns the generated Architecture Graph
     """
     if Config.AG_Type == 'Generic':
@@ -137,3 +138,23 @@ def UpdateAGRegions (AG):
             AG.node[Node]['Region'] = 'GNC'
     print("ARCHITECTURE GRAPH (AG) REGIONS UPDATED...")
     return None
+
+
+def ReturnNodeLocation(NodeNumber):
+    """
+    calculates the Cartesian location of the node
+    Examples:
+    ReturnNodeLocation(0) = (0,0,0)
+    ReturnNodeLocation(Config.Network_X_Size * Config.Network_Y_Size * Config.Network_Z_Size - 1) =
+            (Config.Network_X_Size -1, Config.Network_Y_Size - 1, Config.Network_Z_Size -1)
+    :param NodeNumber: The node id used in AG
+    :return: Cartesian location of the node in the form of (x,y,z)
+    """
+    NodeX = NodeNumber % Config.Network_X_Size
+    NodeY = NodeNumber / Config.Network_X_Size
+    NodeZ = NodeNumber / (Config.Network_Y_Size * Config.Network_X_Size)
+    return NodeX, NodeY, NodeZ
+
+def ReturnNodeNumber(NodeX, NodeY, NodeZ):
+    NodeNumber = NodeZ*Config.Network_X_Size*Config.Network_Y_Size + NodeY*Config.Network_X_Size+NodeX
+    return NodeNumber
