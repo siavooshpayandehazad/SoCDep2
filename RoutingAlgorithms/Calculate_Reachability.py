@@ -153,6 +153,12 @@ def MergeNodeWithRectangles (RectangleList,UnreachableNodeList):
             print RectangleList
     return RectangleList
 
+def ClearReachabilityCalculations(AG):
+    for Node in AG.nodes():
+        for Port in AG.node[Node]['Unreachable']:
+            AG.node[Node]['Unreachable'][Port] = {}
+    return None
+
 def CalculateReachabilityWithRegions(AG,SHM, NoCRG):
     # first Add the VirtualBrokenLinksForNonCritical
     for VirtualBrokenLink in Config.VirtualBrokenLinksForNonCritical:
@@ -164,11 +170,11 @@ def CalculateReachabilityWithRegions(AG,SHM, NoCRG):
     # save Non Critical rectangles somewhere
     NonCriticalRect={}
     GateWayRect={}
+    for Node in Config.GateToNonCritical:
+        GateWayRect[Node] = copy.deepcopy(AG.node[Node]['Unreachable'])
     for Node in AG.nodes():
         if Node not in Config.CriticalRegionNodes:
             NonCriticalRect[Node] = copy.deepcopy(AG.node[Node]['Unreachable'])
-    for Node in Config.GateToNonCritical:
-        GateWayRect[Node] = copy.deepcopy(AG.node[Node]['Unreachable'])
     # Restore the VirtualBrokenLinksForNonCritical
     for VirtualBrokenLink in Config.VirtualBrokenLinksForNonCritical:
         SHM.RestoreBrokenLink(VirtualBrokenLink,True)
@@ -176,13 +182,13 @@ def CalculateReachabilityWithRegions(AG,SHM, NoCRG):
     # Add VirtualBrokenLinksForCritical
     for VirtualBrokenLink in Config.VirtualBrokenLinksForCritical:
         SHM.BreakLink(VirtualBrokenLink,True)
+    ClearReachabilityCalculations(AG)
     # Construct The RoutingGraph
     CriticalRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.WestFirst_TurnModel, False, False))
     # calculate the rectangles for Critical
     CalculateReachability(AG, CriticalRG)
     # save Critical rectangles somewhere
     CriticalRect={}
-
     for Node in Config.CriticalRegionNodes:
         CriticalRect[Node] = copy.deepcopy(AG.node[Node]['Unreachable'])
     for Node in Config.GateToCritical:

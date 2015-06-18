@@ -80,6 +80,7 @@ TrafficTableGenerator.GenerateGSNoCTrafficTable(AG, TG)
 # Calculate_Reachability.ReportGSNoCFriendlyReachabilityInFile(AG)
 
 Calculate_Reachability.CalculateReachabilityWithRegions(AG,SHM,NoCRG)
+
 Calculate_Reachability.ReportGSNoCFriendlyReachabilityInFile(AG)
 
 logging.info('Logging finished...')

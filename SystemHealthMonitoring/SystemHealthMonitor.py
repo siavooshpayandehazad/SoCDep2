@@ -152,3 +152,8 @@ class SystemHealthMonitor:
             ChosenNode = random.choice(self.SHM.nodes())
             RandomSpeedDown= random.choice([0.3, 0.25, 0.2, 0.15, 0.1, 0.05])
             self.IntroduceAging(ChosenNode, RandomSpeedDown ,True)
+
+    # ToDo: To insert Transient Faults... (probably we need some event handler)
+    # ToDo: To implement Intermittent Faults
+    # ToDO: To implement the classification algorithm
+    # ToDo: To implement the partial mapping with distance driven cost function
