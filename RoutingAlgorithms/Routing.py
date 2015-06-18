@@ -88,6 +88,7 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report,DetailedReport):
     if Report: print "ROUTE GRAPH IS READY... "
     return NoCRG
 
+
 def GenerateNoCRouteGraphFromFile(AG,SystemHealthMap,RoutingFilePath,Report,DetailedReport):
     """
     This function might come very handy specially in relation to different routing algorithms that we can
@@ -163,6 +164,7 @@ def GenerateNoCRouteGraphFromFile(AG,SystemHealthMap,RoutingFilePath,Report,Deta
     if Report: print "ROUTE GRAPH IS READY... "
     return NoCRG
 
+
 def ReportTurnModel(TurnModel):
     """
     prints the turn model for a 2D network in the console
@@ -173,6 +175,7 @@ def ReportTurnModel(TurnModel):
     print "\tUSING TURN MODEL: ", TurnModel
     return None
 
+
 def UpdateNoCRouteGraph(SystemHealthMap,NewEvent):
     """
      we would like to eliminate the path or turn that is not working anymore...
@@ -182,6 +185,7 @@ def UpdateNoCRouteGraph(SystemHealthMap,NewEvent):
     """
     # ToDo: Updating NoCRouteGraph
     return None
+
 
 def FindRouteInRouteGraph(NoCRG,SourceNode,DestinationNode,ReturnAllPaths,Report):
     """
