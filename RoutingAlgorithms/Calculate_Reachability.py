@@ -37,49 +37,6 @@ def IsDestinationReachableViaPort(NoCRG, SourceNode, Port, DestinationNode, Retu
         if Report:print "\t\tNO PATH FOUND FROM: ", Source, "TO:", Destination
         return False
 
-def ReportReachability (AG):
-    print "====================================="
-    for Node in AG.nodes():
-        print "NODE", Node, "UNREACHABLE NODES:"
-        for Port in AG.node[Node]['Unreachable']:
-            print "Port:", Port, " ==>", AG.node[Node]['Unreachable'][Port]
-
-def ReportReachabilityInFile (AG,FileName):
-    ReachabilityFile = open('Generated_Files/'+FileName+".txt",'w')
-    for Node in AG.nodes():
-        ReachabilityFile.write( "=====================================\n")
-        ReachabilityFile.write( "NODE "+str(Node)+" UNREACHABLE NODES:\n")
-        for Port in AG.node[Node]['Unreachable']:
-            ReachabilityFile.write("Port: "+str(Port)+" ==> "+str(AG.node[Node]['Unreachable'][Port])+"\n")
-    ReachabilityFile.close()
-
-def ReportGSNoCFriendlyReachabilityInFile (AG):
-    ReachabilityFile = open("Generated_Files/GSNoC_RectangleFile.txt",'w')
-    for Node in AG.nodes():
-        NodeX, NodeY, NodeZ = AG_Functions.ReturnNodeLocation(Node)
-        for Port in AG.node[Node]['Unreachable']:
-            if Port == "S":
-                Direction = "SOUTH"
-            elif Port == "N":
-                Direction = "NORTH"
-            elif Port == "W":
-                Direction = "WEST"
-            elif Port == "E":
-                Direction = "EAST"
-            for Entry in AG.node[Node]['Unreachable'][Port]:
-                ReachabilityFile.write( "["+str(NodeX)+","+str(NodeY)+","+str(NodeZ)+"] ")
-                UnreachableArea = AG.node[Node]['Unreachable'][Port][Entry]
-                if UnreachableArea[0] is not None:
-                    UnreachableX, UnreachableY, UnreachableZ = AG_Functions.ReturnNodeLocation(UnreachableArea[0])
-                    ReachabilityFile.write(str(Direction)+" NetLocCube(ll=["+str(UnreachableX)+","+str(UnreachableY)+
-                                           ","+str(UnreachableZ)+"],")
-                    UnreachableX, UnreachableY, UnreachableZ = AG_Functions.ReturnNodeLocation(UnreachableArea[1])
-                    ReachabilityFile.write("ur=["+str(UnreachableX)+","+str(UnreachableY)+
-                                           ","+str(UnreachableZ)+"])\n")
-                else:
-                    ReachabilityFile.write(str(Direction)+" NetLocCube(invalid)\n")
-        ReachabilityFile.write("\n")
-    ReachabilityFile.close()
 
 def OptimizeReachabilityRectangles(AG, NumberOfRects):
     # the idea of merging is that we make a rectangle with representing 2 vertex of it,
@@ -93,12 +50,13 @@ def OptimizeReachabilityRectangles(AG, NumberOfRects):
             for i in range(0, NumberOfRects):
                 RectangleList[i] = (None, None)
             if len( AG.node[Node]['Unreachable'][Port]) == Config.Network_X_Size * Config.Network_Y_Size:
-                RectangleList[0] = ( 0 , Config.Network_X_Size*Config.Network_Y_Size -1)
+                RectangleList[0] = (0, Config.Network_X_Size*Config.Network_Y_Size -1)
             else:
-                RectangleList = copy.deepcopy(MergeNodeWithRectangles(RectangleList,AG.node[Node]['Unreachable'][Port]))
+                RectangleList = copy.deepcopy(MergeNodeWithRectangles(RectangleList, AG.node[Node]['Unreachable'][Port]))
             AG.node[Node]['Unreachable'][Port] = RectangleList
     print "RECTANGLE OPTIMIZATION FINISHED..."
     return None
+
 
 def MergeNodeWithRectangles (RectangleList,UnreachableNodeList):
     # todo: in this function if we can not perform any loss-less merge, we terminate the process...
@@ -112,15 +70,11 @@ def MergeNodeWithRectangles (RectangleList,UnreachableNodeList):
                 Covered = True
                 break
             else:
-                RX1, RY1, _ = AG_Functions.ReturnNodeLocation(RectangleList[Rectangle][0])
-                RX2, RY2, _ = AG_Functions.ReturnNodeLocation(RectangleList[Rectangle][1])
-                NodeX, NodeY, _ = AG_Functions.ReturnNodeLocation(UnreachableNode)
-                if NodeX >= RX1 and NodeX <= RX2 and NodeY >= RY1 and NodeY <= RY2:
-                    # node is contained inside the rectangle
+                if IsNodeInsideRectangle(RectangleList[Rectangle],UnreachableNode):
                     Covered = True
                     break
                 else:
-                    MergedX1, MergedY1, MergedZ1, MergedX2, MergedY2, MergedZ2 = MergedRectangle(RectangleList[Rectangle][0],
+                    MergedX1, MergedY1, MergedZ1, MergedX2, MergedY2, MergedZ2 = MergeRectangleWithNode(RectangleList[Rectangle][0],
                                                                                    RectangleList[Rectangle][1],
                                                                                    UnreachableNode)
                     # print "Merged:" ,MergedY1 * Config.Network_X_Size + MergedX1, MergedY2 * Config.Network_X_Size + MergedX2
@@ -144,7 +98,18 @@ def MergeNodeWithRectangles (RectangleList,UnreachableNodeList):
             print RectangleList
     return RectangleList
 
-def MergedRectangle(Rect_ll, Rect_ur, Node):
+
+def IsNodeInsideRectangle(Rect,Node):
+    RX1, RY1, RZ1 = AG_Functions.ReturnNodeLocation(Rect[0])
+    RX2, RY2, RZ2 = AG_Functions.ReturnNodeLocation(Rect[1])
+    NodeX, NodeY, NodeZ = AG_Functions.ReturnNodeLocation(Node)
+    if NodeX >= RX1 and NodeX <= RX2 and NodeY >= RY1 and NodeY <= RY2 and NodeZ >= RZ1 and NodeZ <= RZ2:
+        return True
+    else:
+        return False
+
+
+def MergeRectangleWithNode(Rect_ll, Rect_ur, Node):
     X1, Y1, Z1 = AG_Functions.ReturnNodeLocation(Rect_ll)
     X2, Y2, Z2 = AG_Functions.ReturnNodeLocation(Rect_ur)
     NodeX, NodeY, NodeZ = AG_Functions.ReturnNodeLocation(Node)
@@ -156,11 +121,13 @@ def MergedRectangle(Rect_ll, Rect_ur, Node):
     MergedZ2 = max(Z2, NodeZ)
     return MergedX1,MergedY1,MergedZ1, MergedX2, MergedY2, MergedZ2
 
+
 def ClearReachabilityCalculations(AG):
     for Node in AG.nodes():
         for Port in AG.node[Node]['Unreachable']:
             AG.node[Node]['Unreachable'][Port] = {}
     return None
+
 
 def CalculateReachabilityWithRegions(AG,SHM, NoCRG):
     # first Add the VirtualBrokenLinksForNonCritical

@@ -8,7 +8,7 @@ from Mapper import Mapping
 from Scheduler import Scheduling_Functions,Scheduling_Reports
 from SystemHealthMonitoring import SystemHealthMonitor
 from TaskGraphUtilities import Task_Graph_Reports,TG_Functions
-from RoutingAlgorithms import Routing,Calculate_Reachability
+from RoutingAlgorithms import Routing,Calculate_Reachability,ReachabilityReports
 from ArchGraphUtilities import Arch_Graph_Reports,AG_Functions
 from Scheduler import TrafficTableGenerator
 import misc
@@ -72,14 +72,14 @@ TrafficTableGenerator.GenerateNoximTrafficTable()
 TrafficTableGenerator.GenerateGSNoCTrafficTable(AG, TG)
 
 # Calculate_Reachability.CalculateReachability(AG, NoCRG)
-# Calculate_Reachability.ReportReachability(AG)
-# Calculate_Reachability.ReportReachabilityInFile(AG, "ReachAbilityNodeReport")
+# ReachabilityReports.ReportReachability(AG)
+# ReachabilityReports.ReportReachabilityInFile(AG, "ReachAbilityNodeReport")
 # Calculate_Reachability.OptimizeReachabilityRectangles(AG, Config.NumberOfRects)
-# Calculate_Reachability.ReportReachability(AG)
-# Calculate_Reachability.ReportReachabilityInFile(AG, "ReachAbilityRectReport")
-# Calculate_Reachability.ReportGSNoCFriendlyReachabilityInFile(AG)
+# ReachabilityReports.ReportReachability(AG)
+# ReachabilityReports.ReportReachabilityInFile(AG, "ReachAbilityRectReport")
+# ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(AG)
 
 Calculate_Reachability.CalculateReachabilityWithRegions(AG,SHM,NoCRG)
-Calculate_Reachability.ReportGSNoCFriendlyReachabilityInFile(AG)
+ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(AG)
 
 logging.info('Logging finished...')
