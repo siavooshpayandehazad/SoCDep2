@@ -3,7 +3,7 @@
 import networkx
 import random
 import Config
-# TODO: we need to add release time for independent TG
+
 def GenerateManualTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List,TG_Edge_Weight):
     print("PREPARING TASK GRAPH (TG)...")
     TG=networkx.DiGraph()
@@ -89,7 +89,7 @@ def GenerateRandomIndependentTG(NumberOfTasks,WCET_Range,Release_Range):
         TG_Release_List.append(random.randrange(0,Release_Range))
     for i in range(0,len(Task_List)):
         TG.add_node(Task_List[i], WCET=Task_WCET_List[i], Criticality=Task_Criticality_List[i],
-                    Cluster=None, Node=None, Priority=None, Distance=None ,Release = TG_Release_List[i])
+                    Cluster=None, Node=None, Priority=None, Distance=None, Release=TG_Release_List[i])
 
     print("RANDOM TASK GRAPH (TG) WITH INDEPENDENT TASKS IS READY...")
     return TG
@@ -112,7 +112,6 @@ def AssignPriorities(TG):
         if Task not in SourceNodes:
             for Source in SourceNodes:
                 if networkx.has_path(TG,Source,Task):
-
                     #ShortestPaths=networkx.shortest_path(TG,Source,Task)
                     #distance.append(len(ShortestPaths)-1)
                     for path in networkx.all_simple_paths(TG,Source,Task):
@@ -140,6 +139,7 @@ def CheckAcyclic(TG,logging):
         logging.info("TG IS AN ACYCLIC DIRECTED GRAPH... ALL IS GOOD...")
     return None
 ########################################################
+
 def CalculateMaxDistance(TG):
     MaxDistance = 0
     for Task in TG:

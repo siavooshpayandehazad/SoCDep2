@@ -1,7 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
 import Config,Scheduler,Mapping_Functions
-from Clusterer import Clustering_Functions,Clustering
+from Clusterer import Clustering_Functions,Clustering,Clustering_Test,ClusteringReports
 from Mapping_Heuristics import SimpleGreedy,Local_Search
 from Scheduler import Scheduling_Functions,Scheduler,Scheduling_Reports
 import copy
@@ -47,8 +47,8 @@ def Mapping(TG, AG, NoCRG, SHM, logging):
             TG = copy.deepcopy(BestTaskGraph)
             CTG = copy.deepcopy(BestClustering)
             del BestClustering, BestTaskGraph
-            Clustering_Functions.DoubleCheckCTG(TG, CTG)
-            Clustering_Functions.ReportCTG(CTG, "CTG_PostOpt.png")
+            #Clustering_Test.DoubleCheckCTG(TG, CTG)
+            ClusteringReports.ReportCTG(CTG, "CTG_PostOpt.png")
             # Mapping CTG on AG
             if Mapping_Functions.MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, True, logging):
                 Mapping_Functions.ReportMapping(AG, logging)

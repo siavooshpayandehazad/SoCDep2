@@ -1,31 +1,8 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad 
 
-import networkx
-import matplotlib.pyplot as plt
-import statistics
 
-def ReportCTG(CTG,filename):
-    print "==========================================="
-    print "      REPORTING CLUSTERED TASK GRAPH"
-    print "==========================================="
-    ClusterTaskListDicForDraw = {}
-    ClusterWeightDicForDraw = {}
-    for node in CTG.nodes():
-        print "\tCLUSTER #:", node, "\tTASKS:", CTG.node[node]['TaskList'], "\tUTILIZATION:",CTG.node[node]['Utilization']
-        ClusterTaskListDicForDraw[node] = CTG.node[node]['TaskList']
-    for edge in CTG.edges():
-        print "\tEDGE #:", edge, "\tWEIGHT:", CTG.edge[edge[0]][edge[1]]['Weight']
-        ClusterWeightDicForDraw[edge] = CTG.edge[edge[0]][edge[1]]['Weight']
-    print "PREPARING GRAPH DRAWINGS..."
-    pos = networkx.shell_layout(CTG)
-    networkx.draw_networkx_nodes(CTG, pos, node_size=2200)
-    networkx.draw_networkx_edges(CTG, pos)
-    networkx.draw_networkx_edge_labels(CTG, pos, edge_labels=ClusterWeightDicForDraw)
-    networkx.draw_networkx_labels(CTG, pos, labels=ClusterTaskListDicForDraw)
-    plt.savefig("GraphDrawings/"+filename)
-    plt.clf()
-    print "GRAPH DRAWINGS DONE, CHECK \"GraphDrawings/"+filename+"\""
-    return None
+import statistics
+import ClusteringReports
 
 def RemoveTaskFromCTG(TG,CTG,Task):
     TaskCluster = TG.node[Task]['Cluster']
@@ -41,8 +18,8 @@ def RemoveTaskFromCTG(TG,CTG,Task):
                     #    SourceCluster, "--->", DestCluster
                     if (SourceCluster,DestCluster) not in CTG.edges():
                         print "\t\033[31mERROR\033[0m:: EDGE ",SourceCluster, "--->", DestCluster,"DOESNT EXIST"
-                        ReportCTG(CTG,"CTG_Error.png")
-                        DoubleCheckCTG(TG,CTG)
+                        ClusteringReports.ReportCTG(CTG,"CTG_Error.png")
+
                     else:
                         if CTG.edge[SourceCluster][DestCluster]['Weight'] - WeightToRemove >= 0:
                             CTG.edge[SourceCluster][DestCluster]['Weight'] -= WeightToRemove
@@ -52,7 +29,7 @@ def RemoveTaskFromCTG(TG,CTG,Task):
                             print "\t\033[31mERROR\033[0m::FINAL WEIGHT IS NEGATIVE"
     TG.node[Task]['Cluster'] = None
     CTG.node[TaskCluster]['TaskList'].remove(Task)
-    CTG.node[TaskCluster]['Utilization']-=  TG.node[Task]['WCET']
+    CTG.node[TaskCluster]['Utilization'] -= TG.node[Task]['WCET']
     return None
 
 def AddTaskToCTG(TG,CTG,Task,Cluster):
@@ -92,17 +69,17 @@ def CostFunction(CTG):
     :return: Cost
     """
     Cost = 0
-    CommunicationWeight=0
+    CommunicationWeight = 0
     for edge in CTG.edges():
         CommunicationWeight += CTG.edge[edge[0]][edge[1]]['Weight']
 
-    ClusterUtilization=[]
+    ClusterUtilization = []
     for Node in CTG.nodes():
         ClusterUtilization.append(CTG.node[Node]['Utilization'])
 
     StandardDev=statistics.stdev(ClusterUtilization)
     #print "\tCOMWEIGHT:",CommunicationWeight,"STDEV:",StandardDev
-    Cost=CommunicationWeight + StandardDev
+    Cost = CommunicationWeight + StandardDev
     return Cost
 
 def ClearClustering(TG,CTG):
@@ -121,30 +98,6 @@ def ClearClustering(TG,CTG):
     for edge in CTG.edges():
         CTG.remove_edge(edge[0], edge[1])
     return None
-
-def DoubleCheckCTG(TG,CTG):
-    """
-    Checks if the clusters info in TG matches with the information in the CTG.
-    :param TG: Task Graph
-    :param CTG: Clustered Task Graph
-    :return:
-    """
-    for Task in TG.nodes():
-        Cluster= TG.node[Task]['Cluster']
-        if Cluster in CTG.nodes():
-            if Task not in CTG.node[Cluster]['TaskList']:
-                print "DOUBLE CHECKING CTG with TG: \t\033[31mFAILED\033[0m"
-                print "TASK",Task,"DOES NOT EXIST IN CLUSTER:",Cluster
-                ReportCTG(CTG,"CTG_DoubleCheckError.png")
-                return False
-            else:
-                #print "DOUBLE CHECKING CTG with TG: OK!"
-                None
-        else:
-            print "DOUBLE CHECKING CTG with TG: \t\033[31mFAILED\033[0m"
-            print "CLUSTER", Cluster," DOESNT EXIST...!!!"
-            ReportCTG(CTG,"CTG_DoubleCheckError.png")
-    return True
 
 def DeleteEmptyClusters (CTG):
     for Cluster in CTG.nodes():

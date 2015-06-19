@@ -42,6 +42,7 @@ def Add_TG_TaskToNode(TG,AG,SHM,Task,Node,Report):
     TG.node[Task]['Node']=Node
     return True
 ################################################################
+
 def Add_TG_EdgeTo_link(TG,AG,Edge,Link,Report):
     if Report:print "\t\tADDING EDGE:",Edge," TO LINK:",Link
     StartTime=max(FindLastAllocatedTimeOnLink(TG,AG,Link,Report),FindEdgePredecessorsFinishTime(TG,AG,Edge))
@@ -77,6 +78,7 @@ def FindTaskPredecessorsFinishTime(TG,AG,Task,CriticalityLevel):
                                     FinishTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Edge][1]
     return FinishTime
 ################################################################
+
 def FindEdgePredecessorsFinishTime(TG,AG,Edge):
     FinishTime=0
     Node = TG.node[Edge[0]]['Node']
@@ -89,6 +91,7 @@ def FindEdgePredecessorsFinishTime(TG,AG,Edge):
                 FinishTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Edge][1]
 
     return FinishTime
+
 
 ##########################################################################
 #
@@ -114,6 +117,7 @@ def FindLastAllocatedTimeOnLink(TG,AG,Link,Report):
     if Report:print "\t\t\tLAST ALLOCATED TIME:",LastAllocatedTime
     return LastAllocatedTime
 ################################################################
+
 def FindLastAllocatedTimeOnNode(TG,AG,Node,Report):
     if Report:print "\t\tFINDING LAST ALLOCATED TIME ON NODE", Node
     LastAllocatedTime=0

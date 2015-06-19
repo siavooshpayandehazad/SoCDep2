@@ -8,7 +8,7 @@ from Mapper import Mapping
 from Scheduler import Scheduling_Functions,Scheduling_Reports
 from SystemHealthMonitoring import SystemHealthMonitor
 from TaskGraphUtilities import Task_Graph_Reports,TG_Functions
-from RoutingAlgorithms import Routing,Calculate_Reachability,ReachabilityReports
+from RoutingAlgorithms import Routing,Calculate_Reachability,ReachabilityReports,ReachabilityTests
 from ArchGraphUtilities import Arch_Graph_Reports,AG_Functions,AG_Test
 from Scheduler import TrafficTableGenerator
 import misc
@@ -72,6 +72,7 @@ Scheduling_Reports.GenerateGanttCharts(TG, AG)
 TrafficTableGenerator.GenerateNoximTrafficTable()
 TrafficTableGenerator.GenerateGSNoCTrafficTable(AG, TG)
 
+ReachabilityTests.ReachabilityTest()
 # Calculate_Reachability.CalculateReachability(AG, NoCRG)
 # ReachabilityReports.ReportReachability(AG)
 # ReachabilityReports.ReportReachabilityInFile(AG, "ReachAbilityNodeReport")

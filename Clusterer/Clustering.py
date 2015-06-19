@@ -5,9 +5,10 @@ import copy
 
 import networkx
 
-from Clustering_Functions import ReportCTG, AddTaskToCTG, RemoveTaskFromCTG, ClearClustering, DoubleCheckCTG, \
+from Clustering_Functions import AddTaskToCTG, RemoveTaskFromCTG, ClearClustering, \
     CostFunction,DeleteEmptyClusters
-
+from Clustering_Test import DoubleCheckCTG
+from ClusteringReports import ReportCTG
 
 def TaskClusterGeneration(NumberOfClusters):
     """
@@ -61,25 +62,25 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter):
     print "==========================================="
     print "STARTING LOCAL SEARCH OPTIMIZATION FOR CTG..."
     Cost=CostFunction(CTG)
-    StartingCost=Cost
-    BestSolution=copy.deepcopy(CTG)
-    BestTaskGraph=copy.deepcopy(TG)
+    StartingCost = Cost
+    BestSolution = copy.deepcopy(CTG)
+    BestTaskGraph = copy.deepcopy(TG)
     print "\tINITIAL COST:", Cost
     # choose a random task from TG
     for i in range(0,NumberOfIter):
-        #print "\tITERATION:",i
-        DoubleCheckCTG(TG,CTG)
+        # print "\tITERATION:",i
+        # DoubleCheckCTG(TG,CTG)
         RandomTask = random.choice(TG.nodes())
         RandomTaskCluster = TG.node[RandomTask]['Cluster']
-        #remove it and all its connections from CTG
+        # remove it and all its connections from CTG
         RemoveTaskFromCTG(TG,CTG,RandomTask)
-        #randomly choose another cluster
-        #move the task to the cluster and add the connections
+        # randomly choose another cluster
+        # move the task to the cluster and add the connections
         RandomCluster = random.choice(CTG.nodes())
         while not AddTaskToCTG(TG,CTG,RandomTask,RandomCluster):
             RemoveTaskFromCTG(TG,CTG,RandomTask)
             AddTaskToCTG(TG,CTG,RandomTask,RandomTaskCluster)
-            DoubleCheckCTG(TG,CTG)
+            # DoubleCheckCTG(TG,CTG)
             RandomTask = random.choice(TG.nodes())
             RandomTaskCluster = TG.node[RandomTask]['Cluster']
 
@@ -87,17 +88,18 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter):
             RandomCluster = random.choice(CTG.nodes())
             #print "TASK", RandomTask, "MOVED TO CLUSTER", RandomCluster, "RESULTS IN UTILIZATION:", \
             #    CTG.node[RandomCluster]['Utilization'] + TG.node[RandomTask]['WCET']
-        NewCost=CostFunction(CTG)
+        NewCost = CostFunction(CTG)
         if NewCost <= Cost:
             if NewCost < Cost:
                 print "\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:\t",NewCost, "\t\tIteration #:",i
-            BestSolution=copy.deepcopy(CTG)
-            BestTaskGraph=copy.deepcopy(TG)
-            Cost=NewCost
+            BestSolution = copy.deepcopy(CTG)
+            BestTaskGraph = copy.deepcopy(TG)
+            Cost = NewCost
         else:
-            CTG=copy.deepcopy(BestSolution)
-            TG=copy.deepcopy(BestTaskGraph)
+            CTG = copy.deepcopy(BestSolution)
+            TG = copy.deepcopy(BestTaskGraph)
     DeleteEmptyClusters(BestSolution)
+    DoubleCheckCTG(BestTaskGraph,BestSolution)
     print "-------------------------------------"
     print "STARTING COST:",StartingCost,"\tFINAL COST:",Cost,"\tAFTER",NumberOfIter,"ITERATIONS"
     print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-Cost)/StartingCost),"%"
