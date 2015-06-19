@@ -76,11 +76,13 @@ ScheduleAndDepend
  |          |
  |          |------- AG_Functions
  |          |------- Arch_Graph_Reports
+ |          |------- AG_Test
  |
  |------Clusterer
  |          |
  |          |------- Clustering
  |          |------- Clustering_Functions
+ |          |------- Clustering_Test
  |
  |------Generated_Files
  |------GraphDrawings
@@ -99,6 +101,7 @@ ScheduleAndDepend
  |          |----- Calculate_Reachability
  |          |----- ReachabilityReports
  |          |----- Routing
+ |          |----- Reachability_Test
  |
  |------Scheduler
  |          |
