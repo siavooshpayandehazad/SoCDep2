@@ -33,7 +33,7 @@ VirtualChannelNum = 0
 NetworkTopology = '2DMesh'
 Network_X_Size = 6
 Network_Y_Size = 6
-Network_Z_Size = 0
+Network_Z_Size = 1
 # Only for Manual AG_Type:
 PE_List = [0, 1, 2, 3]
 AG_Edge_List = [(0, 1), (0, 2), (1, 0), (1, 3), (2, 0), (2, 3), (3, 2), (3, 1)]

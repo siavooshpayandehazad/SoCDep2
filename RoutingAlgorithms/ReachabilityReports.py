@@ -1,4 +1,5 @@
-__author__ = 'siavoosh'
+# Copyright (C) Siavoosh Payandeh Azad
+
 from ArchGraphUtilities import AG_Functions
 
 def ReportGSNoCFriendlyReachabilityInFile (AG):

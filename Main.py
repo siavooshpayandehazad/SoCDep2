@@ -9,7 +9,7 @@ from Scheduler import Scheduling_Functions,Scheduling_Reports
 from SystemHealthMonitoring import SystemHealthMonitor
 from TaskGraphUtilities import Task_Graph_Reports,TG_Functions
 from RoutingAlgorithms import Routing,Calculate_Reachability,ReachabilityReports
-from ArchGraphUtilities import Arch_Graph_Reports,AG_Functions
+from ArchGraphUtilities import Arch_Graph_Reports,AG_Functions,AG_Test
 from Scheduler import TrafficTableGenerator
 import misc
 import Logger
@@ -46,6 +46,7 @@ TG_Functions.CheckAcyclic(TG, logging)
 ####################################################################
 AG = copy.deepcopy(AG_Functions.GenerateAG(logging))
 AG_Functions.UpdateAGRegions(AG)
+AG_Test.AG_Test()
 Arch_Graph_Reports.DrawArchGraph(AG)
 ####################################################################
 SHM = SystemHealthMonitor.SystemHealthMonitor()
