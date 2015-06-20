@@ -22,7 +22,7 @@ def TaskClusterGeneration(NumberOfClusters):
     print "   NUMBER OF CLUSTERS: ", NumberOfClusters
     CTG=networkx.DiGraph()
     for i in range(0, NumberOfClusters):
-        CTG.add_node(i, TaskList=[], Node=None, Utilization=0)
+        CTG.add_node(i, TaskList=[], Node=None, Utilization=0, Criticality='L')
     print "CLUSTERS GENERATED..."
     return CTG
 
@@ -40,13 +40,13 @@ def InitialClustering(TG, CTG):
         Itteration=0
         DestCluster = random.choice(CTG.nodes())
         while(not AddTaskToCTG(TG,CTG,Task,DestCluster)):
-            RemoveTaskFromCTG(TG,CTG,Task)
+            #RemoveTaskFromCTG(TG,CTG,Task)
             Itteration+=1
             DestCluster = random.choice(CTG.nodes())
             if Itteration == 10* len(CTG.nodes()):
                 ClearClustering(TG,CTG)
                 return False
-    DoubleCheckCTG(TG,CTG)
+    #DoubleCheckCTG(TG,CTG)
     print "INITIAL CLUSTERED TASK GRAPH (CTG) READY..."
     ReportCTG(CTG,"CTG_Initial.png")
     return True
@@ -78,7 +78,7 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter):
         # move the task to the cluster and add the connections
         RandomCluster = random.choice(CTG.nodes())
         while not AddTaskToCTG(TG,CTG,RandomTask,RandomCluster):
-            RemoveTaskFromCTG(TG,CTG,RandomTask)
+            # RemoveTaskFromCTG(TG,CTG,RandomTask)
             AddTaskToCTG(TG,CTG,RandomTask,RandomTaskCluster)
             # DoubleCheckCTG(TG,CTG)
             RandomTask = random.choice(TG.nodes())
@@ -99,7 +99,7 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter):
             CTG = copy.deepcopy(BestSolution)
             TG = copy.deepcopy(BestTaskGraph)
     DeleteEmptyClusters(BestSolution)
-    DoubleCheckCTG(BestTaskGraph,BestSolution)
+    # DoubleCheckCTG(BestTaskGraph,BestSolution)
     print "-------------------------------------"
     print "STARTING COST:",StartingCost,"\tFINAL COST:",Cost,"\tAFTER",NumberOfIter,"ITERATIONS"
     print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-Cost)/StartingCost),"%"

@@ -13,22 +13,34 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedR
     BestCTG=copy.deepcopy(CTG)
     BestCost=Mapping_Functions.CostFunction(TG,AG,SHM,Report)
     StartingCost=BestCost
+
     for Iteration in range(0,IterationNum):
         if DetailedReport:print "\tITERATION:",Iteration
         ClusterToMove= random.choice(CTG.nodes())
         CurrentNode=CTG.node[ClusterToMove]['Node']
         Mapping_Functions.RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,logging)
+
         DestNode = random.choice(AG.nodes())
+        while(CTG.node[ClusterToMove]['Criticality']!= AG.node[DestNode]['Region']):
+            DestNode = random.choice(AG.nodes())
+        #print CTG.node[ClusterToMove]['Criticality'],AG.node[DestNode]['Region']
+
         TryCounter=0
         while not Mapping_Functions.AddClusterToNode(TG,CTG,AG,SHM,NoCRG,ClusterToMove,DestNode,logging):
             # If AddClusterToNode fails it automatically removes all the connections...
             # we need to add the cluster to the old place...
             Mapping_Functions.AddClusterToNode(TG,CTG,AG,SHM,NoCRG,ClusterToMove,CurrentNode,logging)
+
             # choosing another cluster to move
             ClusterToMove= random.choice(CTG.nodes())
             CurrentNode=CTG.node[ClusterToMove]['Node']
             Mapping_Functions.RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,logging)
+
             DestNode = random.choice(AG.nodes())
+            while(CTG.node[ClusterToMove]['Criticality']!=AG.node[DestNode]['Region']):
+                DestNode = random.choice(AG.nodes())
+            #print CTG.node[ClusterToMove]['Criticality'],AG.node[DestNode]['Region']
+
             if TryCounter >= 3*len(AG.nodes()):
                 if Report:print "CAN NOT FIND ANY FEASIBLE SOLUTION... ABORTING LOCAL SEARCH..."
                 TG=copy.deepcopy(BestTG)
@@ -38,6 +50,7 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedR
                 if Report:Mapping_Functions.CostFunction(TG,AG,SHM,True)
                 return (BestTG,BestCTG,BestAG)
             TryCounter+=1
+
         Scheduling_Functions.ClearScheduling(AG,TG)
         Scheduler.ScheduleAll(TG,AG,SHM,False,DetailedReport)
         CurrentCost=Mapping_Functions.CostFunction(TG,AG,SHM,DetailedReport)

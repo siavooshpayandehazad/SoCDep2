@@ -72,6 +72,7 @@ Scheduling_Reports.GenerateGanttCharts(TG, AG)
 TrafficTableGenerator.GenerateNoximTrafficTable()
 TrafficTableGenerator.GenerateGSNoCTrafficTable(AG, TG)
 
+"""
 Reachability_Test.ReachabilityTest()
 Calculate_Reachability.CalculateReachability(AG, NoCRG)
 ReachabilityReports.ReportReachability(AG)
@@ -80,7 +81,7 @@ Calculate_Reachability.OptimizeReachabilityRectangles(AG, Config.NumberOfRects)
 ReachabilityReports.ReportReachability(AG)
 ReachabilityReports.ReportReachabilityInFile(AG, "ReachAbilityRectReport")
 ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(AG)
-
+"""
 # Calculate_Reachability.CalculateReachabilityWithRegions(AG,SHM,NoCRG)
 # ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(AG)
 

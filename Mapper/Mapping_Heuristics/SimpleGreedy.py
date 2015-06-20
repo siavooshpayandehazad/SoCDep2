@@ -12,6 +12,7 @@ def Min_Min_Mapping (TG,AG,NoCRG,SHM,logging):
     # of the edges of the task graph on the links.
     # Note:: this is a heuristic for independent tasks... so we are not going to
     # schedule any link
+    # Note 2:: This heuristic is not taking task ciriticality into account...
     print "==========================================="
     print "STARTING MIN-MIN MAPPING"
     ShortestTasks = Mapping_Functions.FindUnMappedTaskWithSmallestWCET(TG,logging)
@@ -40,6 +41,7 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
     # of the edges of the task graph on the links.
     # Note:: this is a heuristic for independent tasks... so we are not going to
     # schedule any link
+    # Note 2:: This heuristic is not taking task ciriticality into account...
     print "==========================================="
     print "STARTING MAX-MIN MAPPING"
     LongestTasks = Mapping_Functions.FindUnMappedTaskWithBiggestWCET(TG,logging)
@@ -83,6 +85,7 @@ def MinExecutionTime(TG,AG,SHM,logging):
 def MinimumCompletionTime(TG,AG,SHM,logging):
     # The difference with Min Min or Max Min is that we don't add priorities to
     # tasks based on their WCET but we randomly choose a task and schedule it...
+    # Note :: This heuristic is not taking task ciriticality into account...
     print "==========================================="
     print "STARTING MIN COMPLETION TIME MAPPING"
     for TaskToBeMapped in TG.nodes():

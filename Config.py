@@ -9,7 +9,7 @@ DebugDetails = False
 #          TG  Config
 ################################################
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
-TG_Type = 'RandomDependent'
+TG_Type = 'Manual'
 # For Random TG_Type:
 NumberOfTasks = 10
 NumberOfEdges = 15

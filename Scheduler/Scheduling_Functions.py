@@ -61,21 +61,19 @@ def FindTaskPredecessorsFinishTime(TG,AG,Task,CriticalityLevel):
     FinishTime=0
     if len(TG.predecessors(Task))>0:
         for Predecessor in TG.predecessors(Task):
-            if TG.node[Predecessor]['Node'] is not None: #predecessor is mapped
-                if TG.node[Predecessor]['Criticality']==CriticalityLevel: #this is not quit right...
+            if TG.node[Predecessor]['Node'] is not None:    # predecessor is mapped
+                # if TG.node[Predecessor]['Criticality']==CriticalityLevel: #this is not quit right...
                     Node = TG.node[Predecessor]['Node']
-                    if  Predecessor in AG.node[Node]['Scheduling']:
-                        if AG.node[Node]['Scheduling'][Predecessor][1]>FinishTime:
-                            FinishTime=AG.node[Node]['Scheduling'][Predecessor][1]
+                    if  Predecessor in AG.node[Node]['Scheduling']:             # if this task is scheduled
+                        FinishTime=max(AG.node[Node]['Scheduling'][Predecessor][1], FinishTime)
     for Edge in TG.edges():
         if Edge[1]==Task:
-            if TG.edge[Edge[0]][Edge[1]]['Criticality']==CriticalityLevel:
-                if len(TG.edge[Edge[0]][Edge[1]]['Link'])>0: # if the edge is mapped
-                    for Link in  TG.edge[Edge[0]][Edge[1]]['Link']: #for each link that this edge goes through
+            # if TG.edge[Edge[0]][Edge[1]]['Criticality'] == CriticalityLevel:
+                if len(TG.edge[Edge[0]][Edge[1]]['Link'])>0:    # if the edge is mapped
+                    for Link in  TG.edge[Edge[0]][Edge[1]]['Link']:     # for each link that this edge goes through
                         if len(AG.edge[Link[0]][Link[1]]['Scheduling'])>0:
-                            if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']: #if this edge is scheduled
-                                if AG.edge[Link[0]][Link[1]]['Scheduling'][Edge][1]>FinishTime:
-                                    FinishTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Edge][1]
+                            if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:     # if this edge is scheduled
+                                FinishTime= max(AG.edge[Link[0]][Link[1]]['Scheduling'][Edge][1],FinishTime)
     return FinishTime
 ################################################################
 

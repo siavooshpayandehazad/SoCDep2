@@ -31,7 +31,11 @@ def DrawTaskGraph(TG):
     NodeColors=[]
     for Node in TG.nodes():
         if TG.node[Node]['Criticality']== 'H':
-            NodeColors.append('r')
+            NodeColors.append('#FF878B')
+        elif TG.node[Node]['Criticality']== 'GH':
+            NodeColors.append('#FFC29C')
+        elif TG.node[Node]['Criticality']== 'GNH':
+            NodeColors.append('#928AFF')
         else:
             NodeColors.append('#A0CBE2')
     Edge_Colors=[]

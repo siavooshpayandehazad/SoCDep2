@@ -9,7 +9,7 @@ def GenerateManualAG(PE_List, AG_Edge_List, AG_Edge_Port_List):
     print "PREPARING AN ARCHITECTURE GRAPH (AG)..."
     AG = networkx.DiGraph()
     for PE in PE_List:
-        AG.add_node(PE, MappedTasks=[], Scheduling={}, Utilization=0, Speed=100, Unreachable={}, Region = 'N')
+        AG.add_node(PE, MappedTasks=[], Scheduling={}, Utilization=0, Speed=100, Unreachable={}, Region = 'L')
     for i in range(0, len(AG_Edge_List)):
         EDGE = AG_Edge_List[i]
         AG.add_edge(EDGE[0], EDGE[1], Port=AG_Edge_Port_List[i], MappedTasks=[], Scheduling={})
@@ -131,11 +131,13 @@ def UpdateAGRegions (AG):
     print "UPDATING ARCHITECTURE GRAPH (AG) REGIONS..."
     for Node in AG.nodes():
         if Node in Config.CriticalRegionNodes:
-            AG.node[Node]['Region'] = 'C'
+            AG.node[Node]['Region'] = 'H'
         elif Node in Config.GateToCritical:
-            AG.node[Node]['Region'] = 'GC'
+            AG.node[Node]['Region'] = 'GH'
         elif Node in Config.GateToNonCritical:
-            AG.node[Node]['Region'] = 'GNC'
+            AG.node[Node]['Region'] = 'GNH'
+        else:
+            AG.node[Node]['Region'] = 'L'
     print("ARCHITECTURE GRAPH (AG) REGIONS UPDATED...")
     return None
 

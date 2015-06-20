@@ -9,11 +9,11 @@ def DrawArchGraph(AG):
     ColorList = []
     for Node in AG.nodes():
         POS[Node]= [(Node%(Config.Network_X_Size))*100,(Node/(Config.Network_X_Size))*100]
-        if AG.node[Node]['Region'] == 'C':
+        if AG.node[Node]['Region'] == 'H':
             ColorList.append('#FF878B')
-        elif AG.node[Node]['Region'] == 'GC':
+        elif AG.node[Node]['Region'] == 'GH':   # gateway to high critical
             ColorList.append('#FFC29C')
-        elif AG.node[Node]['Region'] == 'GNC':
+        elif AG.node[Node]['Region'] == 'GNH':  # gateway to Non-high critical
             ColorList.append('#928AFF')
         else:
             ColorList.append('#CFECFF')

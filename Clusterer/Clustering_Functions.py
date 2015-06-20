@@ -29,6 +29,8 @@ def RemoveTaskFromCTG(TG,CTG,Task):
                             print "\t\033[31mERROR\033[0m::FINAL WEIGHT IS NEGATIVE"
     TG.node[Task]['Cluster'] = None
     CTG.node[TaskCluster]['TaskList'].remove(Task)
+    if len(CTG.node[TaskCluster]['TaskList']) == 0:
+        CTG.node[TaskCluster]['Criticality'] = 'L'
     CTG.node[TaskCluster]['Utilization'] -= TG.node[Task]['WCET']
     return None
 
@@ -43,6 +45,13 @@ def AddTaskToCTG(TG,CTG,Task,Cluster):
     :return: True if addition is success, False if otherwise...
     """
     #print "\tADDING TASK:", Task, " TO CLUSTER:", Cluster
+    if len(CTG.node[Cluster]['TaskList']) == 0 :
+        CTG.node[Cluster]['Criticality'] = TG.node[Task]['Criticality']
+    else:
+        if CTG.node[Cluster]['Criticality'] == TG.node[Task]['Criticality']:
+            pass
+        else:
+            return False
     CTG.node[Cluster]['TaskList'].append(Task)
     CTG.node[Cluster]['Utilization']+= TG.node[Task]['WCET']
     TG.node[Task]['Cluster'] = Cluster
