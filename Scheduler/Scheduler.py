@@ -9,10 +9,10 @@ from Scheduling_Functions import Add_TG_EdgeTo_link
 def ScheduleAll(TG,AG,SHM,Report,DetailedReport):
     if Report:print "==========================================="
     if Report:print "STARTING SCHEDULING PROCESS..."
-    #first schedule the high critical tasks and their high critical transactions
+    # first schedule the high critical tasks and their high critical transactions
     MaxDistance = TG_Functions.CalculateMaxDistance(TG) + 1
-    for Distance in range(0 , MaxDistance):
-         for Task in TG.nodes():
+    for Distance in range(0, MaxDistance):
+        for Task in TG.nodes():
             if TG.node[Task]['Distance'] == Distance:
                 if TG.node[Task]['Criticality']=='H':
                     Node = TG.node[Task]['Node']
@@ -27,7 +27,7 @@ def ScheduleAll(TG,AG,SHM,Report,DetailedReport):
                                         Add_TG_EdgeTo_link(TG,AG,Edge,Link,DetailedReport)
 
     for Distance in range(0 , MaxDistance):
-         for Task in TG.nodes():
+        for Task in TG.nodes():
             if TG.node[Task]['Distance'] == Distance:
                 if TG.node[Task]['Criticality']=='GNH' or TG.node[Task]['Criticality']=='GH':
                     Node = TG.node[Task]['Node']
@@ -42,7 +42,7 @@ def ScheduleAll(TG,AG,SHM,Report,DetailedReport):
                                         Add_TG_EdgeTo_link(TG,AG,Edge,Link,DetailedReport)
 
     for Distance in range(0 , MaxDistance):
-         for Task in TG.nodes():
+        for Task in TG.nodes():
             if TG.node[Task]['Distance'] == Distance:
                 if TG.node[Task]['Criticality']=='GH' or TG.node[Task]['Criticality']=='GNH':
                     for Edge in TG.edges():
@@ -54,7 +54,7 @@ def ScheduleAll(TG,AG,SHM,Report,DetailedReport):
                                         Add_TG_EdgeTo_link(TG,AG,Edge,Link,DetailedReport)
 
     for Distance in range(0 , MaxDistance):
-         for Task in TG.nodes():
+        for Task in TG.nodes():
             if TG.node[Task]['Distance'] == Distance:
                 if TG.node[Task]['Criticality']=='L':
                     Node = TG.node[Task]['Node']
