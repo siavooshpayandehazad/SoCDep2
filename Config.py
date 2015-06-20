@@ -11,7 +11,7 @@ DebugDetails = False
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
 TG_Type = 'RandomDependent'
 # For Random TG_Type:
-NumberOfTasks = 5
+NumberOfTasks = 10
 NumberOfEdges = 15
 WCET_Range = 30
 EdgeWeightRange = 7
@@ -96,7 +96,7 @@ IterativeLocalSearchIterations = 20
 ################################################
 #          Scheduling  Config
 ################################################
-SlackCount=1        # this should be used for number of repetitions of the critical tasks
+SlackCount=2       # this should be used for number of repetitions of the critical tasks
 ################################################
 #           Network Partitioning
 ################################################

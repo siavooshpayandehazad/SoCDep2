@@ -1,7 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad 
 
 
-import copy
+
 from TaskGraphUtilities import TG_Functions
 from Scheduling_Functions import Add_TG_TaskToNode
 from Scheduling_Functions import Add_TG_EdgeTo_link

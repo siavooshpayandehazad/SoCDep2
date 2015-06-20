@@ -1,7 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad 
 
 from math import ceil
-
+import Config
 def FindScheduleMakeSpan(AG):
     MakeSpan=0
     for Node in AG.nodes():
@@ -33,12 +33,14 @@ def Add_TG_TaskToNode(TG,AG,SHM,Task,Node,Report):
                   TG.node[Task]['Release'])
     # This includes the aging and lower frequency of the nodes of graph...
     # however, we do not include fractions of a cycle so we take ceiling of the execution time
-
     NodeSpeedDown= 1+((100.0-SHM.SHM.node[Node]['NodeSpeed'])/100)
     TaskExecutionOnNode= ceil(TG.node[Task]['WCET']* NodeSpeedDown)
     EndTime=StartTime+TaskExecutionOnNode
     if Report:print "\t\tSTARTING TIME:",StartTime,"ENDING TIME:",EndTime
-    AG.node[Node]['Scheduling'][Task]=[StartTime,EndTime]
+    if TG.node[Task]['Criticality'] == 'H':
+        AG.node[Node]['Scheduling'][Task]=[StartTime,EndTime + Config.SlackCount*TaskExecutionOnNode]
+    else:
+        AG.node[Node]['Scheduling'][Task]=[StartTime,EndTime]
     TG.node[Task]['Node']=Node
     return True
 ################################################################
@@ -46,9 +48,12 @@ def Add_TG_TaskToNode(TG,AG,SHM,Task,Node,Report):
 def Add_TG_EdgeTo_link(TG,AG,Edge,Link,Report):
     if Report:print "\t\tADDING EDGE:",Edge," TO LINK:",Link
     StartTime=max(FindLastAllocatedTimeOnLink(TG,AG,Link,Report),FindEdgePredecessorsFinishTime(TG,AG,Edge))
-    EndTime=StartTime+(TG.edge[Edge[0]][Edge[1]]['ComWeight'])
+    EndTime=StartTime+ TG.edge[Edge[0]][Edge[1]]['ComWeight']
     if Report:print "\t\tSTARTING TIME:",StartTime,"ENDING TIME:",EndTime
-    AG.edge[Link[0]][Link[1]]['Scheduling'][Edge]=[StartTime,EndTime]
+    if TG.edge[Edge[0]][Edge[1]]['Criticality'] == 'H':
+        AG.edge[Link[0]][Link[1]]['Scheduling'][Edge]=[StartTime,EndTime + Config.SlackCount*TG.edge[Edge[0]][Edge[1]]['ComWeight']]
+    else:
+        AG.edge[Link[0]][Link[1]]['Scheduling'][Edge]=[StartTime,EndTime]
     return True
 
 ##########################################################################

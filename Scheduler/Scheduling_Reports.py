@@ -2,6 +2,7 @@
 
 import matplotlib.pyplot as plt
 from Scheduling_Functions import FindLastAllocatedTimeOnNode,FindLastAllocatedTimeOnLink
+import Config
 ##########################################################################
 #
 #                           SCHEDULING REPORT
@@ -67,52 +68,114 @@ def GenerateGanttCharts(TG,AG):
         PE_P = []
         PE_P.append(0)
         PE_T.append(0)
-        TaskColor=[]
+        Slack_T = []
+        Slack_P = []
+        Slack_T.append(0)
+        Slack_P.append(0)
+        TaskColor = 'w'
         if len(AG.node[Node]['MappedTasks'])>0:
-            ax1 = fig.add_subplot(NumberOfPlots ,1,Count)
+            ax1 = fig.add_subplot(NumberOfPlots, 1, Count)
             for Task in AG.node[Node]['MappedTasks']:
                     if Task in AG.node[Node]['Scheduling']:
-                        StartTime=AG.node[Node]['Scheduling'][Task][0]
-                        EndTime=AG.node[Node]['Scheduling'][Task][1]
-                        PE_T.append(StartTime)
-                        PE_P.append(0)
-                        PE_T.append(StartTime)
-                        PE_P.append(0.1)
-                        PE_T.append(EndTime)
-                        PE_P.append(0.1)
-                        PE_T.append(EndTime)
-                        PE_P.append(0)
                         if TG.node[Task]['Criticality']=='H':
-                            TaskColor.append('#FF878B')
-                        elif TG.node[Task]['Criticality']=='GH':
-                            TaskColor.append('#FFC29C')
-                        elif TG.node[Task]['Criticality']=='GNH':
-                            TaskColor.append('#928AFF')
+                            StartTime = AG.node[Node]['Scheduling'][Task][0]
+                            TaskLength = AG.node[Node]['Scheduling'][Task][1] - AG.node[Node]['Scheduling'][Task][0]
+                            EndTime = StartTime + (TaskLength / (Config.SlackCount+1))
+                            PE_T.append(StartTime)
+                            PE_P.append(0)
+                            PE_T.append(StartTime)
+                            PE_P.append(0.1)
+                            PE_T.append(EndTime)
+                            PE_P.append(0.1)
+                            PE_T.append(EndTime)
+                            PE_P.append(0)
+                            StartTime =EndTime
+                            EndTime = StartTime + (TaskLength / (Config.SlackCount+1)) * Config.SlackCount
+                            Slack_T.append(StartTime)
+                            Slack_P.append(0)
+                            Slack_T.append(StartTime)
+                            Slack_P.append(0.1)
+                            Slack_T.append(EndTime)
+                            Slack_P.append(0.1)
+                            Slack_T.append(EndTime)
+                            Slack_P.append(0)
+                            TaskColor = '#FF878B'
                         else:
-                            TaskColor.append('#CFECFF')
+                            StartTime = AG.node[Node]['Scheduling'][Task][0]
+                            EndTime = AG.node[Node]['Scheduling'][Task][1]
+                            PE_T.append(StartTime)
+                            PE_P.append(0)
+                            PE_T.append(StartTime)
+                            PE_P.append(0.1)
+                            PE_T.append(EndTime)
+                            PE_P.append(0.1)
+                            PE_T.append(EndTime)
+                            PE_P.append(0)
+                            if TG.node[Task]['Criticality'] == 'GH':
+                                TaskColor = '#FFC29C'
+                            elif TG.node[Task]['Criticality'] == 'GNH':
+                                TaskColor = '#928AFF'
+                            else:
+                                TaskColor = '#CFECFF'
             PE_T.append(Max_Time)
             PE_P.append(0)
             plt.setp(ax1.get_yticklabels(), visible=False)
             if Count < EdgeCounter + NodeCounter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
-            ax1.fill_between(PE_T, PE_P, 0 , color=TaskColor, edgecolor='k')
+            ax1.fill_between(PE_T, PE_P, 0, facecolor = TaskColor, edgecolor='k')
+            ax1.fill_between(Slack_T, Slack_P, 0, facecolor='#808080', edgecolor='k')
             for Task in AG.node[Node]['MappedTasks']:
                     if Task in AG.node[Node]['Scheduling']:
                         StartTime=AG.node[Node]['Scheduling'][Task][0]
-                        EndTime=AG.node[Node]['Scheduling'][Task][1]
-                        ax1.text((StartTime+EndTime)/2 - len(str(Task))/2, 0.05, str(Task), fontsize=10)
+                        if TG.node[Task]['Criticality']=='H':
+                            TaskLength=(AG.node[Node]['Scheduling'][Task][1] - AG.node[Node]['Scheduling'][Task][0])/(Config.SlackCount+1)
+                            ax1.text(StartTime+(TaskLength)/2 - len(str(Task))/2, 0.05, str(Task), fontsize=10)
+                            EndTime=AG.node[Node]['Scheduling'][Task][1]
+                            ax1.text((StartTime+TaskLength+EndTime)/2 - len(str(Task)+'S')/2, 0.05, str(Task)+'S', fontsize=10)
+                        else:
+                            EndTime=AG.node[Node]['Scheduling'][Task][1]
+                            ax1.text((StartTime+EndTime)/2 - len(str(Task))/2, 0.05, str(Task), fontsize=10)
             ax1.set_ylabel(r'PE'+str(Node), size=14, rotation=0)
             Count += 1
     for Link in AG.edges():
         PE_T = []
         PE_P = []
-        EdgeColor=[]
+        EdgeColor='w'
         PE_P.append(0)
         PE_T.append(0)
+
+        Slack_T = []
+        Slack_P = []
+        Slack_P.append(0)
+        Slack_T.append(0)
         if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
             ax1 = fig.add_subplot(NumberOfPlots,1,Count)
             for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
                 if AG.edge[Link[0]][Link[1]]['Scheduling']:
+                    if TG.edge[Task[0]][Task[1]]['Criticality']=='H':
+                        StartTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
+                        TaskLength = AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1] - AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
+                        EndTime= StartTime + (TaskLength / (Config.SlackCount+1))
+                        PE_T.append(StartTime)
+                        PE_P.append(0)
+                        PE_T.append(StartTime)
+                        PE_P.append(0.1)
+                        PE_T.append(EndTime)
+                        PE_P.append(0.1)
+                        PE_T.append(EndTime)
+                        PE_P.append(0)
+                        StartTime =EndTime
+                        EndTime = StartTime + (TaskLength / (Config.SlackCount+1)) * Config.SlackCount
+                        Slack_T.append(StartTime)
+                        Slack_P.append(0)
+                        Slack_T.append(StartTime)
+                        Slack_P.append(0.1)
+                        Slack_T.append(EndTime)
+                        Slack_P.append(0.1)
+                        Slack_T.append(EndTime)
+                        Slack_P.append(0)
+                        EdgeColor = '#FF878B'
+                    else:
                         StartTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
                         EndTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1]
                         PE_T.append(StartTime)
@@ -123,19 +186,25 @@ def GenerateGanttCharts(TG,AG):
                         PE_P.append(0.1)
                         PE_T.append(EndTime)
                         PE_P.append(0)
-                if TG.edge[Task[0]][Task[1]]['Criticality']=='H':
-                    EdgeColor.append('#FF878B')
-                else:
-                    EdgeColor.append('#CFECFF')
+                        EdgeColor = '#CFECFF'
             PE_T.append(Max_Time)
             PE_P.append(0)
             plt.setp(ax1.get_yticklabels(), visible=False)
             if Count < EdgeCounter+NodeCounter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
             ax1.fill_between(PE_T, PE_P, 0 , color=EdgeColor, edgecolor='k')
+            ax1.fill_between(Slack_T, Slack_P, 0 , color='#808080', edgecolor='k')
             for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
                 if AG.edge[Link[0]][Link[1]]['Scheduling']:
-                        StartTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
+                    StartTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
+                    if TG.edge[Task[0]][Task[1]]['Criticality']=='H':
+                            TaskLength=(AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1] - AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0])/(Config.SlackCount+1)
+                            stringToDisplay= str(Task[0])+"/"+str(Task[1])
+                            ax1.text(StartTime+(TaskLength)/2 - len(str(stringToDisplay))/2, 0.05, stringToDisplay, fontsize=10)
+                            EndTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1]
+                            stringToDisplay= str(Task[0])+"/"+str(Task[1])+'S'
+                            ax1.text((StartTime+TaskLength+EndTime)/2 - len(str(stringToDisplay))/2, 0.05, stringToDisplay, fontsize=10)
+                    else:
                         EndTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1]
                         stringToDisplay= str(Task[0])+"/"+str(Task[1])
                         ax1.text((StartTime+EndTime)/2 - len(str(stringToDisplay))/2, 0.05, stringToDisplay, fontsize=10)
