@@ -17,7 +17,6 @@ def GenerateManualTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List
     GateWayEdges = []
     GatewayCounter = 0
     for edge in TG_Edge_List:
-
         if Task_Criticality_List[Task_List.index(edge[0])] == 'H' and Task_Criticality_List[Task_List.index(edge[1])] == 'H':
             Edge_Criticality_List.append('H')
         elif Task_Criticality_List[Task_List.index(edge[0])]=='H' and Task_Criticality_List[Task_List.index(edge[1])]=='L' :
@@ -79,18 +78,48 @@ def GenerateRandomTG(NumberOfTasks,NumberOfEdges,WCET_Range,EdgeWeightRange):
             TG_Edge_List.append((SourceTask,DestTask))
             TG_Edge_Weight.append(random.randrange(1,EdgeWeightRange))
 
+    for i in range(0,len(Task_List)):
+        TG.add_node(Task_List[i], WCET = Task_WCET_List[i], Criticality = Task_Criticality_List[i],
+                    Cluster = None, Node = None, Priority = None, Distance=None ,Release = 0)
+
     print "\tCALCULATING THE CRITICALITY OF LINKS..."
+    GateWayEdges = []
+    GatewayCounter = 0
     for edge in TG_Edge_List:
-        if Task_Criticality_List[Task_List.index(edge[0])]=='H' and Task_Criticality_List[Task_List.index(edge[1])]=='H' :
+
+        if Task_Criticality_List[Task_List.index(edge[0])] == 'H' and Task_Criticality_List[Task_List.index(edge[1])] == 'H':
             Edge_Criticality_List.append('H')
+        elif Task_Criticality_List[Task_List.index(edge[0])]=='H' and Task_Criticality_List[Task_List.index(edge[1])]=='L' :
+            # gateway to Low
+            GatewayNumber = len(Task_List)+GatewayCounter
+            TG.add_node(GatewayNumber, WCET=1, Criticality= 'GNH',
+                    Cluster=None, Node=None, Priority=None, Distance=None , Release=0)
+            if not networkx.has_path(TG,edge[0],GatewayNumber):
+                TG.add_edge(edge[0],GatewayNumber,Criticality = 'H', Link=[], ComWeight = TG_Edge_Weight[TG_Edge_List.index(edge)])
+            if not networkx.has_path(TG,GatewayNumber,edge[1]):
+                TG.add_edge(GatewayNumber,edge[1],Criticality = 'L', Link=[], ComWeight = TG_Edge_Weight[TG_Edge_List.index(edge)])
+            GateWayEdges.append(edge)
+            GatewayCounter += 1
+        elif Task_Criticality_List[Task_List.index(edge[0])]=='L' and Task_Criticality_List[Task_List.index(edge[1])]=='H' :
+            # gateway to high
+            GatewayNumber = len(Task_List)+GatewayCounter
+            TG.add_node(GatewayNumber, WCET=1, Criticality= 'GH',
+                    Cluster=None, Node=None, Priority=None, Distance=None , Release=0)
+            if not networkx.has_path(TG,edge[0],GatewayNumber):
+                TG.add_edge(edge[0],GatewayNumber, Criticality = 'L', Link=[], ComWeight = TG_Edge_Weight[TG_Edge_List.index(edge)])
+            if not networkx.has_path(TG,GatewayNumber,edge[1]):
+                TG.add_edge(GatewayNumber,edge[1], Criticality = 'H', Link=[], ComWeight = TG_Edge_Weight[TG_Edge_List.index(edge)])
+            GateWayEdges.append(edge)
+            GatewayCounter += 1
         else:
             Edge_Criticality_List.append('L')
     print "\tLINKS CRITICALITY CALCULATED!"
 
+    for edge in GateWayEdges:
+        TG_Edge_List.remove(edge)
 
-    for i in range(0,len(Task_List)):
-        TG.add_node(Task_List[i], WCET = Task_WCET_List[i], Criticality = Task_Criticality_List[i],
-                    Cluster = None, Node = None, Priority = None, Distance=None ,Release = 0)
+
+
 
     for i in range(0,len(TG_Edge_List)):
         # making sure that the graph is still acyclic

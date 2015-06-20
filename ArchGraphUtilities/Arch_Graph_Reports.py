@@ -17,7 +17,7 @@ def DrawArchGraph(AG):
             ColorList.append('#928AFF')
         else:
             ColorList.append('#CFECFF')
-    #POS=networkx.spring_layout(AG)
+    # POS = networkx.spring_layout(AG)
 
     networkx.draw(AG,POS,with_labels=True,node_size=900,node_color=ColorList)
     plt.savefig("GraphDrawings/AG.png")

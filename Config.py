@@ -9,7 +9,7 @@ DebugDetails = False
 #          TG  Config
 ################################################
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
-TG_Type = 'Manual'
+TG_Type = 'RandomDependent'
 # For Random TG_Type:
 NumberOfTasks = 10
 NumberOfEdges = 15
@@ -17,6 +17,8 @@ WCET_Range = 30
 EdgeWeightRange = 7
 Release_Range = 5      # task release time range
 # The following is only for Manual TG_Type:
+# Note::    if you have High-critical tasks in your TG, make sure that you have partitioned the network or
+#           check the mapping algorithm (in some cases the network partitioning is not considered).
 Task_List = [0, 1, 2, 3, 4, 5, 6, 7]
 Task_WCET_List = [30, 30, 20, 40, 10, 5, 15, 20]
 Task_Criticality_List = ['H', 'L', 'H', 'L', 'L', 'H', 'L', 'L']
