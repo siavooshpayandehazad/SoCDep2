@@ -100,7 +100,7 @@ def GenerateGanttCharts(TG,AG):
                     if Task in AG.node[Node]['Scheduling']:
                         StartTime=AG.node[Node]['Scheduling'][Task][0]
                         EndTime=AG.node[Node]['Scheduling'][Task][1]
-                        ax1.text((StartTime+EndTime)/2, 0.05, str(Task), fontsize=10)
+                        ax1.text((StartTime+EndTime)/2 - len(str(Task))/2, 0.05, str(Task), fontsize=10)
             ax1.set_ylabel(r'PE'+str(Node), size=14, rotation=0)
             Count += 1
     for Link in AG.edges():
@@ -138,7 +138,7 @@ def GenerateGanttCharts(TG,AG):
                         StartTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
                         EndTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1]
                         stringToDisplay= str(Task[0])+"/"+str(Task[1])
-                        ax1.text((StartTime+EndTime)/2, 0.05, stringToDisplay, fontsize=10)
+                        ax1.text((StartTime+EndTime)/2 - len(str(stringToDisplay))/2, 0.05, stringToDisplay, fontsize=10)
             ax1.set_ylabel(r'L'+str(Link), size=14, rotation=0)
             Count += 1
     if EdgeCounter+EdgeCounter>0:
