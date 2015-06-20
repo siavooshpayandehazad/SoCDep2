@@ -146,3 +146,5 @@ ToDo:
     - Generate multiple levels of priority levels for Non/Mid-critical tasks
 
     - going 3D
+
+    - Adding Slack to scheduler...
