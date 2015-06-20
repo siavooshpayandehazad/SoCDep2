@@ -47,8 +47,7 @@ def GenerateGanttCharts(TG,AG):
     else:
         MAX_Time_Node = 0
     Max_Time = max(MAX_Time_Link,MAX_Time_Node)
-    fig = plt.figure()
-    plt.subplots_adjust(hspace=0.1)
+
     NodeCounter = 0
     EdgeCounter = 0
     for Node in AG.nodes():
@@ -61,11 +60,14 @@ def GenerateGanttCharts(TG,AG):
     if NumberOfPlots<10:
         NumberOfPlots=10
     Count = 1
+    fig = plt.figure(figsize=(Max_Time/10,NumberOfPlots/2))
+    plt.subplots_adjust(hspace=0.1)
     for Node in AG.nodes():
         PE_T = []
         PE_P = []
         PE_P.append(0)
         PE_T.append(0)
+        TaskColor=[]
         if len(AG.node[Node]['MappedTasks'])>0:
             ax1 = fig.add_subplot(NumberOfPlots ,1,Count)
             for Task in AG.node[Node]['MappedTasks']:
@@ -80,13 +82,20 @@ def GenerateGanttCharts(TG,AG):
                         PE_P.append(0.1)
                         PE_T.append(EndTime)
                         PE_P.append(0)
-
+                        if TG.node[Task]['Criticality']=='H':
+                            TaskColor.append('#FF878B')
+                        elif TG.node[Task]['Criticality']=='GH':
+                            TaskColor.append('#FFC29C')
+                        elif TG.node[Task]['Criticality']=='GNH':
+                            TaskColor.append('#928AFF')
+                        else:
+                            TaskColor.append('#CFECFF')
             PE_T.append(Max_Time)
             PE_P.append(0)
             plt.setp(ax1.get_yticklabels(), visible=False)
             if Count < EdgeCounter + NodeCounter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
-            ax1.fill_between(PE_T, PE_P, 0 , color='b', edgecolor='k')
+            ax1.fill_between(PE_T, PE_P, 0 , color=TaskColor, edgecolor='k')
             for Task in AG.node[Node]['MappedTasks']:
                     if Task in AG.node[Node]['Scheduling']:
                         StartTime=AG.node[Node]['Scheduling'][Task][0]
@@ -97,6 +106,7 @@ def GenerateGanttCharts(TG,AG):
     for Link in AG.edges():
         PE_T = []
         PE_P = []
+        EdgeColor=[]
         PE_P.append(0)
         PE_T.append(0)
         if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
@@ -113,12 +123,16 @@ def GenerateGanttCharts(TG,AG):
                         PE_P.append(0.1)
                         PE_T.append(EndTime)
                         PE_P.append(0)
+                if TG.edge[Task[0]][Task[1]]['Criticality']=='H':
+                    EdgeColor.append('#FF878B')
+                else:
+                    EdgeColor.append('#CFECFF')
             PE_T.append(Max_Time)
             PE_P.append(0)
             plt.setp(ax1.get_yticklabels(), visible=False)
             if Count < EdgeCounter+NodeCounter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
-            ax1.fill_between(PE_T, PE_P, 0 , color='r', edgecolor='k')
+            ax1.fill_between(PE_T, PE_P, 0 , color=EdgeColor, edgecolor='k')
             for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
                 if AG.edge[Link[0]][Link[1]]['Scheduling']:
                         StartTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]

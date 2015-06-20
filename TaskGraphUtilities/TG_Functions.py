@@ -94,9 +94,9 @@ def GenerateRandomTG(NumberOfTasks,NumberOfEdges,WCET_Range,EdgeWeightRange):
             GatewayNumber = len(Task_List)+GatewayCounter
             TG.add_node(GatewayNumber, WCET=1, Criticality= 'GNH',
                     Cluster=None, Node=None, Priority=None, Distance=None , Release=0)
-            if not networkx.has_path(TG,edge[0],GatewayNumber):
+            if not networkx.has_path(TG,GatewayNumber,edge[0]):
                 TG.add_edge(edge[0],GatewayNumber,Criticality = 'H', Link=[], ComWeight = TG_Edge_Weight[TG_Edge_List.index(edge)])
-            if not networkx.has_path(TG,GatewayNumber,edge[1]):
+            if not networkx.has_path(TG,edge[1],GatewayNumber):
                 TG.add_edge(GatewayNumber,edge[1],Criticality = 'L', Link=[], ComWeight = TG_Edge_Weight[TG_Edge_List.index(edge)])
             GateWayEdges.append(edge)
             GatewayCounter += 1
@@ -105,9 +105,9 @@ def GenerateRandomTG(NumberOfTasks,NumberOfEdges,WCET_Range,EdgeWeightRange):
             GatewayNumber = len(Task_List)+GatewayCounter
             TG.add_node(GatewayNumber, WCET=1, Criticality= 'GH',
                     Cluster=None, Node=None, Priority=None, Distance=None , Release=0)
-            if not networkx.has_path(TG,edge[0],GatewayNumber):
+            if not networkx.has_path(TG,GatewayNumber,edge[0]):
                 TG.add_edge(edge[0],GatewayNumber, Criticality = 'L', Link=[], ComWeight = TG_Edge_Weight[TG_Edge_List.index(edge)])
-            if not networkx.has_path(TG,GatewayNumber,edge[1]):
+            if not networkx.has_path(TG,edge[1],GatewayNumber):
                 TG.add_edge(GatewayNumber,edge[1], Criticality = 'H', Link=[], ComWeight = TG_Edge_Weight[TG_Edge_List.index(edge)])
             GateWayEdges.append(edge)
             GatewayCounter += 1
@@ -117,9 +117,6 @@ def GenerateRandomTG(NumberOfTasks,NumberOfEdges,WCET_Range,EdgeWeightRange):
 
     for edge in GateWayEdges:
         TG_Edge_List.remove(edge)
-
-
-
 
     for i in range(0,len(TG_Edge_List)):
         # making sure that the graph is still acyclic
