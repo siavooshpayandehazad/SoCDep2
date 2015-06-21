@@ -4,6 +4,7 @@ import random
 import copy
 from Scheduler import Scheduler,Scheduling_Functions,Scheduling_Reports
 from Mapper import Mapping_Functions
+import Config
 
 def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedReport,logging):
     if Report:print "==========================================="
@@ -21,8 +22,9 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedR
         Mapping_Functions.RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,logging)
 
         DestNode = random.choice(AG.nodes())
-        while(CTG.node[ClusterToMove]['Criticality']!= AG.node[DestNode]['Region']):
-            DestNode = random.choice(AG.nodes())
+        if Config.EnablePartitioning:
+            while(CTG.node[ClusterToMove]['Criticality']!= AG.node[DestNode]['Region']):
+                DestNode = random.choice(AG.nodes())
         #print CTG.node[ClusterToMove]['Criticality'],AG.node[DestNode]['Region']
 
         TryCounter=0
@@ -37,8 +39,9 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedR
             Mapping_Functions.RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,logging)
 
             DestNode = random.choice(AG.nodes())
-            while(CTG.node[ClusterToMove]['Criticality']!=AG.node[DestNode]['Region']):
-                DestNode = random.choice(AG.nodes())
+            if Config.EnablePartitioning:
+                while(CTG.node[ClusterToMove]['Criticality']!=AG.node[DestNode]['Region']):
+                    DestNode = random.choice(AG.nodes())
             #print CTG.node[ClusterToMove]['Criticality'],AG.node[DestNode]['Region']
 
             if TryCounter >= 3*len(AG.nodes()):

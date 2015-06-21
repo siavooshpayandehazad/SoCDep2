@@ -64,18 +64,18 @@ def GenerateGanttCharts(TG,AG):
     fig = plt.figure(figsize=(Max_Time/10,NumberOfPlots/2))
     plt.subplots_adjust(hspace=0.1)
     for Node in AG.nodes():
-        PE_T = []
-        PE_P = []
-        PE_P.append(0)
-        PE_T.append(0)
-        Slack_T = []
-        Slack_P = []
-        Slack_T.append(0)
-        Slack_P.append(0)
-        TaskColor = 'w'
         if len(AG.node[Node]['MappedTasks'])>0:
             ax1 = fig.add_subplot(NumberOfPlots, 1, Count)
             for Task in AG.node[Node]['MappedTasks']:
+                    PE_T = []
+                    PE_P = []
+                    PE_P.append(0)
+                    PE_T.append(0)
+                    Slack_T = []
+                    Slack_P = []
+                    Slack_T.append(0)
+                    Slack_P.append(0)
+                    TaskColor = 'w'
                     if Task in AG.node[Node]['Scheduling']:
                         if TG.node[Task]['Criticality']=='H':
                             StartTime = AG.node[Node]['Scheduling'][Task][0]
@@ -89,17 +89,18 @@ def GenerateGanttCharts(TG,AG):
                             PE_P.append(0.1)
                             PE_T.append(EndTime)
                             PE_P.append(0)
-                            StartTime =EndTime
-                            EndTime = StartTime + (TaskLength / (Config.SlackCount+1)) * Config.SlackCount
-                            Slack_T.append(StartTime)
-                            Slack_P.append(0)
-                            Slack_T.append(StartTime)
-                            Slack_P.append(0.1)
-                            Slack_T.append(EndTime)
-                            Slack_P.append(0.1)
-                            Slack_T.append(EndTime)
-                            Slack_P.append(0)
                             TaskColor = '#FF878B'
+                            if Config.SlackCount > 0:
+                                StartTime =EndTime
+                                EndTime = StartTime + (TaskLength / (Config.SlackCount+1)) * Config.SlackCount
+                                Slack_T.append(StartTime)
+                                Slack_P.append(0)
+                                Slack_T.append(StartTime)
+                                Slack_P.append(0.1)
+                                Slack_T.append(EndTime)
+                                Slack_P.append(0.1)
+                                Slack_T.append(EndTime)
+                                Slack_P.append(0)
                         else:
                             StartTime = AG.node[Node]['Scheduling'][Task][0]
                             EndTime = AG.node[Node]['Scheduling'][Task][1]
@@ -117,13 +118,15 @@ def GenerateGanttCharts(TG,AG):
                                 TaskColor = '#928AFF'
                             else:
                                 TaskColor = '#CFECFF'
-            PE_T.append(Max_Time)
-            PE_P.append(0)
+                    PE_T.append(Max_Time)
+                    PE_P.append(0)
+                    ax1.fill_between(PE_T, PE_P, 0, facecolor = TaskColor, edgecolor='k')
+                    if Config.SlackCount > 0:
+                        ax1.fill_between(Slack_T, Slack_P, 0, facecolor='#808080', edgecolor='k')
             plt.setp(ax1.get_yticklabels(), visible=False)
             if Count < EdgeCounter + NodeCounter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
-            ax1.fill_between(PE_T, PE_P, 0, facecolor = TaskColor, edgecolor='k')
-            ax1.fill_between(Slack_T, Slack_P, 0, facecolor='#808080', edgecolor='k')
+
             for Task in AG.node[Node]['MappedTasks']:
                     if Task in AG.node[Node]['Scheduling']:
                         StartTime=AG.node[Node]['Scheduling'][Task][0]
@@ -131,26 +134,26 @@ def GenerateGanttCharts(TG,AG):
                             TaskLength=(AG.node[Node]['Scheduling'][Task][1] - AG.node[Node]['Scheduling'][Task][0])/(Config.SlackCount+1)
                             ax1.text(StartTime+(TaskLength)/2 - len(str(Task))/2, 0.05, str(Task), fontsize=10)
                             EndTime=AG.node[Node]['Scheduling'][Task][1]
-                            ax1.text((StartTime+TaskLength+EndTime)/2 - len(str(Task)+'S')/2, 0.05, str(Task)+'S', fontsize=10)
+                            if Config.SlackCount > 0:
+                                ax1.text((StartTime+TaskLength+EndTime)/2 - len(str(Task)+'S')/2, 0.05, str(Task)+'S', fontsize=10)
                         else:
                             EndTime=AG.node[Node]['Scheduling'][Task][1]
                             ax1.text((StartTime+EndTime)/2 - len(str(Task))/2, 0.05, str(Task), fontsize=10)
             ax1.set_ylabel(r'PE'+str(Node), size=14, rotation=0)
             Count += 1
     for Link in AG.edges():
-        PE_T = []
-        PE_P = []
-        EdgeColor='w'
-        PE_P.append(0)
-        PE_T.append(0)
-
-        Slack_T = []
-        Slack_P = []
-        Slack_P.append(0)
-        Slack_T.append(0)
         if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
             ax1 = fig.add_subplot(NumberOfPlots,1,Count)
             for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
+                PE_T = []
+                PE_P = []
+                PE_P.append(0)
+                PE_T.append(0)
+                EdgeColor='w'
+                Slack_T = []
+                Slack_P = []
+                Slack_P.append(0)
+                Slack_T.append(0)
                 if AG.edge[Link[0]][Link[1]]['Scheduling']:
                     if TG.edge[Task[0]][Task[1]]['Criticality']=='H':
                         StartTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
@@ -164,17 +167,18 @@ def GenerateGanttCharts(TG,AG):
                         PE_P.append(0.1)
                         PE_T.append(EndTime)
                         PE_P.append(0)
-                        StartTime =EndTime
-                        EndTime = StartTime + (TaskLength / (Config.SlackCount+1)) * Config.SlackCount
-                        Slack_T.append(StartTime)
-                        Slack_P.append(0)
-                        Slack_T.append(StartTime)
-                        Slack_P.append(0.1)
-                        Slack_T.append(EndTime)
-                        Slack_P.append(0.1)
-                        Slack_T.append(EndTime)
-                        Slack_P.append(0)
                         EdgeColor = '#FF878B'
+                        if Config.SlackCount > 0:
+                            StartTime =EndTime
+                            EndTime = StartTime + (TaskLength / (Config.SlackCount+1)) * Config.SlackCount
+                            Slack_T.append(StartTime)
+                            Slack_P.append(0)
+                            Slack_T.append(StartTime)
+                            Slack_P.append(0.1)
+                            Slack_T.append(EndTime)
+                            Slack_P.append(0.1)
+                            Slack_T.append(EndTime)
+                            Slack_P.append(0)
                     else:
                         StartTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
                         EndTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1]
@@ -187,13 +191,14 @@ def GenerateGanttCharts(TG,AG):
                         PE_T.append(EndTime)
                         PE_P.append(0)
                         EdgeColor = '#CFECFF'
-            PE_T.append(Max_Time)
-            PE_P.append(0)
+                PE_T.append(Max_Time)
+                PE_P.append(0)
+                ax1.fill_between(PE_T, PE_P, 0 , color=EdgeColor, edgecolor='k')
+                if Config.SlackCount > 0:
+                    ax1.fill_between(Slack_T, Slack_P, 0 , color='#808080', edgecolor='k')
             plt.setp(ax1.get_yticklabels(), visible=False)
             if Count < EdgeCounter+NodeCounter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
-            ax1.fill_between(PE_T, PE_P, 0 , color=EdgeColor, edgecolor='k')
-            ax1.fill_between(Slack_T, Slack_P, 0 , color='#808080', edgecolor='k')
             for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
                 if AG.edge[Link[0]][Link[1]]['Scheduling']:
                     StartTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
@@ -203,14 +208,15 @@ def GenerateGanttCharts(TG,AG):
                             ax1.text(StartTime+(TaskLength)/2 - len(str(stringToDisplay))/2, 0.05, stringToDisplay, fontsize=10)
                             EndTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1]
                             stringToDisplay= str(Task[0])+"/"+str(Task[1])+'S'
-                            ax1.text((StartTime+TaskLength+EndTime)/2 - len(str(stringToDisplay))/2, 0.05, stringToDisplay, fontsize=10)
+                            if Config.SlackCount > 0:
+                                ax1.text((StartTime+TaskLength+EndTime)/2 - len(str(stringToDisplay))/2, 0.05, stringToDisplay, fontsize=10)
                     else:
                         EndTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1]
                         stringToDisplay= str(Task[0])+"/"+str(Task[1])
                         ax1.text((StartTime+EndTime)/2 - len(str(stringToDisplay))/2, 0.05, stringToDisplay, fontsize=10)
             ax1.set_ylabel(r'L'+str(Link), size=14, rotation=0)
             Count += 1
-    if EdgeCounter+EdgeCounter>0:
+    if EdgeCounter+EdgeCounter > 0:
         ax1.xaxis.set_ticks_position('bottom')
     plt.savefig("GraphDrawings/Scheduling.png")
     plt.clf()

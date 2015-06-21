@@ -3,6 +3,7 @@
 
 import statistics
 import ClusteringReports
+import Config
 
 def RemoveTaskFromCTG(TG,CTG,Task):
     TaskCluster = TG.node[Task]['Cluster']
@@ -48,10 +49,11 @@ def AddTaskToCTG(TG,CTG,Task,Cluster):
     if len(CTG.node[Cluster]['TaskList']) == 0 :
         CTG.node[Cluster]['Criticality'] = TG.node[Task]['Criticality']
     else:
-        if CTG.node[Cluster]['Criticality'] == TG.node[Task]['Criticality']:
-            pass
-        else:
-            return False
+        if Config.EnablePartitioning:
+            if CTG.node[Cluster]['Criticality'] == TG.node[Task]['Criticality']:
+                pass
+            else:
+                return False
     CTG.node[Cluster]['TaskList'].append(Task)
     CTG.node[Cluster]['Utilization']+= TG.node[Task]['WCET']
     TG.node[Task]['Cluster'] = Cluster
@@ -104,6 +106,7 @@ def ClearClustering(TG,CTG):
     for cluster in CTG.nodes():
         CTG.node[cluster]['TaskList'] = []
         CTG.node[cluster]['Utilization'] = 0
+        CTG.node[cluster]['Criticality'] = None
     for edge in CTG.edges():
         CTG.remove_edge(edge[0], edge[1])
     return None

@@ -96,29 +96,33 @@ IterativeLocalSearchIterations = 20
 ################################################
 #          Scheduling  Config
 ################################################
-SlackCount=2       # this should be used for number of repetitions of the critical tasks
+SlackCount = 0      # this should be used for number of repetitions of the critical tasks
 ################################################
 #           Network Partitioning
 ################################################
-# Critical Region Nodes:
-# for 6X6 network
-CriticalRegionNodes = [16, 17, 21, 22, 23, 28, 29]
-GateToNonCritical = [15, 27]
-GateToCritical = [20]
-# No regions:
-# CriticalRegionNodes = []
-# GateToNonCritical = []
-# GateToCritical = []
-# For 6X6 network: (This is the Example scenario no. 2 in ReCoSoC paper)
-ListOfBrokenLinks = [(35, 29), (29, 35), (34, 28), (28, 34), (33, 27), (11, 17), (17, 11), (10, 16), (16, 10),
-                      (9, 15), (14, 15), (20, 26), (20, 19), (20, 14), (26, 27)]
-# The virtual broken links for Non critical is not quite right in the paper for the case of gateways
-# To automatic generation of rectangles for the gateways can be fixed with the following workaround
-# we have to break the links between Gateways and the nodes on the region that gateway should not send
-# data to.
-VirtualBrokenLinksForNonCritical = [(20, 21), (27, 28), (27, 21), (15, 21), (15, 16)]
-VirtualBrokenLinksForCritical = [(27, 33), (27, 26), (15, 14), (15, 9)]
-# For those who don't need broken links
-# ListOfBrokenLinks = []
-# VirtualBrokenLinksForNonCritical = []
-# VirtualBrokenLinksForCritical = []
+EnablePartitioning = True
+
+if EnablePartitioning:
+    # Critical Region Nodes:
+    # for 6X6 network example no 2 of ReCoSoc Paper
+    CriticalRegionNodes = [16, 17, 21, 22, 23, 28, 29]
+    GateToNonCritical = [15, 27]
+    GateToCritical = [20]
+    # For 6X6 network: (This is the Example scenario no. 2 in ReCoSoC paper)
+    ListOfBrokenLinks = [(35, 29), (29, 35), (34, 28), (28, 34), (33, 27), (11, 17), (17, 11), (10, 16), (16, 10),
+                         (9, 15), (14, 15), (20, 26), (20, 19), (20, 14), (26, 27)]
+    # The virtual broken links for Non critical is not quite right in the ReCoSoC paper for the case of gateways
+    # To automatic generation of rectangles for the gateways can be fixed with the following workaround
+    # we have to break the links between Gateways and the nodes on the region that gateway should not send
+    # data to.
+    VirtualBrokenLinksForNonCritical = [(20, 21), (27, 28), (27, 21), (15, 21), (15, 16)]
+    VirtualBrokenLinksForCritical = [(27, 33), (27, 26), (15, 14), (15, 9)]
+else:
+    # No regions:
+    CriticalRegionNodes = []
+    GateToNonCritical = []
+    GateToCritical = []
+    # For those who don't need broken links
+    ListOfBrokenLinks = []
+    VirtualBrokenLinksForNonCritical = []
+    VirtualBrokenLinksForCritical = []

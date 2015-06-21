@@ -13,14 +13,16 @@ def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, Report, logging):
     Itteration=0
     for Cluster in CTG.nodes():
         DestNode = random.choice(AG.nodes())
-        while(CTG.node[Cluster]['Criticality']!= AG.node[DestNode]['Region']):
-            DestNode = random.choice(AG.nodes())
+        if Config.EnablePartitioning:
+            while(CTG.node[Cluster]['Criticality']!= AG.node[DestNode]['Region']):
+                DestNode = random.choice(AG.nodes())
         #print CTG.node[Cluster]['Criticality'],AG.node[DestNode]['Region']
         while not AddClusterToNode(TG,CTG,AG,SHM,NoCRG,Cluster,DestNode,logging):
             Itteration += 1
             DestNode = random.choice(AG.nodes())        # try another node
-            while(CTG.node[Cluster]['Criticality']!= AG.node[DestNode]['Region']):
-                DestNode = random.choice(AG.nodes())
+            if Config.EnablePartitioning:
+                while(CTG.node[Cluster]['Criticality']!= AG.node[DestNode]['Region']):
+                    DestNode = random.choice(AG.nodes())
             #print CTG.node[Cluster]['Criticality'],AG.node[DestNode]['Region']
             logging.info("\tMAPPING ATTEMPT: #"+str(Itteration+1)+"FOR CLUSTER:"+str(Cluster))
             if Itteration == 10* len(CTG.nodes()):

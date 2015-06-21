@@ -148,3 +148,5 @@ ToDo:
 
     - going 3D
 
+    - Check for reachability during routing if network is partitioned
+
