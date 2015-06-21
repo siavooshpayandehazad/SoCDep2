@@ -3,6 +3,7 @@
 import networkx
 import os
 import re
+import Config
 
 def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report,DetailedReport):
     """
@@ -34,9 +35,9 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report,DetailedReport):
     # output of north
 
     # todo: add virtual channel support for the routing graph...
-    if Report:print "==========================================="
-    if Report:print "STARTING BUILDING ROUTING ARCHITECTURE..."
-    if Report:ReportTurnModel(TurnModel)
+    if Report: print "==========================================="
+    if Report: print "STARTING BUILDING ROUTING ARCHITECTURE..."
+    if Report: ReportTurnModel(TurnModel)
     PortList = ['N','W','L','E','S']  # the order is crucial... do not change
                                       # to find out why its important, check: connect direct paths
     NoCRG = networkx.DiGraph()
@@ -101,7 +102,7 @@ def GenerateNoCRouteGraphFromFile(AG,SystemHealthMap,RoutingFilePath,Report,Deta
     """
     if Report:print "==========================================="
     if Report:print "STARTING BUILDING ROUTING ARCHITECTURE..."
-    NoCRG= networkx.DiGraph()
+    NoCRG = networkx.DiGraph()
     try:
         RoutingFile = open(RoutingFilePath, 'r')
     except IOError:
@@ -131,8 +132,8 @@ def GenerateNoCRouteGraphFromFile(AG,SystemHealthMap,RoutingFilePath,Report,Deta
             for i in range(0,int(len(PortList))):   # connect direct paths
                 if PortList[i] != 'L':
                     if DetailedReport:print "\t", PortList[i], "--->", PortList[len(PortList)-1-i]
-                    inID= str(NodeID)+str(PortList[i])+str('I')
-                    outID=str(NodeID)+str(PortList[len(PortList)-1-i])+str('O')
+                    inID = str(NodeID)+str(PortList[i])+str('I')
+                    outID = str(NodeID)+str(PortList[len(PortList)-1-i])+str('O')
                     NoCRG.add_edge(inID,outID)
             if DetailedReport:print "CONNECTING TURNS:"
             line = RoutingFile.readline()
@@ -198,26 +199,30 @@ def FindRouteInRouteGraph(NoCRG,SourceNode,DestinationNode,ReturnAllPaths,Report
     Source = str(SourceNode)+str('L') + str('I')
     Destination = str(DestinationNode) + str('L') + str('O')
     if networkx.has_path(NoCRG,Source,Destination):
-        ShortestPath = networkx.shortest_path(NoCRG,Source,Destination)
-        AllPaths = list(networkx.all_simple_paths(NoCRG,Source,Destination))
-        ShortestLinks = []
-        for i in range (0,len(ShortestPath)-1):
-            #if ShortestPath[i][0] != ShortestPath[i+1][0]:
-            if int(re.search(r'\d+', ShortestPath[i]).group()) != int(re.search(r'\d+', ShortestPath[i+1]).group()):
-                ShortestLinks.append((int(re.search(r'\d+', ShortestPath[i]).group()),int(re.search(r'\d+', ShortestPath[i+1]).group())))
-        AllLinks = []
-        for j in range(0, len(AllPaths)):
-            Path = AllPaths[j]
-            Links = []
-            for i in range (0,len(Path)-1):
-                if int(re.search(r'\d+', Path[i]).group()) != int(re.search(r'\d+', Path[i+1]).group()):
-                    Links.append((int(re.search(r'\d+', Path[i]).group()),int(re.search(r'\d+', Path[i+1]).group())))
-            AllLinks.append(Links)
-        if Report:print "\t\tFINDING PATH(S) FROM: ", Source, "TO:", Destination," ==>", AllLinks if ReturnAllPaths else ShortestLinks
-        if ReturnAllPaths:
-            return AllLinks
-        else:
-            return ShortestLinks
+        # ToDO: fixing the routing for partitioned network
+        # if Config.EnablePartitioning:
+        #        pass
+        # else:
+            ShortestPath = networkx.shortest_path(NoCRG,Source,Destination)
+            AllPaths = list(networkx.all_simple_paths(NoCRG,Source,Destination))
+            ShortestLinks = []
+            for i in range (0,len(ShortestPath)-1):
+                #if ShortestPath[i][0] != ShortestPath[i+1][0]:
+                if int(re.search(r'\d+', ShortestPath[i]).group()) != int(re.search(r'\d+', ShortestPath[i+1]).group()):
+                    ShortestLinks.append((int(re.search(r'\d+', ShortestPath[i]).group()),int(re.search(r'\d+', ShortestPath[i+1]).group())))
+            AllLinks = []
+            for j in range(0, len(AllPaths)):
+                Path = AllPaths[j]
+                Links = []
+                for i in range (0,len(Path)-1):
+                    if int(re.search(r'\d+', Path[i]).group()) != int(re.search(r'\d+', Path[i+1]).group()):
+                        Links.append((int(re.search(r'\d+', Path[i]).group()),int(re.search(r'\d+', Path[i+1]).group())))
+                AllLinks.append(Links)
+            if Report:print "\t\tFINDING PATH(S) FROM: ", Source, "TO:", Destination," ==>", AllLinks if ReturnAllPaths else ShortestLinks
+            if ReturnAllPaths:
+                return AllLinks
+            else:
+                return ShortestLinks
     else:
         if Report:print "\t\tNO PATH FOUND FROM: ", Source, "TO:", Destination
         return None

@@ -72,6 +72,9 @@ How To generate RoutingFile.txt:
 	These would be the allowed turns on router 0.
 	The path to file should be specified in Config file by setting
 	RoutingFilePath properly.
+
+	** IMPORTANT NOTE:: If the user doesnt specify the turns for a router,
+	the router can NOT route in any direction.
 ===============================================================================
 Project Directory Map:
 
@@ -137,8 +140,8 @@ ScheduleAndDepend
 
 ToDo:
 
-    - I want to run a Reliability Analysis of the system... so we can have
-      a sense about the state of the system state...
+    - I want to run a reliability Analysis of the system... so we can have
+      a sense about the system state...
 
     - can we generate some file based on scheduling to feed in Noxim?
 
@@ -148,5 +151,19 @@ ToDo:
 
     - going 3D
 
-    - Check for reachability during routing if network is partitioned
+    - Check for reachability during routing if network is partitioned (at the moment, this is not implemented
+        and results in an incomplete partitioning for communication. and the source of it are the gateways...)
+
+    - event driven fault handler
+
+    - Simulated annealing and Genetics Algorithm for Mapping
+
+    - Support for adaptive routing! but have to solve some scheduling issues... have no idea how to schedule
+      on multiple paths... should be stochastic... needs more reading...
+
+    - Support for virtual channels!
+
+    - Some 8-bit background music would be really cool
+
+
 
