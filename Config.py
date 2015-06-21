@@ -17,8 +17,8 @@ WCET_Range = 30
 EdgeWeightRange = 7
 Release_Range = 5      # task release time range
 # The following is only for Manual TG_Type:
-# Note::    if you have High-critical tasks in your TG, make sure that you have partitioned the network or
-#           check the mapping algorithm (in some cases the network partitioning is not considered).
+# Note::    if you have High-critical tasks in your TG, make sure that you have checked partitioning options for the
+#           network.
 Task_List = [0, 1, 2, 3, 4, 5, 6, 7]
 Task_WCET_List = [30, 30, 20, 40, 10, 5, 15, 20]
 Task_Criticality_List = ['H', 'L', 'H', 'L', 'L', 'H', 'L', 'L']
@@ -29,6 +29,7 @@ TG_Edge_Weight = [5, 9, 4, 7, 5, 3, 5, 1]
 ################################################
 # AG_Type can be : 'Generic','Manual'
 AG_Type = 'Generic'
+# Todo: virtual channel
 VirtualChannelNum = 0
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing
@@ -59,7 +60,11 @@ RoutingFilePath = "User_Inputs/RoutingFile.txt"
 # Do not change if you have conventional 2D NoC
 TurnsHealth = {"N2W": True, "N2E": True, "S2W": True, "S2E": True,
                "W2N": True, "W2S": True, "E2N": True, "E2S": True}
-
+# TurnsHealth for conventional 3D NoC
+# TurnsHealth = {"N2W": True, "N2E": True, "S2W": True, "S2E": True,
+#                "W2N": True, "W2S": True, "E2N": True, "E2S": True,
+#                "N2U": True, "N2D": True, "S2U": True, "S2D": True,
+#                "W2U": True, "W2D": True, "E2U": True, "E2D": True}
 # Number of Unreachable-Rectangles
 NumberOfRects = 5
 
@@ -84,6 +89,7 @@ ListOfAgedPEs = {1: 0.3, 2: 0.1}
 #          Clustering Function  Config
 ################################################
 ClusteringIteration = 1000
+
 ################################################
 #          Mapping Function  Config
 ################################################
@@ -96,7 +102,7 @@ IterativeLocalSearchIterations = 20
 ################################################
 #          Scheduling  Config
 ################################################
-SlackCount = 0      # this should be used for number of repetitions of the critical tasks
+SlackCount = 0      # this is used for number of repetitions of the critical tasks
 ################################################
 #           Network Partitioning
 ################################################

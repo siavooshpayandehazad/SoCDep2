@@ -69,7 +69,7 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report,DetailedReport):
                     OutPort=turn[2]
                     if InPort != OutPort:
                         NoCRG.add_edge(str(node)+str(InPort)+str('I'),str(node)+str(OutPort)+str('O'))
-                    else: #just for defensive programming reasons...
+                    else:       # just for defensive programming reasons...
                         print "\033[31mERROR::\033[0m U-TURN DETECTED!"
                         print "TERMINATING THE PROGRAM..."
                         print "HINT: CHECK YOUR TURN MODEL!"
@@ -77,7 +77,7 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report,DetailedReport):
                     if DetailedReport:print "\t", InPort, "--->", OutPort
         if DetailedReport:print "------------------------"
 
-    for link in AG.edges(): # here we should connect connections between routers
+    for link in AG.edges():     # here we should connect connections between routers
         Port=AG.edge[link[0]][link[1]]['Port']
         if SystemHealthMap.SHM[link[0]][link[1]]['LinkHealth']:
             if DetailedReport:print "CONNECTING LINK:", link, "BY CONNECTING:", str(link[0])+str(Port[0])+str('-Out'),\
@@ -111,7 +111,7 @@ def GenerateNoCRouteGraphFromFile(AG,SystemHealthMap,RoutingFilePath,Report,Deta
         if "Ports" in line:
             Ports = RoutingFile.readline()
             PortList = Ports.split( )
-            if DetailedReport: PortList
+            if DetailedReport: print "PortList", PortList
         if "Node" in line:
             NodeID = int(re.search(r'\d+', line).group())
             if DetailedReport:print "NodeID",NodeID
@@ -140,11 +140,11 @@ def GenerateNoCRouteGraphFromFile(AG,SystemHealthMap,RoutingFilePath,Report,Deta
             for turn in TurnsList:
                 if turn in SystemHealthMap.SHM.node[NodeID]['TurnsHealth']:
                     if SystemHealthMap.SHM.node[NodeID]['TurnsHealth'][turn]:
-                        InPort=turn[0]
-                        OutPort=turn[2]
+                        InPort = turn[0]
+                        OutPort = turn[2]
                         if InPort != OutPort:
                             NoCRG.add_edge(str(NodeID)+str(InPort)+str('I'),str(NodeID)+str(OutPort)+str('O'))
-                        else: #just for defensive programming reasons...
+                        else:   # just for defensive programming reasons...
                             print "\033[31mERROR::\033[0m U-TURN DETECTED!"
                             print "TERMINATING THE PROGRAM..."
                             print "HINT: CHECK YOUR TURN MODEL!"
@@ -153,8 +153,8 @@ def GenerateNoCRouteGraphFromFile(AG,SystemHealthMap,RoutingFilePath,Report,Deta
             if DetailedReport:print "------------------------"
         if line == '':
             break
-    for link in AG.edges(): # here we should connect connections between routers
-        Port=AG.edge[link[0]][link[1]]['Port']
+    for link in AG.edges():     # here we should connect connections between routers
+        Port = AG.edge[link[0]][link[1]]['Port']
         if SystemHealthMap.SHM[link[0]][link[1]]['LinkHealth']:
             if DetailedReport:print "CONNECTING LINK:", link, "BY CONNECTING:", str(link[0])+str(Port[0])+str('-Out'),\
                 "TO:", str(link[1])+str(Port[1])+str('-In')
