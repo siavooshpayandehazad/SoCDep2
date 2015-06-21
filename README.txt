@@ -25,7 +25,7 @@ DATE:    MAY 2015
 LICENSE: GNU GENERAL PUBLIC LICENSE Version 2
 PYTHON VER: 2.6.9
 THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME DEPENDABILITY 
-STUFF ON DIFFERENT ARCHITECTURES....
+MECHANISMS ON DIFFERENT ARCHITECTURES....
 Copyright (C) 2015 Siavoosh Payandeh Azad
 ===============================================================================
 Some of the features:
@@ -156,12 +156,11 @@ ToDo:
 
     - Simulated annealing and Genetics Algorithm for Mapping
 
-    - Support for adaptive routing! but have to solve some scheduling issues... have no idea how to schedule
-      on multiple paths... should be stochastic... needs more reading...
+    - Support for adaptive routing! but have to solve some scheduling issues... 
+      have no idea how to schedule on multiple paths... should be stochastic... 
+      needs more reading...
 
     - Support for virtual channels!
 
-    - Some 8-bit background music would be really cool
-
-
-
+    - Some 8-bit background music during execution of the program would be really 
+      cool
