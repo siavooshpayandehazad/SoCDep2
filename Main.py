@@ -58,8 +58,17 @@ print "SYSTEM IS UP..."
 SHM.ApplyInitialFaults()
 NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.WestFirst_TurnModel, Config.DebugInfo, Config.DebugDetails))
 # NoCRG = Routing.GenerateNoCRouteGraphFromFile(AG, SHM, Config.RoutingFilePath, Config.DebugInfo, Config.DebugDetails)
+
+# in case of partitioning, we have to route based on different Route-graphs
+if Config.EnablePartitioning:
+    CriticalRG, NonCriticalRG = Calculate_Reachability.CalculateReachabilityWithRegions(AG,SHM)
+    ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(AG)
+else:
+    CriticalRG, NonCriticalRG = None, None
+
 ####################################################################
-BestTG, BestAG = Mapping.Mapping(TG, AG, NoCRG, SHM, logging)
+
+BestTG, BestAG = Mapping.Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging)
 if BestAG is not None and BestTG is not None:
     TG = copy.deepcopy(BestTG)
     AG = copy.deepcopy(BestAG)
@@ -82,7 +91,6 @@ ReachabilityReports.ReportReachability(AG)
 ReachabilityReports.ReportReachabilityInFile(AG, "ReachAbilityRectReport")
 ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(AG)
 """
-# Calculate_Reachability.CalculateReachabilityWithRegions(AG,SHM,NoCRG)
-# ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(AG)
+
 
 logging.info('Logging finished...')

@@ -4,6 +4,7 @@ import networkx
 import os
 import re
 import Config
+import Calculate_Reachability
 
 def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report,DetailedReport):
     """
@@ -188,7 +189,7 @@ def UpdateNoCRouteGraph(SystemHealthMap,NewEvent):
     return None
 
 
-def FindRouteInRouteGraph(NoCRG,SourceNode,DestinationNode,ReturnAllPaths,Report):
+def FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG, SourceNode,DestinationNode,ReturnAllPaths,Report):
     """
     :param NoCRG: NoC Routing Graph
     :param SourceNode: Source node on AG
@@ -196,33 +197,42 @@ def FindRouteInRouteGraph(NoCRG,SourceNode,DestinationNode,ReturnAllPaths,Report
     :param ReturnAllPaths: boolean that decides to return shortest path or all the paths between two nodes
     :return: return a path (by name of links) on AG from source to destination if possible, None if not.
     """
+    if Config.EnablePartitioning:
+        if SourceNode in Config.GateToNonCritical:
+            CurrentRG = NonCriticalRG
+        elif SourceNode in Config.GateToCritical:
+            CurrentRG = CriticalRG
+        elif SourceNode in Config.CriticalRegionNodes:
+            CurrentRG = CriticalRG
+        else:
+            CurrentRG = NonCriticalRG
+    else:
+        CurrentRG = NoCRG
     Source = str(SourceNode)+str('L') + str('I')
     Destination = str(DestinationNode) + str('L') + str('O')
-    if networkx.has_path(NoCRG,Source,Destination):
-        # ToDO: fixing the routing for partitioned network
-        # if Config.EnablePartitioning:
-        #        pass
-        # else:
-            ShortestPath = networkx.shortest_path(NoCRG,Source,Destination)
-            AllPaths = list(networkx.all_simple_paths(NoCRG,Source,Destination))
-            ShortestLinks = []
-            for i in range (0,len(ShortestPath)-1):
+    if networkx.has_path(CurrentRG,Source,Destination):
+        ShortestPath = networkx.shortest_path(CurrentRG,Source,Destination)
+        AllPaths = list(networkx.all_simple_paths(CurrentRG,Source,Destination))
+        ShortestLinks = []
+        for i in range (0,len(ShortestPath)-1):
                 #if ShortestPath[i][0] != ShortestPath[i+1][0]:
-                if int(re.search(r'\d+', ShortestPath[i]).group()) != int(re.search(r'\d+', ShortestPath[i+1]).group()):
+            if int(re.search(r'\d+', ShortestPath[i]).group()) != int(re.search(r'\d+', ShortestPath[i+1]).group()):
                     ShortestLinks.append((int(re.search(r'\d+', ShortestPath[i]).group()),int(re.search(r'\d+', ShortestPath[i+1]).group())))
-            AllLinks = []
-            for j in range(0, len(AllPaths)):
-                Path = AllPaths[j]
-                Links = []
-                for i in range (0,len(Path)-1):
-                    if int(re.search(r'\d+', Path[i]).group()) != int(re.search(r'\d+', Path[i+1]).group()):
-                        Links.append((int(re.search(r'\d+', Path[i]).group()),int(re.search(r'\d+', Path[i+1]).group())))
-                AllLinks.append(Links)
-            if Report:print "\t\tFINDING PATH(S) FROM: ", Source, "TO:", Destination," ==>", AllLinks if ReturnAllPaths else ShortestLinks
-            if ReturnAllPaths:
-                return AllLinks
-            else:
-                return ShortestLinks
+        AllLinks = []
+        for j in range(0, len(AllPaths)):
+            Path = AllPaths[j]
+            Links = []
+            for i in range (0,len(Path)-1):
+                if int(re.search(r'\d+', Path[i]).group()) != int(re.search(r'\d+', Path[i+1]).group()):
+                    Links.append((int(re.search(r'\d+', Path[i]).group()),int(re.search(r'\d+', Path[i+1]).group())))
+            AllLinks.append(Links)
+        if Report:print "\t\tFINDING PATH(S) FROM: ", Source, "TO:", Destination," ==>", AllLinks if ReturnAllPaths else ShortestLinks
+        if ReturnAllPaths:
+            return AllLinks
+        else:
+            return ShortestLinks
     else:
         if Report:print "\t\tNO PATH FOUND FROM: ", Source, "TO:", Destination
         return None
+
+

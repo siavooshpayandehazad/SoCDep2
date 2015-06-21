@@ -95,7 +95,7 @@ ClusteringIteration = 1000
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch',
-Mapping_Function = 'LocalSearch'
+Mapping_Function = 'IterativeLocalSearch'
 LocalSearchIteration = 20
 IterativeLocalSearchIterations = 20
 

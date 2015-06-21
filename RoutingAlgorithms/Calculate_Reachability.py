@@ -129,7 +129,7 @@ def ClearReachabilityCalculations(AG):
     return None
 
 
-def CalculateReachabilityWithRegions(AG,SHM, NoCRG):
+def CalculateReachabilityWithRegions(AG,SHM):
     # first Add the VirtualBrokenLinksForNonCritical
     for VirtualBrokenLink in Config.VirtualBrokenLinksForNonCritical:
         SHM.BreakLink(VirtualBrokenLink,True)
@@ -179,4 +179,4 @@ def CalculateReachabilityWithRegions(AG,SHM, NoCRG):
             AG.node[Node]['Unreachable'] = copy.deepcopy(NonCriticalRect[Node])
     # optimize the results
     OptimizeReachabilityRectangles(AG, Config.NumberOfRects)
-    return None
+    return CriticalRG, NonCriticalRG

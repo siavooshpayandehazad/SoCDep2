@@ -7,7 +7,7 @@ import statistics
 import random
 from math import ceil
 
-def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, Report, logging):
+def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Report, logging):
     if Report: print "==========================================="
     if Report: print "STARTING INITIAL MAPPING..."
     Itteration=0
@@ -17,7 +17,7 @@ def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, Report, logging):
             while(CTG.node[Cluster]['Criticality']!= AG.node[DestNode]['Region']):
                 DestNode = random.choice(AG.nodes())
         #print CTG.node[Cluster]['Criticality'],AG.node[DestNode]['Region']
-        while not AddClusterToNode(TG,CTG,AG,SHM,NoCRG,Cluster,DestNode,logging):
+        while not AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster, DestNode, logging):
             Itteration += 1
             DestNode = random.choice(AG.nodes())        # try another node
             if Config.EnablePartitioning:
@@ -34,7 +34,7 @@ def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, Report, logging):
     if Report: print "INITIAL MAPPING READY... "
     return True
 
-def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, Cluster, Node, logging):
+def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster, Node, logging):
     if not SHM.SHM.node[Node]['NodeHealth']:
         logging.info("CAN NOT MAP ON BROKEN NODE: "+str(Node))
         return False
@@ -54,7 +54,7 @@ def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, Cluster, Node, logging):
             DestNode=CTG.node[Edge[1]]['Node']
             if SourceNode is not None and DestNode is not None: # check if both ends of this edge is mapped
                 if SourceNode != DestNode:
-                    ListOfLinks = Routing.FindRouteInRouteGraph(NoCRG, SourceNode, DestNode, False, False) # Find the links to be used
+                    ListOfLinks = Routing.FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG, SourceNode, DestNode, False, False) # Find the links to be used
                     ListOfEdges = []
                     for edge in TG.edges(): #find all the edges in TaskGraph that contribute to this edge in CTG
                         if TG.node[edge[0]]['Cluster'] == Edge[0] and TG.node[edge[1]]['Cluster'] == Edge[1]:
@@ -73,12 +73,12 @@ def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, Cluster, Node, logging):
                     else:
                         logging.warning( "\tNO PATH FOUND FROM SOURCE TO DESTINATION...")
                         logging.info("REMOVING ALL THE MAPPED CONNECTIONS FOR CLUSTER "+str(Cluster))
-                        RemoveClusterFromNode(TG,CTG,AG,NoCRG,Cluster,Node,logging)
+                        RemoveClusterFromNode(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, Cluster, Node, logging)
                         return False
     return True
 
 
-def RemoveClusterFromNode(TG, CTG, AG, NoCRG, Cluster, Node, logging):
+def RemoveClusterFromNode(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, Cluster, Node, logging):
     logging.info("\tREMOVING CLUSTER:"+str(Cluster)+"FROM NODE:"+str(Node))
     for Edge in CTG.edges():
         if Cluster in Edge: # find all the edges that are connected to Cluster
@@ -86,7 +86,8 @@ def RemoveClusterFromNode(TG, CTG, AG, NoCRG, Cluster, Node, logging):
             DestNode = CTG.node[Edge[1]]['Node']
             if SourceNode is not None and DestNode is not None: #check if both ends of this edge is mapped
                 if SourceNode != DestNode:
-                    ListOfLinks = Routing.FindRouteInRouteGraph(NoCRG,SourceNode,DestNode,False,False) #Find the links to be used
+                    ListOfLinks = Routing.FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG,
+                                                                SourceNode, DestNode, False, False) #Find the links to be used
                     ListOfEdges = []
                     for edge in TG.edges(): #find all the edges in TaskGraph that contribute to this edge in CTG
                         if TG.node[edge[0]]['Cluster'] == Edge[0] and TG.node[edge[1]]['Cluster'] == Edge[1]:

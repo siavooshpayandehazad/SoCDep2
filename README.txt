@@ -49,8 +49,9 @@ Some of the features:
   individually by user
 * Supports reach-ability calculations based on NoCDepend methodology (for
   deterministic and adaptive, minimal and non minimal path routing algorithms)
-* Supports Reach-ability calculation for Network Partitioning based on NoCDepend
-  Methodology
+* Supports Reach-ability calculation for network partitioning based on NoCDepend
+  Methodology and routing based on the reachability calculations for partitioned
+  network.
 * Calculates Network partitioning based on NoCDepend methodology
 * Generates GSNoC simulator readable traffic files…
 * Provides heavy logging for debugging
@@ -150,9 +151,6 @@ ToDo:
     - Generate multiple levels of priority levels for Non/Mid-critical tasks
 
     - going 3D
-
-    - Check for reachability during routing if network is partitioned (at the moment, this is not implemented
-        and results in an incomplete partitioning for communication. and the source of it are the gateways...)
 
     - event driven fault handler
 

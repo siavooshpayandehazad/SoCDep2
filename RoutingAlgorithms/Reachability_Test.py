@@ -3,6 +3,7 @@
 import Calculate_Reachability
 import Config
 
+
 def ReachabilityTest ():
     print "==========================================="
     print "STARTING REACH_ABILITY TESTS..."
@@ -16,6 +17,8 @@ def ReachabilityTest ():
         raise ValueError('Error in IsNodeInsideRectangle function... CASE 2')
 
     # test MergeRectangleWithNode
+
+
 
     print "REACH_ABILITY TESTS PASSED SUCCESSFULLY..."
     return None

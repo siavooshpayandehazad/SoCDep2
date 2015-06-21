@@ -7,7 +7,7 @@ from Scheduler import Scheduling_Functions,Scheduler,Scheduling_Reports
 import copy
 
 
-def Mapping(TG, AG, NoCRG, SHM, logging):
+def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
     # to run the following heuristics (Min_Min,Max_Min), one needs to use independent
     # tasks... Please use: GenerateRandomIndependentTG
     if Config.Mapping_Function == 'MinMin':
@@ -50,14 +50,15 @@ def Mapping(TG, AG, NoCRG, SHM, logging):
             #Clustering_Test.DoubleCheckCTG(TG, CTG)
             ClusteringReports.ReportCTG(CTG, "CTG_PostOpt.png")
             # Mapping CTG on AG
-            if Mapping_Functions.MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, True, logging):
+            if Mapping_Functions.MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, True, logging):
                 Mapping_Functions.ReportMapping(AG, logging)
                 # Schedule all tasks
                 Scheduler.ScheduleAll(TG, AG, SHM, Config.DebugInfo, Config.DebugDetails)
                 Scheduling_Reports.ReportMappedTasks(AG, logging)
                 Mapping_Functions.CostFunction(TG, AG, SHM, Config.DebugInfo)
                 if Config.Mapping_Function == 'LocalSearch':
-                    (BestTG, BestCTG, BestAG) = Local_Search.OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, SHM,
+                    (BestTG, BestCTG, BestAG) = Local_Search.OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG,
+                                                                                        NonCriticalRG, SHM,
                                                                                         Config.LocalSearchIteration,
                                                                                         Config.DebugInfo,
                                                                                         Config.DebugDetails, logging)
@@ -65,7 +66,9 @@ def Mapping(TG, AG, NoCRG, SHM, logging):
                     AG = copy.deepcopy(BestAG)
                     del BestTG,BestCTG,BestAG
                 elif Config.Mapping_Function == 'IterativeLocalSearch':
-                    (BestTG, BestCTG, BestAG) = Local_Search.OptimizeMappingIterativeLocalSearch(TG, CTG, AG, NoCRG, SHM,
+                    (BestTG, BestCTG, BestAG) = Local_Search.OptimizeMappingIterativeLocalSearch(TG, CTG, AG, NoCRG,
+                                                                                                 CriticalRG,
+                                                                                                 NonCriticalRG, SHM,
                                                                                                  Config.IterativeLocalSearchIterations,
                                                                                                  Config.LocalSearchIteration,
                                                                                                  Config.DebugInfo,

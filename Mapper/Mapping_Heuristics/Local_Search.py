@@ -6,7 +6,7 @@ from Scheduler import Scheduler,Scheduling_Functions,Scheduling_Reports
 from Mapper import Mapping_Functions
 import Config
 
-def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedReport,logging):
+def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, IterationNum,Report,DetailedReport,logging):
     if Report:print "==========================================="
     if Report:print "STARTING MAPPING OPTIMIZATION..."
     BestTG=copy.deepcopy(TG)
@@ -19,7 +19,7 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedR
         if DetailedReport:print "\tITERATION:",Iteration
         ClusterToMove= random.choice(CTG.nodes())
         CurrentNode=CTG.node[ClusterToMove]['Node']
-        Mapping_Functions.RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,logging)
+        Mapping_Functions.RemoveClusterFromNode(TG,CTG,AG,NoCRG,CriticalRG, NonCriticalRG,ClusterToMove,CurrentNode,logging)
 
         DestNode = random.choice(AG.nodes())
         if Config.EnablePartitioning:
@@ -28,15 +28,15 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedR
         #print CTG.node[ClusterToMove]['Criticality'],AG.node[DestNode]['Region']
 
         TryCounter=0
-        while not Mapping_Functions.AddClusterToNode(TG,CTG,AG,SHM,NoCRG,ClusterToMove,DestNode,logging):
+        while not Mapping_Functions.AddClusterToNode(TG,CTG,AG,SHM,NoCRG,CriticalRG, NonCriticalRG,ClusterToMove,DestNode,logging):
             # If AddClusterToNode fails it automatically removes all the connections...
             # we need to add the cluster to the old place...
-            Mapping_Functions.AddClusterToNode(TG,CTG,AG,SHM,NoCRG,ClusterToMove,CurrentNode,logging)
+            Mapping_Functions.AddClusterToNode(TG,CTG,AG,SHM,NoCRG,CriticalRG, NonCriticalRG,ClusterToMove,CurrentNode,logging)
 
             # choosing another cluster to move
             ClusterToMove= random.choice(CTG.nodes())
             CurrentNode=CTG.node[ClusterToMove]['Node']
-            Mapping_Functions.RemoveClusterFromNode(TG,CTG,AG,NoCRG,ClusterToMove,CurrentNode,logging)
+            Mapping_Functions.RemoveClusterFromNode(TG,CTG,AG,NoCRG,CriticalRG, NonCriticalRG,ClusterToMove,CurrentNode,logging)
 
             DestNode = random.choice(AG.nodes())
             if Config.EnablePartitioning:
@@ -74,7 +74,8 @@ def OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,Report,DetailedR
     return (BestTG,BestCTG,BestAG)
 
 
-def OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,SubIteration,Report,DetailedReport,logging):
+def OptimizeMappingIterativeLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,IterationNum,
+                                        SubIteration, Report, DetailedReport,logging):
     if Report:print "==========================================="
     if Report:print "STARTING MAPPING OPTIMIZATION...USING ITERATIVE LOCAL SEARCH..."
     BestTG=copy.deepcopy(TG)
@@ -85,7 +86,8 @@ def OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,SubIter
     if Report:print "INITIAL COST:",StartingCost
     for Iteration in range(0,IterationNum):
         if DetailedReport:print "\tITERATION:",Iteration
-        (CurrentTG,CurrentCTG,CurrentAG) = OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG,SHM,SubIteration,
+        (CurrentTG,CurrentCTG,CurrentAG) = OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG, CriticalRG, NonCriticalRG,
+                                                                      SHM,SubIteration,
                                                                       False,DetailedReport,logging)
         if CurrentTG is not False:
             CurrentCost= Mapping_Functions.CostFunction(CurrentTG,CurrentAG,SHM,False)
@@ -103,7 +105,7 @@ def OptimizeMappingIterativeLocalSearch(TG,CTG,AG,NoCRG,SHM,IterationNum,SubIter
         Mapping_Functions.ClearMapping(TG,CTG,AG)
         counter=0
         Schedule=True
-        while not Mapping_Functions.MakeInitialMapping(TG,CTG,AG,SHM,NoCRG,False,logging):
+        while not Mapping_Functions.MakeInitialMapping(TG,CTG,AG,SHM,NoCRG,CriticalRG, NonCriticalRG,False,logging):
             if counter == 10:   # we try 10 times to find some initial solution... how ever if it fails...
                 Schedule=False
                 break
