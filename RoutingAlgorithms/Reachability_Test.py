@@ -1,7 +1,7 @@
 # Copyright (C) Siavoosh Payandeh Azad
 
 import Calculate_Reachability
-import Config
+from ConfigAndPackages import Config
 
 
 def ReachabilityTest ():

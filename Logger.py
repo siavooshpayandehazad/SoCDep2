@@ -1,9 +1,8 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad 
-
-
 import sys
 import os
 import time
+
 class Logger(object):
     """
     This Class is for redirecting the console messages to a log file...

@@ -3,7 +3,7 @@
 import networkx
 import hashlib
 import copy,random
-import Config
+from ConfigAndPackages import Config
 from Mapper import Mapping_Functions
 
 class SystemHealthMonitor:

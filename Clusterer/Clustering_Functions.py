@@ -3,7 +3,7 @@
 
 import statistics
 import ClusteringReports
-import Config
+from ConfigAndPackages import Config
 
 def RemoveTaskFromCTG(TG,CTG,Task):
     TaskCluster = TG.node[Task]['Cluster']

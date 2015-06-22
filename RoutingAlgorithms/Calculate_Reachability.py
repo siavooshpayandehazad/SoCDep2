@@ -4,7 +4,7 @@
 # how ever, at the moment we only implemented a 2D version of it.
 
 import networkx,re,copy
-import Config
+from ConfigAndPackages import Config
 import Routing
 from ArchGraphUtilities import AG_Functions
 

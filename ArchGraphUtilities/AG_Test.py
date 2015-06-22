@@ -1,7 +1,8 @@
 # Copyright (C) Siavoosh Payandeh Azad
 
 import AG_Functions
-import Config
+from ConfigAndPackages import Config
+
 
 def AG_Test():
     print "==========================================="

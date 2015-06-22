@@ -3,7 +3,7 @@
 import networkx
 import os
 import re
-import Config
+from ConfigAndPackages import Config
 import Calculate_Reachability
 
 def GenerateNoCRouteGraph(AG, SystemHealthMap, TurnModel, Report, DetailedReport):

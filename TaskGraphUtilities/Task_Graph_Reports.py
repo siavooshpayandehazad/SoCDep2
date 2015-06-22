@@ -2,7 +2,7 @@
 
 import networkx
 import matplotlib.pyplot as plt
-import Config
+from ConfigAndPackages import Config
 import TG_Functions
 
 def ReportTaskGraph(TG,logging):

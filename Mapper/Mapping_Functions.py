@@ -2,7 +2,7 @@
 
 from RoutingAlgorithms import Routing
 from Scheduler import Scheduling_Functions
-import Config
+from ConfigAndPackages import Config
 import statistics
 import random
 from math import ceil

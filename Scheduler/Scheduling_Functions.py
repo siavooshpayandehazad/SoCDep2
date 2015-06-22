@@ -1,7 +1,8 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad 
 
 from math import ceil
-import Config
+from ConfigAndPackages import Config
+
 def FindScheduleMakeSpan(AG):
     MakeSpan=0
     for Node in AG.nodes():

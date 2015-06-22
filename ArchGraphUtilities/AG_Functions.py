@@ -1,7 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 import networkx
-import Config
-#todo: add virtual channel support AG...
+from ConfigAndPackages import Config
+# todo: add virtual channel support AG...
 
 
 def GenerateManualAG(PE_List, AG_Edge_List, AG_Edge_Port_List):

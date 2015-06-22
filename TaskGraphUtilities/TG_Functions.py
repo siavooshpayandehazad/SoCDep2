@@ -2,7 +2,7 @@
 
 import networkx
 import random
-import Config
+from ConfigAndPackages import Config
 
 def GenerateManualTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List,TG_Edge_Weight):
     print("PREPARING TASK GRAPH (TG)...")

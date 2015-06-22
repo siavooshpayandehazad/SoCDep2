@@ -1,7 +1,5 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
-
-
-import Config
+from ConfigAndPackages import Config
 
 def DrawLogo ():
     print("===================================================================================================================")

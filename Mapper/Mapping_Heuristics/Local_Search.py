@@ -4,7 +4,8 @@ import random
 import copy
 from Scheduler import Scheduler,Scheduling_Functions,Scheduling_Reports
 from Mapper import Mapping_Functions
-import Config
+from ConfigAndPackages import Config
+
 
 def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, IterationNum,Report,DetailedReport,logging):
     if Report:print "==========================================="

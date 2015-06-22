@@ -2,7 +2,8 @@
 
 import matplotlib.pyplot as plt
 from Scheduling_Functions import FindLastAllocatedTimeOnNode,FindLastAllocatedTimeOnLink
-import Config
+from ConfigAndPackages import Config
+
 ##########################################################################
 #
 #                           SCHEDULING REPORT

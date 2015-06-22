@@ -1,10 +1,13 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
-import Config,Scheduler,Mapping_Functions
-from Clusterer import Clustering_Functions,Clustering,Clustering_Test,ClusteringReports
-from Mapping_Heuristics import SimpleGreedy,Local_Search
-from Scheduler import Scheduling_Functions,Scheduler,Scheduling_Reports
 import copy
+
+from ConfigAndPackages import Config
+import Scheduler
+import Mapping_Functions
+from Clusterer import Clustering, ClusteringReports
+from Mapping_Heuristics import SimpleGreedy,Local_Search
+from Scheduler import Scheduler,Scheduling_Reports
 
 
 def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):

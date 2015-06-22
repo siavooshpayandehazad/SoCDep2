@@ -2,7 +2,7 @@
 
 import matplotlib.pyplot as plt
 import networkx
-import Config
+from ConfigAndPackages import Config
 
 def DrawArchGraph(AG):
     POS ={}
