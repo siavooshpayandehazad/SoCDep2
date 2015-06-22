@@ -14,6 +14,7 @@ from Scheduler import TrafficTableGenerator
 import misc
 import Logger
 import Config
+from notify.all import *
 
 ####################################################################
 #
@@ -38,6 +39,7 @@ if not os.path.isdir(GeneratedFilesDirectory):
     os.makedirs(GeneratedFilesDirectory)
 ####################################################################
 misc.DrawLogo()
+
 ####################################################################
 TG = copy.deepcopy(TG_Functions.GenerateTG())
 Task_Graph_Reports.ReportTaskGraph(TG, logging)
@@ -56,7 +58,7 @@ print "==========================================="
 print "SYSTEM IS UP..."
 # Here we are injecting initial faults of the system
 SHM.ApplyInitialFaults()
-NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.WestFirst_TurnModel, Config.DebugInfo, Config.DebugDetails))
+NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, Config.DebugInfo, Config.DebugDetails))
 # NoCRG = Routing.GenerateNoCRouteGraphFromFile(AG, SHM, Config.RoutingFilePath, Config.DebugInfo, Config.DebugDetails)
 
 # in case of partitioning, we have to route based on different Route-graphs
@@ -65,9 +67,7 @@ if Config.EnablePartitioning:
     ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(AG)
 else:
     CriticalRG, NonCriticalRG = None, None
-
 ####################################################################
-
 BestTG, BestAG = Mapping.Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging)
 if BestAG is not None and BestTG is not None:
     TG = copy.deepcopy(BestTG)
@@ -90,7 +90,16 @@ Calculate_Reachability.OptimizeReachabilityRectangles(AG, Config.NumberOfRects)
 ReachabilityReports.ReportReachability(AG)
 ReachabilityReports.ReportReachabilityInFile(AG, "ReachAbilityRectReport")
 ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(AG)
+
+
+# Im trying to write some sort of Event driven system...
+def ReportTheEvent(Event):
+    print "Event:",Event,"Happened"
+
+EventHandler = Signal()
+EventHandler.connect(ReportTheEvent)
+
+EventHandler("Dead chip")
+EventHandler.disconnect(ReportTheEvent)
 """
-
-
 logging.info('Logging finished...')

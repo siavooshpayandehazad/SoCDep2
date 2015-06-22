@@ -134,7 +134,7 @@ def CalculateReachabilityWithRegions(AG,SHM):
     for VirtualBrokenLink in Config.VirtualBrokenLinksForNonCritical:
         SHM.BreakLink(VirtualBrokenLink,True)
     # Construct The RoutingGraph
-    NonCriticalRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.WestFirst_TurnModel, False, False))
+    NonCriticalRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, False, False))
     # calculate the rectangles for Non-Critical
     CalculateReachability(AG, NonCriticalRG)
     # save Non Critical rectangles somewhere
@@ -154,7 +154,7 @@ def CalculateReachabilityWithRegions(AG,SHM):
         SHM.BreakLink(VirtualBrokenLink,True)
     ClearReachabilityCalculations(AG)
     # Construct The RoutingGraph
-    CriticalRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.WestFirst_TurnModel, False, False))
+    CriticalRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, False, False))
     # calculate the rectangles for Critical
     CalculateReachability(AG, CriticalRG)
     # save Critical rectangles somewhere

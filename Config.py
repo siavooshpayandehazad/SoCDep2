@@ -1,5 +1,5 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
-
+import PackageFile
 ################################################
 #          Debug  Config
 ################################################
@@ -46,13 +46,11 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 #          Routing  Config
 ################################################
 # Todo: introduce more turn models
-FULL_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'S2W', 'S2E', 'N2W', 'N2E']
-XY_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S']
-# at the moment there is no support adaptive routing algorithm
-# These are just here...
-WestFirst_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'S2E', 'N2E']
-NorthLast_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'N2W', 'N2E']
+
 # this is for manually setting turns for routers
+
+# Available Turn Models : 'FULL_TurnModel', 'XY_TurnModel', 'WestFirst_TurnModel', 'NorthLast_TurnModel'
+UsedTurnModel = PackageFile.WestFirst_TurnModel
 RoutingFilePath = "User_Inputs/RoutingFile.txt"
 ################################################
 #          SHM  Config
@@ -95,14 +93,14 @@ ClusteringIteration = 1000
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch',
-Mapping_Function = 'IterativeLocalSearch'
+Mapping_Function = 'LocalSearch'
 LocalSearchIteration = 20
 IterativeLocalSearchIterations = 20
 
 ################################################
 #          Scheduling  Config
 ################################################
-SlackCount = 1      # this is used for number of repetitions of the critical tasks
+SlackCount = 2      # this is used for number of repetitions of the critical tasks
 ################################################
 #           Network Partitioning
 ################################################

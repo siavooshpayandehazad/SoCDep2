@@ -18,7 +18,7 @@ class SystemHealthMonitor:
         for nodes in ArchGraph.nodes():
             self.SHM.add_node(nodes, TurnsHealth=copy.deepcopy(TurnsHealth), NodeHealth=True, NodeSpeed=100)
         for link in ArchGraph.edges():
-            self.SHM.add_edge(link[0],link[1],LinkHealth=True)
+            self.SHM.add_edge(link[0], link[1], LinkHealth=True)
         print "SYSTEM HEALTH MAP CREATED..."
 
     def Report_NoC_SystemHealthMap(self):
@@ -27,71 +27,73 @@ class SystemHealthMonitor:
         print "==========================================="
         for Node in self.SHM.nodes():
             print "\tNODE:" ,Node
-            print "\t\tNODE HEALTH:",self.SHM.node[Node]['NodeHealth']
-            print "\t\tNODE SPEED:",self.SHM.node[Node]['NodeSpeed']
-            print "\t\tTURNS:",self.SHM.node[Node]['TurnsHealth']
+            print "\t\tNODE HEALTH:", self.SHM.node[Node]['NodeHealth']
+            print "\t\tNODE SPEED:", self.SHM.node[Node]['NodeSpeed']
+            print "\t\tTURNS:", self.SHM.node[Node]['TurnsHealth']
             print "\t=============="
         for Edge in self.SHM.edges():
-            print "\tLINK:",Edge,"\t",self.SHM.edge[Edge[0]][Edge[1]]['LinkHealth']
+            print "\tLINK:", Edge, "\t", self.SHM.edge[Edge[0]][Edge[1]]['LinkHealth']
 
     ##################################################
     def BreakLink(self,link,Report):
         if Report:print "==========================================="
-        if Report:print "\033[33mSYSTEM HEALTH MAP::\033[0m BREAKING LINK:",link
-        self.SHM.edge[link[0]][link[1]]['LinkHealth']=False
+        if Report:print "\033[33mSYSTEM HEALTH MAP::\033[0m BREAKING LINK:", link
+        self.SHM.edge[link[0]][link[1]]['LinkHealth'] = False
 
-    def RestoreBrokenLink(self,link,Report):
+    def RestoreBrokenLink(self, link, Report):
         if Report:print "==========================================="
-        if Report:print "\033[33mSYSTEM HEALTH MAP::\033[0m LINK:",link,"RESTORED..."
-        self.SHM.edge[link[0]][link[1]]['LinkHealth']=True
+        if Report:print "\033[33mSYSTEM HEALTH MAP::\033[0m LINK:", link, "RESTORED..."
+        self.SHM.edge[link[0]][link[1]]['LinkHealth'] = True
 
     ##################################################
-    def BreakTurn(self,Node,Turn,Report):
+    def BreakTurn(self, Node, Turn, Report):
         if Report:print "==========================================="
-        if Report:print "\033[33mSYSTEM HEALTH MAP::\033[0m BREAKING TURN:",Turn, "IN NODE",Node
+        if Report:print "\033[33mSYSTEM HEALTH MAP::\033[0m BREAKING TURN:",Turn, "IN NODE", Node
         self.SHM.node[Node]['TurnsHealth'][Turn]=False
 
-    def RestoreBrokenTurn(self,Node,Turn,Report):
+    def RestoreBrokenTurn(self, Node, Turn, Report):
         if Report:print "==========================================="
-        if Report:print "\033[33mSYSTEM HEALTH MAP::\033[0m TURN:",Turn, "IN NODE",Node,"RESTORED"
-        self.SHM.node[Node]['TurnsHealth'][Turn]=True
+        if Report:print "\033[33mSYSTEM HEALTH MAP::\033[0m TURN:", Turn, "IN NODE", Node, "RESTORED"
+        self.SHM.node[Node]['TurnsHealth'][Turn] = True
 
     ##################################################
-    def IntroduceAging(self,Node,SpeedDown,Report):
+    def IntroduceAging(self, Node, SpeedDown, Report):
         if Report: print "==========================================="
-        self.SHM.node[Node]['NodeSpeed']=self.SHM.node[Node]['NodeSpeed']*(1-SpeedDown)
-        if Report: print "\033[33mSYSTEM HEALTH MAP::\033[0m AGEING NODE:",Node,"... SPEED DROPPED TO:",self.SHM.node[Node]['NodeSpeed'],"%"
+        self.SHM.node[Node]['NodeSpeed'] = self.SHM.node[Node]['NodeSpeed']*(1-SpeedDown)
+        if Report: print "\033[33mSYSTEM HEALTH MAP::\033[0m AGEING NODE:", Node, "... SPEED DROPPED TO:", self.SHM.node[Node]['NodeSpeed'], "%"
         if self.SHM.node[Node]['NodeSpeed'] == 0:
             self.BreakNode(Node, True)
 
     ##################################################
-    def BreakNode(self,Node,Report):
+    def BreakNode(self, Node, Report):
         if Report: print "==========================================="
         self.SHM.node[Node]['NodeHealth']=False
         if Report: print "\033[33mSYSTEM HEALTH MAP::\033[0m NODE",Node,"IS BROKEN..."
 
-    def RestoreBrokenNode(self,Node,Report):
+    def RestoreBrokenNode(self, Node, Report):
         if Report: print "==========================================="
         self.SHM.node[Node]['NodeHealth']=False
         if Report: print "\033[33mSYSTEM HEALTH MAP::\033[0m NODE",Node,"IS RESTORED..."
+
     ##################################################
     def TakeSnapShotOfSystemHealth(self):
-        self.SnapShot= copy.deepcopy(self.SHM)
+        self.SnapShot = copy.deepcopy(self.SHM)
         print "A SNAPSHOT OF SYSTEM HEALTH HAS BEEN STORED..."
         return None
 
     def RestoreToPreviousSnapShot (self):
-        self.SHM= copy.deepcopy(self.SnapShot)
+        self.SHM = copy.deepcopy(self.SnapShot)
         print "SYSTEM HEALTH MAP HAS BEEN RESTORED TO PREVIOUS SNAPSHOT..."
         self.SnapShot = None
         return None
+
     ##################################################
     def GenerateFaultConfig (self):
         """
         Generates a string (FaultConfig) from the configuration of the faults in the SHM
         :return: FaultConfig string
         """
-        FaultConfig= ""
+        FaultConfig = ""
         for node in self.SHM.nodes():
             FaultConfig += str(node)
             FaultConfig += "T" if self.SHM.node[node]['NodeHealth'] else "F"
@@ -99,17 +101,19 @@ class SystemHealthMonitor:
             for Turn in self.SHM.node[node]['TurnsHealth']:
                 FaultConfig += "T" if self.SHM.node[node]['TurnsHealth'][Turn] else "F"
         return FaultConfig
+
     ##################################################
-    def AddCurrentMappingToMPM (self,TG):
+    def AddCurrentMappingToMPM (self, TG):
         """
         Adds a mapping (Extracted from TG) under a fault configuration to MPM.
         The dictionary key would be the hash of fault config
         :param TG: Task Graph
         :return: None
         """
-        MappingString=Mapping_Functions.MappingIntoString(TG)
+        MappingString = Mapping_Functions.MappingIntoString(TG)
         self.MPM[hashlib.md5(self.GenerateFaultConfig()).hexdigest()] = MappingString
         return None
+
     ##################################################
     def ReportMPM(self):
         print "==========================================="
@@ -118,10 +122,12 @@ class SystemHealthMonitor:
         for item in self.MPM:
             print "KEY:",item,"\t\tMAPPING:",self.MPM[item]
         return None
+
     ##################################################
-    def CleanMPM (self):
+    def CleanMPM(self):
         self.MPM={}
         return None
+
     ##################################################
     def ApplyInitialFaults(self):
         for BrokenLink in Config.ListOfBrokenLinks:
@@ -135,11 +141,12 @@ class SystemHealthMonitor:
 
         for BrokenNode in Config.ListOfBrokenPEs:
             self.BreakNode(BrokenNode,True)
+
     ##################################################
     def RandomFaultInjection(self):
         ChosenFault = random.choice(['Link','Turn','PE','Age'])
         if ChosenFault == 'Link':
-            ChosenLink =  random.choice(self.SHM.edges())
+            ChosenLink = random.choice(self.SHM.edges())
             self.BreakLink(ChosenLink,True)
         elif ChosenFault == 'Turn':
             ChosenNode = random.choice(self.SHM.nodes())
@@ -150,7 +157,7 @@ class SystemHealthMonitor:
             self.BreakNode(ChosenNode,True)
         elif ChosenFault == 'Age':
             ChosenNode = random.choice(self.SHM.nodes())
-            RandomSpeedDown= random.choice([0.3, 0.25, 0.2, 0.15, 0.1, 0.05])
+            RandomSpeedDown = random.choice([0.3, 0.25, 0.2, 0.15, 0.1, 0.05])
             self.IntroduceAging(ChosenNode, RandomSpeedDown ,True)
 
     # ToDo: To insert Transient Faults... (probably we need some event handler)

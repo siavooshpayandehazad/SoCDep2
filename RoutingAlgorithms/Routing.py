@@ -6,7 +6,7 @@ import re
 import Config
 import Calculate_Reachability
 
-def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report,DetailedReport):
+def GenerateNoCRouteGraph(AG, SystemHealthMap, TurnModel, Report, DetailedReport):
     """
     This function takes the Architecture graph and the health status of the Architecture
     and generates the route graph... route graph is a graph that has all the paths available
@@ -39,21 +39,24 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report,DetailedReport):
     if Report: print "==========================================="
     if Report: print "STARTING BUILDING ROUTING ARCHITECTURE..."
     if Report: ReportTurnModel(TurnModel)
-    PortList = ['N','W','L','E','S']  # the order is crucial... do not change
-                                      # to find out why its important, check: connect direct paths
+
+    # the order is crucial... do not change
+    # to find out why its important, check: connect direct paths
+    PortList = ['N', 'W', 'L', 'E', 'S']
+
     NoCRG = networkx.DiGraph()
     for node in AG.nodes():
         if DetailedReport:print "GENERATING PORTS:"
         for port in PortList:
-            if DetailedReport:print "\t",str(node)+str(port)+str('I'),"&",str(node)+str(port)+str('O')
-            NoCRG.add_node(str(node)+str(port)+str('I'),Node=node,Port=port,Dir='I')
-            NoCRG.add_node(str(node)+str(port)+str('O'),Node=node,Port=port,Dir='O')
+            if DetailedReport:print "\t", str(node)+str(port)+str('I'), "&", str(node)+str(port)+str('O')
+            NoCRG.add_node(str(node)+str(port)+str('I'), Node=node, Port=port, Dir='I')
+            NoCRG.add_node(str(node)+str(port)+str('O'), Node=node, Port=port, Dir='O')
         if DetailedReport:print "CONNECTING LOCAL PATHS:"
         for port in PortList:       # connect local to every output port
             if port != 'L':
-                NoCRG.add_edge(str(node)+str('L')+str('I'),str(node)+str(port)+str('O'))
+                NoCRG.add_edge(str(node)+str('L')+str('I'), str(node)+str(port)+str('O'))
                 if DetailedReport:print "\t", 'L', "--->", port
-                NoCRG.add_edge(str(node)+str(port)+str('I'),str(node)+str('L')+str('O'))
+                NoCRG.add_edge(str(node)+str(port)+str('I'), str(node)+str('L')+str('O'))
                 if DetailedReport:print "\t", port, "--->", 'L'
         if DetailedReport:print "CONNECTING DIRECT PATHS:"
         for i in range(0,int(len(PortList))):   # connect direct paths
@@ -61,16 +64,16 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report,DetailedReport):
                 if DetailedReport:print "\t", PortList[i], "--->", PortList[len(PortList)-1-i]
                 inID= str(node)+str(PortList[i])+str('I')
                 outID=str(node)+str(PortList[len(PortList)-1-i])+str('O')
-                NoCRG.add_edge(inID,outID)
+                NoCRG.add_edge(inID, outID)
 
         if DetailedReport:print "CONNECTING TURNS:"
         for turn in TurnModel:
             if turn in SystemHealthMap.SHM.node[node]['TurnsHealth']:
                 if SystemHealthMap.SHM.node[node]['TurnsHealth'][turn]:
-                    InPort=turn[0]
-                    OutPort=turn[2]
+                    InPort = turn[0]
+                    OutPort = turn[2]
                     if InPort != OutPort:
-                        NoCRG.add_edge(str(node)+str(InPort)+str('I'),str(node)+str(OutPort)+str('O'))
+                        NoCRG.add_edge(str(node)+str(InPort)+str('I'), str(node)+str(OutPort)+str('O'))
                     else:       # just for defensive programming reasons...
                         print "\033[31mERROR::\033[0m U-TURN DETECTED!"
                         print "TERMINATING THE PROGRAM..."
@@ -91,7 +94,7 @@ def GenerateNoCRouteGraph(AG,SystemHealthMap,TurnModel,Report,DetailedReport):
     return NoCRG
 
 
-def GenerateNoCRouteGraphFromFile(AG,SystemHealthMap,RoutingFilePath,Report,DetailedReport):
+def GenerateNoCRouteGraphFromFile(AG, SystemHealthMap, RoutingFilePath, Report, DetailedReport):
     """
     This function might come very handy specially in relation to different routing algorithms that we can
     implement to increase reachability... (for example odd-even)
@@ -113,29 +116,29 @@ def GenerateNoCRouteGraphFromFile(AG,SystemHealthMap,RoutingFilePath,Report,Deta
         if "Ports" in line:
             Ports = RoutingFile.readline()
             PortList = Ports.split( )
-            if DetailedReport: print "PortList", PortList
+            if DetailedReport:print "PortList", PortList
         if "Node" in line:
             NodeID = int(re.search(r'\d+', line).group())
-            if DetailedReport:print "NodeID",NodeID
+            if DetailedReport:print "NodeID", NodeID
             if DetailedReport:print "GENERATING PORTS:"
             for port in PortList:
-                if DetailedReport:print "\t",str(NodeID)+str(port)+str('I'),"&",str(NodeID)+str(port)+str('O')
-                NoCRG.add_node(str(NodeID)+str(port)+str('I'),Node=NodeID,Port=port,Dir='I')
-                NoCRG.add_node(str(NodeID)+str(port)+str('O'),Node=NodeID,Port=port,Dir='O')
+                if DetailedReport:print "\t", str(NodeID)+str(port)+str('I'), "&", str(NodeID)+str(port)+str('O')
+                NoCRG.add_node(str(NodeID)+str(port)+str('I'), Node=NodeID, Port=port, Dir='I')
+                NoCRG.add_node(str(NodeID)+str(port)+str('O'), Node=NodeID, Port=port, Dir='O')
             if DetailedReport:print "CONNECTING LOCAL PATHS:"
             for port in PortList:       # connect local to every output port
                 if port != 'L':
-                    NoCRG.add_edge(str(NodeID)+str('L')+str('I'),str(NodeID)+str(port)+str('O'))
+                    NoCRG.add_edge(str(NodeID)+str('L')+str('I'), str(NodeID)+str(port)+str('O'))
                     if DetailedReport:print "\t", 'L', "--->", port
-                    NoCRG.add_edge(str(NodeID)+str(port)+str('I'),str(NodeID)+str('L')+str('O'))
+                    NoCRG.add_edge(str(NodeID)+str(port)+str('I'), str(NodeID)+str('L')+str('O'))
                     if DetailedReport:print "\t", port, "--->", 'L'
             if DetailedReport:print "CONNECTING DIRECT PATHS:"
-            for i in range(0,int(len(PortList))):   # connect direct paths
+            for i in range(0, int(len(PortList))):   # connect direct paths
                 if PortList[i] != 'L':
                     if DetailedReport:print "\t", PortList[i], "--->", PortList[len(PortList)-1-i]
                     inID = str(NodeID)+str(PortList[i])+str('I')
                     outID = str(NodeID)+str(PortList[len(PortList)-1-i])+str('O')
-                    NoCRG.add_edge(inID,outID)
+                    NoCRG.add_edge(inID, outID)
             if DetailedReport:print "CONNECTING TURNS:"
             line = RoutingFile.readline()
             TurnsList = line.split()
@@ -145,7 +148,7 @@ def GenerateNoCRouteGraphFromFile(AG,SystemHealthMap,RoutingFilePath,Report,Deta
                         InPort = turn[0]
                         OutPort = turn[2]
                         if InPort != OutPort:
-                            NoCRG.add_edge(str(NodeID)+str(InPort)+str('I'),str(NodeID)+str(OutPort)+str('O'))
+                            NoCRG.add_edge(str(NodeID)+str(InPort)+str('I'), str(NodeID)+str(OutPort)+str('O'))
                         else:   # just for defensive programming reasons...
                             print "\033[31mERROR::\033[0m U-TURN DETECTED!"
                             print "TERMINATING THE PROGRAM..."
@@ -178,7 +181,7 @@ def ReportTurnModel(TurnModel):
     return None
 
 
-def UpdateNoCRouteGraph(SystemHealthMap,NewEvent):
+def UpdateNoCRouteGraph(SystemHealthMap, NewEvent):
     """
      we would like to eliminate the path or turn that is not working anymore...
     :param SystemHealthMap: System Health Map
@@ -208,25 +211,27 @@ def FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG, SourceNode,Destinati
             CurrentRG = NonCriticalRG
     else:
         CurrentRG = NoCRG
-    Source = str(SourceNode)+str('L') + str('I')
-    Destination = str(DestinationNode) + str('L') + str('O')
-    if networkx.has_path(CurrentRG,Source,Destination):
-        ShortestPath = networkx.shortest_path(CurrentRG,Source,Destination)
-        AllPaths = list(networkx.all_simple_paths(CurrentRG,Source,Destination))
+    Source = str(SourceNode)+str('L')+str('I')
+    Destination = str(DestinationNode)+str('L')+str('O')
+    if networkx.has_path(CurrentRG, Source, Destination):
+        ShortestPath = networkx.shortest_path(CurrentRG, Source, Destination)
+        AllPaths = list(networkx.all_simple_paths(CurrentRG, Source, Destination))
         ShortestLinks = []
-        for i in range (0,len(ShortestPath)-1):
-                #if ShortestPath[i][0] != ShortestPath[i+1][0]:
+        for i in range(0, len(ShortestPath)-1):
+                # if ShortestPath[i][0] != ShortestPath[i+1][0]:
             if int(re.search(r'\d+', ShortestPath[i]).group()) != int(re.search(r'\d+', ShortestPath[i+1]).group()):
-                    ShortestLinks.append((int(re.search(r'\d+', ShortestPath[i]).group()),int(re.search(r'\d+', ShortestPath[i+1]).group())))
+                    ShortestLinks.append((int(re.search(r'\d+', ShortestPath[i]).group()),
+                                          int(re.search(r'\d+', ShortestPath[i+1]).group())))
         AllLinks = []
         for j in range(0, len(AllPaths)):
             Path = AllPaths[j]
             Links = []
-            for i in range (0,len(Path)-1):
-                if int(re.search(r'\d+', Path[i]).group()) != int(re.search(r'\d+', Path[i+1]).group()):
-                    Links.append((int(re.search(r'\d+', Path[i]).group()),int(re.search(r'\d+', Path[i+1]).group())))
+            for i in range (0, len(Path)-1):
+                if int(re.search(r"\d+", Path[i]).group()) != int(re.search(r"\d+", Path[i+1]).group()):
+                    Links.append((int(re.search(r"\d+", Path[i]).group()), int(re.search(r"\d+", Path[i+1]).group())))
             AllLinks.append(Links)
-        if Report:print "\t\tFINDING PATH(S) FROM: ", Source, "TO:", Destination," ==>", AllLinks if ReturnAllPaths else ShortestLinks
+        if Report:print "\t\tFINDING PATH(S) FROM: ", Source, "TO:", Destination, " ==>", \
+                        AllLinks if ReturnAllPaths else ShortestLinks
         if ReturnAllPaths:
             return AllLinks
         else:
@@ -234,5 +239,3 @@ def FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG, SourceNode,Destinati
     else:
         if Report:print "\t\tNO PATH FOUND FROM: ", Source, "TO:", Destination
         return None
-
-
