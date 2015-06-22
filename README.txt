@@ -58,6 +58,11 @@ Some of the features:
 * Generates GSNoC simulator readable traffic files…
 * Provides heavy logging for debugging
 ===============================================================================
+Libraries needed:
+    * networkx:     https://networkx.github.io/
+    * matplotlib:   http://matplotlib.org/
+    * Py-notify:    http://home.gna.org/py-notify/
+===============================================================================
 How To generate RoutingFile.txt:
     This file is made to enable user to manually control routing algorithm
     via turn model in every single router.

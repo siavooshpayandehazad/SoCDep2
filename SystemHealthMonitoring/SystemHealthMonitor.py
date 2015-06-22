@@ -12,7 +12,7 @@ class SystemHealthMonitor:
         self.SnapShot = None
         self.MPM={}                     # Most Probable Mapping Lib
 
-    def SetUp_NoC_SystemHealthMap(self,ArchGraph,TurnsHealth):
+    def SetUp_NoC_SystemHealthMap(self, ArchGraph, TurnsHealth):
         print "==========================================="
         print "PREPARING SYSTEM HEALTH MAP..."
         for nodes in ArchGraph.nodes():
@@ -26,7 +26,7 @@ class SystemHealthMonitor:
         print "      REPORTING SYSTEM HEALTH MAP"
         print "==========================================="
         for Node in self.SHM.nodes():
-            print "\tNODE:" ,Node
+            print "\tNODE:", Node
             print "\t\tNODE HEALTH:", self.SHM.node[Node]['NodeHealth']
             print "\t\tNODE SPEED:", self.SHM.node[Node]['NodeSpeed']
             print "\t\tTURNS:", self.SHM.node[Node]['TurnsHealth']
@@ -48,8 +48,8 @@ class SystemHealthMonitor:
     ##################################################
     def BreakTurn(self, Node, Turn, Report):
         if Report:print "==========================================="
-        if Report:print "\033[33mSHM::\033[0m BREAKING TURN:",Turn, "IN NODE", Node
-        self.SHM.node[Node]['TurnsHealth'][Turn]=False
+        if Report:print "\033[33mSHM::\033[0m BREAKING TURN:", Turn, "IN NODE", Node
+        self.SHM.node[Node]['TurnsHealth'][Turn] = False
 
     def RestoreBrokenTurn(self, Node, Turn, Report):
         if Report:print "==========================================="
@@ -67,13 +67,13 @@ class SystemHealthMonitor:
     ##################################################
     def BreakNode(self, Node, Report):
         if Report: print "==========================================="
-        self.SHM.node[Node]['NodeHealth']=False
-        if Report: print "\033[33mSHM::\033[0m NODE",Node,"IS BROKEN..."
+        self.SHM.node[Node]['NodeHealth'] = False
+        if Report: print "\033[33mSHM::\033[0m NODE", Node, "IS BROKEN..."
 
     def RestoreBrokenNode(self, Node, Report):
         if Report: print "==========================================="
-        self.SHM.node[Node]['NodeHealth']=False
-        if Report: print "\033[33mSHM::\033[0m NODE",Node,"IS RESTORED..."
+        self.SHM.node[Node]['NodeHealth'] = False
+        if Report: print "\033[33mSHM::\033[0m NODE", Node, "IS RESTORED..."
 
     ##################################################
     def TakeSnapShotOfSystemHealth(self):
@@ -131,46 +131,48 @@ class SystemHealthMonitor:
     ##################################################
     def ApplyInitialFaults(self):
         for BrokenLink in Config.ListOfBrokenLinks:
-            self.BreakLink(BrokenLink,True)
+            self.BreakLink(BrokenLink, True)
 
         for NodeWithBrokenTurn in Config.ListOfBrokenTurns:
-            self.BreakTurn(NodeWithBrokenTurn,Config.ListOfBrokenTurns[NodeWithBrokenTurn],True)
+            self.BreakTurn(NodeWithBrokenTurn, Config.ListOfBrokenTurns[NodeWithBrokenTurn], True)
 
         for AgedPE in Config.ListOfAgedPEs:
-            self.IntroduceAging(AgedPE, Config.ListOfAgedPEs[AgedPE],True)
+            self.IntroduceAging(AgedPE, Config.ListOfAgedPEs[AgedPE], True)
 
         for BrokenNode in Config.ListOfBrokenPEs:
-            self.BreakNode(BrokenNode,True)
+            self.BreakNode(BrokenNode, True)
 
     ##################################################
     def RandomFaultInjection(self):
-        ChosenFault = random.choice(['Link','Turn','PE','Age'])
+        ChosenFault = random.choice(['Link', 'Turn', 'PE', 'Age'])
         if ChosenFault == 'Link':
             ChosenLink = random.choice(self.SHM.edges())
             self.BreakLink(ChosenLink,True)
         elif ChosenFault == 'Turn':
             ChosenNode = random.choice(self.SHM.nodes())
             ChosenTurn = random.choice(self.SHM.node[ChosenNode]['TurnsHealth'].keys())
-            self.BreakTurn(ChosenNode,ChosenTurn,True)
+            self.BreakTurn(ChosenNode, ChosenTurn, True)
         elif ChosenFault == 'PE':
             ChosenNode = random.choice(self.SHM.nodes())
-            self.BreakNode(ChosenNode,True)
+            self.BreakNode(ChosenNode, True)
         elif ChosenFault == 'Age':
             ChosenNode = random.choice(self.SHM.nodes())
             RandomSpeedDown = random.choice([0.3, 0.25, 0.2, 0.15, 0.1, 0.05])
-            self.IntroduceAging(ChosenNode, RandomSpeedDown ,True)
+            self.IntroduceAging(ChosenNode, RandomSpeedDown, True)
 
     ##################################################
     def ReportTheEvent(SHM, FaultLocation, FaultType):
         print "==========================================="
         if FaultType == 'T':    # Transient Fault
-            StringToPrint = "\033[33mSHM::Event:\033[0m Transient Fault happened at "
+            StringToPrint = "\033[33mSHM:: Event:\033[0m Transient Fault happened at "
         else:   # Permanent Fault
-            StringToPrint = "\033[33mSHM::Event:\033[0m Permanent Fault happened at "
+            StringToPrint = "\033[33mSHM:: Event:\033[0m Permanent Fault happened at "
         if type(FaultLocation) is tuple:
             StringToPrint += 'Link ' + str(FaultLocation)
         elif type(FaultLocation) is dict:
-            StringToPrint += 'Turn ' + str(FaultLocation[FaultLocation.keys()[0]]) + ' of Node ' + str(FaultLocation.keys()[0])
+            Turn = FaultLocation[FaultLocation.keys()[0]]
+            Node = FaultLocation.keys()[0]
+            StringToPrint += 'Turn ' + str(Turn) + ' of Node ' + str(Node)
         else:
             StringToPrint += 'Node ' + str(FaultLocation)
         print StringToPrint
@@ -181,30 +183,30 @@ class SystemHealthMonitor:
         if type(FaultLocation) is tuple:      # its a Link fault
             if FaultType == 'T':    # Transient Fault
                 if self.SHM.edge[FaultLocation[0]][FaultLocation[1]]['LinkHealth']:
-                    self.BreakLink(FaultLocation,True)
-                    self.RestoreBrokenLink(FaultLocation,True)
+                    self.BreakLink(FaultLocation, True)
+                    self.RestoreBrokenLink(FaultLocation, True)
                 else:
-                    print "\033[33mSHM::\033[0mLINK ALREADY BROKEN"
+                    print "\033[33mSHM:: NOTE:\033[0mLINK ALREADY BROKEN"
             elif FaultType == 'P':   # Permanent Fault
-                self.BreakLink(FaultLocation,True)
+                self.BreakLink(FaultLocation, True)
         elif type(FaultLocation) is dict:   # its a Turn fault
             if FaultType == 'T':    # Transient Fault
                 if self.SHM.node[FaultLocation.keys()[0]]['TurnsHealth'][FaultLocation[FaultLocation.keys()[0]]]:
-                    self.BreakTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]],True)
-                    self.RestoreBrokenTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]],True)
+                    self.BreakTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]], True)
+                    self.RestoreBrokenTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]], True)
                 else:
-                    print "\033[33mSHM::\033[0mTURN ALREADY BROKEN"
+                    print "\033[33mSHM:: NOTE:\033[0mTURN ALREADY BROKEN"
             elif FaultType == 'P':   # Permanent Fault
-                self.BreakTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]],True)
+                self.BreakTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]], True)
         else:           # its a Node fault
             if FaultType == 'T':    # Transient Fault
                 if self.SHM.node[FaultLocation]['NodeHealth']:
-                    self.BreakNode(FaultLocation,True)
-                    self.RestoreBrokenNode(FaultLocation,True)
+                    self.BreakNode(FaultLocation, True)
+                    self.RestoreBrokenNode(FaultLocation, True)
                 else:
-                    print "\033[33mSHM::\033[0m NODE ALREADY BROKEN"
+                    print "\033[33mSHM:: NOTE:\033[0m NODE ALREADY BROKEN"
             elif FaultType == 'P':   # Permanent Fault
-                self.BreakNode(FaultLocation,True)
+                self.BreakNode(FaultLocation, True)
         return None
 
     # ToDO: To implement the classification algorithm

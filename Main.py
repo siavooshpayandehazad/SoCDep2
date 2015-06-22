@@ -36,7 +36,7 @@ EventHandler = Signal()
 EventHandler.connect(SHM.ReportTheEvent)
 EventHandler.connect(SHM.ApplyFaultEvent)
 
-EventHandler((2,1), 'T')
+EventHandler((2, 1), 'T')
 EventHandler(1, 'T')
 EventHandler({1: 'N2E'}, 'P')
 EventHandler.disconnect(SHM.ReportTheEvent)
