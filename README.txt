@@ -45,6 +45,8 @@ Some of the features:
 * Generates Gantt charts for scheduling results
 * Has the System Health Management unit implemented and supports broken links,
   turns, nodes and also aging nodes...
+    * Supports event driven fault handling
+    * Supports transient/permanent faults
 * Supports any turn model based routing algorithm, routers can be programmed
   individually by user
 * Supports reach-ability calculations based on NoCDepend methodology (for
@@ -93,6 +95,11 @@ ScheduleAndDepend
  |          |------- Clustering_Functions
  |          |------- Clustering_Test
  |
+ |------ConfigAndPackages
+ |          |
+ |          |------- Config
+ |          |------- PackageFile
+ |
  |------Generated_Files
  |------GraphDrawings
  |------LOGS
@@ -132,10 +139,13 @@ ScheduleAndDepend
  |          |
  |          |----- RoutingFile
  |
- |-- Config
- |-- Logger
+ |------Utilities
+ |          |
+ |          |----- Logger
+ |          |----- misc
+ |
  |-- Main
- |-- misc
+ |-- SystemInitialization
 
 ===============================================================================
 
@@ -152,8 +162,6 @@ ToDo:
 
     - going 3D
 
-    - event driven fault handler
-
     - Simulated annealing and Genetics Algorithm for Mapping
 
     - Support for adaptive routing! but have to solve some scheduling issues... 
@@ -164,3 +172,5 @@ ToDo:
 
     - Some 8-bit background music during execution of the program would be
       really cool
+
+    - Implement Memory Usage Profiler

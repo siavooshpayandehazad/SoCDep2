@@ -160,7 +160,51 @@ class SystemHealthMonitor:
             RandomSpeedDown = random.choice([0.3, 0.25, 0.2, 0.15, 0.1, 0.05])
             self.IntroduceAging(ChosenNode, RandomSpeedDown ,True)
 
-    # ToDo: To insert Transient Faults... (probably we need some event handler)
-    # ToDo: To implement Intermittent Faults
+    ##################################################
+    def ReportTheEvent(SHM, FaultLocation, FaultType):
+        if FaultType == 'T':    # Transient Fault
+            StringToPrint = "Event: Transient Fault happened at "
+        else:   # Permanent Fault
+            StringToPrint = "Event: Permanent Fault happened at "
+        if type(FaultLocation) is tuple:
+            StringToPrint += 'Link ' + str(FaultLocation)
+        elif type(FaultLocation) is dict:
+            StringToPrint += 'Turn ' + str(FaultLocation[FaultLocation.keys()[0]]) + ' of Node ' + str(FaultLocation.keys()[0])
+        else:
+            StringToPrint += 'Node ' + str(FaultLocation)
+        print StringToPrint
+        return None
+
+    ##################################################
+    def ApplyFaultEvent(self, FaultLocation, FaultType):
+        if type(FaultLocation) is tuple:      # its a Link fault
+            if FaultType == 'T':    # Transient Fault
+                if self.SHM.edge[FaultLocation[0]][FaultLocation[1]]['LinkHealth']:
+                    self.BreakLink(FaultLocation,True)
+                    self.RestoreBrokenLink(FaultLocation,True)
+                else:
+                    print "LINK ALREADY BROKEN"
+            elif FaultType == 'P':   # Permanent Fault
+                self.BreakLink(FaultLocation,True)
+        elif type(FaultLocation) is dict:   # its a Turn fault
+            if FaultType == 'T':    # Transient Fault
+                if self.SHM.node[FaultLocation.keys()[0]]['TurnsHealth'][FaultLocation[FaultLocation.keys()[0]]]:
+                    self.BreakTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]],True)
+                    self.RestoreBrokenTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]],True)
+                else:
+                    print "TURN ALREADY BROKEN"
+            elif FaultType == 'P':   # Permanent Fault
+                self.BreakTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]],True)
+        else:           # its a Node fault
+            if FaultType == 'T':    # Transient Fault
+                if self.SHM.node[FaultLocation]['NodeHealth']:
+                    self.BreakNode(FaultLocation,True)
+                    self.RestoreBrokenNode(FaultLocation,True)
+                else:
+                    print "NODE ALREADY BROKEN"
+            elif FaultType == 'P':   # Permanent Fault
+                self.BreakNode(FaultLocation,True)
+        return None
+
     # ToDO: To implement the classification algorithm
     # ToDo: To implement the partial mapping with distance driven cost function

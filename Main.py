@@ -5,10 +5,10 @@ import sys
 import logging
 import time
 from ConfigAndPackages import Config
-from Utilities import GenerateFileDirectories
 from Utilities import misc
 from Utilities import Logger
 import SystemInitialization
+from notify.all import *
 
 ####################################################################
 #
@@ -23,22 +23,23 @@ logging.basicConfig(filename=os.path.join(os.path.join(os.path.curdir, Config.Lo
                                           'Logging_Log_'+str(time.time())+'.log'), level=logging.DEBUG)
 logging.info('Starting logging...')
 ####################################################################
-GenerateFileDirectories.GenerateFileDirectories()
+misc.GenerateFileDirectories()
 ####################################################################
 misc.DrawLogo()
 ####################################################################
 TG, AG, NoCRG, SHM, CriticalRG, NonCriticalRG = SystemInitialization.InitializeSystem(logging)
 
-"""
+
 # Im trying to write some sort of Event driven system...
-def ReportTheEvent(Event):
-    print "Event:",Event,"Happened"
 
 EventHandler = Signal()
-EventHandler.connect(ReportTheEvent)
+EventHandler.connect(SHM.ReportTheEvent)
+EventHandler.connect(SHM.ApplyFaultEvent)
 
-EventHandler("Dead chip")
-EventHandler.disconnect(ReportTheEvent)
-"""
+EventHandler((2,1), 'T')
+EventHandler(1, 'T')
+EventHandler({1: 'N2E'}, 'P')
+EventHandler.disconnect(SHM.ReportTheEvent)
+EventHandler.disconnect(SHM.ApplyFaultEvent)
 
 logging.info('Logging finished...')

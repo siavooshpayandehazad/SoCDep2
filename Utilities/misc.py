@@ -1,5 +1,6 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 from ConfigAndPackages import Config
+import os
 
 def DrawLogo ():
     print("===================================================================================================================")
@@ -18,4 +19,15 @@ def DrawLogo ():
     print "DEBUG DETAILS:", Config.DebugDetails
     print "DEBUG INFO:", Config.DebugInfo
     print "==========================================="
+    return None
+
+def GenerateFileDirectories():
+    GraphDirectory = "GraphDrawings"
+    if not os.path.isdir(GraphDirectory):
+        os.makedirs(GraphDirectory)
+
+    GeneratedFilesDirectory = "Generated_Files"
+    if not os.path.isdir(GeneratedFilesDirectory):
+        os.makedirs(GeneratedFilesDirectory)
+
     return None
