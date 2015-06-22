@@ -37,30 +37,30 @@ class SystemHealthMonitor:
     ##################################################
     def BreakLink(self,link,Report):
         if Report:print "==========================================="
-        if Report:print "\033[33mSYSTEM HEALTH MAP::\033[0m BREAKING LINK:", link
+        if Report:print "\033[33mSHM::\033[0m BREAKING LINK:", link
         self.SHM.edge[link[0]][link[1]]['LinkHealth'] = False
 
     def RestoreBrokenLink(self, link, Report):
         if Report:print "==========================================="
-        if Report:print "\033[33mSYSTEM HEALTH MAP::\033[0m LINK:", link, "RESTORED..."
+        if Report:print "\033[33mSHM::\033[0m LINK:", link, "RESTORED..."
         self.SHM.edge[link[0]][link[1]]['LinkHealth'] = True
 
     ##################################################
     def BreakTurn(self, Node, Turn, Report):
         if Report:print "==========================================="
-        if Report:print "\033[33mSYSTEM HEALTH MAP::\033[0m BREAKING TURN:",Turn, "IN NODE", Node
+        if Report:print "\033[33mSHM::\033[0m BREAKING TURN:",Turn, "IN NODE", Node
         self.SHM.node[Node]['TurnsHealth'][Turn]=False
 
     def RestoreBrokenTurn(self, Node, Turn, Report):
         if Report:print "==========================================="
-        if Report:print "\033[33mSYSTEM HEALTH MAP::\033[0m TURN:", Turn, "IN NODE", Node, "RESTORED"
+        if Report:print "\033[33mSHM::\033[0m TURN:", Turn, "IN NODE", Node, "RESTORED"
         self.SHM.node[Node]['TurnsHealth'][Turn] = True
 
     ##################################################
     def IntroduceAging(self, Node, SpeedDown, Report):
         if Report: print "==========================================="
         self.SHM.node[Node]['NodeSpeed'] = self.SHM.node[Node]['NodeSpeed']*(1-SpeedDown)
-        if Report: print "\033[33mSYSTEM HEALTH MAP::\033[0m AGEING NODE:", Node, "... SPEED DROPPED TO:", self.SHM.node[Node]['NodeSpeed'], "%"
+        if Report: print "\033[33mSHM::\033[0m AGEING NODE:", Node, "... SPEED DROPPED TO:", self.SHM.node[Node]['NodeSpeed'], "%"
         if self.SHM.node[Node]['NodeSpeed'] == 0:
             self.BreakNode(Node, True)
 
@@ -68,12 +68,12 @@ class SystemHealthMonitor:
     def BreakNode(self, Node, Report):
         if Report: print "==========================================="
         self.SHM.node[Node]['NodeHealth']=False
-        if Report: print "\033[33mSYSTEM HEALTH MAP::\033[0m NODE",Node,"IS BROKEN..."
+        if Report: print "\033[33mSHM::\033[0m NODE",Node,"IS BROKEN..."
 
     def RestoreBrokenNode(self, Node, Report):
         if Report: print "==========================================="
         self.SHM.node[Node]['NodeHealth']=False
-        if Report: print "\033[33mSYSTEM HEALTH MAP::\033[0m NODE",Node,"IS RESTORED..."
+        if Report: print "\033[33mSHM::\033[0m NODE",Node,"IS RESTORED..."
 
     ##################################################
     def TakeSnapShotOfSystemHealth(self):
@@ -162,10 +162,11 @@ class SystemHealthMonitor:
 
     ##################################################
     def ReportTheEvent(SHM, FaultLocation, FaultType):
+        print "==========================================="
         if FaultType == 'T':    # Transient Fault
-            StringToPrint = "Event: Transient Fault happened at "
+            StringToPrint = "\033[33mSHM::Event:\033[0m Transient Fault happened at "
         else:   # Permanent Fault
-            StringToPrint = "Event: Permanent Fault happened at "
+            StringToPrint = "\033[33mSHM::Event:\033[0m Permanent Fault happened at "
         if type(FaultLocation) is tuple:
             StringToPrint += 'Link ' + str(FaultLocation)
         elif type(FaultLocation) is dict:
@@ -183,7 +184,7 @@ class SystemHealthMonitor:
                     self.BreakLink(FaultLocation,True)
                     self.RestoreBrokenLink(FaultLocation,True)
                 else:
-                    print "LINK ALREADY BROKEN"
+                    print "\033[33mSHM::\033[0mLINK ALREADY BROKEN"
             elif FaultType == 'P':   # Permanent Fault
                 self.BreakLink(FaultLocation,True)
         elif type(FaultLocation) is dict:   # its a Turn fault
@@ -192,7 +193,7 @@ class SystemHealthMonitor:
                     self.BreakTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]],True)
                     self.RestoreBrokenTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]],True)
                 else:
-                    print "TURN ALREADY BROKEN"
+                    print "\033[33mSHM::\033[0mTURN ALREADY BROKEN"
             elif FaultType == 'P':   # Permanent Fault
                 self.BreakTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]],True)
         else:           # its a Node fault
@@ -201,7 +202,7 @@ class SystemHealthMonitor:
                     self.BreakNode(FaultLocation,True)
                     self.RestoreBrokenNode(FaultLocation,True)
                 else:
-                    print "NODE ALREADY BROKEN"
+                    print "\033[33mSHM::\033[0m NODE ALREADY BROKEN"
             elif FaultType == 'P':   # Permanent Fault
                 self.BreakNode(FaultLocation,True)
         return None
