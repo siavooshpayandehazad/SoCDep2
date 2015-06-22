@@ -162,5 +162,5 @@ ToDo:
 
     - Support for virtual channels!
 
-    - Some 8-bit background music during execution of the program would be really 
-      cool
+    - Some 8-bit background music during execution of the program would be
+      really cool
