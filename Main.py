@@ -4,10 +4,11 @@ import os
 import sys
 import logging
 import time
-import misc
-import Logger
+from ConfigAndPackages import Config
+from Utilities import GenerateFileDirectories
+from Utilities import misc
+from Utilities import Logger
 import SystemInitialization
-
 
 ####################################################################
 #
@@ -18,18 +19,11 @@ import SystemInitialization
 sys.stdout = Logger.Logger()
 ##############################
 # preparing to setup Logging
-LoGDirectory = "LOGS"
-logging.basicConfig(filename=os.path.join(os.path.join(os.path.curdir, LoGDirectory),
+logging.basicConfig(filename=os.path.join(os.path.join(os.path.curdir, Config.LoGDirectory),
                                           'Logging_Log_'+str(time.time())+'.log'), level=logging.DEBUG)
 logging.info('Starting logging...')
 ####################################################################
-GraphDirectory = "GraphDrawings"
-if not os.path.isdir(GraphDirectory):
-    os.makedirs(GraphDirectory)
-
-GeneratedFilesDirectory = "Generated_Files"
-if not os.path.isdir(GeneratedFilesDirectory):
-    os.makedirs(GeneratedFilesDirectory)
+GenerateFileDirectories.GenerateFileDirectories()
 ####################################################################
 misc.DrawLogo()
 ####################################################################

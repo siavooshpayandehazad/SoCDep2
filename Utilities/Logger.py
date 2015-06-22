@@ -2,13 +2,13 @@
 import sys
 import os
 import time
-
+from ConfigAndPackages import Config
 class Logger(object):
     """
     This Class is for redirecting the console messages to a log file...
     """
     def __init__(self):
-        LoGDirectory = "LOGS"
+        LoGDirectory = Config.LoGDirectory
         if not os.path.isdir(LoGDirectory):
            os.makedirs(LoGDirectory)
         self.terminal = sys.stdout

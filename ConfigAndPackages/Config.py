@@ -5,6 +5,7 @@ import PackageFile
 ################################################
 DebugInfo = True
 DebugDetails = False
+LoGDirectory = "LOGS"
 ################################################
 #          TG  Config
 ################################################
@@ -37,6 +38,7 @@ NetworkTopology = '2DMesh'
 Network_X_Size = 6
 Network_Y_Size = 6
 Network_Z_Size = 1
+
 # Only for Manual AG_Type:
 PE_List = [0, 1, 2, 3]
 AG_Edge_List = [(0, 1), (0, 2), (1, 0), (1, 3), (2, 0), (2, 3), (3, 2), (3, 1)]
@@ -46,9 +48,6 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 #          Routing  Config
 ################################################
 # Todo: introduce more turn models
-
-# this is for manually setting turns for routers
-
 # Available Turn Models : 'FULL_TurnModel', 'XY_TurnModel', 'WestFirst_TurnModel', 'NorthLast_TurnModel'
 UsedTurnModel = PackageFile.WestFirst_TurnModel
 RoutingFilePath = "User_Inputs/RoutingFile.txt"
@@ -56,13 +55,8 @@ RoutingFilePath = "User_Inputs/RoutingFile.txt"
 #          SHM  Config
 ################################################
 # Do not change if you have conventional 2D NoC
-TurnsHealth = {"N2W": True, "N2E": True, "S2W": True, "S2E": True,
-               "W2N": True, "W2S": True, "E2N": True, "E2S": True}
-# TurnsHealth for conventional 3D NoC
-# TurnsHealth = {"N2W": True, "N2E": True, "S2W": True, "S2E": True,
-#                "W2N": True, "W2S": True, "E2N": True, "E2S": True,
-#                "N2U": True, "N2D": True, "S2U": True, "S2D": True,
-#                "W2U": True, "W2D": True, "E2U": True, "E2D": True}
+TurnsHealth = PackageFile.TurnsHealth_2DNetwork
+
 # Number of Unreachable-Rectangles
 NumberOfRects = 5
 
