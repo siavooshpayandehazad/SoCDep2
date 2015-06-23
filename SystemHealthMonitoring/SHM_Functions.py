@@ -31,3 +31,17 @@ def RandomFaultInjection(SHM):
         ChosenNode = random.choice(SHM.SHM.nodes())
         RandomSpeedDown = random.choice([0.3, 0.25, 0.2, 0.15, 0.1, 0.05])
         SHM.IntroduceAging(ChosenNode, RandomSpeedDown, True)
+
+def GenerateFaultConfig (SHM):
+    """
+    Generates a string (FaultConfig) from the configuration of the faults in the SHM
+    :return: FaultConfig string
+    """
+    FaultConfig = ""
+    for node in SHM.SHM.nodes():
+        FaultConfig += str(node)
+        FaultConfig += "T" if SHM.SHM.node[node]['NodeHealth'] else "F"
+        FaultConfig += str(int(SHM.SHM.node[node]['NodeSpeed']))
+        for Turn in SHM.SHM.node[node]['TurnsHealth']:
+            FaultConfig += "T" if SHM.SHM.node[node]['TurnsHealth'][Turn] else "F"
+    return FaultConfig

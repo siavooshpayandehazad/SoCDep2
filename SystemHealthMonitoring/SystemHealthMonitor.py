@@ -4,7 +4,7 @@ import networkx
 import hashlib
 import copy
 from Mapper import Mapping_Functions
-import SHM_Reports
+import SHM_Reports,SHM_Functions
 
 class SystemHealthMonitor:
     def __init__(self):
@@ -67,27 +67,13 @@ class SystemHealthMonitor:
         self.SnapShot = copy.deepcopy(self.SHM)
         print "A SNAPSHOT OF SYSTEM HEALTH HAS BEEN STORED..."
         return None
-
+    
+    ##################################################
     def RestoreToPreviousSnapShot (self):
         self.SHM = copy.deepcopy(self.SnapShot)
         print "SYSTEM HEALTH MAP HAS BEEN RESTORED TO PREVIOUS SNAPSHOT..."
         self.SnapShot = None
         return None
-
-    ##################################################
-    def GenerateFaultConfig (self):
-        """
-        Generates a string (FaultConfig) from the configuration of the faults in the SHM
-        :return: FaultConfig string
-        """
-        FaultConfig = ""
-        for node in self.SHM.nodes():
-            FaultConfig += str(node)
-            FaultConfig += "T" if self.SHM.node[node]['NodeHealth'] else "F"
-            FaultConfig += str(int(self.SHM.node[node]['NodeSpeed']))
-            for Turn in self.SHM.node[node]['TurnsHealth']:
-                FaultConfig += "T" if self.SHM.node[node]['TurnsHealth'][Turn] else "F"
-        return FaultConfig
 
     ##################################################
     def AddCurrentMappingToMPM (self, TG):
@@ -98,7 +84,7 @@ class SystemHealthMonitor:
         :return: None
         """
         MappingString = Mapping_Functions.MappingIntoString(TG)
-        self.MPM[hashlib.md5(self.GenerateFaultConfig()).hexdigest()] = MappingString
+        self.MPM[hashlib.md5(SHM_Functions.GenerateFaultConfig(self)).hexdigest()] = MappingString
         return None
 
     ##################################################
