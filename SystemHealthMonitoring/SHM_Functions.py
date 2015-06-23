@@ -17,7 +17,8 @@ def ApplyInitialFaults(SHM):
 
 def RandomFaultGeneration(SHM):
     ChosenFault = random.choice(['Link', 'Turn', 'Node'])
-    FaultTypes = ['T','P']
+    # Todo: fix the distribution of fault types
+    FaultTypes = ['T','T','T','T','T','P']
     FaultType = random.choice(FaultTypes)
     if ChosenFault == 'Link':
         ChosenLink = random.choice(SHM.SHM.edges())
@@ -44,3 +45,4 @@ def GenerateFaultConfig (SHM):
         for Turn in SHM.SHM.node[node]['TurnsHealth']:
             FaultConfig += "T" if SHM.SHM.node[node]['TurnsHealth'][Turn] else "F"
     return FaultConfig
+

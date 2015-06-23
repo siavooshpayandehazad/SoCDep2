@@ -1,8 +1,11 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 import PackageFile
+
 ################################################
-#          Debug  Config
+#          Program  Config
 ################################################
+
+ProgramRunTime = 9      # in seconds
 DebugInfo = True
 DebugDetails = False
 LoGDirectory = "LOGS"
@@ -56,23 +59,28 @@ RoutingFilePath = "User_Inputs/RoutingFile.txt"
 ################################################
 # Do not change if you have conventional 2D NoC
 TurnsHealth = PackageFile.TurnsHealth_2DNetwork
-
+# ==========================
 # Number of Unreachable-Rectangles
 NumberOfRects = 5
-
+# ==========================
 # Here you can break things as initial defects...
-# For 2X2 network:
+# ==========================
+# Sample for 2X2 network:
 # ListOfBrokenLinks = [(0, 1), (0, 2)]
-
-# For 4X4 network:
+# Sample for 4X4 network:
 # ListOfBrokenLinks = [(0, 1), (0, 4)]
-
+# For those who don't need broken links
+ListOfBrokenLinks = []
+# ==========================
 # List of broken PE
 ListOfBrokenPEs = [1]
-# I know its a dictionary
+# ==========================
+# List of broken Turns
 ListOfBrokenTurns = {}
+# sample for broken turns
 # ListOfBrokenTurns = {1: 'W2S', 2: 'W2S'}
-
+# And I know its a dictionary
+# ==========================
 # For aging, we need to give the tool a dictionary of nodes and their speed down...
 # so {1: 0.3} means that node 1's speed has decreased by 30% from its current state.
 # I know its a dictionary too
@@ -95,6 +103,12 @@ IterativeLocalSearchIterations = 20
 #          Scheduling  Config
 ################################################
 SlackCount = 2      # this is used for number of repetitions of the critical tasks
+
+################################################
+#          System's Fault  Config
+################################################
+MTTF = 0    # Mean time to failure in seconds have not used MTTF yet...
+MTBF = 2    # Mean time between failures in seconds
 ################################################
 #           Network Partitioning
 ################################################
@@ -107,8 +121,8 @@ if EnablePartitioning:
     GateToNonCritical = [15, 27]
     GateToCritical = [20]
     # For 6X6 network: (This is the Example scenario no. 2 in ReCoSoC paper)
-    ListOfBrokenLinks = [(35, 29), (29, 35), (34, 28), (28, 34), (33, 27), (11, 17), (17, 11), (10, 16), (16, 10),
-                         (9, 15), (14, 15), (20, 26), (20, 19), (20, 14), (26, 27)]
+    ListOfBrokenLinks += [(35, 29), (29, 35), (34, 28), (28, 34), (33, 27), (11, 17), (17, 11), (10, 16), (16, 10),
+                          (9, 15), (14, 15), (20, 26), (20, 19), (20, 14), (26, 27)]
     # The virtual broken links for Non critical is not quite right in the ReCoSoC paper for the case of gateways
     # To automatic generation of rectangles for the gateways can be fixed with the following workaround
     # we have to break the links between Gateways and the nodes on the region that gateway should not send
@@ -120,7 +134,7 @@ else:
     CriticalRegionNodes = []
     GateToNonCritical = []
     GateToCritical = []
-    # For those who don't need broken links
-    ListOfBrokenLinks = []
+    # We don't need additional broken links
+    ListOfBrokenLinks += []
     VirtualBrokenLinksForNonCritical = []
     VirtualBrokenLinksForCritical = []
