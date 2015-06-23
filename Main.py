@@ -40,7 +40,9 @@ print "\033[92mTIME::\033[0m SYSTEM STARTS AT:", round(SystemStartingTime - Prog
 EventHandler = Signal()
 EventHandler.connect(SHM.ApplyFaultEvent)
 
+
 def FaultEvent():
+    global timer
     TimeAfterSystemStart = round(time.time() - SystemStartingTime)
     print "\033[92mTIME::\033[0m", TimeAfterSystemStart, " AFTER SYSTEM START..."
     # we generate some random fault to be inserted in the system
