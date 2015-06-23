@@ -67,7 +67,7 @@ class SystemHealthMonitor:
         self.SnapShot = copy.deepcopy(self.SHM)
         print "A SNAPSHOT OF SYSTEM HEALTH HAS BEEN STORED..."
         return None
-    
+
     ##################################################
     def RestoreToPreviousSnapShot (self):
         self.SHM = copy.deepcopy(self.SnapShot)
