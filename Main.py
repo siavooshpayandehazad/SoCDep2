@@ -44,16 +44,18 @@ EventHandler.connect(SHM.ApplyFaultEvent)
 def FaultEvent():
     global timer
     TimeAfterSystemStart = round(time.time() - SystemStartingTime)
-    print "\033[92mTIME::\033[0m", TimeAfterSystemStart, " AFTER SYSTEM START..."
-    # we generate some random fault to be inserted in the system
-    FaultLocation, FaultType = SHM_Functions.RandomFaultGeneration(SHM)
-    # here we actually insert the fault in the system
-    EventHandler(FaultLocation, FaultType)
     # Should we reset the timer or the next fault falls out of the program run time?
     if TimeAfterSystemStart + Config.MTBF <= Config.ProgramRunTime:
         # reset the timer
         timer = threading.Timer(Config.MTBF, FaultEvent)
         timer.start()
+    print "\033[92mTIME::\033[0m", TimeAfterSystemStart, " AFTER SYSTEM START..."
+    # we generate some random fault to be inserted in the system
+    FaultLocation, FaultType = SHM_Functions.RandomFaultGeneration(SHM)
+    # here we actually insert the fault in the system
+    EventHandler(FaultLocation, FaultType)
+
+
 
 timer = threading.Timer(Config.MTBF, FaultEvent)
 timer.start()
