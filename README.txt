@@ -134,6 +134,8 @@ ScheduleAndDepend
  |------SystmHealthMonitoring
  |          |
  |          |----- SystemHealthMonitor
+ |          |----- SHM_Reports
+ |          |----- SHM_Functions
  |
  |------TaskGraphUtilities
  |          |

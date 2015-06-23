@@ -5,7 +5,7 @@ import copy
 from ConfigAndPackages import Config
 from Mapper import Mapping
 from Scheduler import Scheduling_Reports
-from SystemHealthMonitoring import SystemHealthMonitor
+from SystemHealthMonitoring import SystemHealthMonitor, SHM_Reports, SHM_Functions
 from TaskGraphUtilities import Task_Graph_Reports,TG_Functions
 from RoutingAlgorithms import Routing,Calculate_Reachability,ReachabilityReports
 from ArchGraphUtilities import Arch_Graph_Reports,AG_Functions,AG_Test
@@ -25,11 +25,11 @@ def InitializeSystem(logging):
     ####################################################################
     SHM = SystemHealthMonitor.SystemHealthMonitor()
     SHM.SetUp_NoC_SystemHealthMap(AG, Config.TurnsHealth)
-    # SHM.Report_NoC_SystemHealthMap()
+    # SHM_Reports.Report_NoC_SystemHealthMap()
     print "==========================================="
     print "SYSTEM IS UP..."
     # Here we are injecting initial faults of the system
-    SHM.ApplyInitialFaults()
+    SHM_Functions.ApplyInitialFaults(SHM)
     NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, Config.DebugInfo, Config.DebugDetails))
     # NoCRG = Routing.GenerateNoCRouteGraphFromFile(AG, SHM, Config.RoutingFilePath, Config.DebugInfo, Config.DebugDetails)
 

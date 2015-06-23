@@ -2,9 +2,9 @@
 
 import networkx
 import hashlib
-import copy,random
-from ConfigAndPackages import Config
+import copy
 from Mapper import Mapping_Functions
+import SHM_Reports
 
 class SystemHealthMonitor:
     def __init__(self):
@@ -20,19 +20,6 @@ class SystemHealthMonitor:
         for link in ArchGraph.edges():
             self.SHM.add_edge(link[0], link[1], LinkHealth=True)
         print "SYSTEM HEALTH MAP CREATED..."
-
-    def Report_NoC_SystemHealthMap(self):
-        print "==========================================="
-        print "      REPORTING SYSTEM HEALTH MAP"
-        print "==========================================="
-        for Node in self.SHM.nodes():
-            print "\tNODE:", Node
-            print "\t\tNODE HEALTH:", self.SHM.node[Node]['NodeHealth']
-            print "\t\tNODE SPEED:", self.SHM.node[Node]['NodeSpeed']
-            print "\t\tTURNS:", self.SHM.node[Node]['TurnsHealth']
-            print "\t=============="
-        for Edge in self.SHM.edges():
-            print "\tLINK:", Edge, "\t", self.SHM.edge[Edge[0]][Edge[1]]['LinkHealth']
 
     ##################################################
     def BreakLink(self,link,Report):
@@ -115,71 +102,13 @@ class SystemHealthMonitor:
         return None
 
     ##################################################
-    def ReportMPM(self):
-        print "==========================================="
-        print "      REPORTING MOST PROBABLE MAPPING "
-        print "==========================================="
-        for item in self.MPM:
-            print "KEY:",item,"\t\tMAPPING:",self.MPM[item]
-        return None
-
-    ##################################################
     def CleanMPM(self):
         self.MPM={}
         return None
 
     ##################################################
-    def ApplyInitialFaults(self):
-        for BrokenLink in Config.ListOfBrokenLinks:
-            self.BreakLink(BrokenLink, True)
-
-        for NodeWithBrokenTurn in Config.ListOfBrokenTurns:
-            self.BreakTurn(NodeWithBrokenTurn, Config.ListOfBrokenTurns[NodeWithBrokenTurn], True)
-
-        for AgedPE in Config.ListOfAgedPEs:
-            self.IntroduceAging(AgedPE, Config.ListOfAgedPEs[AgedPE], True)
-
-        for BrokenNode in Config.ListOfBrokenPEs:
-            self.BreakNode(BrokenNode, True)
-
-    ##################################################
-    def RandomFaultInjection(self):
-        ChosenFault = random.choice(['Link', 'Turn', 'PE', 'Age'])
-        if ChosenFault == 'Link':
-            ChosenLink = random.choice(self.SHM.edges())
-            self.BreakLink(ChosenLink,True)
-        elif ChosenFault == 'Turn':
-            ChosenNode = random.choice(self.SHM.nodes())
-            ChosenTurn = random.choice(self.SHM.node[ChosenNode]['TurnsHealth'].keys())
-            self.BreakTurn(ChosenNode, ChosenTurn, True)
-        elif ChosenFault == 'PE':
-            ChosenNode = random.choice(self.SHM.nodes())
-            self.BreakNode(ChosenNode, True)
-        elif ChosenFault == 'Age':
-            ChosenNode = random.choice(self.SHM.nodes())
-            RandomSpeedDown = random.choice([0.3, 0.25, 0.2, 0.15, 0.1, 0.05])
-            self.IntroduceAging(ChosenNode, RandomSpeedDown, True)
-
-    ##################################################
-    def ReportTheEvent(SHM, FaultLocation, FaultType):
-        print "==========================================="
-        if FaultType == 'T':    # Transient Fault
-            StringToPrint = "\033[33mSHM:: Event:\033[0m Transient Fault happened at "
-        else:   # Permanent Fault
-            StringToPrint = "\033[33mSHM:: Event:\033[0m Permanent Fault happened at "
-        if type(FaultLocation) is tuple:
-            StringToPrint += 'Link ' + str(FaultLocation)
-        elif type(FaultLocation) is dict:
-            Turn = FaultLocation[FaultLocation.keys()[0]]
-            Node = FaultLocation.keys()[0]
-            StringToPrint += 'Turn ' + str(Turn) + ' of Node ' + str(Node)
-        else:
-            StringToPrint += 'Node ' + str(FaultLocation)
-        print StringToPrint
-        return None
-
-    ##################################################
     def ApplyFaultEvent(self, FaultLocation, FaultType):
+        SHM_Reports.ReportTheEvent(FaultLocation, FaultType)
         if type(FaultLocation) is tuple:      # its a Link fault
             if FaultType == 'T':    # Transient Fault
                 if self.SHM.edge[FaultLocation[0]][FaultLocation[1]]['LinkHealth']:

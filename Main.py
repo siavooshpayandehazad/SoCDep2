@@ -33,13 +33,12 @@ TG, AG, NoCRG, SHM, CriticalRG, NonCriticalRG = SystemInitialization.InitializeS
 # Im trying to write some sort of Event driven system...
 
 EventHandler = Signal()
-EventHandler.connect(SHM.ReportTheEvent)
 EventHandler.connect(SHM.ApplyFaultEvent)
 
 EventHandler((2, 1), 'T')
 EventHandler(1, 'T')
 EventHandler({1: 'N2E'}, 'P')
-EventHandler.disconnect(SHM.ReportTheEvent)
+
 EventHandler.disconnect(SHM.ApplyFaultEvent)
 
 logging.info('Logging finished...')
