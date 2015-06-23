@@ -10,7 +10,6 @@ XY_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S']
 WestFirst_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'S2E', 'N2E']
 NorthLast_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'S2W', 'S2E']
 
-
 ################################################
 #          SHM Sets
 ################################################

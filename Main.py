@@ -6,6 +6,7 @@ import logging
 from ConfigAndPackages import Config
 from Utilities import misc
 from Utilities import Logger
+from SystemHealthMonitoring import SHM_Functions
 import SystemInitialization
 
 ##############################
@@ -28,9 +29,8 @@ TG, AG, NoCRG, SHM, CriticalRG, NonCriticalRG = SystemInitialization.InitializeS
 EventHandler = Signal()
 EventHandler.connect(SHM.ApplyFaultEvent)
 
-EventHandler((2, 1), 'T')
-EventHandler(1, 'T')
-EventHandler({1: 'N2E'}, 'P')
+FaultLocation, FaultType = SHM_Functions.RandomFaultGeneration(SHM)
+EventHandler(FaultLocation, FaultType)
 
 EventHandler.disconnect(SHM.ApplyFaultEvent)
 logging.info('Logging finished...')

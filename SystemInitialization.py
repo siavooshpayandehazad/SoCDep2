@@ -46,7 +46,6 @@ def InitializeSystem(logging):
         AG = copy.deepcopy(BestAG)
         del BestTG, BestAG
         # SHM.AddCurrentMappingToMPM(TG)
-    # SHM.RandomFaultInjection()
     # SHM.ReportMPM()
 
     Scheduling_Reports.GenerateGanttCharts(TG, AG)

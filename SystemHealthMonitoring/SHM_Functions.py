@@ -15,22 +15,21 @@ def ApplyInitialFaults(SHM):
         for BrokenNode in Config.ListOfBrokenPEs:
             SHM.BreakNode(BrokenNode, True)
 
-def RandomFaultInjection(SHM):
-    ChosenFault = random.choice(['Link', 'Turn', 'PE', 'Age'])
+def RandomFaultGeneration(SHM):
+    ChosenFault = random.choice(['Link', 'Turn', 'Node'])
+    FaultTypes = ['T','P']
+    FaultType = random.choice(FaultTypes)
     if ChosenFault == 'Link':
         ChosenLink = random.choice(SHM.SHM.edges())
-        SHM.BreakLink(ChosenLink,True)
+        return ChosenLink, FaultType
     elif ChosenFault == 'Turn':
         ChosenNode = random.choice(SHM.SHM.nodes())
         ChosenTurn = random.choice(SHM.SHM.node[ChosenNode]['TurnsHealth'].keys())
-        SHM.BreakTurn(ChosenNode, ChosenTurn, True)
-    elif ChosenFault == 'PE':
+        return {ChosenNode: ChosenTurn}, FaultType
+    elif ChosenFault == 'Node':
         ChosenNode = random.choice(SHM.SHM.nodes())
-        SHM.BreakNode(ChosenNode, True)
-    elif ChosenFault == 'Age':
-        ChosenNode = random.choice(SHM.SHM.nodes())
-        RandomSpeedDown = random.choice([0.3, 0.25, 0.2, 0.15, 0.1, 0.05])
-        SHM.IntroduceAging(ChosenNode, RandomSpeedDown, True)
+        return ChosenNode, FaultType
+
 
 def GenerateFaultConfig (SHM):
     """
