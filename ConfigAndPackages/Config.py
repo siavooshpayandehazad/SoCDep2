@@ -13,7 +13,7 @@ LoGDirectory = "LOGS"
 #          TG  Config
 ################################################
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
-TG_Type = 'RandomIndependent'
+TG_Type = 'RandomDependent'
 # For Random TG_Type:
 NumberOfTasks = 10
 NumberOfEdges = 15
@@ -54,11 +54,17 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 # Available Turn Models : 'FULL_TurnModel', 'XY_TurnModel', 'WestFirst_TurnModel', 'NorthLast_TurnModel'
 UsedTurnModel = PackageFile.WestFirst_TurnModel
 RoutingFilePath = "User_Inputs/RoutingFile.txt"
+SetRoutingFromFile = False
 ################################################
 #          SHM  Config
 ################################################
 # Do not change if you have conventional 2D NoC
 TurnsHealth = PackageFile.TurnsHealth_2DNetwork
+if not SetRoutingFromFile:
+    for Turn in PackageFile.FULL_TurnModel:
+        if Turn not in UsedTurnModel:
+            if Turn in TurnsHealth.keys():
+                TurnsHealth[Turn] = False
 # ==========================
 # Number of Unreachable-Rectangles
 NumberOfRects = 5
@@ -95,7 +101,7 @@ ClusteringIteration = 1000
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch',
-Mapping_Function = 'MinMin'
+Mapping_Function = 'LocalSearch'
 LocalSearchIteration = 20
 IterativeLocalSearchIterations = 20
 

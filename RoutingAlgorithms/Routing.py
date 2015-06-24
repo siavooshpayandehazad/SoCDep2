@@ -181,14 +181,21 @@ def ReportTurnModel(TurnModel):
     return None
 
 
-def UpdateNoCRouteGraph(SystemHealthMap, NewEvent):
+def UpdateNoCRouteGraph(NoCRG, FromPort, ToPort, AddOrRemove):
     """
      we would like to eliminate the path or turn that is not working anymore...
-    :param SystemHealthMap: System Health Map
-    :param NewEvent: new fault that has happened...
-    :return:
+
     """
-    # ToDo: Updating NoCRouteGraph
+    if AddOrRemove == 'REMOVE':
+        if (FromPort, ToPort) in NoCRG.edges():
+            NoCRG.remove_edge(FromPort, ToPort)
+        else:
+            print "CONNECTION DIDNT EXIST IN ROUTE GRAPH"
+    if AddOrRemove == 'ADD':
+        if (FromPort, ToPort) in NoCRG.edges():
+            print "CONNECTION DIDNT EXIST IN ROUTE GRAPH"
+        else:
+            NoCRG.add_edge(FromPort, ToPort)
     return None
 
 

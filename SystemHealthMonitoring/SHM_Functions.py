@@ -2,6 +2,7 @@
 from ConfigAndPackages import Config
 import random
 import SHM_Reports
+from RoutingAlgorithms import Routing
 
 def ApplyInitialFaults(SHM):
         for BrokenLink in Config.ListOfBrokenLinks:
@@ -27,6 +28,8 @@ def RandomFaultGeneration(SHM):
     elif ChosenFault == 'Turn':
         ChosenNode = random.choice(SHM.SHM.nodes())
         ChosenTurn = random.choice(SHM.SHM.node[ChosenNode]['TurnsHealth'].keys())
+        while not ChosenTurn in Config.UsedTurnModel:
+            ChosenTurn = random.choice(SHM.SHM.node[ChosenNode]['TurnsHealth'].keys())
         return {ChosenNode: ChosenTurn}, FaultType
     elif ChosenFault == 'Node':
         ChosenNode = random.choice(SHM.SHM.nodes())
@@ -47,7 +50,7 @@ def GenerateFaultConfig (SHM):
             FaultConfig += "T" if SHM.SHM.node[node]['TurnsHealth'][Turn] else "F"
     return FaultConfig
 
-def ApplyFaultEvent(SHM, FaultLocation, FaultType):
+def ApplyFaultEvent(AG, SHM, NoCRG, FaultLocation, FaultType):
         SHM_Reports.ReportTheEvent(FaultLocation, FaultType)
         if type(FaultLocation) is tuple:      # its a Link fault
             if FaultType == 'T':    # Transient Fault
@@ -57,6 +60,10 @@ def ApplyFaultEvent(SHM, FaultLocation, FaultType):
                 else:
                     print "\033[33mSHM:: NOTE:\033[0mLINK ALREADY BROKEN"
             elif FaultType == 'P':   # Permanent Fault
+                Port = AG.edge[FaultLocation[0]][FaultLocation[1]]['Port']
+                FromPort = str(FaultLocation[0])+str(Port[0])+str('O')
+                ToPort = str(FaultLocation[1])+str(Port[1])+str('I')
+                Routing.UpdateNoCRouteGraph(NoCRG, FromPort, ToPort, 'REMOVE')
                 SHM.BreakLink(FaultLocation, True)
         elif type(FaultLocation) is dict:   # its a Turn fault
             if FaultType == 'T':    # Transient Fault
@@ -66,6 +73,9 @@ def ApplyFaultEvent(SHM, FaultLocation, FaultType):
                 else:
                     print "\033[33mSHM:: NOTE:\033[0mTURN ALREADY BROKEN"
             elif FaultType == 'P':   # Permanent Fault
+                FromPort = str(FaultLocation.keys()[0])+str(FaultLocation[FaultLocation.keys()[0]][0])+str('I')
+                ToPort = str(FaultLocation.keys()[0])+str(FaultLocation[FaultLocation.keys()[0]][2])+str('O')
+                Routing.UpdateNoCRouteGraph(NoCRG, FromPort, ToPort, 'REMOVE')
                 SHM.BreakTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]], True)
         else:           # its a Node fault
             if FaultType == 'T':    # Transient Fault

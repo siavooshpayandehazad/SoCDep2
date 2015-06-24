@@ -9,6 +9,7 @@ from Utilities import misc
 from Utilities import Logger
 from SystemHealthMonitoring import SHM_Functions
 import SystemInitialization
+from RoutingAlgorithms import Routing
 
 ProgramStartTime = time.time()
 ##############################
@@ -25,6 +26,7 @@ misc.DrawLogo()
 ####################################################################
 # Initialization of the system
 TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG = SystemInitialization.InitializeSystem(logging)
+
 
 # just to have a sense of how much time we are spending in each section
 print "==========================================="
@@ -53,7 +55,8 @@ def FaultEvent():
     # we generate some random fault to be inserted in the system
     FaultLocation, FaultType = SHM_Functions.RandomFaultGeneration(SHM)
     # here we actually insert the fault in the system
-    SHM_Functions.ApplyFaultEvent(SHM,FaultLocation, FaultType)
+    SHM_Functions.ApplyFaultEvent(AG, SHM, NoCRG, FaultLocation, FaultType)
+
 
 timer = threading.Timer(Config.MTBF, FaultEvent)
 timer.start()

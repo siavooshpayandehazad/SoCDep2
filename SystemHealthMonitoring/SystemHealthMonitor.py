@@ -5,6 +5,7 @@ import hashlib
 import copy
 from Mapper import Mapping_Functions
 import SHM_Reports,SHM_Functions
+from ConfigAndPackages import Config
 
 class SystemHealthMonitor:
     def __init__(self):
@@ -16,7 +17,11 @@ class SystemHealthMonitor:
         print "==========================================="
         print "PREPARING SYSTEM HEALTH MAP..."
         for nodes in ArchGraph.nodes():
-            self.SHM.add_node(nodes, TurnsHealth=copy.deepcopy(TurnsHealth), NodeHealth=True, NodeSpeed=100)
+            if Config.SetRoutingFromFile:
+                self.SHM.add_node(nodes, TurnsHealth=copy.deepcopy(TurnsHealth), NodeHealth=True, NodeSpeed=100)
+            else:
+                # Todo: in this case, we need to read turns health from file...
+                self.SHM.add_node(nodes, TurnsHealth=copy.deepcopy(TurnsHealth), NodeHealth=True, NodeSpeed=100)
         for link in ArchGraph.edges():
             self.SHM.add_edge(link[0], link[1], LinkHealth=True)
         print "SYSTEM HEALTH MAP CREATED..."

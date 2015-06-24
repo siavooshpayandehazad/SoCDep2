@@ -28,8 +28,11 @@ def InitializeSystem(logging):
     # SHM_Reports.Report_NoC_SystemHealthMap()
     # Here we are injecting initial faults of the system
     SHM_Functions.ApplyInitialFaults(SHM)
-    NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, Config.DebugInfo, Config.DebugDetails))
-    # NoCRG = Routing.GenerateNoCRouteGraphFromFile(AG, SHM, Config.RoutingFilePath, Config.DebugInfo, Config.DebugDetails)
+
+    if Config.SetRoutingFromFile:
+        NoCRG = Routing.GenerateNoCRouteGraphFromFile(AG, SHM, Config.RoutingFilePath, Config.DebugInfo, Config.DebugDetails)
+    else:
+        NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, Config.DebugInfo, Config.DebugDetails))
 
     # in case of partitioning, we have to route based on different Route-graphs
     if Config.EnablePartitioning:
