@@ -59,7 +59,6 @@ Some of the features:
 Libraries needed:
     * networkx:     https://networkx.github.io/
     * matplotlib:   http://matplotlib.org/
-    * Py-notify:    http://home.gna.org/py-notify/
 ===============================================================================
 How To generate RoutingFile.txt:
     This file is made to enable user to manually control routing algorithm

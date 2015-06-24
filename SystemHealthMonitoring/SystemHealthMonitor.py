@@ -93,36 +93,6 @@ class SystemHealthMonitor:
         return None
 
     ##################################################
-    def ApplyFaultEvent(self, FaultLocation, FaultType):
-        SHM_Reports.ReportTheEvent(FaultLocation, FaultType)
-        if type(FaultLocation) is tuple:      # its a Link fault
-            if FaultType == 'T':    # Transient Fault
-                if self.SHM.edge[FaultLocation[0]][FaultLocation[1]]['LinkHealth']:
-                    self.BreakLink(FaultLocation, True)
-                    self.RestoreBrokenLink(FaultLocation, True)
-                else:
-                    print "\033[33mSHM:: NOTE:\033[0mLINK ALREADY BROKEN"
-            elif FaultType == 'P':   # Permanent Fault
-                self.BreakLink(FaultLocation, True)
-        elif type(FaultLocation) is dict:   # its a Turn fault
-            if FaultType == 'T':    # Transient Fault
-                if self.SHM.node[FaultLocation.keys()[0]]['TurnsHealth'][FaultLocation[FaultLocation.keys()[0]]]:
-                    self.BreakTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]], True)
-                    self.RestoreBrokenTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]], True)
-                else:
-                    print "\033[33mSHM:: NOTE:\033[0mTURN ALREADY BROKEN"
-            elif FaultType == 'P':   # Permanent Fault
-                self.BreakTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]], True)
-        else:           # its a Node fault
-            if FaultType == 'T':    # Transient Fault
-                if self.SHM.node[FaultLocation]['NodeHealth']:
-                    self.BreakNode(FaultLocation, True)
-                    self.RestoreBrokenNode(FaultLocation, True)
-                else:
-                    print "\033[33mSHM:: NOTE:\033[0m NODE ALREADY BROKEN"
-            elif FaultType == 'P':   # Permanent Fault
-                self.BreakNode(FaultLocation, True)
-        return None
 
     # ToDO: To implement the classification algorithm
     # ToDo: To implement the partial mapping with distance driven cost function

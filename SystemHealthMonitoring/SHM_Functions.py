@@ -1,6 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 from ConfigAndPackages import Config
 import random
+import SHM_Reports
 
 def ApplyInitialFaults(SHM):
         for BrokenLink in Config.ListOfBrokenLinks:
@@ -46,3 +47,33 @@ def GenerateFaultConfig (SHM):
             FaultConfig += "T" if SHM.SHM.node[node]['TurnsHealth'][Turn] else "F"
     return FaultConfig
 
+def ApplyFaultEvent(SHM, FaultLocation, FaultType):
+        SHM_Reports.ReportTheEvent(FaultLocation, FaultType)
+        if type(FaultLocation) is tuple:      # its a Link fault
+            if FaultType == 'T':    # Transient Fault
+                if SHM.SHM.edge[FaultLocation[0]][FaultLocation[1]]['LinkHealth']:
+                    SHM.BreakLink(FaultLocation, True)
+                    SHM.RestoreBrokenLink(FaultLocation, True)
+                else:
+                    print "\033[33mSHM:: NOTE:\033[0mLINK ALREADY BROKEN"
+            elif FaultType == 'P':   # Permanent Fault
+                SHM.BreakLink(FaultLocation, True)
+        elif type(FaultLocation) is dict:   # its a Turn fault
+            if FaultType == 'T':    # Transient Fault
+                if SHM.SHM.node[FaultLocation.keys()[0]]['TurnsHealth'][FaultLocation[FaultLocation.keys()[0]]]:
+                    SHM.BreakTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]], True)
+                    SHM.RestoreBrokenTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]], True)
+                else:
+                    print "\033[33mSHM:: NOTE:\033[0mTURN ALREADY BROKEN"
+            elif FaultType == 'P':   # Permanent Fault
+                SHM.BreakTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]], True)
+        else:           # its a Node fault
+            if FaultType == 'T':    # Transient Fault
+                if SHM.SHM.node[FaultLocation]['NodeHealth']:
+                    SHM.BreakNode(FaultLocation, True)
+                    SHM.RestoreBrokenNode(FaultLocation, True)
+                else:
+                    print "\033[33mSHM:: NOTE:\033[0m NODE ALREADY BROKEN"
+            elif FaultType == 'P':   # Permanent Fault
+                SHM.BreakNode(FaultLocation, True)
+        return None

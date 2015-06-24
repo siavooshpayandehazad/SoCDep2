@@ -1,6 +1,5 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
-from notify.all import *
 import threading
 import sys, os, time
 import numpy
@@ -38,9 +37,6 @@ print "\033[92mTIME::\033[0m SYSTEM STARTS AT:", round(SystemStartingTime - Prog
 #                   Fault event handler
 #
 ####################################################################
-EventHandler = Signal()
-EventHandler.connect(SHM.ApplyFaultEvent)
-
 
 def FaultEvent():
     global timer
@@ -57,9 +53,7 @@ def FaultEvent():
     # we generate some random fault to be inserted in the system
     FaultLocation, FaultType = SHM_Functions.RandomFaultGeneration(SHM)
     # here we actually insert the fault in the system
-    EventHandler(FaultLocation, FaultType)
-
-
+    SHM_Functions.ApplyFaultEvent(SHM,FaultLocation, FaultType)
 
 timer = threading.Timer(Config.MTBF, FaultEvent)
 timer.start()
@@ -70,5 +64,4 @@ while True:
 
 timer.cancel()
 timer.join()
-EventHandler.disconnect(SHM.ApplyFaultEvent)
 logging.info('Logging finished...')
