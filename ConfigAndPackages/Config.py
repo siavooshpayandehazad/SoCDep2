@@ -13,7 +13,7 @@ LoGDirectory = "LOGS"
 #          TG  Config
 ################################################
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
-TG_Type = 'RandomDependent'
+TG_Type = 'RandomIndependent'
 # For Random TG_Type:
 NumberOfTasks = 10
 NumberOfEdges = 15
@@ -101,7 +101,7 @@ ClusteringIteration = 1000
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch',
-Mapping_Function = 'LocalSearch'
+Mapping_Function = 'MaxMin'
 LocalSearchIteration = 20
 IterativeLocalSearchIterations = 20
 

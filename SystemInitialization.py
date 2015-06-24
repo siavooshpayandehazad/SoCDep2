@@ -7,7 +7,7 @@ from Mapper import Mapping
 from Scheduler import Scheduling_Reports
 from SystemHealthMonitoring import SystemHealthMonitor, SHM_Reports, SHM_Functions
 from TaskGraphUtilities import Task_Graph_Reports,TG_Functions
-from RoutingAlgorithms import Routing,Calculate_Reachability,ReachabilityReports
+from RoutingAlgorithms import Routing,Calculate_Reachability,ReachabilityReports,RoutingGraph_Reports
 from ArchGraphUtilities import Arch_Graph_Reports,AG_Functions,AG_Test
 from Scheduler import TrafficTableGenerator
 
@@ -33,6 +33,8 @@ def InitializeSystem(logging):
         NoCRG = Routing.GenerateNoCRouteGraphFromFile(AG, SHM, Config.RoutingFilePath, Config.DebugInfo, Config.DebugDetails)
     else:
         NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, Config.DebugInfo, Config.DebugDetails))
+    # Some visualization...
+    RoutingGraph_Reports.DrawRG(NoCRG)
 
     # in case of partitioning, we have to route based on different Route-graphs
     if Config.EnablePartitioning:
@@ -53,7 +55,7 @@ def InitializeSystem(logging):
         AG = copy.deepcopy(BestAG)
         del BestTG, BestAG
         # SHM.AddCurrentMappingToMPM(TG)
-    # SHM.ReportMPM()
+
     print "==========================================="
     print "SYSTEM IS UP..."
     Scheduling_Reports.GenerateGanttCharts(TG, AG)

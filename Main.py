@@ -5,8 +5,8 @@ import sys, os, time
 import numpy
 import logging
 from ConfigAndPackages import Config
-from Utilities import misc
-from Utilities import Logger
+from Utilities import misc, Logger
+
 from SystemHealthMonitoring import SHM_Functions
 import SystemInitialization
 from RoutingAlgorithms import Routing
@@ -26,7 +26,6 @@ misc.DrawLogo()
 ####################################################################
 # Initialization of the system
 TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG = SystemInitialization.InitializeSystem(logging)
-
 
 # just to have a sense of how much time we are spending in each section
 print "==========================================="
@@ -69,4 +68,5 @@ while True:
 
 timer.cancel()
 timer.join()
+
 logging.info('Logging finished...')
