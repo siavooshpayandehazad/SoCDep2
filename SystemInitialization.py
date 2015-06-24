@@ -26,8 +26,6 @@ def InitializeSystem(logging):
     SHM = SystemHealthMonitor.SystemHealthMonitor()
     SHM.SetUp_NoC_SystemHealthMap(AG, Config.TurnsHealth)
     # SHM_Reports.Report_NoC_SystemHealthMap()
-    print "==========================================="
-    print "SYSTEM IS UP..."
     # Here we are injecting initial faults of the system
     SHM_Functions.ApplyInitialFaults(SHM)
     NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, Config.DebugInfo, Config.DebugDetails))
@@ -38,7 +36,13 @@ def InitializeSystem(logging):
         CriticalRG, NonCriticalRG = Calculate_Reachability.CalculateReachabilityWithRegions(AG,SHM)
         ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(AG)
     else:
+        # Reachability_Test.ReachabilityTest()
         CriticalRG, NonCriticalRG = None, None
+        Calculate_Reachability.CalculateReachability(AG, NoCRG)
+        Calculate_Reachability.OptimizeReachabilityRectangles(AG, Config.NumberOfRects)
+        # ReachabilityReports.ReportReachability(AG)
+        ReachabilityReports.ReportReachabilityInFile(AG, "ReachAbilityNodeReport")
+        ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(AG)
     ####################################################################
     BestTG, BestAG = Mapping.Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging)
     if BestAG is not None and BestTG is not None:
@@ -47,18 +51,10 @@ def InitializeSystem(logging):
         del BestTG, BestAG
         # SHM.AddCurrentMappingToMPM(TG)
     # SHM.ReportMPM()
-
+    print "==========================================="
+    print "SYSTEM IS UP..."
     Scheduling_Reports.GenerateGanttCharts(TG, AG)
     TrafficTableGenerator.GenerateNoximTrafficTable()
     TrafficTableGenerator.GenerateGSNoCTrafficTable(AG, TG)
-    """
-    Reachability_Test.ReachabilityTest()
-    Calculate_Reachability.CalculateReachability(AG, NoCRG)
-    ReachabilityReports.ReportReachability(AG)
-    ReachabilityReports.ReportReachabilityInFile(AG, "ReachAbilityNodeReport")
-    Calculate_Reachability.OptimizeReachabilityRectangles(AG, Config.NumberOfRects)
-    ReachabilityReports.ReportReachability(AG)
-    ReachabilityReports.ReportReachabilityInFile(AG, "ReachAbilityRectReport")
-    ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(AG)
-    """
-    return TG, AG, NoCRG, SHM, CriticalRG, NonCriticalRG
+
+    return TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG

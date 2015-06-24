@@ -112,7 +112,7 @@ MTBF = 2    # Mean time between failures in seconds
 ################################################
 #           Network Partitioning
 ################################################
-EnablePartitioning = True
+EnablePartitioning = False
 
 if EnablePartitioning:
     # Critical Region Nodes:
