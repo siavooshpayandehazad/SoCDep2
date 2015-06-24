@@ -3,6 +3,7 @@
 from notify.all import *
 import threading
 import sys, os, time
+import numpy
 import logging
 from ConfigAndPackages import Config
 from Utilities import misc
@@ -45,6 +46,9 @@ def FaultEvent():
     global timer
     TimeAfterSystemStart = round(time.time() - SystemStartingTime)
     # Should we reset the timer or the next fault falls out of the program run time?
+    # Todo: We need to make this occurrence of faults random... while keeping MTBF as mean value
+    # Todo: still should think about standard deviation for fault distribution
+    # print numpy.random.normal(Config.MTBF,0.1*Config.MTBF)
     if TimeAfterSystemStart + Config.MTBF <= Config.ProgramRunTime:
         # reset the timer
         timer = threading.Timer(Config.MTBF, FaultEvent)
