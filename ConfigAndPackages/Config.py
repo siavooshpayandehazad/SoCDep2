@@ -13,7 +13,7 @@ LoGDirectory = "LOGS"
 #          TG  Config
 ################################################
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
-TG_Type = 'RandomDependent'
+TG_Type = 'RandomIndependent'
 # For Random TG_Type:
 NumberOfTasks = 10
 NumberOfEdges = 15
@@ -101,7 +101,7 @@ ClusteringIteration = 1000
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch',
-Mapping_Function = 'LocalSearch'
+Mapping_Function = 'MinMin'
 LocalSearchIteration = 20
 IterativeLocalSearchIterations = 20
 
@@ -115,6 +115,7 @@ SlackCount = 2      # this is used for number of repetitions of the critical tas
 ################################################
 MTTF = 0    # Mean time to failure in seconds have not used MTTF yet...
 MTBF = 2    # Mean time between failures in seconds
+SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal distribution
 ################################################
 #           Network Partitioning
 ################################################

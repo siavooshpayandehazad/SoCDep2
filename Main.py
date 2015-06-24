@@ -42,23 +42,25 @@ print "\033[92mTIME::\033[0m SYSTEM STARTS AT:", round(SystemStartingTime - Prog
 
 def FaultEvent():
     global timer
-    TimeAfterSystemStart = round(time.time() - SystemStartingTime)
+    TimeAfterSystemStart = time.time() - SystemStartingTime
+    print "\033[92mTIME::\033[0m FAULT OCCURRED", "%.2f" % TimeAfterSystemStart, " SECONDS AFTER SYSTEM START..."
     # Should we reset the timer or the next fault falls out of the program run time?
-    # Todo: We need to make this occurrence of faults random... while keeping MTBF as mean value
-    # Todo: still should think about standard deviation for fault distribution
-    # print numpy.random.normal(Config.MTBF,0.1*Config.MTBF)
-    if TimeAfterSystemStart + Config.MTBF <= Config.ProgramRunTime:
+    TimeUntilNextFault = numpy.random.normal(Config.MTBF,Config.SD4MTBF)
+    if TimeAfterSystemStart + TimeUntilNextFault <= Config.ProgramRunTime:
+        print "TIME UNTIL NEXT FAULT:", "%.2f" % TimeUntilNextFault, "Sec"
         # reset the timer
-        timer = threading.Timer(Config.MTBF, FaultEvent)
+        timer = threading.Timer(TimeUntilNextFault, FaultEvent)
         timer.start()
-    print "\033[92mTIME::\033[0m", TimeAfterSystemStart, " AFTER SYSTEM START..."
+
     # we generate some random fault to be inserted in the system
+
     FaultLocation, FaultType = SHM_Functions.RandomFaultGeneration(SHM)
     # here we actually insert the fault in the system
     SHM_Functions.ApplyFaultEvent(AG, SHM, NoCRG, FaultLocation, FaultType)
 
-
-timer = threading.Timer(Config.MTBF, FaultEvent)
+TimeUntilNextFault = numpy.random.normal(Config.MTBF,Config.SD4MTBF)
+print "TIME UNTIL NEXT FAULT:", "%.2f" % TimeUntilNextFault, "Sec"
+timer = threading.Timer(TimeUntilNextFault, FaultEvent)
 timer.start()
 
 while True:
