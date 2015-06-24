@@ -2,7 +2,7 @@
 
 import networkx
 import hashlib
-import copy
+import copy, re
 from Mapper import Mapping_Functions
 import SHM_Reports,SHM_Functions
 from ConfigAndPackages import Config
@@ -16,12 +16,36 @@ class SystemHealthMonitor:
     def SetUp_NoC_SystemHealthMap(self, ArchGraph, TurnsHealth):
         print "==========================================="
         print "PREPARING SYSTEM HEALTH MAP..."
-        for nodes in ArchGraph.nodes():
-            if Config.SetRoutingFromFile:
-                self.SHM.add_node(nodes, TurnsHealth=copy.deepcopy(TurnsHealth), NodeHealth=True, NodeSpeed=100)
-            else:
-                # Todo: in this case, we need to read turns health from file...
-                self.SHM.add_node(nodes, TurnsHealth=copy.deepcopy(TurnsHealth), NodeHealth=True, NodeSpeed=100)
+        if not Config.SetRoutingFromFile:
+            for node in ArchGraph.nodes():
+                self.SHM.add_node(node, TurnsHealth=copy.deepcopy(TurnsHealth), NodeHealth=True, NodeSpeed=100)
+        else:
+            # Todo: in this case, we need to read turns health from file...
+            try:
+                RoutingFile = open(Config.RoutingFilePath, 'r')
+            except IOError:
+                print 'CAN NOT OPEN', Config.RoutingFilePath
+
+            while True:
+                line = RoutingFile.readline()
+                if "Ports" in line:
+                    Ports = RoutingFile.readline()
+                    PortList = Ports.split( )
+                    print "PortList", PortList
+                if "Node" in line:
+                    NodeID = int(re.search(r'\d+', line).group())
+                    NodeTurnsHealth = copy.deepcopy(TurnsHealth)
+                    line = RoutingFile.readline()
+                    TurnsList = line.split()
+                    for turn in NodeTurnsHealth.keys():
+                        if turn not in TurnsList:
+                            NodeTurnsHealth[turn] = False
+                    self.SHM.add_node(NodeID, TurnsHealth=copy.deepcopy(NodeTurnsHealth), NodeHealth=True, NodeSpeed=100)
+                if line == '':
+                    break
+            for node in ArchGraph.nodes():
+                if node not in self.SHM.nodes():
+                    self.SHM.add_node(node, TurnsHealth=copy.deepcopy(TurnsHealth), NodeHealth=True, NodeSpeed=100)
         for link in ArchGraph.edges():
             self.SHM.add_edge(link[0], link[1], LinkHealth=True)
         print "SYSTEM HEALTH MAP CREATED..."

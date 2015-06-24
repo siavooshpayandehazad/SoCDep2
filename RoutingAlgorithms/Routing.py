@@ -111,6 +111,7 @@ def GenerateNoCRouteGraphFromFile(AG, SystemHealthMap, RoutingFilePath, Report, 
         RoutingFile = open(RoutingFilePath, 'r')
     except IOError:
         print 'CAN NOT OPEN', RoutingFilePath
+    NodesCoveredInFile = []
     while True:
         line = RoutingFile.readline()
         if "Ports" in line:
@@ -119,6 +120,7 @@ def GenerateNoCRouteGraphFromFile(AG, SystemHealthMap, RoutingFilePath, Report, 
             if DetailedReport:print "PortList", PortList
         if "Node" in line:
             NodeID = int(re.search(r'\d+', line).group())
+            NodesCoveredInFile.append(NodeID)
             if DetailedReport:print "NodeID", NodeID
             if DetailedReport:print "GENERATING PORTS:"
             for port in PortList:
@@ -158,6 +160,28 @@ def GenerateNoCRouteGraphFromFile(AG, SystemHealthMap, RoutingFilePath, Report, 
             if DetailedReport:print "------------------------"
         if line == '':
             break
+    for node in AG.nodes():
+        if node not in NodesCoveredInFile:
+            if DetailedReport:print "GENERATING PORTS:"
+            for port in PortList:
+                if DetailedReport:print "\t", str(node)+str(port)+str('I'), "&", str(node)+str(port)+str('O')
+                NoCRG.add_node(str(node)+str(port)+str('I'), Node=node, Port=port, Dir='I')
+                NoCRG.add_node(str(node)+str(port)+str('O'), Node=node, Port=port, Dir='O')
+            if DetailedReport:print "CONNECTING LOCAL PATHS:"
+            for port in PortList:       # connect local to every output port
+                if port != 'L':
+                    NoCRG.add_edge(str(node)+str('L')+str('I'), str(node)+str(port)+str('O'))
+                    if DetailedReport:print "\t", 'L', "--->", port
+                    NoCRG.add_edge(str(node)+str(port)+str('I'), str(node)+str('L')+str('O'))
+                    if DetailedReport:print "\t", port, "--->", 'L'
+            if DetailedReport:print "CONNECTING DIRECT PATHS:"
+            for i in range(0,int(len(PortList))):   # connect direct paths
+                if PortList[i] != 'L':
+                    if DetailedReport:print "\t", PortList[i], "--->", PortList[len(PortList)-1-i]
+                    inID= str(node)+str(PortList[i])+str('I')
+                    outID=str(node)+str(PortList[len(PortList)-1-i])+str('O')
+                    NoCRG.add_edge(inID, outID)
+
     for link in AG.edges():     # here we should connect connections between routers
         Port = AG.edge[link[0]][link[1]]['Port']
         if SystemHealthMap.SHM[link[0]][link[1]]['LinkHealth']:
