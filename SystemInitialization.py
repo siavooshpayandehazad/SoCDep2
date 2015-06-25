@@ -55,8 +55,8 @@ def InitializeSystem(logging):
         AG = copy.deepcopy(BestAG)
         del BestTG, BestAG
         # SHM.AddCurrentMappingToMPM(TG)
-    Mapping_Reports.DrawMappingDistribution(AG)
-    Mapping_Reports.DrawMapping(AG)
+    Mapping_Reports.DrawMappingDistribution(AG, SHM)
+    Mapping_Reports.DrawMapping(TG, AG, SHM)
     print "==========================================="
     print "SYSTEM IS UP..."
     Scheduling_Reports.GenerateGanttCharts(TG, AG)

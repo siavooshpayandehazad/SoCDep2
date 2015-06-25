@@ -119,7 +119,7 @@ SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal dist
 ################################################
 #           Network Partitioning
 ################################################
-EnablePartitioning = False
+EnablePartitioning = True
 
 if EnablePartitioning:
     # Critical Region Nodes:
