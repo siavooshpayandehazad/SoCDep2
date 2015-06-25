@@ -26,6 +26,7 @@ def Min_Min_Mapping (TG,AG,NoCRG,SHM,logging):
             print "\t\tMAPPING TASK",TaskToBeMapped,"WITH RELEASE:",TG.node[TaskToBeMapped]['Release'], "---> NODE:",ChosenNode
             TG.node[TaskToBeMapped]['Node'] = ChosenNode
             AG.node[ChosenNode]['MappedTasks'].append(TaskToBeMapped)
+            AG.node[ChosenNode]['Utilization'] += TG.node[TaskToBeMapped]['WCET']
             Scheduling_Functions.Add_TG_TaskToNode(TG,AG,SHM,TaskToBeMapped,ChosenNode,False)
         if len(ShortestTasks) == 0:
             ShortestTasks = Mapping_Functions.FindUnMappedTaskWithSmallestWCET(TG,logging)
@@ -59,6 +60,7 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
                 print "\tMAPPING TASK",TaskToBeMapped,"WITH RELEASE:",TG.node[TaskToBeMapped]['Release'], "---> NODE:",ChosenNode
             TG.node[TaskToBeMapped]['Node'] = ChosenNode
             AG.node[ChosenNode]['MappedTasks'].append(TaskToBeMapped)
+            AG.node[ChosenNode]['Utilization'] += TG.node[TaskToBeMapped]['WCET']
             Scheduling_Functions.Add_TG_TaskToNode(TG,AG,SHM,TaskToBeMapped,ChosenNode,False)
         if len(LongestTasks) == 0:
             LongestTasks = Mapping_Functions.FindUnMappedTaskWithBiggestWCET(TG,logging)
@@ -76,6 +78,7 @@ def MinExecutionTime(TG,AG,SHM,logging):
         ChosenNode=random.choice(Mapping_Functions.FindFastestNodes(AG,SHM,TaskToBeMapped))
         TG.node[TaskToBeMapped]['Node'] = ChosenNode
         AG.node[ChosenNode]['MappedTasks'].append(TaskToBeMapped)
+        AG.node[ChosenNode]['Utilization'] += TG.node[TaskToBeMapped]['WCET']
         Scheduling_Functions.Add_TG_TaskToNode(TG,AG,SHM,TaskToBeMapped,ChosenNode,False)
         print "\tTASK",TaskToBeMapped,"MAPPED ON NODE:",ChosenNode
     print "MIN EXECUTION TIME MAPPING FINISHED..."
@@ -92,6 +95,7 @@ def MinimumCompletionTime(TG,AG,SHM,logging):
         ChosenNode=random.choice(Mapping_Functions.FindNodeWithSmallestCompletionTime(AG,TG,SHM,TaskToBeMapped))
         TG.node[TaskToBeMapped]['Node'] = ChosenNode
         AG.node[ChosenNode]['MappedTasks'].append(TaskToBeMapped)
+        AG.node[ChosenNode]['Utilization'] += TG.node[TaskToBeMapped]['WCET']
         Scheduling_Functions.Add_TG_TaskToNode(TG,AG,SHM,TaskToBeMapped,ChosenNode,False)
         print "\tTASK",TaskToBeMapped,"MAPPED ON NODE:",ChosenNode
     print "MIN COMPLETION TIME MAPPING FINISHED..."

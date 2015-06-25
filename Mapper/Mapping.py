@@ -4,7 +4,7 @@ import copy
 
 from ConfigAndPackages import Config
 import Scheduler
-import Mapping_Functions
+import Mapping_Functions,Mapping_Reports
 from Clusterer import Clustering, ClusteringReports
 from Mapping_Heuristics import SimpleGreedy,Local_Search
 from Scheduler import Scheduler,Scheduling_Reports
@@ -54,7 +54,7 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
             ClusteringReports.ReportCTG(CTG, "CTG_PostOpt.png")
             # Mapping CTG on AG
             if Mapping_Functions.MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, True, logging):
-                Mapping_Functions.ReportMapping(AG, logging)
+                Mapping_Reports.ReportMapping(AG, logging)
                 # Schedule all tasks
                 Scheduler.ScheduleAll(TG, AG, SHM, Config.DebugInfo, Config.DebugDetails)
                 Scheduling_Reports.ReportMappedTasks(AG, logging)
@@ -84,7 +84,7 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 Mapping_Functions.CostFunction(TG, AG, SHM, True)
                 return TG, AG
             else:
-                Mapping_Functions.ReportMapping(AG, logging)
+                Mapping_Reports.ReportMapping(AG, logging)
                 print "==========================================="
                 return None, None
         else :

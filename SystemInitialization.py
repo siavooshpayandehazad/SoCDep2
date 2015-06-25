@@ -3,7 +3,7 @@ __author__ = 'siavoosh'
 import copy
 
 from ConfigAndPackages import Config
-from Mapper import Mapping
+from Mapper import Mapping, Mapping_Reports
 from Scheduler import Scheduling_Reports
 from SystemHealthMonitoring import SystemHealthMonitor, SHM_Reports, SHM_Functions
 from TaskGraphUtilities import Task_Graph_Reports,TG_Functions
@@ -55,7 +55,8 @@ def InitializeSystem(logging):
         AG = copy.deepcopy(BestAG)
         del BestTG, BestAG
         # SHM.AddCurrentMappingToMPM(TG)
-
+    Mapping_Reports.DrawMappingDistribution(AG)
+    Mapping_Reports.DrawMapping(AG)
     print "==========================================="
     print "SYSTEM IS UP..."
     Scheduling_Reports.GenerateGanttCharts(TG, AG)

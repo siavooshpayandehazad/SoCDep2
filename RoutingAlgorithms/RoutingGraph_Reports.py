@@ -17,10 +17,10 @@ def DrawRG (RoutingGraph):
         circle1 = plt.Circle((Location[0]*100,Location[1]*100),radius=35,color='#8ABDFF',fill=False)
         plt.gca().add_patch(circle1)
 
-        circle2 = plt.Circle((Location[0]*100 + 45 ,Location[1]*100 - 50),radius=10,color='#FF878B',fill=False)
+        circle2 = plt.Circle((Location[0]*100 + 45, Location[1]*100 - 50),radius=10,color='#FF878B',fill=False)
         plt.gca().add_patch(circle2)
 
-        plt.text(Location[0]*100 - 30 ,Location[1]*100 + 30, str(Node), fontsize=15)
+        plt.text(Location[0]*100 - 30, Location[1]*100 + 30, str(Node), fontsize=15)
 
         OffsetX = 0
         OffsetY = 0
