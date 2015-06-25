@@ -73,7 +73,7 @@ def DrawMapping(AG):
             g = random.randrange(0,255)
             b = random.randrange(0,255)
             color = '#%02X%02X%02X' % (r,g,b)
-            circle2 = plt.Circle((Location[0]/XSize+OffsetX,Location[1]/YSize+OffsetY),radius=0.007,color=color)
+            circle2 = plt.Circle((Location[0]/XSize+OffsetX,Location[1]/YSize+OffsetY),radius=0.01,color=color)
             plt.gca().add_patch(circle2)
 
     fig.text(0.25, 0.03,'Mapping visualization for network nodes', fontsize=35)
