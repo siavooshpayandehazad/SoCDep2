@@ -185,12 +185,7 @@ def GenerateTG():
     else:
         raise ValueError('TG TYPE DOESNT EXIST...!!!')
 
-def CheckAcyclic(TG,logging):
-    if not networkx.is_directed_acyclic_graph(TG):
-        raise ValueError('TASK GRAPH HAS CYCLES..!!!')
-    else:
-        logging.info("TG IS AN ACYCLIC DIRECTED GRAPH... ALL IS GOOD...")
-    return None
+
 ########################################################
 
 def CalculateMaxDistance(TG):

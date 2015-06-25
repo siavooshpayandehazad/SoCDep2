@@ -16,7 +16,7 @@ def GenerateNoCRouteGraph(AG, SystemHealthMap, TurnModel, Report, DetailedReport
     :return: RouteGraph
     """
 
-    # ACKNOWLEDGEMENT:: The Routing Graph is based on the idea from Thilo Kogge's Master Thesis
+    # ACKNOWLEDGEMENT:: The Routing Graph is based on the idea from Thilo Kogge's Bachelor's Thesis
 
     # all the links that go inside the router are called in
     #

@@ -6,9 +6,9 @@ from ConfigAndPackages import Config
 from Mapper import Mapping, Mapping_Reports
 from Scheduler import Scheduling_Reports
 from SystemHealthMonitoring import SystemHealthMonitor, SHM_Reports, SHM_Functions
-from TaskGraphUtilities import Task_Graph_Reports,TG_Functions
-from RoutingAlgorithms import Routing,Calculate_Reachability,ReachabilityReports,RoutingGraph_Reports
-from ArchGraphUtilities import Arch_Graph_Reports,AG_Functions,AG_Test
+from TaskGraphUtilities import Task_Graph_Reports, TG_Functions, TG_Test
+from RoutingAlgorithms import Routing, Calculate_Reachability, ReachabilityReports, RoutingGraph_Reports
+from ArchGraphUtilities import Arch_Graph_Reports, AG_Functions, AG_Test
 from Scheduler import TrafficTableGenerator
 
 
@@ -16,7 +16,7 @@ def InitializeSystem(logging):
     TG = copy.deepcopy(TG_Functions.GenerateTG())
     Task_Graph_Reports.ReportTaskGraph(TG, logging)
     Task_Graph_Reports.DrawTaskGraph(TG)
-    TG_Functions.CheckAcyclic(TG, logging)
+    TG_Test.CheckAcyclic(TG, logging)
     ####################################################################
     AG = copy.deepcopy(AG_Functions.GenerateAG(logging))
     AG_Functions.UpdateAGRegions(AG)
