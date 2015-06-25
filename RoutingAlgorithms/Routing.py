@@ -208,7 +208,6 @@ def ReportTurnModel(TurnModel):
 def UpdateNoCRouteGraph(NoCRG, FromPort, ToPort, AddOrRemove):
     """
      we would like to eliminate the path or turn that is not working anymore...
-
     """
     print "ROUTING GRAPH BEING UPDATED..."
     if AddOrRemove == 'REMOVE':

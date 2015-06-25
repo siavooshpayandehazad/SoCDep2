@@ -9,7 +9,7 @@ def GenerateManualAG(PE_List, AG_Edge_List, AG_Edge_Port_List):
     print "PREPARING AN ARCHITECTURE GRAPH (AG)..."
     AG = networkx.DiGraph()
     for PE in PE_List:
-        AG.add_node(PE, MappedTasks=[], Scheduling={}, Utilization=0, Speed=100, Unreachable={}, Region = 'L')
+        AG.add_node(PE, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region = 'L')
     for i in range(0, len(AG_Edge_List)):
         EDGE = AG_Edge_List[i]
         AG.add_edge(EDGE[0], EDGE[1], Port=AG_Edge_Port_List[i], MappedTasks=[], Scheduling={})
@@ -45,7 +45,7 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
             pass
     if Topology == '2DTorus':
         for i in range(0, SizeX*SizeY):
-            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Speed=100, Unreachable={}, Region = 'N')
+            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region = 'N')
         for i in range(0, SizeX):
             logging.info("CONNECTING  "+str(i)+" TO "+str((SizeY-1)*SizeX+i))
             logging.info("CONNECTING  "+str((SizeY-1)*SizeX+i)+" TO "+str(i))
@@ -70,7 +70,7 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
     ##############################################################
     if Topology == '2DMesh':
         for i in range(0, SizeX*SizeY):
-            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Speed=100, Unreachable={}, Region = 'N')
+            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region = 'N')
         for j in range(0, SizeY):
             for i in range(0, SizeX-1):
                 logging.info("CONNECTING  "+str(j*SizeX+i)+" TO "+str(j*SizeX+i+1))
@@ -86,7 +86,7 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
     ##############################################################
     elif Topology == '2DRing':
         for i in range(0, SizeX*SizeY):
-            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Speed=100, Unreachable={}, Region = 'N')
+            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region = 'N')
         for j in range(0, SizeY):
             logging.info("CONNECTING  "+str(j*SizeX)+" TO "+str(j*SizeX+SizeX-1))
             logging.info("CONNECTING  "+str(j*SizeX+SizeX-1)+" TO "+str(j*SizeX))
@@ -100,7 +100,7 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
     ##############################################################
     elif Topology == '2DLine':
         for i in range(0, SizeX*SizeY):
-            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Speed=100, Unreachable={}, Region = 'N')
+            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region = 'N')
         for j in range(0, SizeY):
             for i in range(0, SizeX-1):
                 logging.info("CONNECTING  "+str(j*SizeX+i)+" TO "+str(j*SizeX+i+1))

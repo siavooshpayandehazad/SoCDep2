@@ -105,7 +105,6 @@ def DrawMapping(TG, AG, SHM):
             ColorList.append(color)
             POS[task]=(Location[0]/XSize+OffsetX, Location[1]/YSize+OffsetY)
 
-
     networkx.draw(TG, POS, with_labels=True, node_size=700, node_color=ColorList, width=0, alpha = 0.5)
     fig.text(0.25, 0.02, 'Mapping visualization for network nodes', fontsize=35)
     fig.savefig("GraphDrawings/Mapping.png")

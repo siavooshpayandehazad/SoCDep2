@@ -71,7 +71,6 @@ def DrawRG (RoutingGraph):
 
         POS[node] = [Location[0]*100+OffsetX,Location[1]*100+OffsetY]
 
-
     networkx.draw(RoutingGraph,POS,with_labels=False,arrows=False,node_size=30,node_color=ColorList)
 
     plt.savefig("GraphDrawings/RG.png")
