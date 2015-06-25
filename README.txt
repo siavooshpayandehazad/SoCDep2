@@ -26,9 +26,7 @@ THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME DEPENDABILITY
 MECHANISMS ON DIFFERENT ARCHITECTURES....
 Copyright (C) 2015 Siavoosh Payandeh Azad
 ===============================================================================
-Libraries needed:
-    * networkx:     https://networkx.github.io/
-    * matplotlib:   http://matplotlib.org/
+                FOR DOCUMENTATIONS PLEASE REFER TO WIKI!
 ===============================================================================
 Project Directory Map:
 
