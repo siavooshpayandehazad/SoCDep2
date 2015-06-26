@@ -129,7 +129,8 @@ ToDo:
       really cool. Something like this maybe:
       https://soundcloud.com/eric-skiff/hhavok-intro
 
-    - Implement Memory Usage Profiler (want to make sure if we have memory leak)
+    - Implement Memory Usage Profiler (want to make sure if we have
+      memory leak)
 
     - Can we exploit the idea of repetition in TG during scheduling?
 
@@ -137,7 +138,3 @@ ToDo:
       fault that has occurred...
 
     - Adding color bar for mapping graphs
-
-    - Automatic Generation of fault configuration for partitioning, specially
-      the case of covering actual faults in virtually broken links... this is very
-      serious...
