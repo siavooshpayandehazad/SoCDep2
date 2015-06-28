@@ -138,3 +138,15 @@ ToDo:
       fault that has occurred...
 
     - Adding color bar for mapping graphs
+
+    - Visualizing transient faults in scheduling gantt charts
+
+    - Adding support for preemption: if we have T1 and T2 then with preemption
+      T2 can interrupt T1 and execution would maybe T11->T2->T12
+        - we need to write a function that breaks tasks into parts...
+        - we would not have preemption in communication tasks
+
+    - we need to have a deadline for the whole task graph
+
+    - we need to add 0 weight communication between the tasks just to stablish
+      precedence without data dependence. 
