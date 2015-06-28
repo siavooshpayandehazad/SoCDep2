@@ -23,6 +23,10 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
     """
     Takes a generic topology: 2DTorus, 2DMesh, 2DLine, 2DRing etc. and returns AG
     :param Topology: a string with topology name
+    :SizeX: size of network in X dimension
+    :SizeY: size of network in Y dimension
+    :SizeZ: size of network in Z dimension
+    :logging: logging file
     :return: AG
     """
     SupportedTopologies = ['2DSpidergon', '2DTorus', '2DMesh', '2DRing', '2DLine']

@@ -149,4 +149,14 @@ ToDo:
     - we need to have a deadline for the whole task graph
 
     - we need to add 0 weight communication between the tasks just to stablish
-      precedence without data dependence. 
+      precedence without data dependence.
+
+    --------------------------------------------------
+    List of functions without DocString:
+
+    ArchGraphUtilities/AG_Functions: GenerateManualAG
+    ArchGraphUtilities/AG_Functions: UpdateAGRegions
+    ArchGraphUtilities/AG_Functions: ReturnNodeNumber
+
+    --------------------------------------------------
+    List of functions without Test:
