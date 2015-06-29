@@ -94,7 +94,7 @@ def DrawMapping(TG, AG, SHM):
             TaskCount += 1
             OffsetX += 0.03
             if TaskCount == 5:
-                TaskCount = 0
+                TaskCount = 1
                 OffsetX = 0.03
                 OffsetY += 0.03
             random.seed(task)
@@ -119,7 +119,11 @@ def VizMappingOpt(CostFileName):
     print "==========================================="
     print "GENERATING LOCAL SEARCH OPTIMIZATION VISUALIZATIONS..."
 
-    MappingCostFile = open('Generated_Files/'+CostFileName+'.txt','r')
+    try:
+        MappingCostFile = open('Generated_Files/'+CostFileName+'.txt','r')
+    except IOError:
+        print 'CAN NOT OPEN', CostFileName+'.txt'
+
     Cost=[]
     line = MappingCostFile.readline()
     Cost.append(float(line))
