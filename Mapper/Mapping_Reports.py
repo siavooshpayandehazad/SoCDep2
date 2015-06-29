@@ -110,3 +110,26 @@ def DrawMapping(TG, AG, SHM):
     fig.savefig("GraphDrawings/Mapping.png")
     fig.clf()
     return None
+
+def VizLocalSearchOpt():
+    """
+    Visualizes the cost of solutions during local search mapping optimization process
+    :return: None
+    """
+    print "==========================================="
+    print "GENERATING LOCAL SEARCH OPTIMIZATION VISUALIZATIONS..."
+
+    MappingCostFile = open('Generated_Files/LocalSearchMappingCost.txt','r')
+    Cost=[]
+    line = MappingCostFile.readline()
+    Cost.append(float(line))
+    while line != "":
+        Cost.append(float(line))
+        line = MappingCostFile.readline()
+    SolutionNum =  range(0,len(Cost))
+    MappingCostFile.close()
+
+    plt.plot(SolutionNum, Cost)
+    plt.savefig("GraphDrawings/Mapping_LocalSearch_Opt_Process.png")
+    plt.clf()
+    return None

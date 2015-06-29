@@ -43,7 +43,7 @@ def VizClusteringOpt():
     while line != "":
         Cost.append(float(line))
         line = ClusteringCostFile.readline()
-    SolutionNum =  range(0,len(Cost))
+    SolutionNum = range(0,len(Cost))
     ClusteringCostFile.close()
 
     plt.plot(SolutionNum, Cost)

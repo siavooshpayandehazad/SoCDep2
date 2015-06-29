@@ -69,6 +69,7 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                     TG = copy.deepcopy(BestTG)
                     AG = copy.deepcopy(BestAG)
                     del BestTG,BestCTG,BestAG
+                    Mapping_Reports.VizLocalSearchOpt()
                 elif Config.Mapping_Function == 'IterativeLocalSearch':
                     (BestTG, BestCTG, BestAG) = Local_Search.OptimizeMappingIterativeLocalSearch(TG, CTG, AG, NoCRG,
                                                                                                  CriticalRG,

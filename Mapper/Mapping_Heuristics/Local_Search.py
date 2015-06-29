@@ -10,11 +10,14 @@ from ConfigAndPackages import Config
 def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, IterationNum,Report,DetailedReport,logging):
     if Report:print "==========================================="
     if Report:print "STARTING MAPPING OPTIMIZATION..."
+    MappingCostFile = open('Generated_Files/LocalSearchMappingCost.txt','w')
+
     BestTG=copy.deepcopy(TG)
     BestAG=copy.deepcopy(AG)
     BestCTG=copy.deepcopy(CTG)
     BestCost=Mapping_Functions.CostFunction(TG,AG,SHM,Report)
     StartingCost=BestCost
+    MappingCostFile.write(str(BestCost)+"\n")
 
     for Iteration in range(0,IterationNum):
         if DetailedReport:print "\tITERATION:",Iteration
@@ -58,6 +61,7 @@ def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SH
         Scheduling_Functions.ClearScheduling(AG,TG)
         Scheduler.ScheduleAll(TG,AG,SHM,False,DetailedReport)
         CurrentCost=Mapping_Functions.CostFunction(TG,AG,SHM,DetailedReport)
+        MappingCostFile.write(str(CurrentCost)+"\n")
         if CurrentCost <= BestCost:
             if CurrentCost < BestCost:
                 if Report:print "\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:",CurrentCost , "\t ITERATION:",Iteration
@@ -69,6 +73,7 @@ def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SH
             TG=copy.deepcopy(BestTG)
             AG=copy.deepcopy(BestAG)
             CTG=copy.deepcopy(BestCTG)
+    MappingCostFile.close()
     if Report:print "-------------------------------------"
     if Report:print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost,"\tAFTER",IterationNum,"ITERATIONS"
     if Report:print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost),"%"
@@ -79,12 +84,14 @@ def OptimizeMappingIterativeLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriti
                                         SubIteration, Report, DetailedReport,logging):
     if Report:print "==========================================="
     if Report:print "STARTING MAPPING OPTIMIZATION...USING ITERATIVE LOCAL SEARCH..."
+
     BestTG=copy.deepcopy(TG)
     BestAG=copy.deepcopy(AG)
     BestCTG=copy.deepcopy(CTG)
     BestCost=Mapping_Functions.CostFunction(TG,AG,SHM,False)
     StartingCost = BestCost
     if Report:print "INITIAL COST:",StartingCost
+
     for Iteration in range(0,IterationNum):
         if DetailedReport:print "\tITERATION:",Iteration
         (CurrentTG,CurrentCTG,CurrentAG) = OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG, CriticalRG, NonCriticalRG,
@@ -121,6 +128,7 @@ def OptimizeMappingIterativeLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriti
             if Report:print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost
             if Report:print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost),"%"
             return (BestTG,BestCTG,BestAG)
+
     if Report:print "-------------------------------------"
     if Report:print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost
     if Report:print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost),"%"
