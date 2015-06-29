@@ -61,15 +61,17 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 Scheduling_Reports.ReportMappedTasks(AG, logging)
                 Mapping_Functions.CostFunction(TG, AG, SHM, Config.DebugInfo)
                 if Config.Mapping_Function == 'LocalSearch':
+                    MappingCostFile = open('Generated_Files/LocalSearchMappingCost.txt','w')
+                    MappingCostFile.close()
                     (BestTG, BestCTG, BestAG) = Local_Search.OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG,
                                                                                         NonCriticalRG, SHM,
                                                                                         Config.LocalSearchIteration,
                                                                                         Config.DebugInfo,
-                                                                                        Config.DebugDetails, logging)
+                                                                                        Config.DebugDetails,logging,
+                                                                                        "LocalSearchMappingCost")
                     TG = copy.deepcopy(BestTG)
                     AG = copy.deepcopy(BestAG)
                     del BestTG,BestCTG,BestAG
-                    Mapping_Reports.VizLocalSearchOpt()
                 elif Config.Mapping_Function == 'IterativeLocalSearch':
                     (BestTG, BestCTG, BestAG) = Local_Search.OptimizeMappingIterativeLocalSearch(TG, CTG, AG, NoCRG,
                                                                                                  CriticalRG,
@@ -82,6 +84,7 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                     TG = copy.deepcopy(BestTG)
                     AG = copy.deepcopy(BestAG)
                     del BestTG, BestCTG, BestAG
+                Mapping_Reports.VizMappingOpt('LocalSearchMappingCost')
                 Scheduling_Reports.ReportMappedTasks(AG, logging)
                 Mapping_Functions.CostFunction(TG, AG, SHM, True)
                 return TG, AG

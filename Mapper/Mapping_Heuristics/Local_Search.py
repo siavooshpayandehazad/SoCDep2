@@ -7,10 +7,11 @@ from Mapper import Mapping_Functions
 from ConfigAndPackages import Config
 
 
-def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, IterationNum,Report,DetailedReport,logging):
+def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
+                               IterationNum,Report,DetailedReport,logging,CostDataFile):
     if Report:print "==========================================="
     if Report:print "STARTING MAPPING OPTIMIZATION..."
-    MappingCostFile = open('Generated_Files/LocalSearchMappingCost.txt','w')
+    MappingCostFile = open('Generated_Files/'+CostDataFile+'.txt','a')
 
     BestTG=copy.deepcopy(TG)
     BestAG=copy.deepcopy(AG)
@@ -92,12 +93,14 @@ def OptimizeMappingIterativeLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriti
     BestCost=Mapping_Functions.CostFunction(TG,AG,SHM,False)
     StartingCost = BestCost
     if Report:print "INITIAL COST:",StartingCost
-
+    MappingCostFile = open('Generated_Files/LocalSearchMappingCost.txt','w')
+    MappingCostFile.close()
     for Iteration in range(0,IterationNum):
         if DetailedReport:print "\tITERATION:",Iteration
         (CurrentTG,CurrentCTG,CurrentAG) = OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG, CriticalRG, NonCriticalRG,
                                                                       SHM,SubIteration,
-                                                                      False,DetailedReport,logging)
+                                                                      False,DetailedReport,logging,
+                                                                      "LocalSearchMappingCost")
         if CurrentTG is not False:
             CurrentCost= Mapping_Functions.CostFunction(CurrentTG,CurrentAG,SHM,False)
             if CurrentCost <= BestCost:
