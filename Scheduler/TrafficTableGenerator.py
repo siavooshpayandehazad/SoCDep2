@@ -69,4 +69,5 @@ def GenerateGSNoCTrafficTable (AG, TG):
                         StringToWrite += str(Edge[0]) +"\t"+ str(Edge[1]) + "\t"
                         StringToWrite += str(TG.node[Edge[0]]['Node']) + "\t" + str(TG.node[Edge[1]]['Node'])
                         TrafficTableFile.write(StringToWrite+"\n")
+    TrafficTableFile.close()
     return None

@@ -15,7 +15,7 @@ def TaskClusterGeneration(NumberOfClusters):
     Generates a clustered task graph without any edges or tasks assigned to clusters.
     the number of clusters should be the same as the number of nodes in Architecture graph.
     :param NumberOfClusters: Number of clusters to be generated
-    :return:
+    :return: Empty Clustered Task Graph
     """
     print "==========================================="
     print  "PREPARING FOR CLUSTERING THE TASK GRAPH..."
@@ -32,7 +32,7 @@ def InitialClustering(TG, CTG):
     Randomly assign the tasks to clusters to make the initial solution for optimization...
     :param TG: Task Graph
     :param CTG: Clustered Task Graph
-    :return: None
+    :return: True if successful, False otherwise
     """
     print "==========================================="
     print "STARTING INITIAL CLUSTERING..."
@@ -59,15 +59,18 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter):
     :param NumberOfIter: Number of iterations for local search
     :return: best answer (CTG) found by the search
     """
+    ClusteringCostFile = open('Generated_Files/ClusteringCost.txt','w')
     print "==========================================="
     print "STARTING LOCAL SEARCH OPTIMIZATION FOR CTG..."
     Cost=CostFunction(CTG)
     StartingCost = Cost
+    ClusteringCostFile.write(str(Cost)+"\n")
     BestSolution = copy.deepcopy(CTG)
     BestTaskGraph = copy.deepcopy(TG)
     print "\tINITIAL COST:", Cost
     # choose a random task from TG
     for i in range(0,NumberOfIter):
+
         # print "\tITERATION:",i
         # DoubleCheckCTG(TG,CTG)
         RandomTask = random.choice(TG.nodes())
@@ -89,6 +92,7 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter):
             #print "TASK", RandomTask, "MOVED TO CLUSTER", RandomCluster, "RESULTS IN UTILIZATION:", \
             #    CTG.node[RandomCluster]['Utilization'] + TG.node[RandomTask]['WCET']
         NewCost = CostFunction(CTG)
+        ClusteringCostFile.write(str(NewCost)+"\n")
         if NewCost <= Cost:
             if NewCost < Cost:
                 print "\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:\t",NewCost, "\t\tIteration #:",i
@@ -98,6 +102,7 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter):
         else:
             CTG = copy.deepcopy(BestSolution)
             TG = copy.deepcopy(BestTaskGraph)
+    ClusteringCostFile.close()
     DeleteEmptyClusters(BestSolution)
     # DoubleCheckCTG(BestTaskGraph,BestSolution)
     print "-------------------------------------"

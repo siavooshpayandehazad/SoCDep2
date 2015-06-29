@@ -52,6 +52,7 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
             del BestClustering, BestTaskGraph
             #Clustering_Test.DoubleCheckCTG(TG, CTG)
             ClusteringReports.ReportCTG(CTG, "CTG_PostOpt.png")
+            ClusteringReports.VizClusteringOpt()
             # Mapping CTG on AG
             if Mapping_Functions.MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, True, logging):
                 Mapping_Reports.ReportMapping(AG, logging)

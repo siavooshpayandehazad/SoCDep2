@@ -26,3 +26,27 @@ def ReportCTG(CTG, filename):
     plt.clf()
     print "GRAPH DRAWINGS DONE, CHECK \"GraphDrawings/"+filename+"\""
     return None
+
+
+def VizClusteringOpt():
+    """
+    Visualizes the cost of solutions during clustering optimization process
+    :return: None
+    """
+    print "==========================================="
+    print "GENERATING CLUSTERING OPTIMIZATION VISUALIZATIONS..."
+
+    ClusteringCostFile = open('Generated_Files/ClusteringCost.txt','r')
+    Cost=[]
+    line = ClusteringCostFile.readline()
+    Cost.append(float(line))
+    while line != "":
+        Cost.append(float(line))
+        line = ClusteringCostFile.readline()
+    SolutionNum =  range(0,len(Cost))
+    ClusteringCostFile.close()
+
+    plt.plot(SolutionNum, Cost)
+    plt.savefig("GraphDrawings/CTG_Opt_Process.png")
+    plt.clf()
+    return None

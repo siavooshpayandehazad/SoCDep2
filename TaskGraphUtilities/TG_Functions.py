@@ -148,6 +148,11 @@ def GenerateRandomIndependentTG(NumberOfTasks,WCET_Range,Release_Range):
     return TG
 
 def FindSourceNodes(TG):
+    """
+    Takes a Task Graph and returns the source nodes of it in a list
+    :param TG: Task Graph
+    :return: List of source nodes
+    """
     SourceNode=[]
     for Task in TG.nodes():
         if len(TG.predecessors(Task))==0:

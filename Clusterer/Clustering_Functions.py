@@ -79,7 +79,6 @@ def CostFunction(CTG):
     :param CTG: The Clustered task graph
     :return: Cost
     """
-    Cost = 0
     CommunicationWeight = 0
     for edge in CTG.edges():
         CommunicationWeight += CTG.edge[edge[0]][edge[1]]['Weight']
@@ -97,9 +96,9 @@ def ClearClustering(TG,CTG):
     """
     Clears a clustering that has been done. by removing the tasks in task-list of clusters,
     removing parent cluster of tasks and deleting all the edges in cluster graph.
-    :param TG:
-    :param CTG:
-    :return:
+    :param TG: Task Graph
+    :param CTG: Clustered Task Graph
+    :return: None
     """
     for node in TG.nodes():
         TG.node[node]['Cluster'] = None
