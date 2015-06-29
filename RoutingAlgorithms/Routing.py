@@ -247,7 +247,8 @@ def FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG, SourceNode,Destinati
     Destination = str(DestinationNode)+str('L')+str('O')
     if networkx.has_path(CurrentRG, Source, Destination):
         ShortestPath = networkx.shortest_path(CurrentRG, Source, Destination)
-        AllPaths = list(networkx.all_simple_paths(CurrentRG, Source, Destination))
+        if ReturnAllPaths:
+            AllPaths = list(networkx.all_simple_paths(CurrentRG, Source, Destination))
         ShortestLinks = []
         for i in range(0, len(ShortestPath)-1):
                 # if ShortestPath[i][0] != ShortestPath[i+1][0]:
@@ -255,15 +256,16 @@ def FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG, SourceNode,Destinati
                     ShortestLinks.append((int(re.search(r'\d+', ShortestPath[i]).group()),
                                           int(re.search(r'\d+', ShortestPath[i+1]).group())))
         AllLinks = []
-        for j in range(0, len(AllPaths)):
-            Path = AllPaths[j]
-            Links = []
-            for i in range (0, len(Path)-1):
-                if int(re.search(r"\d+", Path[i]).group()) != int(re.search(r"\d+", Path[i+1]).group()):
-                    Links.append((int(re.search(r"\d+", Path[i]).group()), int(re.search(r"\d+", Path[i+1]).group())))
-            AllLinks.append(Links)
-        if Report:print "\t\tFINDING PATH(S) FROM: ", Source, "TO:", Destination, " ==>", \
-                        AllLinks if ReturnAllPaths else ShortestLinks
+        if ReturnAllPaths:
+            for j in range(0, len(AllPaths)):
+                Path = AllPaths[j]
+                Links = []
+                for i in range (0, len(Path)-1):
+                    if int(re.search(r"\d+", Path[i]).group()) != int(re.search(r"\d+", Path[i+1]).group()):
+                        Links.append((int(re.search(r"\d+", Path[i]).group()), int(re.search(r"\d+", Path[i+1]).group())))
+                AllLinks.append(Links)
+            if Report:print "\t\tFINDING PATH(S) FROM: ", Source, "TO:", Destination, " ==>", \
+                            AllLinks if ReturnAllPaths else ShortestLinks
         if ReturnAllPaths:
             return AllLinks
         else:

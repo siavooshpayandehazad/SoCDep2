@@ -24,7 +24,6 @@ def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SH
         ClusterToMove= random.choice(CTG.nodes())
         CurrentNode=CTG.node[ClusterToMove]['Node']
         Mapping_Functions.RemoveClusterFromNode(TG,CTG,AG,NoCRG,CriticalRG, NonCriticalRG,ClusterToMove,CurrentNode,logging)
-
         DestNode = random.choice(AG.nodes())
         if Config.EnablePartitioning:
             while(CTG.node[ClusterToMove]['Criticality']!= AG.node[DestNode]['Region']):
@@ -33,6 +32,7 @@ def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SH
 
         TryCounter=0
         while not Mapping_Functions.AddClusterToNode(TG,CTG,AG,SHM,NoCRG,CriticalRG, NonCriticalRG,ClusterToMove,DestNode,logging):
+
             # If AddClusterToNode fails it automatically removes all the connections...
             # we need to add the cluster to the old place...
             Mapping_Functions.AddClusterToNode(TG,CTG,AG,SHM,NoCRG,CriticalRG, NonCriticalRG,ClusterToMove,CurrentNode,logging)
@@ -60,6 +60,7 @@ def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SH
 
         Scheduling_Functions.ClearScheduling(AG,TG)
         Scheduler.ScheduleAll(TG,AG,SHM,False,DetailedReport)
+
         CurrentCost=Mapping_Functions.CostFunction(TG,AG,SHM,DetailedReport)
         MappingCostFile.write(str(CurrentCost)+"\n")
         if CurrentCost <= BestCost:

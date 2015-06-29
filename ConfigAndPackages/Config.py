@@ -102,7 +102,7 @@ ClusteringIteration = 1000
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch',
 Mapping_Function = 'LocalSearch'
-LocalSearchIteration = 500
+LocalSearchIteration = 1000
 IterativeLocalSearchIterations = 20
 
 ################################################
@@ -119,7 +119,7 @@ SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal dist
 ################################################
 #           Network Partitioning
 ################################################
-EnablePartitioning = True
+EnablePartitioning = False
 
 if EnablePartitioning:
     # Critical Region Nodes:
