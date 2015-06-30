@@ -45,13 +45,19 @@ def VizClusteringOpt():
     Cost=[]
     line = ClusteringCostFile.readline()
     Cost.append(float(line))
+    MinCost = float(line)
+    MinCostList = []
+    MinCostList.append(MinCost)
     while line != "":
         Cost.append(float(line))
+        if float(line) < MinCost:
+            MinCost = float(line)
+        MinCostList.append(MinCost)
         line = ClusteringCostFile.readline()
     SolutionNum = range(0,len(Cost))
     ClusteringCostFile.close()
 
-    plt.plot(SolutionNum, Cost)
+    plt.plot(SolutionNum, Cost,'b', SolutionNum, MinCostList, 'r')
     plt.savefig("GraphDrawings/CTG_Opt_Process.png")
     plt.clf()
     return None

@@ -117,7 +117,7 @@ def VizMappingOpt(CostFileName):
     :return: None
     """
     print "==========================================="
-    print "GENERATING LOCAL SEARCH OPTIMIZATION VISUALIZATIONS..."
+    print "GENERATING MAPPING OPTIMIZATION VISUALIZATIONS..."
 
     try:
         MappingCostFile = open('Generated_Files/'+CostFileName+'.txt','r')
@@ -126,14 +126,25 @@ def VizMappingOpt(CostFileName):
 
     Cost=[]
     line = MappingCostFile.readline()
+    MinCost = float(line)
+    MinCostList = []
+    MinCostList.append(MinCost)
     Cost.append(float(line))
     while line != "":
         Cost.append(float(line))
+        if float(line) < MinCost:
+            MinCost = float(line)
+        MinCostList.append(MinCost)
         line = MappingCostFile.readline()
     SolutionNum =  range(0,len(Cost))
     MappingCostFile.close()
-
-    plt.plot(SolutionNum, Cost)
+    if Config.Mapping_Function == 'IterativeLocalSearch':
+        for Iteration in range(1, Config.IterativeLocalSearchIterations+1):
+            x1 = x2 = Iteration * Config.LocalSearchIteration
+            y1 = 0
+            y2 = max(Cost)
+            plt.plot((x1, x2), (y1, y2), 'g--')
+    plt.plot(SolutionNum, Cost, 'b', SolutionNum, MinCostList, 'r')
     plt.savefig("GraphDrawings/Mapping_Opt_Process.png")
     plt.clf()
     return None

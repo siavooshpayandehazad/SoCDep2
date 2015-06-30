@@ -62,6 +62,8 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 Mapping_Functions.CostFunction(TG, AG, SHM, Config.DebugInfo)
                 if Config.Mapping_Function == 'LocalSearch':
                     MappingCostFile = open('Generated_Files/LocalSearchMappingCost.txt','w')
+                    CurrentCost = Mapping_Functions.CostFunction(TG,AG,SHM,False)
+                    MappingCostFile.write(str(CurrentCost)+"\n")
                     MappingCostFile.close()
                     (BestTG, BestCTG, BestAG) = Local_Search.OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG,
                                                                                         NonCriticalRG, SHM,
