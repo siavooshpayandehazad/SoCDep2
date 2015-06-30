@@ -22,8 +22,8 @@ def DoubleCheckCTG(TG, CTG):
                 print "DOUBLE CHECKING CTG with TG: OK!"
                 pass
         else:
-            # TODO: this should throw an error
             print "DOUBLE CHECKING CTG with TG: \t\033[31mFAILED\033[0m"
             print "CLUSTER", Cluster," DOESNT EXIST...!!!"
             ClusteringReports.ReportCTG(CTG,"CTG_DoubleCheckError.png")
+            raise ValueError("DOUBLE CHECKING CTG with TG FAILED")
     return True
