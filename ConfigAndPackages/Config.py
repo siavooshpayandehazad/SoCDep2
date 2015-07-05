@@ -101,14 +101,14 @@ ClusteringIteration = 1000
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch',
-Mapping_Function = 'IterativeLocalSearch'
+Mapping_Function = 'LocalSearch'
 LocalSearchIteration = 100
 IterativeLocalSearchIterations = 20
 
 ################################################
 #          Scheduling  Config
 ################################################
-SlackCount = 2      # this is used for number of repetitions of the critical tasks
+SlackCount = 1      # this is used for number of repetitions of the critical tasks
 
 ################################################
 #          System's Fault  Config
@@ -119,7 +119,7 @@ SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal dist
 ################################################
 #           Network Partitioning
 ################################################
-EnablePartitioning = False
+EnablePartitioning = True
 
 if EnablePartitioning:
     # Critical Region Nodes:
@@ -145,3 +145,10 @@ else:
     ListOfBrokenLinks += []
     VirtualBrokenLinksForNonCritical = []
     VirtualBrokenLinksForCritical = []
+
+###############################################
+#           PMCG Config
+###############################################
+
+TFaultDiagnosable = 2           # one-step t-fault diagnosable system, if set to none, default value would be
+                                # (n-1)/2

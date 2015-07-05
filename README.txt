@@ -81,6 +81,7 @@ ScheduleAndDepend
  |          |----- SystemHealthMonitor
  |          |----- SHM_Reports
  |          |----- SHM_Functions
+ |          |----- TestSchedulingUnit
  |
  |------TaskGraphUtilities
  |          |
@@ -108,6 +109,9 @@ ToDo:
 
     - I want to run a reliability Analysis of the system... so we can have
       a sense about the system state...
+
+    - We need to implement some test routine where we can schedule Test-Tasks where
+      one PE tests another. we can use PMC model for this.
 
     - can we generate some file based on scheduling to feed in Noxim?
 

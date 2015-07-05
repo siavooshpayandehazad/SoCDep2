@@ -7,7 +7,7 @@ import logging
 from ConfigAndPackages import Config
 from Utilities import misc, Logger
 
-from SystemHealthMonitoring import SHM_Functions
+from SystemHealthMonitoring import SHM_Functions, TestSchedulingUnit
 import SystemInitialization
 from RoutingAlgorithms import Routing
 
@@ -38,6 +38,8 @@ print "\033[92mTIME::\033[0m SYSTEM STARTS AT:", round(SystemStartingTime - Prog
 #                   Fault event handler
 #
 ####################################################################
+PMCG = TestSchedulingUnit.GeneratePMCG(AG)
+TestSchedulingUnit.DrawPMCG(PMCG)
 
 def FaultEvent():
     global timer
