@@ -3,6 +3,7 @@
 # This part of the project is based on 1967 research paper:
 # "On the Connection Assignment Problem of Diagnosable Systems", by
 # FRANCO P. PREPARATA, GERNOT METZE  AND ROBERT T. CHIEN
+# all the variable names are the same as in the paper...
 
 import networkx
 from fractions import gcd
@@ -19,7 +20,7 @@ def GenerateOneStepDiagnosablePMCG(AG,SHM):
             PMCG.add_node(PE)
 
     # we would like to have one-step t-fault diagnosable system
-    n = len(AG.nodes())     # number of processors in the system
+    n = len(PMCG.nodes())     # number of processors in the system
     delta = 2
 
     # One-step t-fault diagnosable system S is called optimal if
@@ -42,17 +43,11 @@ def GenerateOneStepDiagnosablePMCG(AG,SHM):
     # link from u_i to u_j exists if and only if <===> j-i = delta*m (modulo n) and m in [1,2,...,t]
     delta_M = []
     for m in range(1, t+1):
-        # print delta*m % n
-        if (delta*m % n) in delta_M:
-            pass
-        else:
+        if (delta*m % n) not in delta_M:
             delta_M.append(delta*m % n)
 
-    # print "n:", n, "t:", t, "delta:", delta
-    # print "delta*M: ", delta_M , "mod", n
-
-    for TesterNode in AG.nodes():
-        for TestedNode in AG.nodes():
+    for TesterNode in PMCG.nodes():
+        for TestedNode in PMCG.nodes():
             if (TesterNode - TestedNode)%n in delta_M:
                 #print "Connecting:",TesterNode, "to", TestedNode, "---> i-j = ", (TesterNode - TestedNode)%n, "mod", n
                 PMCG.add_edge(TesterNode, TestedNode, Weight=0)
@@ -83,11 +78,12 @@ def GenerateSequentiallyDiagnosablePMCG(AG,SHM):
                 PMCG.add_edge(TesterNode, TestedNode, Weight=0)
 
     Counter = 0
+    ChosenTestedNode = PMCG.nodes()[0]
     while Counter < 2*t-2:
         ChosenTester = random.choice(PMCG.nodes())
         # print ChosenTester, Counter
-        if ChosenTester != 0 and ChosenTester != n-1 and (ChosenTester,0) not in PMCG.edges():
-            PMCG.add_edge(ChosenTester, 0, Weight=0)
+        if ChosenTester != 0 and ChosenTester != n-1 and (ChosenTester,ChosenTestedNode) not in PMCG.edges():
+            PMCG.add_edge(ChosenTester, ChosenTestedNode, Weight=0)
             Counter += 1
     return PMCG
 

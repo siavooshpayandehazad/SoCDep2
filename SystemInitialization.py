@@ -35,7 +35,16 @@ def InitializeSystem(logging):
         NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, Config.DebugInfo, Config.DebugDetails))
     # Some visualization...
     RoutingGraph_Reports.DrawRG(NoCRG)
-
+    ####################################################################
+    # PMC-Graph
+    # at this point we assume that the system health map knows about the initial faults from
+    # the diagnosis process
+    if Config.OneStepDiagonosable:
+        PMCG = TestSchedulingUnit.GenerateOneStepDiagnosablePMCG(AG,SHM)
+    else:
+        PMCG = TestSchedulingUnit.GenerateSequentiallyDiagnosablePMCG(AG,SHM)
+    TestSchedulingUnit.DrawPMCG(PMCG)
+    ####################################################################
     # in case of partitioning, we have to route based on different Route-graphs
     if Config.EnablePartitioning:
         CriticalRG, NonCriticalRG = Calculate_Reachability.CalculateReachabilityWithRegions(AG,SHM)
@@ -63,10 +72,5 @@ def InitializeSystem(logging):
     TrafficTableGenerator.GenerateNoximTrafficTable()
     TrafficTableGenerator.GenerateGSNoCTrafficTable(AG, TG)
 
-    if Config.OneStepDiagonosable:
-        PMCG = TestSchedulingUnit.GenerateOneStepDiagnosablePMCG(AG)
-    else:
-        PMCG = TestSchedulingUnit.GenerateSequentiallyDiagnosablePMCG(AG,SHM)
-    TestSchedulingUnit.DrawPMCG(PMCG)
 
     return TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, PMCG
