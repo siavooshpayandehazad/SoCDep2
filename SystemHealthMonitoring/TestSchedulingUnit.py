@@ -8,13 +8,15 @@ import networkx
 from fractions import gcd
 import matplotlib.pyplot as plt
 from ConfigAndPackages import Config
+import random, copy
 
-def GeneratePMCG(AG):
+def GenerateOneStepDiagnosablePMCG(AG,SHM):
     print "==========================================="
-    print "PREPARING PMC GRAPH (PMCG)..."
+    print "PREPARING ONE STEP DIAGNOSABLE PMC GRAPH (PMCG)..."
     PMCG = networkx.DiGraph()
     for PE in AG.nodes():
-        PMCG.add_node(PE)
+        if SHM.SHM.node[PE]['NodeHealth']:
+            PMCG.add_node(PE)
 
     # we would like to have one-step t-fault diagnosable system
     n = len(AG.nodes())     # number of processors in the system
@@ -57,11 +59,43 @@ def GeneratePMCG(AG):
     print "PMC GRAPH (PMCG) IS READY..."
     return PMCG
 
+
+
+def GenerateSequentiallyDiagnosablePMCG(AG,SHM):
+    print "==========================================="
+    print "PREPARING SEQUENTIALLY DIAGNOSABLE PMC GRAPH (PMCG)..."
+    PMCG = networkx.DiGraph()
+    for PE in AG.nodes():
+        if SHM.SHM.node[PE]['NodeHealth']:
+            PMCG.add_node(PE)
+
+    n = len(PMCG.nodes())     # number of processors in the system
+    # the theorem says there is a a sequentially diagnosable system with    N = n+2t-2
+
+    if Config.TFaultDiagnosable is not None:
+        t = Config.TFaultDiagnosable
+    else:
+        t = int((n-1)/2)
+
+    for TesterNode in PMCG.nodes():
+        for TestedNode in PMCG.nodes():
+            if (TesterNode - TestedNode)%n == 1:
+                PMCG.add_edge(TesterNode, TestedNode, Weight=0)
+
+    Counter = 0
+    while Counter < 2*t-2:
+        ChosenTester = random.choice(PMCG.nodes())
+        # print ChosenTester, Counter
+        if ChosenTester != 0 and ChosenTester != n-1 and (ChosenTester,0) not in PMCG.edges():
+            PMCG.add_edge(ChosenTester, 0, Weight=0)
+            Counter += 1
+    return PMCG
+
 def DrawPMCG(PMCG):
     print "==========================================="
     print "PREPARING PMC GRAPH (PMCG) DRAWINGS..."
-    pos = networkx.shell_layout(PMCG)
-    networkx.draw_networkx_nodes(PMCG, pos, node_size=500)
+    pos = networkx.circular_layout(PMCG)
+    networkx.draw_networkx_nodes(PMCG, pos, node_size=500, color='b')
     networkx.draw_networkx_edges(PMCG, pos)
     networkx.draw_networkx_labels(PMCG, pos)
     plt.savefig("GraphDrawings/PMCG")

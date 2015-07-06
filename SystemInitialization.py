@@ -5,7 +5,7 @@ import copy
 from ConfigAndPackages import Config
 from Mapper import Mapping, Mapping_Reports
 from Scheduler import Scheduling_Reports
-from SystemHealthMonitoring import SystemHealthMonitor, SHM_Reports, SHM_Functions
+from SystemHealthMonitoring import SystemHealthMonitor, SHM_Reports, SHM_Functions, TestSchedulingUnit
 from TaskGraphUtilities import Task_Graph_Reports, TG_Functions, TG_Test
 from RoutingAlgorithms import Routing, Calculate_Reachability, ReachabilityReports, RoutingGraph_Reports
 from ArchGraphUtilities import Arch_Graph_Reports, AG_Functions, AG_Test
@@ -63,4 +63,10 @@ def InitializeSystem(logging):
     TrafficTableGenerator.GenerateNoximTrafficTable()
     TrafficTableGenerator.GenerateGSNoCTrafficTable(AG, TG)
 
-    return TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG
+    if Config.OneStepDiagonosable:
+        PMCG = TestSchedulingUnit.GenerateOneStepDiagnosablePMCG(AG)
+    else:
+        PMCG = TestSchedulingUnit.GenerateSequentiallyDiagnosablePMCG(AG,SHM)
+    TestSchedulingUnit.DrawPMCG(PMCG)
+
+    return TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, PMCG

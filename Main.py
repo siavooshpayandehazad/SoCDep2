@@ -7,7 +7,7 @@ import logging
 from ConfigAndPackages import Config
 from Utilities import misc, Logger
 
-from SystemHealthMonitoring import SHM_Functions, TestSchedulingUnit
+from SystemHealthMonitoring import SHM_Functions
 import SystemInitialization
 from RoutingAlgorithms import Routing
 
@@ -25,7 +25,7 @@ misc.GenerateFileDirectories()
 misc.DrawLogo()
 ####################################################################
 # Initialization of the system
-TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG = SystemInitialization.InitializeSystem(logging)
+TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, PMCG = SystemInitialization.InitializeSystem(logging)
 
 # just to have a sense of how much time we are spending in each section
 print "==========================================="
@@ -38,8 +38,6 @@ print "\033[92mTIME::\033[0m SYSTEM STARTS AT:", round(SystemStartingTime - Prog
 #                   Fault event handler
 #
 ####################################################################
-PMCG = TestSchedulingUnit.GeneratePMCG(AG)
-TestSchedulingUnit.DrawPMCG(PMCG)
 
 def FaultEvent():
     global timer
