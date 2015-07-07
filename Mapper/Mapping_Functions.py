@@ -143,7 +143,13 @@ def CostFunction(TG, AG, SHM, Report):
     NodeMakeSpan_Max = max(NodeMakeSpanList)
     LinkMakeSpan_Stdev = statistics.stdev(LinkMakeSpanList)
     LinkMakeSpan_Max = max(LinkMakeSpanList)
-    Cost = NodeMakeSpan_Max+NodeMakeSpan_Stdev+LinkMakeSpan_Stdev+LinkMakeSpan_Max
+
+    if Config.Mapping_CostFunctionType == 'SD':
+        Cost = NodeMakeSpan_Stdev + LinkMakeSpan_Stdev
+    elif Config.Mapping_CostFunctionType == 'SD+MAX' :
+        Cost = NodeMakeSpan_Max + NodeMakeSpan_Stdev + LinkMakeSpan_Stdev + LinkMakeSpan_Max
+    else:
+        raise ValueError("Mapping_CostFunctionType is not valid")
     if Report:
         print "==========================================="
         print "      REPORTING MAPPING COST"

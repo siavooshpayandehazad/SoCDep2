@@ -59,7 +59,7 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter):
     :param NumberOfIter: Number of iterations for local search
     :return: best answer (CTG) found by the search
     """
-    ClusteringCostFile = open('Generated_Files/ClusteringCost.txt','w')
+    ClusteringCostFile = open('Generated_Files/Internal/ClusteringCost.txt','w')
     print "==========================================="
     print "STARTING LOCAL SEARCH OPTIMIZATION FOR CTG..."
     Cost=CostFunction(CTG)

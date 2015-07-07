@@ -26,8 +26,23 @@ def GenerateFileDirectories():
     if not os.path.isdir(GraphDirectory):
         os.makedirs(GraphDirectory)
 
+
+    filelist = [file for file in os.listdir(GraphDirectory) if file.endswith(".png")]
+    for file in filelist:
+        os.remove(GraphDirectory +'/'+file)
+
     GeneratedFilesDirectory = "Generated_Files"
     if not os.path.isdir(GeneratedFilesDirectory):
         os.makedirs(GeneratedFilesDirectory)
 
+    filelist = [file for file in os.listdir(GeneratedFilesDirectory) if file.endswith(".txt")]
+    for file in filelist:
+        os.remove(GeneratedFilesDirectory +'/'+file)
+
+    InternalFilesDirectory = "Generated_Files/Internal"
+    if not os.path.isdir(InternalFilesDirectory):
+        os.makedirs(InternalFilesDirectory)
+    filelist = [file for file in os.listdir(InternalFilesDirectory) if file.endswith(".txt")]
+    for file in filelist:
+        os.remove(InternalFilesDirectory +'/'+file)
     return None

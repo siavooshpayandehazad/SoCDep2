@@ -52,7 +52,7 @@ def GenerateManualTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List
     print("TASK GRAPH (TG) IS READY...")
     return TG
 
-def GenerateRandomTG(NumberOfTasks,NumberOfEdges,WCET_Range,EdgeWeightRange):
+def GenerateRandomTG(NumberOfTasks,NumberOfCriticalTasks,NumberOfEdges,WCET_Range,EdgeWeightRange):
     TG=networkx.DiGraph()
     print("PREPARING RANDOM TASK GRAPH (TG)...")
 
@@ -65,8 +65,15 @@ def GenerateRandomTG(NumberOfTasks,NumberOfEdges,WCET_Range,EdgeWeightRange):
 
     for i in range(0,NumberOfTasks):
         Task_List.append(i)
-        Task_Criticality_List.append(random.choice(['H','L']))
+        Task_Criticality_List.append('L')
         Task_WCET_List.append(random.randrange(1,WCET_Range))
+
+    Counter = 0
+    while Counter < NumberOfCriticalTasks:
+        ChosenTask = random.choice(Task_List)
+        if Task_Criticality_List[ChosenTask] == 'L':
+            Task_Criticality_List[ChosenTask] = 'H'
+            Counter +=1
 
     for j in range(0,NumberOfEdges):
         SourceTask = random.choice(Task_List)
@@ -179,7 +186,7 @@ def AssignDistance(TG):
 ########################################################
 def GenerateTG():
     if Config.TG_Type=='RandomDependent':
-        return GenerateRandomTG(Config.NumberOfTasks,Config.NumberOfEdges,
+        return GenerateRandomTG(Config.NumberOfTasks,Config.NumberOfCriticalTasks,Config.NumberOfEdges,
                                                      Config.WCET_Range,Config.WCET_Range)
     elif Config.TG_Type=='RandomIndependent':
         return GenerateRandomIndependentTG(Config.NumberOfTasks,Config.WCET_Range,Config.Release_Range)

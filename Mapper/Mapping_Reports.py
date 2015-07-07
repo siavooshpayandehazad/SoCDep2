@@ -120,7 +120,7 @@ def VizMappingOpt(CostFileName):
     print "GENERATING MAPPING OPTIMIZATION VISUALIZATIONS..."
 
     try:
-        MappingCostFile = open('Generated_Files/'+CostFileName+'.txt','r')
+        MappingCostFile = open('Generated_Files/Internal/'+CostFileName+'.txt','r')
     except IOError:
         print 'CAN NOT OPEN', CostFileName+'.txt'
 

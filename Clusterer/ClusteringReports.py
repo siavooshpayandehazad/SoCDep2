@@ -37,7 +37,7 @@ def VizClusteringOpt():
     print "GENERATING CLUSTERING OPTIMIZATION VISUALIZATIONS..."
 
     try:
-        ClusteringCostFile = open('Generated_Files/ClusteringCost.txt','r')
+        ClusteringCostFile = open('Generated_Files/Internal/ClusteringCost.txt','r')
     except IOError:
         print 'CAN NOT OPEN ClusteringCost.txt'
 

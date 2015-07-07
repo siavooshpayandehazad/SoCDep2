@@ -79,20 +79,34 @@ def CostFunction(CTG):
     :param CTG: The Clustered task graph
     :return: Cost
     """
-    CommunicationWeight = 0
+    ComWeightList = []
     for edge in CTG.edges():
-        CommunicationWeight += CTG.edge[edge[0]][edge[1]]['Weight']
+        ComWeightList .append(CTG.edge[edge[0]][edge[1]]['Weight'])
+
 
     ClusterUtilization = []
     for Node in CTG.nodes():
         ClusterUtilization.append(CTG.node[Node]['Utilization'])
 
-    StandardDev=statistics.stdev(ClusterUtilization)
-    #print "\tCOMWEIGHT:",CommunicationWeight,"STDEV:",StandardDev
-    Cost = CommunicationWeight + StandardDev
+
+    CommunicationWeight = sum(ComWeightList)
+    MaxComWeight = max(ComWeightList)
+    MaxUtil = max(ClusterUtilization)
+    AvgUtil = sum(ClusterUtilization)/len(ClusterUtilization)
+    ClusterUtilSD = statistics.stdev(ClusterUtilization)
+    ComWeightSD = statistics.stdev(ComWeightList)
+
+    # print "\tCOMWEIGHT:",CommunicationWeight,"STDEV:",ClusterUtilSD, "MAXUTIL:", MaxUtil, "AVG_UTIL:", AvgUtil
+
+    if Config.Clustering_CostFunctionType == 'SD':
+        Cost = ClusterUtilSD + ComWeightSD
+    elif Config.Clustering_CostFunctionType == 'SD+MAX':
+        Cost = MaxComWeight +  ComWeightSD  + MaxUtil  + ClusterUtilSD
+    else:
+        raise ValueError("Clustering_CostFunctionType is not valid")
     return Cost
 
-def ClearClustering(TG,CTG):
+def ClearClustering(TG, CTG):
     """
     Clears a clustering that has been done. by removing the tasks in task-list of clusters,
     removing parent cluster of tasks and deleting all the edges in cluster graph.
@@ -110,7 +124,8 @@ def ClearClustering(TG,CTG):
         CTG.remove_edge(edge[0], edge[1])
     return None
 
-def DeleteEmptyClusters (CTG):
+
+def DeleteEmptyClusters(CTG):
     for Cluster in CTG.nodes():
         if len(CTG.node[Cluster]['TaskList']) == 0:
             CTG.remove_node(Cluster)

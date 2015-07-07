@@ -139,7 +139,7 @@ ToDo:
     - Can we exploit the idea of repetition in TG during scheduling?
 
     - Checking if a re-mapping/scheduling is necessary considering the
-      fault that has occurred...
+      fault that has occurred... (with Karl)
 
     - Adding color bar for mapping graphs
 
@@ -152,8 +152,11 @@ ToDo:
 
     - we need to have a deadline for the whole task graph
 
+    - for later time we need to schedule flits in the critical domain with a model of the router with
+      latency etc considered (low priority- thesis of Mihkel Tagel)
+
     - we need to add 0 weight communication between the tasks just to stablish
-      precedence without data dependence.
+      precedence without data dependence. (we can have this in the data dependence assumptions)
 
     --------------------------------------------------
     List of functions without DocString:

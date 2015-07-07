@@ -15,7 +15,8 @@ LoGDirectory = "LOGS"
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
 TG_Type = 'RandomDependent'
 # For Random TG_Type:
-NumberOfTasks = 10
+NumberOfTasks = 20
+NumberOfCriticalTasks = 0
 NumberOfEdges = 15
 WCET_Range = 30
 EdgeWeightRange = 7
@@ -95,16 +96,24 @@ ListOfAgedPEs = {1: 0.3, 2: 0.1}
 #          Clustering Function  Config
 ################################################
 ClusteringIteration = 1000
+# here you can change the type of cost function used for Clustering the available cost functions are:
+# 'SD' = Com_Weight_SD + Node_Util_SD
+# 'SD+MAX' = Com_Weight_SD + MaxComWeight + Node_Util_SD + MaxNodeUtil
 
+Clustering_CostFunctionType = 'SD'
 ################################################
 #          Mapping Function  Config
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch',
-Mapping_Function = 'LocalSearch'
+Mapping_Function = 'IterativeLocalSearch'
 LocalSearchIteration = 100
 IterativeLocalSearchIterations = 20
 
+# here you can change the type of cost function used for mapping the available cost functions are:
+# 'SD' = Com_MakeSpan_SD + Node_MakeSpan_SD
+# 'SD+MAX' = Link_MakeSpan_SD + MaxLinkMakeSpan + Node_MakeSpan_SD + MaxNodeMakeSpan
+Mapping_CostFunctionType = 'SD+MAX'
 ################################################
 #          Scheduling  Config
 ################################################
@@ -119,7 +128,7 @@ SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal dist
 ################################################
 #           Network Partitioning
 ################################################
-EnablePartitioning = True
+EnablePartitioning = False
 
 if EnablePartitioning:
     # Critical Region Nodes:
