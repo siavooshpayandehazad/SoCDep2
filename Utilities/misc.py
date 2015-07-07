@@ -26,10 +26,17 @@ def GenerateFileDirectories():
     if not os.path.isdir(GraphDirectory):
         os.makedirs(GraphDirectory)
 
-
     filelist = [file for file in os.listdir(GraphDirectory) if file.endswith(".png")]
     for file in filelist:
         os.remove(GraphDirectory +'/'+file)
+
+    AnimationDirectory = "GraphDrawings/Mapping_Animation_Material"
+    if not os.path.isdir(AnimationDirectory):
+        os.makedirs(AnimationDirectory)
+
+    filelist = [file for file in os.listdir(AnimationDirectory) if file.endswith(".png")]
+    for file in filelist:
+        os.remove(AnimationDirectory +'/'+file)
 
     GeneratedFilesDirectory = "Generated_Files"
     if not os.path.isdir(GeneratedFilesDirectory):

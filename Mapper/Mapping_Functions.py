@@ -7,6 +7,7 @@ import statistics
 import random
 from math import ceil
 
+
 def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Report, logging):
     if Report: print "==========================================="
     if Report: print "STARTING INITIAL MAPPING..."
@@ -33,6 +34,7 @@ def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Repor
         Itteration=0
     if Report: print "INITIAL MAPPING READY... "
     return True
+
 
 def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster, Node, logging):
     if not SHM.SHM.node[Node]['NodeHealth']:
@@ -123,7 +125,7 @@ def ClearMapping(TG, CTG, AG):
     for node in AG.nodes():
         AG.node[node]['MappedTasks'] = []
         AG.node[node]['Utilization'] = 0
-        AG.node[node]['Scheduling'] ={}
+        AG.node[node]['Scheduling'] = {}
     for link in AG.edges():
         AG.edge[link[0]][link[1]]['MappedTasks'] = []
         AG.edge[link[0]][link[1]]['Scheduling'] = {}
@@ -176,6 +178,7 @@ def FindUnMappedTaskWithSmallestWCET(TG, logging):
                 ShortestTasks.append(Nodes)
     logging.info("THE LIST OF SHORTEST UNMAPPED TASKS:"+str(ShortestTasks))
     return ShortestTasks
+
 
 def FindUnMappedTaskWithBiggestWCET(TG, logging):
     LongestTasks = []
@@ -239,6 +242,7 @@ def FindNodeWithSmallestCompletionTime(AG, TG, SHM, Task):
                 NodesWithSmallestCT.append(Node)
     return NodesWithSmallestCT
 
+
 def FindFastestNodes(AG, SHM, TaskToBeMapped):
     # todo: we need to add some accelerator nodes which have some specific purpose and
     # enable different tasks to behave differently on them.
@@ -256,5 +260,5 @@ def FindFastestNodes(AG, SHM, TaskToBeMapped):
 def MappingIntoString(TG):
     MappingString = ""
     for Task in TG.nodes():
-        MappingString += str(TG.node[Task]['Node'])
+        MappingString += str(TG.node[Task]['Node']) + " "
     return MappingString

@@ -42,7 +42,6 @@ NetworkTopology = '2DMesh'
 Network_X_Size = 6
 Network_Y_Size = 6
 Network_Z_Size = 1
-
 # Only for Manual AG_Type:
 PE_List = [0, 1, 2, 3]
 AG_Edge_List = [(0, 1), (0, 2), (1, 0), (1, 3), (2, 0), (2, 3), (3, 2), (3, 1)]
@@ -99,7 +98,6 @@ ClusteringIteration = 1000
 # here you can change the type of cost function used for Clustering the available cost functions are:
 # 'SD' = Com_Weight_SD + Node_Util_SD
 # 'SD+MAX' = Com_Weight_SD + MaxComWeight + Node_Util_SD + MaxNodeUtil
-
 Clustering_CostFunctionType = 'SD'
 ################################################
 #          Mapping Function  Config
@@ -118,7 +116,6 @@ Mapping_CostFunctionType = 'SD+MAX'
 #          Scheduling  Config
 ################################################
 SlackCount = 1      # this is used for number of repetitions of the critical tasks
-
 ################################################
 #          System's Fault  Config
 ################################################
@@ -129,7 +126,6 @@ SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal dist
 #           Network Partitioning
 ################################################
 EnablePartitioning = False
-
 if EnablePartitioning:
     # Critical Region Nodes:
     # for 6X6 network example no 2 of ReCoSoc Paper
@@ -154,10 +150,13 @@ else:
     ListOfBrokenLinks += []
     VirtualBrokenLinksForNonCritical = []
     VirtualBrokenLinksForCritical = []
-
 ###############################################
 #           PMCG Config
 ###############################################
 OneStepDiagonosable = False      # set to False if you need Sequentially diagnosable PMCG
 TFaultDiagnosable = None         # one-step t-fault diagnosable system, if set to none, default value would be
                                  # (n-1)/2
+###############################################
+#           VISUALIZATION Config
+###############################################
+GenMappingFrames = False        # If True, generates the frames for animation

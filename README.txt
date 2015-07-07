@@ -60,6 +60,7 @@ ScheduleAndDepend
  |          |                           |------- Local_Search
  |          |----- Mapping              |------- SimpleGreedy
  |          |----- Mapping_Functions    |------- SimulatedAnnealing
+ |          |----- Mapping_Animation
  |          |----- Mapping_Reports
  |
  |------RoutingAlgorithms

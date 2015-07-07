@@ -4,7 +4,7 @@ import copy
 
 from ConfigAndPackages import Config
 import Scheduler
-import Mapping_Functions,Mapping_Reports
+import Mapping_Functions, Mapping_Reports, Mapping_Animation
 from Clusterer import Clustering, ClusteringReports
 from Mapping_Heuristics import SimpleGreedy,Local_Search
 from Scheduler import Scheduler,Scheduling_Reports
@@ -65,12 +65,18 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                     CurrentCost = Mapping_Functions.CostFunction(TG,AG,SHM,False)
                     MappingCostFile.write(str(CurrentCost)+"\n")
                     MappingCostFile.close()
+
+                    MappingProcessFile = open('Generated_Files/Internal/MappingProcess.txt','w')
+                    MappingProcessFile.write(Mapping_Functions.MappingIntoString(TG)+"\n")
+                    MappingProcessFile.close()
+
                     (BestTG, BestCTG, BestAG) = Local_Search.OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG,
                                                                                         NonCriticalRG, SHM,
                                                                                         Config.LocalSearchIteration,
                                                                                         Config.DebugInfo,
                                                                                         Config.DebugDetails,logging,
-                                                                                        "LocalSearchMappingCost")
+                                                                                        "LocalSearchMappingCost",
+                                                                                        "MappingProcess")
                     TG = copy.deepcopy(BestTG)
                     AG = copy.deepcopy(BestAG)
                     del BestTG,BestCTG,BestAG
@@ -89,6 +95,7 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 Mapping_Reports.VizMappingOpt('LocalSearchMappingCost')
                 Scheduling_Reports.ReportMappedTasks(AG, logging)
                 Mapping_Functions.CostFunction(TG, AG, SHM, True)
+                # Mapping_Animation.AnimateMapping()
                 return TG, AG
             else:
                 Mapping_Reports.ReportMapping(AG, logging)

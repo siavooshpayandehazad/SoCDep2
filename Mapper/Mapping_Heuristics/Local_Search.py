@@ -8,10 +8,11 @@ from ConfigAndPackages import Config
 
 
 def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
-                               IterationNum,Report,DetailedReport,logging,CostDataFile):
+                               IterationNum,Report,DetailedReport,logging,CostDataFile,MappingProcess):
     if Report:print "==========================================="
     if Report:print "STARTING MAPPING OPTIMIZATION..."
     MappingCostFile = open('Generated_Files/Internal/'+CostDataFile+'.txt','a')
+    MappingProcessFile = open('Generated_Files/Internal/'+MappingProcess+'.txt','a')
 
     BestTG=copy.deepcopy(TG)
     BestAG=copy.deepcopy(AG)
@@ -41,7 +42,6 @@ def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SH
             ClusterToMove= random.choice(CTG.nodes())
             CurrentNode=CTG.node[ClusterToMove]['Node']
             Mapping_Functions.RemoveClusterFromNode(TG,CTG,AG,NoCRG,CriticalRG, NonCriticalRG,ClusterToMove,CurrentNode,logging)
-
             DestNode = random.choice(AG.nodes())
             if Config.EnablePartitioning:
                 while(CTG.node[ClusterToMove]['Criticality']!=AG.node[DestNode]['Region']):
@@ -62,6 +62,7 @@ def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SH
         Scheduler.ScheduleAll(TG,AG,SHM,False,DetailedReport)
 
         CurrentCost=Mapping_Functions.CostFunction(TG,AG,SHM,DetailedReport)
+        MappingProcessFile.write(Mapping_Functions.MappingIntoString(TG)+"\n")
         MappingCostFile.write(str(CurrentCost)+"\n")
         if CurrentCost <= BestCost:
             if CurrentCost < BestCost:
@@ -94,12 +95,15 @@ def OptimizeMappingIterativeLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriti
     if Report:print "INITIAL COST:",StartingCost
     MappingCostFile = open('Generated_Files/Internal/LocalSearchMappingCost.txt','w')
     MappingCostFile.close()
+    MappingProcessFile = open('Generated_Files/Internal/MappingProcess.txt','w')
+    MappingProcessFile.close()
     for Iteration in range(0,IterationNum):
         if DetailedReport:print "\tITERATION:",Iteration
         (CurrentTG,CurrentCTG,CurrentAG) = OptimizeMappingLocalSearch(TG,CTG,AG,NoCRG, CriticalRG, NonCriticalRG,
                                                                       SHM,SubIteration,
                                                                       False,DetailedReport,logging,
-                                                                      "LocalSearchMappingCost")
+                                                                      "LocalSearchMappingCost",
+                                                                      "MappingProcess")
         if CurrentTG is not False:
             CurrentCost= Mapping_Functions.CostFunction(CurrentTG,CurrentAG,SHM,False)
             if CurrentCost <= BestCost:

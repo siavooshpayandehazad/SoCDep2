@@ -3,7 +3,7 @@ __author__ = 'siavoosh'
 import copy
 
 from ConfigAndPackages import Config
-from Mapper import Mapping, Mapping_Reports
+from Mapper import Mapping, Mapping_Reports, Mapping_Animation
 from Scheduler import Scheduling_Reports
 from SystemHealthMonitoring import SystemHealthMonitor, SHM_Reports, SHM_Functions, TestSchedulingUnit
 from TaskGraphUtilities import Task_Graph_Reports, TG_Functions, TG_Test
@@ -71,6 +71,6 @@ def InitializeSystem(logging):
     Scheduling_Reports.GenerateGanttCharts(TG, AG)
     TrafficTableGenerator.GenerateNoximTrafficTable()
     TrafficTableGenerator.GenerateGSNoCTrafficTable(AG, TG)
-
-
+    if Config.GenMappingFrames:
+        Mapping_Animation.GenerateFrames(TG, AG, SHM)
     return TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, PMCG
