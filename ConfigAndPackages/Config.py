@@ -165,3 +165,4 @@ TFaultDiagnosable = None         # one-step t-fault diagnosable system, if set t
 #           VISUALIZATION Config
 ###############################################
 GenMappingFrames = True         # If True, generates the frames for animation
+FrameResolution = 20            # Resolution in dpi. for resolutions above 50, text is added to the tasks

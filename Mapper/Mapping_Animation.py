@@ -21,7 +21,7 @@ def GenerateFrames(TG, AG, SHM):
     Bound = int(log10(2 * Config.MaxNumberOfIterations)) + 1   # UpperBoundOnFileNumberDigits
     Counter = 0
     while line != '':
-        fig = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
+        fig = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size), dpi=Config.FrameResolution)
         # initialize an empty list of cirlces
         MappedPEList = line.split(" ")
         for node in AG.nodes():
@@ -62,9 +62,12 @@ def GenerateFrames(TG, AG, SHM):
                     b = random.randrange(0,255)
                     color = '#%02X%02X%02X' % (r,g,b)
                     circle = plt.Circle((Location[0]/XSize+OffsetX, Location[1]/YSize+OffsetY), 0.01, fc=color)
+                    if Config.FrameResolution >= 50:
+                        plt.text(Location[0]/XSize+OffsetX, Location[1]/YSize+OffsetY -  0.001,task)
                     plt.gca().add_patch(circle)
         fig.text(0.25, 0.02, "Iteration:" + str(Counter), fontsize=35)
-        plt.savefig("GraphDrawings/Mapping_Animation_Material/Mapping_Anim_Fig"+ str(Counter).zfill(Bound) + ".png", dpi=20)
+        plt.savefig("GraphDrawings/Mapping_Animation_Material/Mapping_Anim_Fig"+ str(Counter).zfill(Bound) + ".png",
+                    dpi=Config.FrameResolution)
         plt.clf()
         Counter += 1
         line = MappingProcessFile.readline()
