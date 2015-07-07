@@ -75,6 +75,7 @@ def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SH
             TG=copy.deepcopy(BestTG)
             AG=copy.deepcopy(BestAG)
             CTG=copy.deepcopy(BestCTG)
+            MappingProcessFile.write(Mapping_Functions.MappingIntoString(TG)+"\n")
     MappingCostFile.close()
     if Report:print "-------------------------------------"
     if Report:print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost,"\tAFTER",IterationNum,"ITERATIONS"

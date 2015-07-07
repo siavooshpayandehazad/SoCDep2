@@ -104,9 +104,14 @@ Clustering_CostFunctionType = 'SD'
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch',
-Mapping_Function = 'IterativeLocalSearch'
+Mapping_Function = 'LocalSearch'
 LocalSearchIteration = 100
 IterativeLocalSearchIterations = 20
+
+if Mapping_Function == 'LocalSearch':
+    MaxNumberOfIterations = LocalSearchIteration
+elif Mapping_Function == 'IterativeLocalSearch':
+    MaxNumberOfIterations = LocalSearchIteration * IterativeLocalSearchIterations
 
 # here you can change the type of cost function used for mapping the available cost functions are:
 # 'SD' = Com_MakeSpan_SD + Node_MakeSpan_SD
@@ -159,4 +164,4 @@ TFaultDiagnosable = None         # one-step t-fault diagnosable system, if set t
 ###############################################
 #           VISUALIZATION Config
 ###############################################
-GenMappingFrames = False        # If True, generates the frames for animation
+GenMappingFrames = True         # If True, generates the frames for animation

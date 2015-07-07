@@ -2,13 +2,12 @@
 
 # Here we want to animate the mapping process...
 
-
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from ConfigAndPackages import Config
+from math import log10, ceil
 from ArchGraphUtilities import AG_Functions
 import random
-
 
 
 def GenerateFrames(TG, AG, SHM):
@@ -18,11 +17,12 @@ def GenerateFrames(TG, AG, SHM):
     XSize = float(Config.Network_X_Size)
     YSize = float(Config.Network_Y_Size)
     line = MappingProcessFile.readline()
+
+    Bound = int(log10(2 * Config.MaxNumberOfIterations)) + 1   # UpperBoundOnFileNumberDigits
     Counter = 0
     while line != '':
         fig = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
         # initialize an empty list of cirlces
-
         MappedPEList = line.split(" ")
         for node in AG.nodes():
             Location = AG_Functions.ReturnNodeLocation(node)
@@ -63,8 +63,8 @@ def GenerateFrames(TG, AG, SHM):
                     color = '#%02X%02X%02X' % (r,g,b)
                     circle = plt.Circle((Location[0]/XSize+OffsetX, Location[1]/YSize+OffsetY), 0.01, fc=color)
                     plt.gca().add_patch(circle)
-        fig.text(0.25, 0.02, line, fontsize=35)
-        plt.savefig("GraphDrawings/Mapping_Animation_Material/Mapping_Anim_Fig"+ str(Counter) + ".png", dpi=20)
+        fig.text(0.25, 0.02, "Iteration:" + str(Counter), fontsize=35)
+        plt.savefig("GraphDrawings/Mapping_Animation_Material/Mapping_Anim_Fig"+ str(Counter).zfill(Bound) + ".png", dpi=20)
         plt.clf()
         Counter += 1
         line = MappingProcessFile.readline()
