@@ -221,5 +221,6 @@ def GenerateGanttCharts(TG,AG):
         ax1.xaxis.set_ticks_position('bottom')
     plt.savefig("GraphDrawings/Scheduling.png")
     plt.clf()
+    plt.close(fig)
     print  "SCHEDULING GANTT CHARTS READY..."
     return None

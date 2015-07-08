@@ -51,6 +51,8 @@ def DrawMappingDistribution(AG, SHM):
     fig_Util.savefig("GraphDrawings/Mapping_Util.png")
     fig_Num.clf()
     fig_Util.clf()
+    plt.close(fig_Num)
+    plt.close(fig_Util)
     return None
 
 
