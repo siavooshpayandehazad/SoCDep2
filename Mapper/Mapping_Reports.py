@@ -108,7 +108,8 @@ def DrawMapping(TG, AG, SHM):
     networkx.draw(TG, POS, with_labels=True, node_size=700, node_color=ColorList, width=0, alpha = 0.5)
     fig.text(0.25, 0.02, 'Mapping visualization for network nodes', fontsize=35)
     fig.savefig("GraphDrawings/Mapping.png")
-    fig.clf()
+    plt.clf()
+    plt.close(fig)
     return None
 
 def VizMappingOpt(CostFileName):

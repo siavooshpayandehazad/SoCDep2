@@ -5,7 +5,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from ConfigAndPackages import Config
-from math import log10, ceil
+from math import log10
 from ArchGraphUtilities import AG_Functions
 import random
 
@@ -69,6 +69,7 @@ def GenerateFrames(TG, AG, SHM):
         plt.savefig("GraphDrawings/Mapping_Animation_Material/Mapping_Anim_Fig"+ str(Counter).zfill(Bound) + ".png",
                     dpi=Config.FrameResolution)
         plt.clf()
+        plt.close(fig)
         Counter += 1
         line = MappingProcessFile.readline()
     MappingProcessFile.close()
