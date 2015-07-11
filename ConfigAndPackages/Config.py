@@ -98,7 +98,7 @@ ClusteringIteration = 1000
 # here you can change the type of cost function used for Clustering the available cost functions are:
 # 'SD' = Com_Weight_SD + Node_Util_SD
 # 'SD+MAX' = Com_Weight_SD + MaxComWeight + Node_Util_SD + MaxNodeUtil
-Clustering_CostFunctionType = 'SD'
+Clustering_CostFunctionType = 'SD+MAX'
 ################################################
 #          Mapping Function  Config
 ################################################
@@ -161,8 +161,10 @@ else:
 OneStepDiagonosable = False      # set to False if you need Sequentially diagnosable PMCG
 TFaultDiagnosable = None         # one-step t-fault diagnosable system, if set to none, default value would be
                                  # (n-1)/2
+NodeTestExeTime = 2
+NodeTestComWeight = 2
 ###############################################
 #           VISUALIZATION Config
 ###############################################
-GenMappingFrames = True         # If True, generates the frames for animation
+GenMappingFrames = False         # If True, generates the frames for animation
 FrameResolution = 20            # Resolution in dpi. for resolutions above 50, text is added to the tasks

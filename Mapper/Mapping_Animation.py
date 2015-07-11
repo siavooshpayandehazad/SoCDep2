@@ -66,7 +66,7 @@ def GenerateFrames(TG, AG, SHM):
                         plt.text(Location[0]/XSize+OffsetX, Location[1]/YSize+OffsetY -  0.001,task)
                     plt.gca().add_patch(circle)
         fig.text(0.25, 0.02, "Iteration:" + str(Counter), fontsize=35)
-        plt.savefig("GraphDrawings/Mapping_Animation_Material/Mapping_Anim_Fig"+ str(Counter).zfill(Bound) + ".png",
+        plt.savefig("GraphDrawings/Mapping_Animation_Material/Mapping_Frame_"+ str(Counter).zfill(Bound) + ".png",
                     dpi=Config.FrameResolution)
         plt.clf()
         plt.close(fig)

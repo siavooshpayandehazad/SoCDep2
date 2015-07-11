@@ -87,6 +87,24 @@ def GenerateSequentiallyDiagnosablePMCG(AG,SHM):
             Counter += 1
     return PMCG
 
+
+
+def GenerateTestTGFromPMCG(PMCG):
+    """
+    Generates a test task graph to be scheduled in between the Tasks from TG on the
+    Network to support PMCG. each edge in PMCG turns into a pair of tasks for a specific
+    functional test to be mapped on the network.
+    :param PMCG: PMC Graph
+    :return: Test Task Graph
+    """
+    TTG = networkx.DiGraph()
+    for edge in PMCG.edges():
+        TTG.add_node("S"+str(edge[0])+str(edge[1]), TET=Config.NodeTestExeTime, Node=edge[0])
+        TTG.add_node("R"+str(edge[0])+str(edge[1]), TET=1, Node=edge[1])
+        TTG.add_edge("S"+str(edge[0])+str(edge[1]),"R"+str(edge[0])+str(edge[1]), Weight=Config.NodeTestComWeight)
+    return TTG
+
+
 def DrawPMCG(PMCG):
     print "==========================================="
     print "PREPARING PMC GRAPH (PMCG) DRAWINGS..."
@@ -97,4 +115,16 @@ def DrawPMCG(PMCG):
     plt.savefig("GraphDrawings/PMCG")
     plt.clf()
     print "PMC GRAPH (PMCG) DRAWING IS READY..."
+    return None
+
+def DrawTTG(TTG):
+    print "==========================================="
+    print "PREPARING TEST TASK GRAPH (TTG) DRAWINGS..."
+    pos = networkx.circular_layout(TTG)
+    networkx.draw_networkx_nodes(TTG, pos, node_size=500, color='b')
+    networkx.draw_networkx_edges(TTG, pos)
+    networkx.draw_networkx_labels(TTG, pos)
+    plt.savefig("GraphDrawings/TTG")
+    plt.clf()
+    print "TEST TASK GRAPH (TTG) DRAWING IS READY..."
     return None

@@ -112,7 +112,7 @@ ToDo:
       a sense about the system state...
 
     - We need to implement some test routine where we can schedule Test-Tasks where
-      one PE tests another. we can use PMC model for this.
+      one PE tests another. we can use TTG made based on PMC model for this.
 
     - can we generate some file based on scheduling to feed in Noxim?
 

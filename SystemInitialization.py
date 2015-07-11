@@ -44,6 +44,8 @@ def InitializeSystem(logging):
     else:
         PMCG = TestSchedulingUnit.GenerateSequentiallyDiagnosablePMCG(AG,SHM)
     TestSchedulingUnit.DrawPMCG(PMCG)
+    TTG = TestSchedulingUnit.GenerateTestTGFromPMCG(PMCG)
+    TestSchedulingUnit.DrawTTG(TTG)
     ####################################################################
     # in case of partitioning, we have to route based on different Route-graphs
     if Config.EnablePartitioning:
