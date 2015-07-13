@@ -88,7 +88,7 @@ class SystemHealthMonitor:
 
     def RestoreBrokenNode(self, Node, Report):
         if Report: print "==========================================="
-        self.SHM.node[Node]['NodeHealth'] = False
+        self.SHM.node[Node]['NodeHealth'] = True
         if Report: print "\033[33mSHM::\033[0m NODE", Node, "IS RESTORED..."
 
     ##################################################
