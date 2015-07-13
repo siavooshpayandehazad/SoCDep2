@@ -81,6 +81,7 @@ ScheduleAndDepend
  |          |
  |          |----- SystemHealthMonitor
  |          |----- SHM_Reports
+ |          |----- SHM_Test
  |          |----- SHM_Functions
  |          |----- TestSchedulingUnit
  |

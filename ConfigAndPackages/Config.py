@@ -9,6 +9,7 @@ ProgramRunTime = 9      # in seconds
 DebugInfo = True
 DebugDetails = False
 LoGDirectory = "LOGS"
+TestMode = True
 ################################################
 #          TG  Config
 ################################################

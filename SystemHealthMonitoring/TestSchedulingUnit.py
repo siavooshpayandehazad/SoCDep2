@@ -128,3 +128,7 @@ def DrawTTG(TTG):
     plt.clf()
     print "TEST TASK GRAPH (TTG) DRAWING IS READY..."
     return None
+
+# TODO: Schedule TTG
+# we probably need to add a type as attribute to the tasks, which shows if
+# they belong to testing or normal operation...
