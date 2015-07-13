@@ -10,6 +10,7 @@ DebugInfo = True
 DebugDetails = False
 LoGDirectory = "LOGS"
 TestMode = True
+EventDrivenFaultInjection = False
 ################################################
 #          TG  Config
 ################################################
@@ -77,7 +78,7 @@ NumberOfRects = 5
 # Sample for 4X4 network:
 # ListOfBrokenLinks = [(0, 1), (0, 4)]
 # For those who don't need broken links
-ListOfBrokenLinks = []
+ListOfBrokenLinks = [(0,1)]
 # ==========================
 # List of broken PE
 ListOfBrokenPEs = [1]
@@ -91,7 +92,7 @@ ListOfBrokenTurns = {}
 # For aging, we need to give the tool a dictionary of nodes and their speed down...
 # so {1: 0.3} means that node 1's speed has decreased by 30% from its current state.
 # I know its a dictionary too
-ListOfAgedPEs = {1: 0.3, 2: 0.1}
+ListOfAgedPEs = {3: 0.3, 2: 0.1}
 ################################################
 #          Clustering Function  Config
 ################################################

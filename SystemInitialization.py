@@ -29,10 +29,11 @@ def InitializeSystem(logging):
         SHM_Test.TestSHM(AG)
     SHM = SystemHealthMonitor.SystemHealthMonitor()
     SHM.SetUp_NoC_SystemHealthMap(AG, Config.TurnsHealth)
-    # SHM_Reports.Report_NoC_SystemHealthMap()
-    # Here we are injecting initial faults of the system
+    # Here we are injecting initial faults of the system: we assume these fault
+    # information is obtained by post manufacturing system diagnosis
     SHM_Functions.ApplyInitialFaults(SHM)
-
+    SHM_Reports.DrawSHM(SHM)
+    # SHM_Reports.Report_NoC_SystemHealthMap()
     if Config.SetRoutingFromFile:
         NoCRG = Routing.GenerateNoCRouteGraphFromFile(AG, SHM, Config.RoutingFilePath, Config.DebugInfo, Config.DebugDetails)
     else:

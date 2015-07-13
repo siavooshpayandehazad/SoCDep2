@@ -18,7 +18,7 @@ def TestSHM(AG):
 
 def TestBreaking(SHM):
     for Node in SHM.SHM.nodes():
-        SHM.BreakNode(Node,False)
+        SHM.BreakNode(Node, False)
         if SHM.SHM.node[Node]['NodeHealth']:
             raise ValueError('SHM BreakNode DID NOT WORK FOR NODE', Node)
         for Turn in SHM.SHM.node[Node]['TurnsHealth']:
@@ -26,7 +26,7 @@ def TestBreaking(SHM):
             if SHM.SHM.node[Node]['TurnsHealth'][Turn]:
                 raise ValueError('SHM BreakTurn DID NOT WORK FOR NODE:', Node, 'TURN:', Turn)
     for link in SHM.SHM.edges():
-        SHM.BreakLink(link,False)
+        SHM.BreakLink(link, False)
         if SHM.SHM.edge[link[0]][link[1]]['LinkHealth']:
             raise ValueError('SHM BreakLink DID NOT WORK FOR LINK', link)
     print "  - BREAKING TESTS PASSED..."
@@ -34,7 +34,7 @@ def TestBreaking(SHM):
 
 def TestRestore(SHM):
     for Node in SHM.SHM.nodes():
-        SHM.RestoreBrokenNode(Node,False)
+        SHM.RestoreBrokenNode(Node, False)
         if not SHM.SHM.node[Node]['NodeHealth']:
             raise ValueError('SHM RestoreBrokenNode DID NOT WORK FOR NODE', Node)
         for Turn in SHM.SHM.node[Node]['TurnsHealth']:
@@ -42,10 +42,11 @@ def TestRestore(SHM):
             if not SHM.SHM.node[Node]['TurnsHealth'][Turn]:
                 raise ValueError('SHM RestoreBrokenTurn DID NOT WORK FOR NODE:', Node, 'TURN:', Turn)
     for link in SHM.SHM.edges():
-        SHM.RestoreBrokenLink(link,False)
+        SHM.RestoreBrokenLink(link, False)
         if not SHM.SHM.edge[link[0]][link[1]]['LinkHealth']:
             raise ValueError('SHM RestoreBrokenLink DID NOT WORK FOR LINK', link)
     print "  - RESTORE TESTS PASSED..."
+
 
 def TestAging(SHM):
     for Node in SHM.SHM.nodes():

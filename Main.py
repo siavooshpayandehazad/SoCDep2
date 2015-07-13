@@ -57,16 +57,17 @@ def FaultEvent():
     # here we actually insert the fault in the system
     SHM_Functions.ApplyFaultEvent(AG, SHM, NoCRG, FaultLocation, FaultType)
 
-TimeUntilNextFault = numpy.random.normal(Config.MTBF,Config.SD4MTBF)
-print "TIME UNTIL NEXT FAULT:", "%.2f" % TimeUntilNextFault, "Sec"
-timer = threading.Timer(TimeUntilNextFault, FaultEvent)
-timer.start()
+if Config.EventDrivenFaultInjection:
+    TimeUntilNextFault = numpy.random.normal(Config.MTBF,Config.SD4MTBF)
+    print "TIME UNTIL NEXT FAULT:", "%.2f" % TimeUntilNextFault, "Sec"
+    timer = threading.Timer(TimeUntilNextFault, FaultEvent)
+    timer.start()
 
-while True:
-    if time.time() - SystemStartingTime > Config.ProgramRunTime:
-        break
+    while True:
+        if time.time() - SystemStartingTime > Config.ProgramRunTime:
+            break
 
-timer.cancel()
-timer.join()
+    timer.cancel()
+    timer.join()
 
 logging.info('Logging finished...')
