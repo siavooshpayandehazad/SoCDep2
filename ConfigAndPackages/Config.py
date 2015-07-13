@@ -159,9 +159,9 @@ else:
 ###############################################
 #           PMCG Config
 ###############################################
-OneStepDiagonosable = False      # set to False if you need Sequentially diagnosable PMCG
-TFaultDiagnosable = None         # one-step t-fault diagnosable system, if set to none, default value would be
-                                 # (n-1)/2
+OneStepDiagonosable = False     # set to False if you need Sequentially diagnosable PMCG
+TFaultDiagnosable = None        # one-step t-fault diagnosable system, if set to none, default value would be
+                                # (n-1)/2
 NodeTestExeTime = 2
 NodeTestComWeight = 2
 ###############################################
