@@ -112,10 +112,10 @@ IterativeLocalSearchIterations = 20
 #######################
 SimulatedAnnealingIteration = 10000
 SA_InitialTemp = 50
-# Available Cooling Methods: 'Linear'
-CoolingMethod = 'Linear'
+# Available Cooling Methods: 'Linear', 'Exponential'
+CoolingMethod = 'Exponential'
+SA_Alpha = 0.999  # only usable under Exponential mode
 ######################
-
 if Mapping_Function == 'LocalSearch':
     MaxNumberOfIterations = LocalSearchIteration
 elif Mapping_Function == 'IterativeLocalSearch':

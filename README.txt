@@ -123,7 +123,9 @@ ToDo:
 
     - going 3D
 
-    - Simulated annealing and Genetics Algorithm for Mapping
+    - Genetics Algorithm for Mapping
+
+    - Add logarithmic and Boltzmann cooling for SA
 
     - Support for adaptive routing! but have to solve some scheduling issues... 
       have no idea how to schedule on multiple paths... should be stochastic... 
