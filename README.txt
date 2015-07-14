@@ -156,12 +156,18 @@ ToDo:
 
     - we need to have a deadline for the whole task graph
 
+    - Can we implement something like Core-Cannibalization method for Router's control unit etc.?
+
+    - Can we have some sort of local repair?
+
     - for later time we need to schedule flits in the critical domain with a model of the router with
       latency etc considered (low priority- thesis of Mihkel Tagel)
 
     - we need to add 0 weight communication between the tasks just to stablish
       precedence without data dependence. (we can have this in the data dependence assumptions)
 
+    - can we identify two cores that we can just swap their mapped tasks and it doesnt change any
+      other traffic on the network?
     --------------------------------------------------
     List of functions without DocString:
 
@@ -172,3 +178,8 @@ ToDo:
 
     --------------------------------------------------
     List of functions without Test:
+
+    --------------------------------------------------
+    To be Read:
+    - GigaNoC architecture (Self-optimization of MPSoCs Targeting Resource Efficiency and Fault Tolerance-2009)
+    - Core Salvaging

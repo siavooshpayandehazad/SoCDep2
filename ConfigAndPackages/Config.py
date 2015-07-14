@@ -17,9 +17,9 @@ EventDrivenFaultInjection = False
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
 TG_Type = 'RandomDependent'
 # For Random TG_Type:
-NumberOfTasks = 20
+NumberOfTasks = 50
 NumberOfCriticalTasks = 0
-NumberOfEdges = 15
+NumberOfEdges = 45
 WCET_Range = 30
 EdgeWeightRange = 7
 Release_Range = 5      # task release time range
@@ -54,7 +54,7 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 ################################################
 # Todo: introduce more turn models
 # Available Turn Models : 'FULL_TurnModel', 'XY_TurnModel', 'WestFirst_TurnModel', 'NorthLast_TurnModel'
-UsedTurnModel = PackageFile.WestFirst_TurnModel
+UsedTurnModel = PackageFile.XY_TurnModel
 RoutingFilePath = "User_Inputs/RoutingFile.txt"
 SetRoutingFromFile = False
 ################################################
@@ -114,7 +114,7 @@ SimulatedAnnealingIteration = 10000
 SA_InitialTemp = 50
 # Available Cooling Methods: 'Linear', 'Exponential'
 CoolingMethod = 'Exponential'
-SA_Alpha = 0.999  # only usable under Exponential mode
+SA_Alpha = 0.9995  # only usable under Exponential mode
 ######################
 if Mapping_Function == 'LocalSearch':
     MaxNumberOfIterations = LocalSearchIteration
