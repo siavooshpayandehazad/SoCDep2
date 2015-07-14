@@ -37,6 +37,7 @@ def ReportTheEvent(FaultLocation, FaultType):
     print StringToPrint
     return None
 
+
 def ReportMPM(SHM):
         print "==========================================="
         print "      REPORTING MOST PROBABLE MAPPING "
@@ -44,6 +45,7 @@ def ReportMPM(SHM):
         for item in SHM.MPM:
             print "KEY:",item,"\t\tMAPPING:",SHM.MPM[item]
         return None
+
 
 def DrawSHM(SHM):
     print "==========================================="
@@ -99,25 +101,25 @@ def DrawSHM(SHM):
         dx = ((DestinLoc[0] - SourceLoc [0])/XSize)
         dy = ((DestinLoc[1] - SourceLoc [1])/YSize)
         if dx == 0:
-            if dy < 0:
-                X = SourceLoc[0]/XSize + 0.09
-                Y = SourceLoc[1]/YSize + 0.0
+            if dy > 0:
+                X = SourceLoc[0]/XSize + 0.11
+                Y = SourceLoc[1]/YSize + 0.15
                 plt.gca().add_patch(patches.Arrow(X, Y, 0, 0.05, width=0.01, color= color))
             else:
-                X = SourceLoc[0]/XSize + 0.11
-                Y = SourceLoc[1]/YSize + 0.2
+                X = SourceLoc[0]/XSize + 0.09
+                Y = SourceLoc[1]/YSize + 0.05
+
                 plt.gca().add_patch(patches.Arrow(X, Y, 0, -0.05, width=0.01, color= color))
 
         elif dy == 0:
-            if dx < 0:
-                X = SourceLoc[0]/XSize -0.01
-                Y = SourceLoc[1]/YSize + 0.09
+            if dx > 0:
+                X = SourceLoc[0]/XSize + 0.15
+                Y = SourceLoc[1]/YSize + 0.11
                 plt.gca().add_patch(patches.Arrow(X, Y, 0.05, 0, width=0.01, color= color))
             else:
-                X = SourceLoc[0]/XSize + 0.21
-                Y = SourceLoc[1]/YSize + 0.11
+                X = SourceLoc[0]/XSize + 0.05
+                Y = SourceLoc[1]/YSize + 0.09
                 plt.gca().add_patch(patches.Arrow(X, Y, -0.05, 0, width=0.01, color= color))
-
         else:
             raise ValueError("Can not draw link", link)
 
