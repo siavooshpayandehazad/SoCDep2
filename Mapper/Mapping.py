@@ -6,7 +6,7 @@ from ConfigAndPackages import Config
 import Scheduler
 import Mapping_Functions, Mapping_Reports, Mapping_Animation
 from Clusterer import Clustering, ClusteringReports
-from Mapping_Heuristics import SimpleGreedy,Local_Search
+from Mapping_Heuristics import SimpleGreedy,Local_Search,SimulatedAnnealing
 from Scheduler import Scheduler,Scheduling_Reports
 
 
@@ -37,7 +37,8 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
-    elif Config.Mapping_Function == 'LocalSearch' or Config.Mapping_Function == 'IterativeLocalSearch':
+    elif Config.Mapping_Function == 'LocalSearch' or Config.Mapping_Function == 'IterativeLocalSearch'\
+         or Config.Mapping_Function == 'SimulatedAnnealing':
         if Config.TG_Type == 'RandomDependent' or Config.TG_Type == 'Manual':
             pass
         else:
@@ -80,6 +81,7 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                     TG = copy.deepcopy(BestTG)
                     AG = copy.deepcopy(BestAG)
                     del BestTG,BestCTG,BestAG
+                    Mapping_Reports.VizMappingOpt('LocalSearchMappingCost')
                 elif Config.Mapping_Function == 'IterativeLocalSearch':
                     (BestTG, BestCTG, BestAG) = Local_Search.OptimizeMappingIterativeLocalSearch(TG, CTG, AG, NoCRG,
                                                                                                  CriticalRG,
@@ -92,7 +94,13 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                     TG = copy.deepcopy(BestTG)
                     AG = copy.deepcopy(BestAG)
                     del BestTG, BestCTG, BestAG
-                Mapping_Reports.VizMappingOpt('LocalSearchMappingCost')
+                    Mapping_Reports.VizMappingOpt('LocalSearchMappingCost')
+                elif Config.Mapping_Function == 'SimulatedAnnealing':
+                    (BestTG, BestCTG, BestAG) = SimulatedAnnealing.OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG,
+                                                                                      NonCriticalRG, SHM,
+                                                                                      Config.SimulatedAnnealingIteration,
+                                                                                      'SA_MappingCost', logging)
+                    Mapping_Reports.VizMappingOpt('SA_MappingCost')
                 Scheduling_Reports.ReportMappedTasks(AG, logging)
                 Mapping_Functions.CostFunction(TG, AG, SHM, True)
                 # Mapping_Animation.AnimateMapping()
@@ -104,6 +112,4 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
         else :
             print "Initial Clustering Failed...."
             return None, None
-    elif Config.Mapping_Function == 'SimulatedAnnealing':
-        raise ValueError('SORRY, SIMULATED ANNEALING HAS NOT BEEN IMPLEMENTED YET...')
     return None, None

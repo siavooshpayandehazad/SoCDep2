@@ -105,15 +105,19 @@ Clustering_CostFunctionType = 'SD+MAX'
 #          Mapping Function  Config
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
-#                           'LocalSearch','IterativeLocalSearch',
-Mapping_Function = 'LocalSearch'
+#                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing'
+Mapping_Function = 'SimulatedAnnealing'
 LocalSearchIteration = 100
 IterativeLocalSearchIterations = 20
+SimulatedAnnealingIteration = 10000
+SA_InitialTemp = 50
 
 if Mapping_Function == 'LocalSearch':
     MaxNumberOfIterations = LocalSearchIteration
 elif Mapping_Function == 'IterativeLocalSearch':
     MaxNumberOfIterations = LocalSearchIteration * IterativeLocalSearchIterations
+elif Mapping_Function == 'SimulatedAnnealing':
+    MaxNumberOfIterations = SimulatedAnnealingIteration
 
 # here you can change the type of cost function used for mapping the available cost functions are:
 # 'SD' = Com_MakeSpan_SD + Node_MakeSpan_SD

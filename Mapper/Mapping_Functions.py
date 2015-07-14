@@ -161,6 +161,8 @@ def CostFunction(TG, AG, SHM, Report):
         print "LINKS MAKE SPAN MAX:", LinkMakeSpan_Max
         print "LINKS MAKE SPAN STANDARD DEVIATION:", LinkMakeSpan_Stdev
         print "MAPPING SCHEDULING COST:", Cost
+    if Cost == 0:
+            raise ValueError("Mapping with 0 cost... Something is wrong here...")
     return Cost
 
 

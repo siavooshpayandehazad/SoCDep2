@@ -6,6 +6,7 @@ import matplotlib.patches as patches
 from ConfigAndPackages import Config
 from ArchGraphUtilities import AG_Functions
 
+
 def Report_NoC_SystemHealthMap(SHM):
         print "==========================================="
         print "      REPORTING SYSTEM HEALTH MAP"
@@ -43,7 +44,7 @@ def ReportMPM(SHM):
         print "      REPORTING MOST PROBABLE MAPPING "
         print "==========================================="
         for item in SHM.MPM:
-            print "KEY:",item,"\t\tMAPPING:",SHM.MPM[item]
+            print "KEY:", item, "\t\tMAPPING:", SHM.MPM[item]
         return None
 
 
@@ -58,13 +59,13 @@ def DrawSHM(SHM):
         Location = AG_Functions.ReturnNodeLocation(node)
         X = Location[0]/XSize
         Y = Location[1]/YSize
-        CircleRouter = plt.Circle((X+0.1, Y+0.1), 0.05, facecolor='w')
+        CircleRouter = plt.Circle((X + 0.1, Y + 0.1), 0.05, facecolor='w')
         plt.gca().add_patch(CircleRouter)
         if SHM.SHM.node[node]['NodeHealth']:
             color = 'w'
         else:
             color = 'r'
-        CircleNode = plt.Circle((X+0.14, Y+0.06), 0.01, facecolor=color)
+        CircleNode = plt.Circle((X + 0.14, Y + 0.06), 0.01, facecolor=color)
         plt.gca().add_patch(CircleNode)
 
         for turn in SHM.SHM.node[node]['TurnsHealth']:
@@ -74,21 +75,21 @@ def DrawSHM(SHM):
                 color = 'r'
 
             if turn == 'S2E':
-                plt.gca().add_patch(patches.Arrow(X+0.11, Y+0.075, 0.015, 0.015, width=0.01, color= color))
+                plt.gca().add_patch(patches.Arrow(X + 0.11, Y + 0.075, 0.015, 0.015, width=0.01, color=color))
             elif turn == 'E2S':
-                plt.gca().add_patch(patches.Arrow(X+0.135, Y+0.09, -0.015, -0.015, width=0.01, color= color))
+                plt.gca().add_patch(patches.Arrow(X + 0.135, Y + 0.09, -0.015, -0.015, width=0.01, color=color))
             elif turn == 'W2N':
-                plt.gca().add_patch(patches.Arrow(X+0.065, Y+0.105, 0.015, 0.015, width=0.01, color= color))
+                plt.gca().add_patch(patches.Arrow(X + 0.065, Y + 0.105, 0.015, 0.015, width=0.01, color=color))
             elif turn == 'N2W':
-                plt.gca().add_patch(patches.Arrow(X+0.09, Y+0.12, -0.015, -0.015, width=0.01, color= color))
+                plt.gca().add_patch(patches.Arrow(X + 0.09, Y + 0.12, -0.015, -0.015, width=0.01, color=color))
             elif turn == 'N2E':
-                plt.gca().add_patch(patches.Arrow(X+0.12, Y+0.12, 0.015, -0.015, width=0.01, color= color))
+                plt.gca().add_patch(patches.Arrow(X + 0.12, Y + 0.12, 0.015, -0.015, width=0.01, color=color))
             elif turn == 'E2N':
-                plt.gca().add_patch(patches.Arrow(X+0.125, Y+0.105, -0.015, 0.015, width=0.01, color= color))
+                plt.gca().add_patch(patches.Arrow(X + 0.125, Y + 0.105, -0.015, 0.015, width=0.01, color=color))
             elif turn == 'W2S':
-                plt.gca().add_patch(patches.Arrow(X+0.075, Y+0.09, 0.015, -0.015, width=0.01, color= color))
+                plt.gca().add_patch(patches.Arrow(X + 0.075, Y + 0.09, 0.015, -0.015, width=0.01, color=color))
             elif turn == 'S2W':
-                plt.gca().add_patch(patches.Arrow(X+0.080, Y+0.075, -0.015, 0.015, width=0.01, color= color))
+                plt.gca().add_patch(patches.Arrow(X + 0.080, Y + 0.075, -0.015, 0.015, width=0.01, color=color))
 
     for link in SHM.SHM.edges():
         if SHM.SHM.edge[link[0]][link[1]]['LinkHealth']:
@@ -97,29 +98,28 @@ def DrawSHM(SHM):
             color = 'r'
         SourceLoc = AG_Functions.ReturnNodeLocation(link[0])
         DestinLoc = AG_Functions.ReturnNodeLocation(link[1])
-
-        dx = ((DestinLoc[0] - SourceLoc [0])/XSize)
-        dy = ((DestinLoc[1] - SourceLoc [1])/YSize)
+        dx = ((DestinLoc[0] - SourceLoc[0])/XSize)
+        dy = ((DestinLoc[1] - SourceLoc[1])/YSize)
         if dx == 0:
             if dy > 0:
                 X = SourceLoc[0]/XSize + 0.11
                 Y = SourceLoc[1]/YSize + 0.15
-                plt.gca().add_patch(patches.Arrow(X, Y, 0, 0.05, width=0.01, color= color))
+                plt.gca().add_patch(patches.Arrow(X, Y, 0, 0.05, width=0.01, color=color))
             else:
                 X = SourceLoc[0]/XSize + 0.09
                 Y = SourceLoc[1]/YSize + 0.05
 
-                plt.gca().add_patch(patches.Arrow(X, Y, 0, -0.05, width=0.01, color= color))
+                plt.gca().add_patch(patches.Arrow(X, Y, 0, -0.05, width=0.01, color=color))
 
         elif dy == 0:
             if dx > 0:
                 X = SourceLoc[0]/XSize + 0.15
                 Y = SourceLoc[1]/YSize + 0.11
-                plt.gca().add_patch(patches.Arrow(X, Y, 0.05, 0, width=0.01, color= color))
+                plt.gca().add_patch(patches.Arrow(X, Y, 0.05, 0, width=0.01, color=color))
             else:
                 X = SourceLoc[0]/XSize + 0.05
                 Y = SourceLoc[1]/YSize + 0.09
-                plt.gca().add_patch(patches.Arrow(X, Y, -0.05, 0, width=0.01, color= color))
+                plt.gca().add_patch(patches.Arrow(X, Y, -0.05, 0, width=0.01, color=color))
         else:
             raise ValueError("Can not draw link", link)
 
