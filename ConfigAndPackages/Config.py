@@ -109,8 +109,12 @@ Clustering_CostFunctionType = 'SD+MAX'
 Mapping_Function = 'SimulatedAnnealing'
 LocalSearchIteration = 100
 IterativeLocalSearchIterations = 20
+#######################
 SimulatedAnnealingIteration = 10000
 SA_InitialTemp = 50
+# Available Cooling Methods: 'Linear'
+CoolingMethod = 'Linear'
+######################
 
 if Mapping_Function == 'LocalSearch':
     MaxNumberOfIterations = LocalSearchIteration

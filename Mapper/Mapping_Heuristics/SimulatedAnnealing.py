@@ -14,6 +14,8 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
     print "STARTING MAPPING OPTIMIZATION...USING SIMULATED ANNEALING..."
     MappingCostFile = open('Generated_Files/Internal/'+CostDataFile+'.txt','a')
     MappingProcessFile = open('Generated_Files/Internal/MappingProcess.txt','w')
+    SATemperatureFile = open('Generated_Files/Internal/SATemp.txt','w')
+
     CurrentTG=copy.deepcopy(TG)
     CurrentAG=copy.deepcopy(AG)
     CurrentCTG=copy.deepcopy(CTG)
@@ -26,6 +28,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
     BestCost = CurrentCost
 
     InitialTemp = Config.SA_InitialTemp
+    SATemperatureFile.write(str(InitialTemp)+"\n")
     Temperature = InitialTemp
     for i in range(0,IterationNum):
         # move to another solution
@@ -43,6 +46,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
             BestAG=copy.deepcopy(NewAG)
             BestCTG=copy.deepcopy(NewCTG)
             BestCost = NewCost
+            print "\033[33m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:","{0:.2f}".format(NewCost)
         # calculate the probability P of accepting the solution
         Prob = CalculateProbability(CurrentCost, NewCost, Temperature)
         # print "Prob:",Prob
@@ -60,11 +64,13 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
             pass
         # update Temp
         MappingProcessFile.write(Mapping_Functions.MappingIntoString(CurrentTG)+"\n")
+        SATemperatureFile.write(str(Temperature)+"\n")
         MappingCostFile.write(str(CurrentCost)+"\n")
         Temperature = NextTemp(InitialTemp, i, IterationNum)
 
     MappingCostFile.close()
     MappingProcessFile.close()
+    SATemperatureFile.close()
     print "-------------------------------------"
     print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost
     print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost),"%"
@@ -72,8 +78,12 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
 
 
 def NextTemp(InitialTemp, Iteration, MaxIteration):
-    Temp =float((MaxIteration-Iteration))/MaxIteration*InitialTemp
+    if Config.CoolingMethod == 'Linear':
+        Temp =float((MaxIteration-Iteration))/MaxIteration*InitialTemp
+    else:
+        raise ValueError('Invalid Cooling Method for SA...')
     return Temp
+
 
 def CalculateProbability(CurrentCost, NewCost, Temperature):
     if NewCost > CurrentCost:
@@ -81,6 +91,7 @@ def CalculateProbability(CurrentCost, NewCost, Temperature):
     else:
         P = 1.0
     return P
+
 
 def MoveToAnotherSolution (TG, CTG, AG, NoCRG, SHM, CriticalRG, NonCriticalRG, logging):
     ClusterToMove= random.choice(CTG.nodes())
