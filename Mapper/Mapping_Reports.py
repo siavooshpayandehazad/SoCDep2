@@ -141,7 +141,8 @@ def VizMappingOpt(CostFileName):
         SolutionNum =  range(0,len(Cost))
         MappingCostFile.close()
 
-        ax1.set_ylabel('Cost')
+        ax1.set_ylabel('Mapping Cost')
+        ax1.set_xlabel('Iteration #')
         ax1.plot(SolutionNum, Cost, 'b', SolutionNum, MinCostList, 'r')
 
         if Config.Mapping_Function == 'IterativeLocalSearch':

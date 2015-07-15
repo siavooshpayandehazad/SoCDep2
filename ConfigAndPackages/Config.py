@@ -78,7 +78,7 @@ NumberOfRects = 5
 # Sample for 4X4 network:
 # ListOfBrokenLinks = [(0, 1), (0, 4)]
 # For those who don't need broken links
-ListOfBrokenLinks = [(0,1)]
+ListOfBrokenLinks = [(0, 1)]
 # ==========================
 # List of broken PE
 ListOfBrokenPEs = [1]

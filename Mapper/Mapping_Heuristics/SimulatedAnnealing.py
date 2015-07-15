@@ -79,7 +79,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
 
 def NextTemp(InitialTemp, Iteration, MaxIteration):
     if Config.CoolingMethod == 'Linear':
-        Temp =float((MaxIteration-Iteration))/MaxIteration*InitialTemp
+        Temp =(float(MaxIteration-Iteration)/MaxIteration)*InitialTemp
     elif Config.CoolingMethod == 'Exponential':
         Temp = InitialTemp * (Config.SA_Alpha**Iteration)
     else:

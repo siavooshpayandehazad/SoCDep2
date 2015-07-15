@@ -6,6 +6,7 @@ from ConfigAndPackages import Config
 import statistics
 import random
 from math import ceil
+from distance import hamming
 
 
 def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Report, logging):
@@ -264,3 +265,13 @@ def MappingIntoString(TG):
     for Task in TG.nodes():
         MappingString += str(TG.node[Task]['Node']) + " "
     return MappingString
+
+
+def HammingDistanceOfMapping(MappingString1, MappingString2):
+    if type(MappingString1) is str and type(MappingString2) is str:
+        if len(MappingString1) == len(MappingString2):
+           return hamming(MappingString1, MappingString2)
+        else:
+            raise ValueError("The input mapping strings are not of same length")
+    else:
+        raise ValueError("The input mapping strings are of wrong types")

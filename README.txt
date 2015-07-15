@@ -63,9 +63,10 @@ ScheduleAndDepend
  |          |                           |------- GeneticsAlgorithm
  |          |                           |------- Local_Search
  |          |----- Mapping              |------- SimpleGreedy
- |          |----- Mapping_Functions    |------- SimulatedAnnealing
- |          |----- Mapping_Animation
+ |          |----- Mapping_Animation    |------- SimulatedAnnealing
+ |          |----- Mapping_Functions
  |          |----- Mapping_Reports
+ |          |----- Mapping_Test
  |
  |------RoutingAlgorithms
  |          |
@@ -81,7 +82,7 @@ ScheduleAndDepend
  |          |----- Scheduling_Reports
  |          |----- TrafficTableGenerator
  |
- |------SystmHealthMonitoring
+ |------SystemHealthMonitoring
  |          |
  |          |----- SystemHealthMonitor
  |          |----- SHM_Reports
