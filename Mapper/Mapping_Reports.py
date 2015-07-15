@@ -122,53 +122,56 @@ def VizMappingOpt(CostFileName):
     print "==========================================="
     print "GENERATING MAPPING OPTIMIZATION VISUALIZATIONS..."
 
+    fig, ax1 = plt.subplots()
+
     try:
         MappingCostFile = open('Generated_Files/Internal/'+CostFileName+'.txt','r')
+        Cost=[]
+        line = MappingCostFile.readline()
+        MinCost = float(line)
+        MinCostList = []
+        MinCostList.append(MinCost)
+        Cost.append(float(line))
+        while line != "":
+            Cost.append(float(line))
+            if float(line) < MinCost:
+                MinCost = float(line)
+            MinCostList.append(MinCost)
+            line = MappingCostFile.readline()
+        SolutionNum =  range(0,len(Cost))
+        MappingCostFile.close()
+
+        ax1.set_ylabel('Cost')
+        ax1.plot(SolutionNum, Cost, 'b', SolutionNum, MinCostList, 'r')
+
+        if Config.Mapping_Function == 'IterativeLocalSearch':
+            for Iteration in range(1, Config.IterativeLocalSearchIterations+1):
+                x1 = x2 = Iteration * Config.LocalSearchIteration
+                y1 = 0
+                y2 = max(Cost)
+                ax1.plot((x1, x2), (y1, y2), 'g--')
+
     except IOError:
         print 'CAN NOT OPEN', CostFileName+'.txt'
-    fig, ax1 = plt.subplots()
-    Cost=[]
-    line = MappingCostFile.readline()
-    MinCost = float(line)
-    MinCostList = []
-    MinCostList.append(MinCost)
-    Cost.append(float(line))
-    while line != "":
-        Cost.append(float(line))
-        if float(line) < MinCost:
-            MinCost = float(line)
-        MinCostList.append(MinCost)
-        line = MappingCostFile.readline()
-    SolutionNum =  range(0,len(Cost))
-    MappingCostFile.close()
-
-    ax1.set_ylabel('Cost')
-    ax1.plot(SolutionNum, Cost, 'b', SolutionNum, MinCostList, 'r')
-
-    if Config.Mapping_Function == 'IterativeLocalSearch':
-        for Iteration in range(1, Config.IterativeLocalSearchIterations+1):
-            x1 = x2 = Iteration * Config.LocalSearchIteration
-            y1 = 0
-            y2 = max(Cost)
-            ax1.plot((x1, x2), (y1, y2), 'g--')
 
     if Config.Mapping_Function == 'SimulatedAnnealing':
         try:
             SATempFile = open('Generated_Files/Internal/SATemp.txt','r')
-        except IOError:
-            print 'CAN NOT OPEN', CostFileName+'.txt'
-        Temp = []
-        line = SATempFile.readline()
-        while line != '':
-            Temp.append(float(line))
+            Temp = []
             line = SATempFile.readline()
-        SATempFile.close()
-        #print len(Temp), len(SolutionNum)
-        ax2 = ax1.twinx()
-        ax2.plot(SolutionNum, Temp, 'g--')
-        ax2.set_ylabel('Temperature')
-        for tl in ax2.get_yticklabels():
-            tl.set_color('g')
+            while line != '':
+                Temp.append(float(line))
+                line = SATempFile.readline()
+            SATempFile.close()
+            #print len(Temp), len(SolutionNum)
+            ax2 = ax1.twinx()
+            ax2.plot(SolutionNum, Temp, 'g--')
+            ax2.set_ylabel('Temperature')
+            for tl in ax2.get_yticklabels():
+                tl.set_color('g')
+        except IOError:
+            print 'CAN NOT OPEN SATemp.txt'
+
     plt.savefig("GraphDrawings/Mapping_Opt_Process.png")
     plt.clf()
     return None
