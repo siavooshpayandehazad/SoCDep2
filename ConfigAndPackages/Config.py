@@ -126,7 +126,11 @@ elif Mapping_Function == 'SimulatedAnnealing':
 # here you can change the type of cost function used for mapping the available cost functions are:
 # 'SD' = Com_MakeSpan_SD + Node_MakeSpan_SD
 # 'SD+MAX' = Link_MakeSpan_SD + MaxLinkMakeSpan + Node_MakeSpan_SD + MaxNodeMakeSpan
+# 'CONSTANT' = 1   ---> can be used if user needs only distance
 Mapping_CostFunctionType = 'SD+MAX'
+# if 'DistanceBetweenMapping' is true => Cost += Hamming distance between the current
+# solution and the neighbour solution
+DistanceBetweenMapping = True
 ################################################
 #          Scheduling  Config
 ################################################

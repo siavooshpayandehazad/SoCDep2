@@ -25,10 +25,9 @@ PYTHON VER: 2.6.9
 THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME DEPENDABILITY 
 MECHANISMS ON DIFFERENT ARCHITECTURES....
 Copyright (C) 2015 Siavoosh Payandeh Azad
-
-
-NOTE: IN CASE YOU WANT SOMETHING IMPLEMENTED, PLEASE CONTACT: siavoosh[AT]ati[DOT]ttu[DOT]ee
-
+===============================================================================
+               IN CASE YOU WANT SOMETHING TO BE IMPLEMENTED,
+              PLEASE CONTACT: siavoosh[AT]ati[DOT]ttu[DOT]ee
 ===============================================================================
                 FOR DOCUMENTATIONS PLEASE REFER TO WIKI!
 ===============================================================================

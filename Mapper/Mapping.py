@@ -56,6 +56,13 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
             ClusteringReports.VizClusteringOpt()
             # Mapping CTG on AG
             if Mapping_Functions.MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, True, logging):
+
+                if Config.DistanceBetweenMapping:
+                    initmpSr = Mapping_Functions.MappingIntoString(TG)
+                    #print initmpSr
+                else:
+                    initmpSr = None
+
                 Mapping_Reports.ReportMapping(AG, logging)
                 # Schedule all tasks
                 Scheduler.ScheduleAll(TG, AG, SHM, Config.DebugInfo, Config.DebugDetails)
@@ -101,8 +108,12 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                                                                                       Config.SimulatedAnnealingIteration,
                                                                                       'SA_MappingCost', logging)
                     Mapping_Reports.VizMappingOpt('SA_MappingCost')
+                    TG = copy.deepcopy(BestTG)
+                    AG = copy.deepcopy(BestAG)
+                    del BestTG, BestCTG, BestAG
+                #print Mapping_Functions.MappingIntoString(TG)
                 Scheduling_Reports.ReportMappedTasks(AG, logging)
-                Mapping_Functions.CostFunction(TG, AG, SHM, True)
+                Mapping_Functions.CostFunction(TG, AG, SHM, True,  InitialMappingString = initmpSr)
                 # Mapping_Animation.AnimateMapping()
                 return TG, AG
             else:

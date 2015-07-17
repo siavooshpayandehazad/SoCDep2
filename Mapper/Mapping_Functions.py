@@ -6,7 +6,7 @@ from ConfigAndPackages import Config
 import statistics
 import random
 from math import ceil
-from distance import hamming
+
 
 
 def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Report, logging):
@@ -133,7 +133,7 @@ def ClearMapping(TG, CTG, AG):
     return True
 
 
-def CostFunction(TG, AG, SHM, Report):
+def CostFunction(TG, AG, SHM, Report, InitialMappingString = None):
     NodeMakeSpanList = []
     LinkMakeSpanList = []
     for Node in AG.nodes():
@@ -151,8 +151,15 @@ def CostFunction(TG, AG, SHM, Report):
         Cost = NodeMakeSpan_Stdev + LinkMakeSpan_Stdev
     elif Config.Mapping_CostFunctionType == 'SD+MAX' :
         Cost = NodeMakeSpan_Max + NodeMakeSpan_Stdev + LinkMakeSpan_Stdev + LinkMakeSpan_Max
+    elif Config.Mapping_CostFunctionType == 'CONSTANT':
+        Cost = 1
     else:
         raise ValueError("Mapping_CostFunctionType is not valid")
+
+    Distance = None
+    if InitialMappingString is not None:
+        Distance = HammingDistanceOfMapping(InitialMappingString,MappingIntoString(TG))
+        Cost += Distance
     if Report:
         print "==========================================="
         print "      REPORTING MAPPING COST"
@@ -161,7 +168,10 @@ def CostFunction(TG, AG, SHM, Report):
         print "NODES MAKE SPAN STANDARD DEVIATION:", NodeMakeSpan_Stdev
         print "LINKS MAKE SPAN MAX:", LinkMakeSpan_Max
         print "LINKS MAKE SPAN STANDARD DEVIATION:", LinkMakeSpan_Stdev
+        if Distance is not None:
+            print "DISTANCE FROM STARTING SOLUTION:",Distance
         print "MAPPING SCHEDULING COST:", Cost
+
     if Cost == 0:
             raise ValueError("Mapping with 0 cost... Something is wrong here...")
     return Cost
@@ -269,9 +279,16 @@ def MappingIntoString(TG):
 
 def HammingDistanceOfMapping(MappingString1, MappingString2):
     if type(MappingString1) is str and type(MappingString2) is str:
-        if len(MappingString1) == len(MappingString2):
-           return hamming(MappingString1, MappingString2)
+        Str1_List = MappingString1.split()
+        Str2_List = MappingString2.split()
+
+        if len(Str1_List) == len(Str2_List):
+            distance = 0
+            for i in range(0, len(Str1_List)):
+                if Str2_List[i] != Str1_List[i]:
+                    distance += 1
+            return distance
         else:
-            raise ValueError("The input mapping strings are not of same length")
+            raise ValueError("Mapping strings are from different length")
     else:
         raise ValueError("The input mapping strings are of wrong types")

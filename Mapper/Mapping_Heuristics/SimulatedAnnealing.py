@@ -16,10 +16,22 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
     MappingProcessFile = open('Generated_Files/Internal/MappingProcess.txt','w')
     SATemperatureFile = open('Generated_Files/Internal/SATemp.txt','w')
 
+
+
+    if Config.DistanceBetweenMapping:
+        InitMapString = Mapping_Functions.MappingIntoString(TG)
+        if Config.Mapping_CostFunctionType == 'CONSTANT':
+            Mapping_Functions.ClearMapping(TG,CTG,AG)
+            if not Mapping_Functions.MakeInitialMapping(TG, CTG, AG, SHM, NoCRG,
+                                                        CriticalRG, NonCriticalRG, True, logging):
+                raise ValueError("FEASIBLE MAPPING NOT FOUND...")
+    else:
+        InitMapString = None
+
     CurrentTG=copy.deepcopy(TG)
     CurrentAG=copy.deepcopy(AG)
     CurrentCTG=copy.deepcopy(CTG)
-    CurrentCost = Mapping_Functions.CostFunction(TG,AG,SHM,False)
+    CurrentCost = Mapping_Functions.CostFunction(TG,AG,SHM,False,InitialMappingString=InitMapString)
     StartingCost = CurrentCost
 
     BestTG = copy.deepcopy(TG)
@@ -39,7 +51,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
         Scheduler.ScheduleAll(NewTG,NewAG,SHM,False,False)
 
         # calculate the cost of new solution
-        NewCost = Mapping_Functions.CostFunction(NewTG, NewAG, SHM, False)
+        NewCost = Mapping_Functions.CostFunction(NewTG, NewAG, SHM, False, InitialMappingString=InitMapString)
 
         if NewCost<BestCost:
             BestTG = copy.deepcopy(NewTG)
