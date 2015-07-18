@@ -6,6 +6,8 @@ from ConfigAndPackages import Config
 from Scheduler import Scheduler,Scheduling_Functions,Scheduling_Reports
 import random
 from math import exp
+from collections import deque
+from scipy import stats
 
 def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
                                       IterationNum, CostDataFile, logging):
@@ -15,8 +17,12 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
     MappingCostFile = open('Generated_Files/Internal/'+CostDataFile+'.txt','a')
     MappingProcessFile = open('Generated_Files/Internal/MappingProcess.txt','w')
     SATemperatureFile = open('Generated_Files/Internal/SATemp.txt','w')
+    SACostSlopeFile = open('Generated_Files/Internal/SACostSlope.txt','w')
 
-
+    if Config.CoolingMethod == 'Adaptive':
+        CostMonitor = deque([])
+    else:
+        CostMonitor = []
 
     if Config.DistanceBetweenMapping:
         InitMapString = Mapping_Functions.MappingIntoString(TG)
@@ -42,6 +48,8 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
     InitialTemp = Config.SA_InitialTemp
     SATemperatureFile.write(str(InitialTemp)+"\n")
     Temperature = InitialTemp
+    slope = None
+    ZeroSlopeCounter = 0
     for i in range(0,IterationNum):
         # move to another solution
 
@@ -69,8 +77,13 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
             CurrentAG = copy.deepcopy(NewAG)
             CurrentCTG = copy.deepcopy(NewCTG)
             CurrentCost = NewCost
-            print "\033[32m* NOTE::\033[0mMOVED TO SOLUTION WITH COST:","{0:.2f}".format(CurrentCost), "\tProb:", \
-                  "{0:.2f}".format(Prob), "\tTemp:", "{0:.2f}".format(Temperature), "\t Iteration:", i
+            if slope is not None:
+                print "\033[32m* NOTE::\033[0mMOVED TO SOLUTION WITH COST:","{0:.2f}".format(CurrentCost), "\tProb:", \
+                      "{0:.2f}".format(Prob), "\tTemp:", "{0:.2f}".format(Temperature), "\t Iteration:", i, "\tSLOPE:", \
+                      "{0:.2f}".format(slope)
+            else:
+                print "\033[32m* NOTE::\033[0mMOVED TO SOLUTION WITH COST:","{0:.2f}".format(CurrentCost), "\tProb:", \
+                      "{0:.2f}".format(Prob), "\tTemp:", "{0:.2f}".format(Temperature), "\t Iteration:", i
         else:
             # move back to initial  solution
             pass
@@ -78,26 +91,57 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
         MappingProcessFile.write(Mapping_Functions.MappingIntoString(CurrentTG)+"\n")
         SATemperatureFile.write(str(Temperature)+"\n")
         MappingCostFile.write(str(CurrentCost)+"\n")
-        Temperature = NextTemp(InitialTemp, i, IterationNum)
 
+
+        if Config.CoolingMethod == 'Adaptive':
+            if len(CostMonitor)> Config.CostMonitorQueSize :
+                CostMonitor.appendleft(CurrentCost)
+                CostMonitor.pop()
+            else:
+                CostMonitor.appendleft(CurrentCost)
+            slope = CalculateSlopeOfCost(CostMonitor)
+            if slope == 0:
+                ZeroSlopeCounter +=1
+            else:
+                ZeroSlopeCounter = 0
+            SACostSlopeFile.write(str(slope)+"\n")
+        Temperature = NextTemp(InitialTemp, i, IterationNum, Temperature, slope)
+        if ZeroSlopeCounter == Config.MaxSteadyState:
+            print "NO IMPROVEMENT POSSIBLE..."
+            break
     MappingCostFile.close()
     MappingProcessFile.close()
     SATemperatureFile.close()
+    SACostSlopeFile.close()
     print "-------------------------------------"
     print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost
     print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost),"%"
     return BestTG, BestCTG, BestAG
 
 
-def NextTemp(InitialTemp, Iteration, MaxIteration):
+def NextTemp(InitialTemp, Iteration, MaxIteration, CurrentTemp, Slope=None):
     if Config.CoolingMethod == 'Linear':
         Temp =(float(MaxIteration-Iteration)/MaxIteration)*InitialTemp
     elif Config.CoolingMethod == 'Exponential':
-        Temp = InitialTemp * (Config.SA_Alpha**Iteration)
+        Temp = CurrentTemp * Config.SA_Alpha
+    elif Config.CoolingMethod == 'Adaptive':
+        Temp = CurrentTemp
+        if Iteration > Config.CostMonitorQueSize:
+            if Slope < Config.SlopeRangeForCooling and Slope > 0:
+                Temp = CurrentTemp * Config.SA_Alpha
     else:
         raise ValueError('Invalid Cooling Method for SA...')
     return Temp
 
+def CalculateSlopeOfCost(CostMonitor):
+    slope = 0
+    if len(CostMonitor)>2:
+        x = range(0,len(CostMonitor))
+        y = list(CostMonitor)
+        slope = stats.linregress(x,y)[0]
+    if len(CostMonitor) == 2:
+        slope = list(CostMonitor)[1]-list(CostMonitor)[0]
+    return slope
 
 def CalculateProbability(CurrentCost, NewCost, Temperature):
     if NewCost > CurrentCost:

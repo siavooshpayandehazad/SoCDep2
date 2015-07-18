@@ -110,11 +110,17 @@ Mapping_Function = 'SimulatedAnnealing'
 LocalSearchIteration = 100
 IterativeLocalSearchIterations = 20
 #######################
-SimulatedAnnealingIteration = 10000
-SA_InitialTemp = 50
-# Available Cooling Methods: 'Linear', 'Exponential'
-CoolingMethod = 'Linear'
-SA_Alpha = 0.9995  # only usable under Exponential mode
+SimulatedAnnealingIteration = 100000
+SA_InitialTemp = 100
+# Available Cooling Methods: 'Linear', 'Exponential', 'Adaptive'
+CoolingMethod = 'Adaptive'
+SA_Alpha = 0.999  # only usable under Exponential and Adaptive mode
+
+# only for Adaptive Cooling
+CostMonitorQueSize = 200
+SlopeRangeForCooling = 0.05     # If the slope falls between SlopeRangeForCooling and 0, the SA
+                                # starts cooling with rate of alpha.
+MaxSteadyState = 10000
 ######################
 if Mapping_Function == 'LocalSearch':
     MaxNumberOfIterations = LocalSearchIteration
