@@ -175,4 +175,32 @@ def VizMappingOpt(CostFileName):
 
     plt.savefig("GraphDrawings/Mapping_Opt_Process.png")
     plt.clf()
+    plt.close(fig)
+    return None
+
+
+def VizCostSlope():
+
+    print "==========================================="
+    print "GENERATING MAPPING OPTIMIZATION COST SLOPE VISUALIZATION..."
+
+    fig, ax1 = plt.subplots()
+    try:
+        CostSlopeFile = open('Generated_Files/Internal/SACostSlope.txt','r')
+        CostSlope = []
+        line = CostSlopeFile.readline()
+        while line != '':
+            CostSlope.append(float(line))
+            line = CostSlopeFile.readline()
+        CostSlopeFile.close()
+        #print len(Temp), len(SolutionNum)
+
+        ax1.plot(range(0,len(CostSlope)), CostSlope)
+        ax1.set_ylabel('Cost Slope')
+        plt.savefig("GraphDrawings/Mapping_Cost_Slope.png")
+        plt.clf()
+        plt.close(fig)
+    except IOError:
+            print 'CAN NOT OPEN SACostSlope.txt'
+
     return None

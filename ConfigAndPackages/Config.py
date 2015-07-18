@@ -120,7 +120,7 @@ SA_Alpha = 0.999  # only usable under Exponential and Adaptive mode
 CostMonitorQueSize = 200
 SlopeRangeForCooling = 0.05     # If the slope falls between SlopeRangeForCooling and 0, the SA
                                 # starts cooling with rate of alpha.
-MaxSteadyState = 10000
+MaxSteadyState = 10000          # 5-10% of the iteration numbers would makes sense
 ######################
 if Mapping_Function == 'LocalSearch':
     MaxNumberOfIterations = LocalSearchIteration
