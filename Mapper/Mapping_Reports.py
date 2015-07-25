@@ -150,7 +150,7 @@ def VizMappingOpt(CostFileName):
                 x1 = x2 = Iteration * Config.LocalSearchIteration
                 y1 = 0
                 y2 = max(Cost)
-                ax1.plot((x1, x2), (y1, y2), 'g--')
+                ax1.plot((x1, x2), (y1, y2), 'g')
 
     except IOError:
         print 'CAN NOT OPEN', CostFileName+'.txt'

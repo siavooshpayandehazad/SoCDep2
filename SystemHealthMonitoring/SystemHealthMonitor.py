@@ -20,7 +20,6 @@ class SystemHealthMonitor:
             for node in ArchGraph.nodes():
                 self.SHM.add_node(node, TurnsHealth=copy.deepcopy(TurnsHealth), NodeHealth=True, NodeSpeed=100)
         else:
-            # Todo: in this case, we need to read turns health from file...
             try:
                 RoutingFile = open(Config.RoutingFilePath, 'r')
             except IOError:
@@ -124,4 +123,3 @@ class SystemHealthMonitor:
     ##################################################
 
     # ToDO: To implement the classification algorithm
-    # ToDo: To implement the partial mapping with distance driven cost function

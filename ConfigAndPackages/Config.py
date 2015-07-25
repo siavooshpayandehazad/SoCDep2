@@ -110,17 +110,19 @@ Mapping_Function = 'SimulatedAnnealing'
 LocalSearchIteration = 100
 IterativeLocalSearchIterations = 20
 #######################
-SimulatedAnnealingIteration = 100000
+SimulatedAnnealingIteration = 200000
 SA_InitialTemp = 100
-# Available Cooling Methods: 'Linear', 'Exponential', 'Adaptive'
+# Available Cooling Methods: 'Linear', 'Exponential', 'Adaptive', 'Markov'
 CoolingMethod = 'Adaptive'
 SA_Alpha = 0.999  # only usable under Exponential and Adaptive mode
 
 # only for Adaptive Cooling
+MarkovNum = 2000
+MarkovTempStep = 1
 CostMonitorQueSize = 200
-SlopeRangeForCooling = 0.05     # If the slope falls between SlopeRangeForCooling and 0, the SA
+SlopeRangeForCooling = 0.02     # If the slope falls between SlopeRangeForCooling and 0, the SA
                                 # starts cooling with rate of alpha.
-MaxSteadyState = 10000          # 5-10% of the iteration numbers would makes sense
+MaxSteadyState = 15000          # 5-10% of the iteration numbers would makes sense
 ######################
 if Mapping_Function == 'LocalSearch':
     MaxNumberOfIterations = LocalSearchIteration
@@ -136,7 +138,7 @@ elif Mapping_Function == 'SimulatedAnnealing':
 Mapping_CostFunctionType = 'SD+MAX'
 # if 'DistanceBetweenMapping' is true => Cost += Hamming distance between the current
 # solution and the neighbour solution
-DistanceBetweenMapping = True
+DistanceBetweenMapping = False
 ################################################
 #          Scheduling  Config
 ################################################

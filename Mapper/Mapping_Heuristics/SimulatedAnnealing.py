@@ -68,7 +68,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
             BestCost = NewCost
             print "\033[33m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:","{0:.2f}".format(NewCost)
         # calculate the probability P of accepting the solution
-        Prob = CalculateProbability(CurrentCost, NewCost, Temperature)
+        Prob = Metropolis(CurrentCost, NewCost, Temperature)
         # print "Prob:",Prob
         # throw the coin with probability P
         if Prob > random.random():
@@ -85,7 +85,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
                 print "\033[32m* NOTE::\033[0mMOVED TO SOLUTION WITH COST:","{0:.2f}".format(CurrentCost), "\tProb:", \
                       "{0:.2f}".format(Prob), "\tTemp:", "{0:.2f}".format(Temperature), "\t Iteration:", i
         else:
-            # move back to initial  solution
+            # move back to initial solution
             pass
         # update Temp
         MappingProcessFile.write(Mapping_Functions.MappingIntoString(CurrentTG)+"\n")
@@ -106,7 +106,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
                 ZeroSlopeCounter = 0
             SACostSlopeFile.write(str(slope)+"\n")
         Temperature = NextTemp(InitialTemp, i, IterationNum, Temperature, slope)
-        if ZeroSlopeCounter == Config.MaxSteadyState:
+        if ZeroSlopeCounter == Config.MaxSteadyState or Temperature <= 0:
             print "NO IMPROVEMENT POSSIBLE..."
             break
     MappingCostFile.close()
@@ -129,6 +129,8 @@ def NextTemp(InitialTemp, Iteration, MaxIteration, CurrentTemp, Slope=None):
         if Iteration > Config.CostMonitorQueSize:
             if Slope < Config.SlopeRangeForCooling and Slope > 0:
                 Temp = CurrentTemp * Config.SA_Alpha
+    elif Config.CoolingMethod == 'Markov':
+        Temp = InitialTemp - (Iteration/Config.MarkovNum)*Config.MarkovTempStep
     else:
         raise ValueError('Invalid Cooling Method for SA...')
     return Temp
@@ -143,7 +145,7 @@ def CalculateSlopeOfCost(CostMonitor):
         slope = list(CostMonitor)[1]-list(CostMonitor)[0]
     return slope
 
-def CalculateProbability(CurrentCost, NewCost, Temperature):
+def Metropolis(CurrentCost, NewCost, Temperature):
     if NewCost > CurrentCost:
         P = exp((CurrentCost-NewCost)/Temperature)
     else:
