@@ -1,6 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 import networkx
 from ConfigAndPackages import Config
+import operator
 # todo: add virtual channel support AG...
 
 
@@ -164,3 +165,34 @@ def ReturnNodeLocation(NodeNumber):
 def ReturnNodeNumber(NodeX, NodeY, NodeZ):
     NodeNumber = NodeZ*Config.Network_X_Size*Config.Network_Y_Size + NodeY*Config.Network_X_Size+NodeX
     return NodeNumber
+
+
+def NodeNeighbors(AG, SHM):
+    NodeNeighbor = {}
+    for Node in AG.nodes():
+        NumberOfNeighbours = 0
+        for Link in AG.edges():
+            if Node in Link:
+                if SHM.SHM.edge[Link[0]][Link[1]]['LinkHealth']:
+                    NumberOfNeighbours += 1
+        NodeNeighbor[Node] = NumberOfNeighbours
+    return NodeNeighbor
+
+
+def MaxNodeNeighbors(NodeNeighbors, SortedNodeNeighbors):
+    MaxNeighbourNum = 0
+    for node in SortedNodeNeighbors:
+        if NodeNeighbors[node] > MaxNeighbourNum:
+            MaxNeighbourNum = NodeNeighbors[node]
+    MaxNeighbourNodes = []
+    for node in SortedNodeNeighbors:
+        if NodeNeighbors[node] == MaxNeighbourNum:
+            MaxNeighbourNodes.append(node)
+    return MaxNeighbourNodes
+
+
+def ManhattanDistance(Node1,Node2):
+    x1,y1,z1 = ReturnNodeLocation(Node1)
+    x2,y2,z2 = ReturnNodeLocation(Node2)
+
+    return abs(x2-x1)+abs(y2-y1)+abs(z2-z1)

@@ -37,6 +37,59 @@ def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Repor
     return True
 
 
+
+def MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging):
+    if not SHM.SHM.node[Node]['NodeHealth']:
+        logging.info("CAN NOT MAP ON BROKEN NODE: "+str(Node))
+        return False
+    logging.info( "\tADDING TASK:"+str(Task)+"TO NODE:"+str(Node))
+    TG.node[Task]['Node'] = Node
+    AG.node[Node]['MappedTasks'].append(Task)
+    AG.node[Node]['Utilization'] += TG.node[Task]['WCET']
+    for Edge in TG.edges():
+        if Task in Edge: # find all the edges that are connected to Task
+            logging.info("\t\tEDGE:"+str(Edge)+"CONTAINS Task:"+str(Task))
+            SourceNode=TG.node[Edge[0]]['Node']
+            DestNode=TG.node[Edge[1]]['Node']
+            if SourceNode is not None and DestNode is not None: # check if both ends of this edge is mapped
+                if SourceNode != DestNode:
+                    ListOfLinks = Routing.FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG, SourceNode, DestNode, False, False) # Find the links to be used
+                    if ListOfLinks is not None:
+                        for Link in ListOfLinks:
+                            AG.edge[Link[0]][Link[1]]['MappedTasks'].append(Edge)
+                            TG.edge[Edge[0]][Edge[1]]['Link'].append(Link)
+                    else:
+                        RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging)
+                        logging.warning( "\tNO PATH FOUND FROM SOURCE TO DESTINATION...")
+                        return False
+    return True
+
+
+def RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging):
+    logging.info("\tREMOVING TASK:"+str(Task)+"FROM NODE:"+str(Node))
+    for Edge in TG.edges():
+        if Task in Edge:
+            SourceNode = TG.node[Edge[0]]['Node']
+            DestNode = TG.node[Edge[1]]['Node']
+            if SourceNode is not None and DestNode is not None:
+                if SourceNode != DestNode:
+                    ListOfLinks = Routing.FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG,
+                                                                SourceNode, DestNode, False, False) #Find the links to be used
+                    if ListOfLinks is not None:
+                        logging.info("\t\t\tREMOVING PATH FROM NODE:"+str(SourceNode)+"TO NODE"+str(DestNode))
+                        logging.info("\t\t\tLIST OF LINKS:"+str(ListOfLinks))
+                        for Link in ListOfLinks:
+                            if Edge in AG.edge[Link[0]][Link[1]]['MappedTasks']:
+                                    AG.edge[Link[0]][Link[1]]['MappedTasks'].remove(Edge)
+                                    TG.edge[Edge[0]][Edge[1]]['Link'].remove(Link)
+                    else:
+                        logging.warning("\tNOTHING TO BE REMOVED...")
+    TG.node[Task]['Node'] = None
+    AG.node[Node]['MappedTasks'].remove(Task)
+    AG.node[Node]['Utilization'] -= TG.node[Task]['Utilization']
+    return True
+
+
 def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster, Node, logging):
     if not SHM.SHM.node[Node]['NodeHealth']:
         logging.info("CAN NOT MAP ON BROKEN NODE: "+str(Node))

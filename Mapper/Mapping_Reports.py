@@ -164,7 +164,7 @@ def VizMappingOpt(CostFileName):
                 Temp.append(float(line))
                 line = SATempFile.readline()
             SATempFile.close()
-            #print len(Temp), len(SolutionNum)
+            # print len(Temp), len(SolutionNum)
             ax2 = ax1.twinx()
             ax2.plot(SolutionNum, Temp, 'g--')
             ax2.set_ylabel('Temperature')

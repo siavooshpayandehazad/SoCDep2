@@ -61,6 +61,7 @@ ScheduleAndDepend
  |          |                           |
  |          |                           |------- GeneticsAlgorithm
  |          |                           |------- Local_Search
+ |          |                           |------- NMAP
  |          |----- Mapping              |------- SimpleGreedy
  |          |----- Mapping_Animation    |------- SimulatedAnnealing
  |          |----- Mapping_Functions

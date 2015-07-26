@@ -6,7 +6,7 @@ from ConfigAndPackages import Config
 import Scheduler
 import Mapping_Functions, Mapping_Reports, Mapping_Animation
 from Clusterer import Clustering, ClusteringReports
-from Mapping_Heuristics import SimpleGreedy,Local_Search,SimulatedAnnealing
+from Mapping_Heuristics import SimpleGreedy,Local_Search,SimulatedAnnealing,NMap
 from Scheduler import Scheduler,Scheduling_Reports
 
 
@@ -36,6 +36,9 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
             return SimpleGreedy.MinimumCompletionTime(TG, AG, SHM, logging)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
+
+    elif Config.Mapping_Function == 'NMap':
+        return NMap.NMap(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging)
 
     elif Config.Mapping_Function == 'LocalSearch' or Config.Mapping_Function == 'IterativeLocalSearch'\
          or Config.Mapping_Function == 'SimulatedAnnealing':

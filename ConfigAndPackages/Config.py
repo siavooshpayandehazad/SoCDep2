@@ -17,10 +17,10 @@ EventDrivenFaultInjection = False
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
 TG_Type = 'RandomDependent'
 # For Random TG_Type:
-NumberOfTasks = 50
+NumberOfTasks = 36
 NumberOfCriticalTasks = 0
-NumberOfEdges = 45
-WCET_Range = 30
+NumberOfEdges = 20
+WCET_Range = 15
 EdgeWeightRange = 7
 Release_Range = 5      # task release time range
 # The following is only for Manual TG_Type:
@@ -78,10 +78,13 @@ NumberOfRects = 5
 # Sample for 4X4 network:
 # ListOfBrokenLinks = [(0, 1), (0, 4)]
 # For those who don't need broken links
-ListOfBrokenLinks = [(0, 1)]
+ListOfBrokenLinks = []
+# Some random broken link
+# ListOfBrokenLinks = [(0, 1)]
 # ==========================
 # List of broken PE
-ListOfBrokenPEs = [1]
+# ListOfBrokenPEs = [1]
+ListOfBrokenPEs = []
 # ==========================
 # List of broken Turns
 ListOfBrokenTurns = {}
@@ -105,8 +108,8 @@ Clustering_CostFunctionType = 'SD+MAX'
 #          Mapping Function  Config
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
-#                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing'
-Mapping_Function = 'SimulatedAnnealing'
+#                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
+Mapping_Function = 'NMap'
 LocalSearchIteration = 100
 IterativeLocalSearchIterations = 20
 #######################
@@ -119,7 +122,7 @@ SA_Alpha = 0.999  # only usable under Exponential and Adaptive mode
 # only for Adaptive Cooling
 MarkovNum = 2000
 MarkovTempStep = 1
-CostMonitorQueSize = 200
+CostMonitorQueSize = 300
 SlopeRangeForCooling = 0.02     # If the slope falls between SlopeRangeForCooling and 0, the SA
                                 # starts cooling with rate of alpha.
 MaxSteadyState = 15000          # 5-10% of the iteration numbers would makes sense

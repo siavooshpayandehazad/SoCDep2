@@ -206,3 +206,20 @@ def CalculateMaxDistance(TG):
         if TG.node[Task]['Distance']> MaxDistance :
             MaxDistance = TG.node[Task]['Distance']
     return MaxDistance
+
+
+def TasksCommunicationWeight(TG):
+    """
+
+    :param TG: Task graph
+    :return: Returns a dictionary with task numbers as keys and total communication relevant to that task as value
+    """
+    TasksCom = {}
+    for task in TG.nodes():
+        TaskCom = 0
+        for links in TG.edges():
+            if task in links:
+                TaskCom += TG.edge[links[0]][links[1]]["ComWeight"]
+        TasksCom[task] = TaskCom
+
+    return TasksCom
