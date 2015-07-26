@@ -22,20 +22,20 @@ def CalculateReachability(AG, NoCRG):
 
 
 def IsDestinationReachableViaPort(NoCRG, SourceNode, Port, DestinationNode, ReturnAllPaths, Report):
-    """
-    :param NoCRG: NoC Routing Graph
-    :param SourceNode: Source node on AG
-    :param DestinationNode: Destination node on AG
-    :param ReturnAllPaths: boolean that decides to return shortest path or all the paths between two nodes
-    :return: return a path (by name of links) on AG from source to destination if possible, None if not.
-    """
-    Source = str(SourceNode)+str(Port)+str('O')
+
+    Source = str(SourceNode)+str(Port)+str('I')
+    # the destination port should be output port since this is output of router to PE
+    # (which will be connected to PE's input port)
     Destination = str(DestinationNode)+str('L')+str('O')
     if networkx.has_path(NoCRG, Source, Destination):
         return True
     else:
         if Report:print "\t\tNO PATH FOUND FROM: ", Source, "TO:", Destination
         return False
+
+
+def IsDestReachableFromSource(NoCRG, Source, Destination):
+    return IsDestinationReachableViaPort(NoCRG, Source, 'L' , Destination, True, False)
 
 
 def OptimizeReachabilityRectangles(AG, NumberOfRects):
@@ -107,6 +107,7 @@ def IsNodeInsideRectangle(Rect,Node):
         return True
     else:
         return False
+
 
 
 def MergeRectangleWithNode(Rect_ll, Rect_ur, Node):

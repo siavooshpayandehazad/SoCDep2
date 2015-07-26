@@ -53,14 +53,16 @@ def MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, log
             DestNode=TG.node[Edge[1]]['Node']
             if SourceNode is not None and DestNode is not None: # check if both ends of this edge is mapped
                 if SourceNode != DestNode:
-                    ListOfLinks = Routing.FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG, SourceNode, DestNode, False, False) # Find the links to be used
+                    ListOfLinks = Routing.FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG,
+                                                                SourceNode, DestNode, False, False) # Find the links to be used
                     if ListOfLinks is not None:
                         for Link in ListOfLinks:
                             AG.edge[Link[0]][Link[1]]['MappedTasks'].append(Edge)
                             TG.edge[Edge[0]][Edge[1]]['Link'].append(Link)
                     else:
                         RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging)
-                        logging.warning( "\tNO PATH FOUND FROM SOURCE TO DESTINATION...")
+                        logging.warning( "\tNO PATH FOUND FROM ", SourceNode, " TO ", DestNode, "...")
+                        print "NO PATH FOUND FROM ", SourceNode, " TO ", DestNode, "..."
                         return False
     return True
 
@@ -86,7 +88,7 @@ def RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node
                         logging.warning("\tNOTHING TO BE REMOVED...")
     TG.node[Task]['Node'] = None
     AG.node[Node]['MappedTasks'].remove(Task)
-    AG.node[Node]['Utilization'] -= TG.node[Task]['Utilization']
+    AG.node[Node]['Utilization'] -= TG.node[Task]['WCET']
     return True
 
 

@@ -17,7 +17,7 @@ EventDrivenFaultInjection = False
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
 TG_Type = 'RandomDependent'
 # For Random TG_Type:
-NumberOfTasks = 36
+NumberOfTasks = 34
 NumberOfCriticalTasks = 0
 NumberOfEdges = 20
 WCET_Range = 15
@@ -78,13 +78,13 @@ NumberOfRects = 5
 # Sample for 4X4 network:
 # ListOfBrokenLinks = [(0, 1), (0, 4)]
 # For those who don't need broken links
-ListOfBrokenLinks = []
+# ListOfBrokenLinks = []
 # Some random broken link
-# ListOfBrokenLinks = [(0, 1)]
+ListOfBrokenLinks = [(0, 1), (22, 21)]
 # ==========================
 # List of broken PE
-# ListOfBrokenPEs = [1]
-ListOfBrokenPEs = []
+ListOfBrokenPEs = [1]
+# ListOfBrokenPEs = []
 # ==========================
 # List of broken Turns
 ListOfBrokenTurns = {}

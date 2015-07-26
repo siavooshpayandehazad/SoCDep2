@@ -4,6 +4,7 @@ from TaskGraphUtilities import TG_Functions
 from ArchGraphUtilities import AG_Functions
 from Scheduler import Scheduler
 from Mapper import Mapping_Functions
+from RoutingAlgorithms import Calculate_Reachability
 
 def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
     print "==========================================="
@@ -16,6 +17,12 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
     UnmappedTasks = copy.deepcopy(TG.nodes())
     AllocatedNodes =[]
     UnAllocatedNodes = copy.deepcopy(AG.nodes())
+
+    # remove all broken nodes from UnAllocatedNodes list
+    for node in UnAllocatedNodes:
+        if not SHM.SHM.node[node]['NodeHealth']:
+            UnAllocatedNodes.remove(node)
+            print "REMOVED BROKEN NODE", node, "FROM UN-ALLOCATED NODES"
 
     print "------------------"
     print "STEP 1:"
@@ -40,6 +47,7 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
     print "\t -------------"
     print "\t NODES WITH MAX NEIGHBOURS:\t", MaxNeighborsNode
     ChosenNode = random.choice(MaxNeighborsNode)
+
     print "\t CHOSEN NODE:", ChosenNode
     AllocatedNodes.append(ChosenNode)
     print "\t ADDED NODE", ChosenNode, "TO ALLOCATED NODES LIST"
@@ -106,38 +114,49 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
         print "\t CHOSEN TASK:", ChosenTask
 
         # Find the unallocated tile with lowest communication cost to/from the allocated_tiles_set.
-        # communication cost formula :
-        # com_cost = SUM of (communication bandwidth between unmapped task with max. com_vol and the mapped task) x manhattan distance between allocated and unallocated tile.
-        # (comm. cost should be as minimum as possible)
         print "\t -------------"
         print "\t STEP 3.2:"
         MinCost = float("inf")
         NodeCandidates=[]
         for UnAllocatedNode in UnAllocatedNodes:
             Cost = 0
+            Reachable = True
             for MappedTask in MappedTasks:
                 ComWeight = 0
                 if (ChosenTask, MappedTask) in TG.edges():
                     # print "TASK CONNECTED TO MAPPED TASK:", MappedTask
                     ComWeight += TG.edge[ChosenTask][MappedTask]["ComWeight"]
                     DestNode = TG.node[MappedTask]['Node']
-                    ManhatanDistance = AG_Functions.ManhattanDistance(UnAllocatedNode,DestNode)
-                    Cost += ManhatanDistance * ComWeight
+                    # here we check if this node is even reachable from the chosen node?
+                    if Calculate_Reachability.IsDestReachableFromSource(NoCRG, UnAllocatedNode, DestNode):
+                        ManhatanDistance = AG_Functions.ManhattanDistance(UnAllocatedNode,DestNode)
+                        Cost += ManhatanDistance * ComWeight
+                    else:
+                        Reachable = False
                 elif (MappedTask, ChosenTask) in TG.edges() :
                     # print "TASK CONNECTED TO MAPPED TASK:", MappedTask
                     ComWeight += TG.edge[MappedTask][ChosenTask]["ComWeight"]
                     DestNode = TG.node[MappedTask]['Node']
-                    ManhatanDistance = AG_Functions.ManhattanDistance(UnAllocatedNode,DestNode)
-                    Cost += ManhatanDistance * ComWeight
-            if Cost < MinCost:
-                NodeCandidates = [UnAllocatedNode]
-                MinCost = Cost
-            elif Cost == MinCost:
-                NodeCandidates.append(UnAllocatedNode)
-
+                    # here we check if this node is even reachable from the chosen node?
+                    if Calculate_Reachability.IsDestReachableFromSource(NoCRG, DestNode, UnAllocatedNode):
+                        ManhatanDistance = AG_Functions.ManhattanDistance(UnAllocatedNode,DestNode)
+                        Cost += ManhatanDistance * ComWeight
+                    else:
+                        Reachable = False
+            if Reachable:
+                if Cost < MinCost:
+                    NodeCandidates = [UnAllocatedNode]
+                    MinCost = Cost
+                elif Cost == MinCost:
+                    NodeCandidates.append(UnAllocatedNode)
+            else:
+                # print  "NODE ", UnAllocatedNode, "NOT REACHABLE..."
+                pass
         print "\t CANDIDATE NODES:", NodeCandidates, "MIN COST:", MinCost
 
-        if len(NodeCandidates)>1:
+        if len(NodeCandidates) == 0:
+            raise ValueError("COULD NOT FIND A REACHABLE CANDIDATE NODE...")
+        elif len(NodeCandidates)>1:
             ChosenNode = random.choice(NodeCandidates)
         elif len(NodeCandidates) == 1:
             ChosenNode = NodeCandidates[0]
