@@ -5,7 +5,7 @@ from Mapper import Mapping_Functions
 from ConfigAndPackages import Config
 from Scheduler import Scheduler,Scheduling_Functions,Scheduling_Reports
 import random
-from math import exp
+from math import exp, log10
 from collections import deque
 from scipy import stats
 
@@ -19,7 +19,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
     SATemperatureFile = open('Generated_Files/Internal/SATemp.txt','w')
     SACostSlopeFile = open('Generated_Files/Internal/SACostSlope.txt','w')
 
-    if Config.CoolingMethod == 'Adaptive':
+    if Config.SA_CoolingMethod == 'Adaptive':
         CostMonitor = deque([])
     else:
         CostMonitor = []
@@ -93,7 +93,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
         MappingCostFile.write(str(CurrentCost)+"\n")
 
 
-        if Config.CoolingMethod == 'Adaptive':
+        if Config.SA_CoolingMethod == 'Adaptive':
             if len(CostMonitor)> Config.CostMonitorQueSize :
                 CostMonitor.appendleft(CurrentCost)
                 CostMonitor.pop()
@@ -106,7 +106,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
                 ZeroSlopeCounter = 0
             SACostSlopeFile.write(str(slope)+"\n")
         Temperature = NextTemp(InitialTemp, i, IterationNum, Temperature, slope)
-        if ZeroSlopeCounter == Config.MaxSteadyState or Temperature <= 0:
+        if ZeroSlopeCounter == Config.MaxSteadyState or Temperature <= Config.SA_StopTemp:
             print "NO IMPROVEMENT POSSIBLE..."
             break
     MappingCostFile.close()
@@ -120,17 +120,26 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
 
 
 def NextTemp(InitialTemp, Iteration, MaxIteration, CurrentTemp, Slope=None):
-    if Config.CoolingMethod == 'Linear':
+    if Config.SA_CoolingMethod == 'Linear':
         Temp =(float(MaxIteration-Iteration)/MaxIteration)*InitialTemp
-    elif Config.CoolingMethod == 'Exponential':
+
+    elif Config.SA_CoolingMethod == 'Exponential':
         Temp = CurrentTemp * Config.SA_Alpha
-    elif Config.CoolingMethod == 'Adaptive':
+
+    elif Config.SA_CoolingMethod == 'Logarithmic':
+        # this is based on "A comparison of simulated annealing cooling strategies"
+        # by Yaghout Nourani and Bjarne Andresen
+        Temp = Config.LogCoolingConstant * (1.0/log10(1+(Iteration+1)))     # iteration should be > 1 so I added 1
+
+    elif Config.SA_CoolingMethod == 'Adaptive':
         Temp = CurrentTemp
         if Iteration > Config.CostMonitorQueSize:
             if Slope < Config.SlopeRangeForCooling and Slope > 0:
                 Temp = CurrentTemp * Config.SA_Alpha
-    elif Config.CoolingMethod == 'Markov':
+
+    elif Config.SA_CoolingMethod == 'Markov':
         Temp = InitialTemp - (Iteration/Config.MarkovNum)*Config.MarkovTempStep
+
     else:
         raise ValueError('Invalid Cooling Method for SA...')
     return Temp

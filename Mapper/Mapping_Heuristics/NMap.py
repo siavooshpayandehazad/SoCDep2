@@ -63,7 +63,7 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
     print "------------------"
     print "STEP 3:"
     while len(UnmappedTasks)>0:
-        print "  UN-MAPPED TASKS #:", len(UnmappedTasks)
+        print "\033[33m==>\033[0m  UN-MAPPED TASKS #:", len(UnmappedTasks)
         print "\t -------------"
         print "\t STEP 3.1:"
         # find the unmapped task which communicates most with MappedTasks
@@ -110,7 +110,6 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 ChosenTask = CandidTaskWithMaxComToUnMapped[0]
         else:
             ChosenTask = TasksWithMaxComToMapped[0]
-
         print "\t CHOSEN TASK:", ChosenTask
 
         # Find the unallocated tile with lowest communication cost to/from the allocated_tiles_set.
@@ -150,7 +149,7 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 elif Cost == MinCost:
                     NodeCandidates.append(UnAllocatedNode)
             else:
-                # print  "NODE ", UnAllocatedNode, "NOT REACHABLE..."
+                print "\t \033[33m* NOTE::\033[0m NODE", UnAllocatedNode, "CAN NOT REACH..."
                 pass
         print "\t CANDIDATE NODES:", NodeCandidates, "MIN COST:", MinCost
 

@@ -4,7 +4,6 @@ import PackageFile
 ################################################
 #          Program  Config
 ################################################
-
 ProgramRunTime = 9      # in seconds
 DebugInfo = True
 DebugDetails = False
@@ -17,7 +16,7 @@ EventDrivenFaultInjection = False
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
 TG_Type = 'RandomDependent'
 # For Random TG_Type:
-NumberOfTasks = 34
+NumberOfTasks = 25
 NumberOfCriticalTasks = 0
 NumberOfEdges = 20
 WCET_Range = 15
@@ -109,23 +108,30 @@ Clustering_CostFunctionType = 'SD+MAX'
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'NMap'
+Mapping_Function = 'SimulatedAnnealing'
 LocalSearchIteration = 100
 IterativeLocalSearchIterations = 20
 #######################
-SimulatedAnnealingIteration = 200000
+SimulatedAnnealingIteration = 50000
 SA_InitialTemp = 100
-# Available Cooling Methods: 'Linear', 'Exponential', 'Adaptive', 'Markov'
-CoolingMethod = 'Adaptive'
-SA_Alpha = 0.999  # only usable under Exponential and Adaptive mode
+SA_StopTemp = 1           # Stops annealing earlier if reaches this temp
+# Available Cooling Methods: 'Linear', 'Exponential', 'Adaptive', 'Markov', 'Logarithmic'
+SA_CoolingMethod = 'Logarithmic'
+
+# only usable under Exponential and Adaptive mode
+SA_Alpha = 0.999
+
+# only for Markov Cooling
+MarkovNum = 2000
+MarkovTempStep = 1              # this is the amount of Temp decrease that the system would have after MarkovNum Steps
 
 # only for Adaptive Cooling
-MarkovNum = 2000
-MarkovTempStep = 1
 CostMonitorQueSize = 300
 SlopeRangeForCooling = 0.02     # If the slope falls between SlopeRangeForCooling and 0, the SA
                                 # starts cooling with rate of alpha.
 MaxSteadyState = 15000          # 5-10% of the iteration numbers would makes sense
+# Only for Logarithmic cooling
+LogCoolingConstant = 1000       # c should be greater than or equal to the largest energy barrier in the problem
 ######################
 if Mapping_Function == 'LocalSearch':
     MaxNumberOfIterations = LocalSearchIteration
