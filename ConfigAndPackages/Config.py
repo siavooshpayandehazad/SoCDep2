@@ -115,21 +115,30 @@ IterativeLocalSearchIterations = 20
 SimulatedAnnealingIteration = 50000
 SA_InitialTemp = 100
 SA_StopTemp = 1           # Stops annealing earlier if reaches this temp
-# Available Cooling Methods: 'Linear', 'Exponential', 'Adaptive', 'Markov', 'Logarithmic'
-SA_CoolingMethod = 'Logarithmic'
-
+# Available Cooling Methods: 'Linear', 'Exponential', 'Adaptive', 'Markov', 'Logarithmic', 'Aart'
+SA_CoolingMethod = 'Aart'
+#--------------------------
 # only usable under Exponential and Adaptive mode
 SA_Alpha = 0.999
-
+#--------------------------
 # only for Markov Cooling
+MarkovTempStep = 1        # this is the amount of Temp decrease that the system would have after MarkovNum Steps
 MarkovNum = 2000
-MarkovTempStep = 1              # this is the amount of Temp decrease that the system would have after MarkovNum Steps
+#--------------------------
+# only for Aart's cooling schedule
+# The number K in Aart's cooling schedule is determined by CostMonitorQueSize
+Delta = 0.3     # smaller Delta would result in slower annealing
 
+# only for Adaptive and Aart's Cooling
+CostMonitorQueSize = 2000
+#--------------------------
 # only for Adaptive Cooling
-CostMonitorQueSize = 300
 SlopeRangeForCooling = 0.02     # If the slope falls between SlopeRangeForCooling and 0, the SA
                                 # starts cooling with rate of alpha.
+# A counter would count number of steps moved with slope = 0. when the counter reaches MaxSteadyState,
+# the process terminates
 MaxSteadyState = 15000          # 5-10% of the iteration numbers would makes sense
+#--------------------------
 # Only for Logarithmic cooling
 LogCoolingConstant = 1000       # c should be greater than or equal to the largest energy barrier in the problem
 ######################

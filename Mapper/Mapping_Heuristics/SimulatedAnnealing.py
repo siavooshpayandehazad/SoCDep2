@@ -9,9 +9,10 @@ from Mapper import Mapping_Functions
 from ConfigAndPackages import Config
 from Scheduler import Scheduler,Scheduling_Functions,Scheduling_Reports
 import random
-from math import exp, log10
+from math import exp, log10, log1p
 from collections import deque
 from scipy import stats
+import statistics
 
 def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
                                       IterationNum, CostDataFile, logging):
@@ -23,7 +24,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
     SATemperatureFile = open('Generated_Files/Internal/SATemp.txt','w')
     SACostSlopeFile = open('Generated_Files/Internal/SACostSlope.txt','w')
 
-    if Config.SA_CoolingMethod == 'Adaptive':
+    if Config.SA_CoolingMethod == 'Adaptive' or Config.SA_CoolingMethod == 'Aart':
         CostMonitor = deque([])
     else:
         CostMonitor = []
@@ -54,6 +55,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
     Temperature = InitialTemp
     slope = None
     ZeroSlopeCounter = 0
+    StdDeviation = None
     for i in range(0,IterationNum):
         # move to another solution
 
@@ -85,6 +87,10 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
                 print "\033[32m* NOTE::\033[0mMOVED TO SOLUTION WITH COST:","{0:.2f}".format(CurrentCost), "\tProb:", \
                       "{0:.2f}".format(Prob), "\tTemp:", "{0:.2f}".format(Temperature), "\t Iteration:", i, "\tSLOPE:", \
                       "{0:.2f}".format(slope)
+            if StdDeviation is not None:
+                print "\033[32m* NOTE::\033[0mMOVED TO SOLUTION WITH COST:","{0:.2f}".format(CurrentCost), "\tProb:", \
+                      "{0:.2f}".format(Prob), "\tTemp:", "{0:.2f}".format(Temperature), "\t Iteration:", i, "\tSTD_DEV:", \
+                      "{0:.2f}".format(StdDeviation)
             else:
                 print "\033[32m* NOTE::\033[0mMOVED TO SOLUTION WITH COST:","{0:.2f}".format(CurrentCost), "\tProb:", \
                       "{0:.2f}".format(Prob), "\tTemp:", "{0:.2f}".format(Temperature), "\t Iteration:", i
@@ -95,7 +101,6 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
         MappingProcessFile.write(Mapping_Functions.MappingIntoString(CurrentTG)+"\n")
         SATemperatureFile.write(str(Temperature)+"\n")
         MappingCostFile.write(str(CurrentCost)+"\n")
-
 
         if Config.SA_CoolingMethod == 'Adaptive':
             if len(CostMonitor)> Config.CostMonitorQueSize :
@@ -109,9 +114,21 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
             else:
                 ZeroSlopeCounter = 0
             SACostSlopeFile.write(str(slope)+"\n")
-        Temperature = NextTemp(InitialTemp, i, IterationNum, Temperature, slope)
-        if ZeroSlopeCounter == Config.MaxSteadyState or Temperature <= Config.SA_StopTemp:
+
+        if Config.SA_CoolingMethod == 'Aart':
+            if len(CostMonitor) == Config.CostMonitorQueSize :
+                StdDeviation = statistics.stdev(CostMonitor)
+                CostMonitor.clear()
+                # print StdDeviation
+            else:
+                CostMonitor.appendleft(CurrentCost)
+
+        Temperature = NextTemp(InitialTemp, i, IterationNum, Temperature, slope, StdDeviation)
+        if ZeroSlopeCounter == Config.MaxSteadyState:
             print "NO IMPROVEMENT POSSIBLE..."
+            break
+        if Temperature <= Config.SA_StopTemp:
+            print "REACHED STOP TEMPERATURE..."
             break
     MappingCostFile.close()
     MappingProcessFile.close()
@@ -123,7 +140,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
     return BestTG, BestCTG, BestAG
 
 
-def NextTemp(InitialTemp, Iteration, MaxIteration, CurrentTemp, Slope=None):
+def NextTemp(InitialTemp, Iteration, MaxIteration, CurrentTemp, Slope=None, StdDeviation = None):
     if Config.SA_CoolingMethod == 'Linear':
         Temp =(float(MaxIteration-Iteration)/MaxIteration)*InitialTemp
 
@@ -144,6 +161,11 @@ def NextTemp(InitialTemp, Iteration, MaxIteration, CurrentTemp, Slope=None):
     elif Config.SA_CoolingMethod == 'Markov':
         Temp = InitialTemp - (Iteration/Config.MarkovNum)*Config.MarkovTempStep
 
+    elif Config.SA_CoolingMethod == 'Aart':
+        if Iteration%Config.CostMonitorQueSize == 0 and StdDeviation is not None and StdDeviation != 0:
+            Temp = float(CurrentTemp)/(1+(CurrentTemp*(log1p(Config.Delta)/StdDeviation)))
+        else:
+            Temp = CurrentTemp
     else:
         raise ValueError('Invalid Cooling Method for SA...')
     return Temp
