@@ -5,7 +5,7 @@ import copy
 from ConfigAndPackages import Config
 import Scheduler
 import Mapping_Functions, Mapping_Reports, Mapping_Animation
-from Clusterer import Clustering, ClusteringReports
+from Clusterer import Clustering, ClusteringReports, Clustering_Functions
 from Mapping_Heuristics import SimpleGreedy,Local_Search,SimulatedAnnealing,NMap
 from Scheduler import Scheduler,Scheduling_Reports
 
@@ -50,13 +50,21 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
         CTG = copy.deepcopy(Clustering.TaskClusterGeneration(len(AG.nodes())))
         if Clustering.InitialClustering(TG, CTG):
             # Clustered Task Graph Optimization
-            (BestClustering, BestTaskGraph) = Clustering.ClusteringOptimization_LocalSearch(TG, CTG, Config.ClusteringIteration)
-            TG = copy.deepcopy(BestTaskGraph)
-            CTG = copy.deepcopy(BestClustering)
-            del BestClustering, BestTaskGraph
-            #Clustering_Test.DoubleCheckCTG(TG, CTG)
-            ClusteringReports.ReportCTG(CTG, "CTG_PostOpt.png")
-            ClusteringReports.VizClusteringOpt()
+            if Config.Clustering_Optimization:
+                (BestClustering, BestTaskGraph) = Clustering.ClusteringOptimization_LocalSearch(TG, CTG,
+                                                                                                Config.ClusteringIteration)
+                TG = copy.deepcopy(BestTaskGraph)
+                CTG = copy.deepcopy(BestClustering)
+                del BestClustering, BestTaskGraph
+                #Clustering_Test.DoubleCheckCTG(TG, CTG)
+                ClusteringReports.ReportCTG(CTG, "CTG_PostOpt.png")
+                ClusteringReports.VizClusteringOpt()
+            else:
+                print "CLUSTERING OPTIMIZATION TURNED OFF..."
+                print "REMOVING EMPTY CLUSTERS..."
+                Clustering_Functions.DeleteEmptyClusters(CTG)
+                ClusteringReports.ReportCTG(CTG, "CTG_PostCleaning.png")
+
             # Mapping CTG on AG
             if Mapping_Functions.MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, True, logging):
 

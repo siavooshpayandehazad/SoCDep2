@@ -98,6 +98,7 @@ ListOfAgedPEs = {3: 0.3, 2: 0.1}
 ################################################
 #          Clustering Function  Config
 ################################################
+Clustering_Optimization = True     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
 ClusteringIteration = 1000
 # here you can change the type of cost function used for Clustering the available cost functions are:
 # 'SD' = Com_Weight_SD + Node_Util_SD
