@@ -116,8 +116,8 @@ IterativeLocalSearchIterations = 20
 SimulatedAnnealingIteration = 50000
 SA_InitialTemp = 100
 SA_StopTemp = 1           # Stops annealing earlier if reaches this temp
-# Available Cooling Methods: 'Linear', 'Exponential', 'Adaptive', 'Markov', 'Logarithmic', 'Aart'
-SA_CoolingMethod = 'Aart'
+# Available Annealing Schedule: 'Linear', 'Exponential', 'Adaptive', 'Markov', 'Logarithmic', 'Aart', 'Huang'
+SA_AnnealingSchedule = 'Huang'
 #--------------------------
 # only usable under Exponential and Adaptive mode
 SA_Alpha = 0.999
@@ -132,6 +132,9 @@ Delta = 0.3     # smaller Delta would result in slower annealing
 
 # only for Adaptive and Aart's Cooling
 CostMonitorQueSize = 2000
+#--------------------------
+# only for Huang Annealing Schedule
+HuangTargetValue = 100
 #--------------------------
 # only for Adaptive Cooling
 SlopeRangeForCooling = 0.02     # If the slope falls between SlopeRangeForCooling and 0, the SA

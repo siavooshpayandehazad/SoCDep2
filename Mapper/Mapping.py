@@ -119,8 +119,10 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                                                                                       Config.SimulatedAnnealingIteration,
                                                                                       'SA_MappingCost', logging)
                     Mapping_Reports.VizMappingOpt('SA_MappingCost')
-                    if Config.SA_CoolingMethod == 'Adaptive':
+                    if Config.SA_AnnealingSchedule == 'Adaptive':
                         Mapping_Reports.VizCostSlope()
+                    elif Config.SA_AnnealingSchedule == 'Huang':
+                        Mapping_Reports.VizHuangRace()
                     TG = copy.deepcopy(BestTG)
                     AG = copy.deepcopy(BestAG)
                     del BestTG, BestCTG, BestAG

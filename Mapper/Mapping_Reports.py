@@ -166,7 +166,7 @@ def VizMappingOpt(CostFileName):
             SATempFile.close()
             # print len(Temp), len(SolutionNum)
             ax2 = ax1.twinx()
-            ax2.plot(SolutionNum, Temp, 'g--')
+            ax2.plot(SolutionNum, Temp, 'g')
             ax2.set_ylabel('Temperature')
             for tl in ax2.get_yticklabels():
                 tl.set_color('g')
@@ -202,5 +202,33 @@ def VizCostSlope():
         plt.close(fig)
     except IOError:
             print 'CAN NOT OPEN SACostSlope.txt'
+
+    return None
+
+
+def VizHuangRace():
+
+    print "==========================================="
+    print "GENERATING HUANG COUNTERS STATES VISUALIZATION..."
+    fig, ax1 = plt.subplots()
+    try:
+        HuangRaceFile = open('Generated_Files/Internal/SAHuangRace.txt','r')
+        Counter1 = []
+        Counter2 = []
+        line = HuangRaceFile.readline()
+        while line != '':
+            Counterlist = line.split()
+            Counter1.append(Counterlist[0])
+            Counter2.append(Counterlist[1])
+            line = HuangRaceFile.readline()
+        HuangRaceFile.close()
+
+        ax1.plot(range(0,len(Counter1)), Counter1, 'b', range(0,len(Counter2)), Counter2, 'g')
+        ax1.set_ylabel('Cost Slope')
+        plt.savefig("GraphDrawings/Mapping_HuangCounters.png",dpi=300)
+        plt.clf()
+        plt.close(fig)
+    except IOError:
+            print 'CAN NOT OPEN SAHuangRace.txt'
 
     return None

@@ -23,8 +23,9 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
     MappingProcessFile = open('Generated_Files/Internal/MappingProcess.txt','w')
     SATemperatureFile = open('Generated_Files/Internal/SATemp.txt','w')
     SACostSlopeFile = open('Generated_Files/Internal/SACostSlope.txt','w')
+    SAHuangRaceFile = open('Generated_Files/Internal/SAHuangRace.txt','w')
 
-    if Config.SA_CoolingMethod == 'Adaptive' or Config.SA_CoolingMethod == 'Aart':
+    if Config.SA_AnnealingSchedule in ['Adaptive', 'Aart', 'Huang']:
         CostMonitor = deque([])
     else:
         CostMonitor = []
@@ -42,7 +43,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
     CurrentTG=copy.deepcopy(TG)
     CurrentAG=copy.deepcopy(AG)
     CurrentCTG=copy.deepcopy(CTG)
-    CurrentCost = Mapping_Functions.CostFunction(TG,AG,SHM,False,InitialMappingString=InitMapString)
+    CurrentCost = Mapping_Functions.CostFunction(TG, AG, SHM, False, InitialMappingString=InitMapString)
     StartingCost = CurrentCost
 
     BestTG = copy.deepcopy(TG)
@@ -56,13 +57,21 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
     slope = None
     ZeroSlopeCounter = 0
     StdDeviation = None
+
+    # for Huang Annealing schedule
+    MoveAccepted = False
+    Huang_Counter1= 0
+    Huang_Counter2= 0
+    Huang_CostMean = 0
+    Huang_CostStdDev = 0
+
     for i in range(0,IterationNum):
         # move to another solution
 
         NewTG, NewCTG, NewAG = MoveToAnotherSolution(CurrentTG, CurrentCTG, CurrentAG,  NoCRG,
                                                      SHM, CriticalRG, NonCriticalRG, logging)
-        Scheduling_Functions.ClearScheduling(NewAG,NewTG)
-        Scheduler.ScheduleAll(NewTG,NewAG,SHM,False,False)
+        Scheduling_Functions.ClearScheduling(NewAG, NewTG)
+        Scheduler.ScheduleAll(NewTG, NewAG, SHM, False, False)
 
         # calculate the cost of new solution
         NewCost = Mapping_Functions.CostFunction(NewTG, NewAG, SHM, False, InitialMappingString=InitMapString)
@@ -72,13 +81,15 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
             BestAG=copy.deepcopy(NewAG)
             BestCTG=copy.deepcopy(NewCTG)
             BestCost = NewCost
-            print "\033[33m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:","{0:.2f}".format(NewCost)
+            print "\033[33m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:","{0:.2f}".format(NewCost), \
+                  "\t Iteration:", i
         # calculate the probability P of accepting the solution
         Prob = Metropolis(CurrentCost, NewCost, Temperature)
         # print "Prob:",Prob
         # throw the coin with probability P
         if Prob > random.random():
             # accept the new solution
+            MoveAccepted = True
             CurrentTG = copy.deepcopy(NewTG)
             CurrentAG = copy.deepcopy(NewAG)
             CurrentCTG = copy.deepcopy(NewCTG)
@@ -95,6 +106,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
                 print "\033[32m* NOTE::\033[0mMOVED TO SOLUTION WITH COST:","{0:.2f}".format(CurrentCost), "\tProb:", \
                       "{0:.2f}".format(Prob), "\tTemp:", "{0:.2f}".format(Temperature), "\t Iteration:", i
         else:
+            MoveAccepted = False
             # move back to initial solution
             pass
         # update Temp
@@ -102,7 +114,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
         SATemperatureFile.write(str(Temperature)+"\n")
         MappingCostFile.write(str(CurrentCost)+"\n")
 
-        if Config.SA_CoolingMethod == 'Adaptive':
+        if Config.SA_AnnealingSchedule == 'Adaptive':
             if len(CostMonitor)> Config.CostMonitorQueSize :
                 CostMonitor.appendleft(CurrentCost)
                 CostMonitor.pop()
@@ -115,13 +127,40 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
                 ZeroSlopeCounter = 0
             SACostSlopeFile.write(str(slope)+"\n")
 
-        if Config.SA_CoolingMethod == 'Aart':
+        if Config.SA_AnnealingSchedule == 'Aart' :
             if len(CostMonitor) == Config.CostMonitorQueSize :
                 StdDeviation = statistics.stdev(CostMonitor)
                 CostMonitor.clear()
                 # print StdDeviation
             else:
                 CostMonitor.appendleft(CurrentCost)
+
+        # Huang's annealing schedule is very much like Aart's Schedule... how ever, Aart's schedule stays in a fixed
+        # temperature for a fixed number of steps, however, Huang's schedule decides about number of steps dynamically
+        if Config.SA_AnnealingSchedule == 'Huang':
+            CostMonitor.appendleft(CurrentCost)
+            if len(CostMonitor)> 1:
+                Huang_CostMean = sum(CostMonitor)/len(CostMonitor)
+                Huang_CostStdDev = statistics.stdev(CostMonitor)
+                if MoveAccepted:
+                    if Huang_CostMean - 0.5* Huang_CostStdDev <= CurrentCost <= Huang_CostMean + 0.5* Huang_CostStdDev:
+                        Huang_Counter1 += 1
+                    else:
+                        Huang_Counter2 += 1
+            # print Huang_Counter1, Huang_Counter2
+            SAHuangRaceFile.write(str(Huang_Counter1)+" "+ str(Huang_Counter2)+"\n")
+            if Huang_Counter1 == Config.HuangTargetValue:
+                StdDeviation = statistics.stdev(CostMonitor)
+                CostMonitor.clear()
+                Huang_Counter1 = 0
+                Huang_Counter2 = 0
+            elif Huang_Counter2 == Config.HuangTargetValue:
+                Huang_Counter1 = 0
+                Huang_Counter2 = 0
+                StdDeviation = None
+            else:
+                StdDeviation = None
+
 
         Temperature = NextTemp(InitialTemp, i, IterationNum, Temperature, slope, StdDeviation)
         if ZeroSlopeCounter == Config.MaxSteadyState:
@@ -134,6 +173,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
     MappingProcessFile.close()
     SATemperatureFile.close()
     SACostSlopeFile.close()
+    SAHuangRaceFile.close()
     print "-------------------------------------"
     print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost
     print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost),"%"
@@ -141,34 +181,43 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
 
 
 def NextTemp(InitialTemp, Iteration, MaxIteration, CurrentTemp, Slope=None, StdDeviation = None):
-    if Config.SA_CoolingMethod == 'Linear':
-        Temp =(float(MaxIteration-Iteration)/MaxIteration)*InitialTemp
+    if Config.SA_AnnealingSchedule == 'Linear':
+        Temp = (float(MaxIteration-Iteration)/MaxIteration)*InitialTemp
 
-    elif Config.SA_CoolingMethod == 'Exponential':
+    elif Config.SA_AnnealingSchedule == 'Exponential':
         Temp = CurrentTemp * Config.SA_Alpha
 
-    elif Config.SA_CoolingMethod == 'Logarithmic':
+    elif Config.SA_AnnealingSchedule == 'Logarithmic':
         # this is based on "A comparison of simulated annealing cooling strategies"
         # by Yaghout Nourani and Bjarne Andresen
         Temp = Config.LogCoolingConstant * (1.0/log10(1+(Iteration+1)))     # iteration should be > 1 so I added 1
 
-    elif Config.SA_CoolingMethod == 'Adaptive':
+    elif Config.SA_AnnealingSchedule == 'Adaptive':
         Temp = CurrentTemp
         if Iteration > Config.CostMonitorQueSize:
             if Slope < Config.SlopeRangeForCooling and Slope > 0:
                 Temp = CurrentTemp * Config.SA_Alpha
 
-    elif Config.SA_CoolingMethod == 'Markov':
+    elif Config.SA_AnnealingSchedule == 'Markov':
         Temp = InitialTemp - (Iteration/Config.MarkovNum)*Config.MarkovTempStep
 
-    elif Config.SA_CoolingMethod == 'Aart':
+    elif Config.SA_AnnealingSchedule == 'Aart':
+        # This is coming from the following paper:
+        # Job Shop Scheduling by Simulated Annealing Author(s): Peter J. M. van Laarhoven,
+        # Emile H. L. Aarts, Jan Karel Lenstra
         if Iteration%Config.CostMonitorQueSize == 0 and StdDeviation is not None and StdDeviation != 0:
+            Temp = float(CurrentTemp)/(1+(CurrentTemp*(log1p(Config.Delta)/StdDeviation)))
+        else:
+            Temp = CurrentTemp
+    elif Config.SA_AnnealingSchedule == 'Huang':
+        if StdDeviation is not None and StdDeviation != 0:
             Temp = float(CurrentTemp)/(1+(CurrentTemp*(log1p(Config.Delta)/StdDeviation)))
         else:
             Temp = CurrentTemp
     else:
         raise ValueError('Invalid Cooling Method for SA...')
     return Temp
+
 
 def CalculateSlopeOfCost(CostMonitor):
     slope = 0
