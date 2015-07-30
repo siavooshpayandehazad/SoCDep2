@@ -98,7 +98,7 @@ ListOfAgedPEs = {3: 0.3, 2: 0.1}
 ################################################
 #          Clustering Function  Config
 ################################################
-Clustering_Optimization = True     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
+Clustering_Optimization = False     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
 ClusteringIteration = 1000
 # here you can change the type of cost function used for Clustering the available cost functions are:
 # 'SD' = Com_Weight_SD + Node_Util_SD
@@ -115,26 +115,32 @@ IterativeLocalSearchIterations = 20
 #######################
 SimulatedAnnealingIteration = 50000
 SA_InitialTemp = 100
-SA_StopTemp = 1           # Stops annealing earlier if reaches this temp
+SA_StopTemp = 5             # Stops annealing earlier if reaches this temp
+SA_ReportSolutions = False   # if True, it prints every accepted move to console
 # Available Annealing Schedule: 'Linear', 'Exponential', 'Adaptive', 'Markov', 'Logarithmic', 'Aart', 'Huang'
 SA_AnnealingSchedule = 'Huang'
+# Termination Criteria Could be either 'StopTemp' or 'IterationNum'
+TerminationCriteria = 'StopTemp'
 #--------------------------
 # only usable under Exponential and Adaptive mode
 SA_Alpha = 0.999
 #--------------------------
 # only for Markov Cooling
-MarkovTempStep = 1        # this is the amount of Temp decrease that the system would have after MarkovNum Steps
 MarkovNum = 2000
+MarkovTempStep = 1        # this is the amount of Temp decrease that the system would have after MarkovNum Steps
 #--------------------------
 # only for Aart's cooling schedule
 # The number K in Aart's cooling schedule is determined by CostMonitorQueSize
-Delta = 0.3     # smaller Delta would result in slower annealing
+Delta = 0.1     # smaller Delta would result in slower annealing
 
-# only for Adaptive and Aart's Cooling
+# only for Adaptive, Aart's and Huang's Cooling
 CostMonitorQueSize = 2000
 #--------------------------
 # only for Huang Annealing Schedule
-HuangTargetValue = 100
+HuangAlpha = 0.5
+HuangN = 30
+HuangTargetValue1 = 45          # should be equal to 3*erf(alpha)*N
+HuangTargetValue2 = 45          # should be equal to 3*(1-erf(alpha))*N
 #--------------------------
 # only for Adaptive Cooling
 SlopeRangeForCooling = 0.02     # If the slope falls between SlopeRangeForCooling and 0, the SA

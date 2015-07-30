@@ -224,7 +224,7 @@ def VizHuangRace():
         HuangRaceFile.close()
 
         ax1.plot(range(0,len(Counter1)), Counter1, 'b', range(0,len(Counter2)), Counter2, 'g')
-        ax1.set_ylabel('Cost Slope')
+        ax1.set_ylabel('Huang counters')
         plt.savefig("GraphDrawings/Mapping_HuangCounters.png",dpi=300)
         plt.clf()
         plt.close(fig)
