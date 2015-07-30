@@ -2,7 +2,7 @@
 
 import random
 import copy
-
+from ConfigAndPackages import Config
 import networkx
 
 from Clustering_Functions import AddTaskToCTG, RemoveTaskFromCTG, ClearClustering, \
@@ -40,13 +40,13 @@ def InitialClustering(TG, CTG):
         Itteration=0
         DestCluster = random.choice(CTG.nodes())
         while(not AddTaskToCTG(TG,CTG,Task,DestCluster)):
-            #RemoveTaskFromCTG(TG,CTG,Task)
+            # RemoveTaskFromCTG(TG,CTG,Task)
             Itteration+=1
             DestCluster = random.choice(CTG.nodes())
             if Itteration == 10* len(CTG.nodes()):
                 ClearClustering(TG,CTG)
                 return False
-    #DoubleCheckCTG(TG,CTG)
+    # DoubleCheckCTG(TG,CTG)
     print "INITIAL CLUSTERED TASK GRAPH (CTG) READY..."
     ReportCTG(CTG,"CTG_Initial.png")
     return True
@@ -89,8 +89,11 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter):
 
             RemoveTaskFromCTG(TG,CTG,RandomTask)
             RandomCluster = random.choice(CTG.nodes())
-            #print "TASK", RandomTask, "MOVED TO CLUSTER", RandomCluster, "RESULTS IN UTILIZATION:", \
-            #    CTG.node[RandomCluster]['Utilization'] + TG.node[RandomTask]['WCET']
+
+        if Config.Clustering_Report:
+            print "TASK", RandomTask, "MOVED TO CLUSTER", RandomCluster, "RESULTS IN UTILIZATION:", \
+                   CTG.node[RandomCluster]['Utilization'] + TG.node[RandomTask]['WCET']
+
         NewCost = CostFunction(CTG)
         ClusteringCostFile.write(str(NewCost)+"\n")
         if NewCost <= Cost:

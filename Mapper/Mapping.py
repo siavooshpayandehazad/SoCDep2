@@ -129,7 +129,6 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 #print Mapping_Functions.MappingIntoString(TG)
                 Scheduling_Reports.ReportMappedTasks(AG, logging)
                 Mapping_Functions.CostFunction(TG, AG, SHM, True,  InitialMappingString = initmpSr)
-                # Mapping_Animation.AnimateMapping()
                 return TG, AG
             else:
                 Mapping_Reports.ReportMapping(AG, logging)
@@ -137,5 +136,5 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 return None, None
         else :
             print "Initial Clustering Failed...."
-            return None, None
+            raise ValueError("INITIAL CLUSTERING FAILED...")
     return None, None

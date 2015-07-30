@@ -98,8 +98,10 @@ ListOfAgedPEs = {3: 0.3, 2: 0.1}
 ################################################
 #          Clustering Function  Config
 ################################################
-Clustering_Optimization = False     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
+Clustering_Optimization = True     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
 ClusteringIteration = 1000
+Clustering_Report = False
+Clustering_DetailedReport = False
 # here you can change the type of cost function used for Clustering the available cost functions are:
 # 'SD' = Com_Weight_SD + Node_Util_SD
 # 'SD+MAX' = Com_Weight_SD + MaxComWeight + Node_Util_SD + MaxNodeUtil
@@ -118,7 +120,7 @@ SA_InitialTemp = 100
 SA_StopTemp = 5             # Stops annealing earlier if reaches this temp
 SA_ReportSolutions = False   # if True, it prints every accepted move to console
 # Available Annealing Schedule: 'Linear', 'Exponential', 'Adaptive', 'Markov', 'Logarithmic', 'Aart', 'Huang'
-SA_AnnealingSchedule = 'Huang'
+SA_AnnealingSchedule = 'Markov'
 # Termination Criteria Could be either 'StopTemp' or 'IterationNum'
 TerminationCriteria = 'StopTemp'
 #--------------------------

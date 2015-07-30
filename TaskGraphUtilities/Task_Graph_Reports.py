@@ -70,6 +70,6 @@ def DrawTaskGraph(TG):
     networkx.draw_networkx_edge_labels(TG,pos,edge_labels=dict(zip(TG_Edge_List, TG_Edge_Weight)))
     plt.savefig("GraphDrawings/TG.png")
     plt.clf()
-    print "TASK GRAPH DRAWINGS READY..."
+    print "\033[35m* VIZ::\033[0mTASK GRAPH DRAWINGS CREATED AT: GraphDrawings/TG.png"
     return None
 

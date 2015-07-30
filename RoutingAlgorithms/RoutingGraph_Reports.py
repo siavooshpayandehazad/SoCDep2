@@ -75,4 +75,5 @@ def DrawRG (RoutingGraph):
 
     plt.savefig("GraphDrawings/RG.png")
     plt.clf()
+    print  "\033[35m* VIZ::\033[0mROUTING GRAPH DRAWING CREATED AT: GraphDrawings/RG.png"
     return None

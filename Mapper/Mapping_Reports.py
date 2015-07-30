@@ -16,6 +16,8 @@ def ReportMapping(AG, logging):
     return None
 
 def DrawMappingDistribution(AG, SHM):
+    print "==========================================="
+    print "GENERATING MAPPING DISTRIBUTIONS VISUALIZATION..."
     fig_Num = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
     fig_Util = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
     MaxNumberOfTasks = 0
@@ -53,6 +55,9 @@ def DrawMappingDistribution(AG, SHM):
     fig_Util.clf()
     plt.close(fig_Num)
     plt.close(fig_Util)
+    print "\033[35m* VIZ::\033[0mMAPPING UTILIZATION DISTRIBUTION DRAWING CREATED AT: GraphDrawings/Mapping_Util.png"
+    print "\033[35m* VIZ::\033[0mMAPPING TASK NUMBER DISTRIBUTION DRAWING CREATED AT: GraphDrawings/Mapping_Num.png"
+
     return None
 
 
@@ -65,6 +70,8 @@ def DrawMapping(TG, AG, SHM):
     :param SHM: System Health Management
     :return: None
     """
+    print "==========================================="
+    print "GENERATING MAPPING VISUALIZATION..."
     fig = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
     ColorList = []
     POS = {}
@@ -112,6 +119,7 @@ def DrawMapping(TG, AG, SHM):
     fig.savefig("GraphDrawings/Mapping.png")
     plt.clf()
     plt.close(fig)
+    print "\033[35m* VIZ::\033[0mMAPPING DRAWING CREATED AT: GraphDrawings/Mapping.png"
     return None
 
 def VizMappingOpt(CostFileName):
@@ -176,6 +184,7 @@ def VizMappingOpt(CostFileName):
     plt.savefig("GraphDrawings/Mapping_Opt_Process.png")
     plt.clf()
     plt.close(fig)
+    print "\033[35m* VIZ::\033[0mMAPPING OPTIMIZATION PROCESS GRAPH CREATED AT: GraphDrawings/Mapping_Opt_Process.png"
     return None
 
 
@@ -200,6 +209,7 @@ def VizCostSlope():
         plt.savefig("GraphDrawings/Mapping_Cost_Slope.png")
         plt.clf()
         plt.close(fig)
+        print "\033[35m* VIZ::\033[0mSA COST SLOPE GRAPH CREATED AT: GraphDrawings/Mapping_Cost_Slope.png"
     except IOError:
             print 'CAN NOT OPEN SACostSlope.txt'
 
@@ -228,6 +238,7 @@ def VizHuangRace():
         plt.savefig("GraphDrawings/Mapping_HuangCounters.png",dpi=300)
         plt.clf()
         plt.close(fig)
+        print "\033[35m* VIZ::\033[0mSA HUANG COUNTERS GRAPH CREATED AT: GraphDrawings/Mapping_HuangCounters.png"
     except IOError:
             print 'CAN NOT OPEN SAHuangRace.txt'
 

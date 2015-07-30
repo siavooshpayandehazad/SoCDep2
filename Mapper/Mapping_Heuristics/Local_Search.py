@@ -10,14 +10,16 @@ from ConfigAndPackages import Config
 def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
                                IterationNum,Report,DetailedReport,logging,CostDataFile,MappingProcess):
     if Report:print "==========================================="
-    if Report:print "STARTING MAPPING OPTIMIZATION..."
+    if Report:print "STARTING MAPPING OPTIMIZATION...USING ITERATIVE LOCAL SEARCH..."
+    if Report:print "NUMBER OF ITERATIONS:", IterationNum
+
     MappingCostFile = open('Generated_Files/Internal/'+CostDataFile+'.txt','a')
     MappingProcessFile = open('Generated_Files/Internal/'+MappingProcess+'.txt','a')
 
     BestTG=copy.deepcopy(TG)
     BestAG=copy.deepcopy(AG)
     BestCTG=copy.deepcopy(CTG)
-    BestCost=Mapping_Functions.CostFunction(TG,AG,SHM,Report)
+    BestCost=Mapping_Functions.CostFunction(TG,AG,SHM,False)
     StartingCost=BestCost
 
     for Iteration in range(0,IterationNum):

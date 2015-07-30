@@ -144,7 +144,13 @@ def GenerateRandomIndependentTG(NumberOfTasks,WCET_Range,Release_Range):
     TG_Release_List= []
     for i in range(0,NumberOfTasks):
         Task_List.append(i)
-        Task_Criticality_List.append(random.choice(['H','L']))
+        Task_Criticality_List.append('L')
+        Counter = 0
+        while Counter < Config.NumberOfCriticalTasks:
+            ChosenTask = random.choice(Task_List)
+            if Task_Criticality_List[ChosenTask] == 'L':
+                Task_Criticality_List[ChosenTask] = 'H'
+                Counter +=1
         Task_WCET_List.append(random.randrange(1,WCET_Range))
         TG_Release_List.append(random.randrange(0,Release_Range))
     for i in range(0,len(Task_List)):

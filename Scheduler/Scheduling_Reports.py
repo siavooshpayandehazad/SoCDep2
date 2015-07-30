@@ -222,5 +222,5 @@ def GenerateGanttCharts(TG,AG):
     plt.savefig("GraphDrawings/Scheduling.png")
     plt.clf()
     plt.close(fig)
-    print  "SCHEDULING GANTT CHARTS READY..."
+    print  "\033[35m* VIZ::\033[0mSCHEDULING GANTT CHARTS CREATED AT: GraphDrawings/Scheduling.png"
     return None

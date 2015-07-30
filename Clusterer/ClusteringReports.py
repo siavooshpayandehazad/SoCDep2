@@ -24,7 +24,7 @@ def ReportCTG(CTG, filename):
     networkx.draw_networkx_labels(CTG, pos, labels=ClusterTaskListDicForDraw)
     plt.savefig("GraphDrawings/"+filename)
     plt.clf()
-    print "GRAPH DRAWINGS DONE, CHECK \"GraphDrawings/"+filename+"\""
+    print "\033[35m* VIZ::\033[0mGRAPH DRAWINGS DONE, CHECK \"GraphDrawings/"+filename+"\""
     return None
 
 
@@ -60,4 +60,5 @@ def VizClusteringOpt():
     plt.plot(SolutionNum, Cost,'b', SolutionNum, MinCostList, 'r')
     plt.savefig("GraphDrawings/CTG_Opt_Process.png")
     plt.clf()
+    print "\033[35m* VIZ::\033[0mCLUSTERING OPTIMIZATION PROCESS CREATED AT: GraphDrawings/CTG_Opt_Process.png"
     return None

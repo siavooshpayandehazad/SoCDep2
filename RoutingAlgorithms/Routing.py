@@ -264,12 +264,15 @@ def FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG, SourceNode,Destinati
                     if int(re.search(r"\d+", Path[i]).group()) != int(re.search(r"\d+", Path[i+1]).group()):
                         Links.append((int(re.search(r"\d+", Path[i]).group()), int(re.search(r"\d+", Path[i+1]).group())))
                 AllLinks.append(Links)
-            if Report:print "\t\tFINDING PATH(S) FROM: ", Source, "TO:", Destination, " ==>", \
+        if Report:print "\t\tFINDING PATH(S) FROM: ", Source, "TO:", Destination, " ==>", \
                             AllLinks if ReturnAllPaths else ShortestLinks
         if ReturnAllPaths:
-            return AllLinks
+            if len(AllPaths) == 1:
+                return AllLinks[0], len(AllPaths)
+            else:
+                return AllLinks, len(AllPaths)
         else:
-            return ShortestLinks
+            return ShortestLinks, 1
     else:
         if Report:print "\t\tNO PATH FOUND FROM: ", Source, "TO:", Destination
-        return None
+        return None, None

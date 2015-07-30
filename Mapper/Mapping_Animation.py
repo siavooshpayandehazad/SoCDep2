@@ -73,6 +73,6 @@ def GenerateFrames(TG, AG, SHM):
         Counter += 1
         line = MappingProcessFile.readline()
     MappingProcessFile.close()
-    print "MAPPING ANIMATION FRAMES READY..."
+    print "\033[35m* VIZ::\033[0mMAPPING ANIMATION FRAMES READY AT: GraphDrawings/Mapping_Animation_Material"
     return None
 

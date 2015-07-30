@@ -127,5 +127,6 @@ def DrawSHM(SHM):
     plt.savefig("GraphDrawings/SHM.png")
     plt.clf()
     plt.close(fig)
+    print "\033[35m* VIZ::\033[0mSYSTEM HEALTH MAP DRAWING CREATED AT: GraphDrawings/SHM.png"
     return None
 
