@@ -101,7 +101,16 @@ def DrawMapping(TG, AG, SHM):
                                                Location[1]/YSize+Location[2]/(ZSize*XSize)),
                                                width=0.1, height=0.1, facecolor=color,
                                                edgecolor="black", linewidth=3, alpha= 0.5))
-
+        if Location[0] < XSize-1:
+            X = Location[0]/XSize+Location[2]/(ZSize*XSize)+0.1
+            Y = Location[1]/YSize+Location[2]/(ZSize*XSize)+0.05
+            plt.plot([X, X+1.0/XSize - 0.1], [Y,Y], color ='black',lw=3)
+            #plt.gca().add_patch(patches.Arrow(X, Y, 1.0/XSize - 0.1, 0, width=0.01))
+        if Location[1] < YSize-1:
+            X = Location[0]/XSize+Location[2]/(ZSize*XSize)+0.05
+            Y = Location[1]/YSize+Location[2]/(ZSize*XSize)+0.1
+            #plt.plot([Y,Y], [X, X+1.0/XSize - 0.1], color ='black')
+            plt.plot([X, X], [Y,Y+1.0/XSize - 0.1], color ='black',lw=3)
         OffsetX = 0
         OffsetY = 0.02
         TaskCount = 0
