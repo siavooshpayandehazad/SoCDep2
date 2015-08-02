@@ -30,7 +30,7 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
     :logging: logging file
     :return: AG
     """
-    SupportedTopologies = ['2DSpidergon', '2DTorus', '2DMesh', '2DRing', '2DLine']
+    SupportedTopologies = ['2DSpidergon', '2DTorus', '2DMesh', '2DRing', '2DLine', '3DMesh']
     print "==========================================="
     print "PREPARING AN ARCHITECTURE GRAPH (AG)..."
     print "TOPOLOGY:", Topology
@@ -202,12 +202,12 @@ def ReturnNodeLocation(NodeNumber):
     :return: Cartesian location of the node in the form of (x,y,z)
     """
     NodeX = NodeNumber % Config.Network_X_Size
-    NodeY = NodeNumber / Config.Network_X_Size
+    NodeY = (NodeNumber / Config.Network_X_Size) % Config.Network_Y_Size
     NodeZ = NodeNumber / (Config.Network_Y_Size * Config.Network_X_Size)
     return NodeX, NodeY, NodeZ
 
 def ReturnNodeNumber(NodeX, NodeY, NodeZ):
-    NodeNumber = NodeZ*Config.Network_X_Size*Config.Network_Y_Size + NodeY*Config.Network_X_Size+NodeX
+    NodeNumber = NodeZ*Config.Network_X_Size*Config.Network_Y_Size + NodeY*Config.Network_X_Size + NodeX
     return NodeNumber
 
 

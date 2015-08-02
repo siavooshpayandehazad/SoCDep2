@@ -38,11 +38,11 @@ AG_Type = 'Generic'
 # Todo: virtual channel
 VirtualChannelNum = 0
 # in case of Generic AG_type
-# available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing
-NetworkTopology = '2DMesh'
-Network_X_Size = 6
-Network_Y_Size = 6
-Network_Z_Size = 1
+# available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
+NetworkTopology = '3DMesh'
+Network_X_Size = 3
+Network_Y_Size = 3
+Network_Z_Size = 3
 # Only for Manual AG_Type:
 PE_List = [0, 1, 2, 3]
 AG_Edge_List = [(0, 1), (0, 2), (1, 0), (1, 3), (2, 0), (2, 3), (3, 2), (3, 1)]
@@ -52,17 +52,18 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 #          Routing  Config
 ################################################
 # Todo: introduce more turn models
-# Available Turn Models : 'FULL_TurnModel', 'XY_TurnModel', 'WestFirst_TurnModel', 'NorthLast_TurnModel'
-UsedTurnModel = PackageFile.XY_TurnModel
+# Available Turn Models : 'FULL_TurnModel', 'XY_TurnModel', 'WestFirst_TurnModel',
+#                         'NorthLast_TurnModel', 'XYZ_TurnModel'
+UsedTurnModel = PackageFile.XYZ_TurnModel
 RoutingFilePath = "User_Inputs/RoutingFile.txt"
 SetRoutingFromFile = False
 ################################################
 #          SHM  Config
 ################################################
 # Do not change if you have conventional 2D NoC
-TurnsHealth = PackageFile.TurnsHealth_2DNetwork
+TurnsHealth = PackageFile.TurnsHealth_3DNetwork
 if not SetRoutingFromFile:
-    for Turn in PackageFile.FULL_TurnModel:
+    for Turn in PackageFile.FULL_TurnModel_3D:
         if Turn not in UsedTurnModel:
             if Turn in TurnsHealth.keys():
                 TurnsHealth[Turn] = False
@@ -77,9 +78,9 @@ NumberOfRects = 5
 # Sample for 4X4 network:
 # ListOfBrokenLinks = [(0, 1), (0, 4)]
 # For those who don't need broken links
-# ListOfBrokenLinks = []
+ListOfBrokenLinks = []
 # Some random broken link
-ListOfBrokenLinks = [(0, 1), (22, 21)]
+# ListOfBrokenLinks = [(0, 1), (22, 21)]
 # ==========================
 # List of broken PE
 ListOfBrokenPEs = [1]
@@ -146,7 +147,7 @@ HuangTargetValue2 = 45          # should be equal to 3*(1-erf(alpha))*N
 # --------------------------
 # only for Adaptive Cooling
 SlopeRangeForCooling = 0.02     # If the slope falls between SlopeRangeForCooling and 0, the SA
-                                # starts cooling with rate of alpha.
+#                                 starts cooling with rate of alpha.
 # A counter would count number of steps moved with slope = 0. when the counter reaches MaxSteadyState,
 # the process terminates
 MaxSteadyState = 15000          # 5-10% of the iteration numbers would makes sense
@@ -212,11 +213,11 @@ else:
 ###############################################
 OneStepDiagonosable = False     # set to False if you need Sequentially diagnosable PMCG
 TFaultDiagnosable = None        # one-step t-fault diagnosable system, if set to none, default value would be
-                                # (n-1)/2
+#                                 (n-1)/2
 NodeTestExeTime = 2
 NodeTestComWeight = 2
 ###############################################
 #           VISUALIZATION Config
 ###############################################
-GenMappingFrames = False         # If True, generates the frames for animation
-FrameResolution = 20            # Resolution in dpi. for resolutions above 50, text is added to the tasks
+GenMappingFrames = False    # If True, generates the frames for animation
+FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks

@@ -30,25 +30,28 @@ def DrawMappingDistribution(AG, SHM):
         Location = AG_Functions.ReturnNodeLocation(node)
         XSize= float(Config.Network_X_Size)
         YSize= float(Config.Network_Y_Size)
+        ZSize= float(Config.Network_Y_Size)
         Num = 255*len(AG.node[node]['MappedTasks'])/float(MaxNumberOfTasks)
         Util = 255*AG.node[node]['Utilization']/float(MaxUtilization)
         if SHM.SHM.node[node]['NodeHealth']:
             color = '#%02X%02X%02X' % (255, 255-Num, 255-Num)
         else:   # node is broken
             color = '#7B747B'
-        fig_Num.gca().add_patch(patches.Rectangle((Location[0]/XSize, Location[1]/YSize),
-                                               width=0.15, height=0.15, facecolor=color,
-                                               edgecolor="black", linewidth=3))
+        fig_Num.gca().add_patch(patches.Rectangle((Location[0]/XSize+Location[2]/(ZSize*XSize**2),
+                                                   Location[1]/YSize+Location[2]/(ZSize*YSize**2)),
+                                                   width=0.15, height=0.15, facecolor=color,
+                                                   edgecolor="black", linewidth=3,zorder=ZSize-Location[2]))
         if SHM.SHM.node[node]['NodeHealth']:
             color = '#%02X%02X%02X' % (255, 255-Util, 255-Util)
         else:   # node is broken
             color = '#7B747B'
-        fig_Util.gca().add_patch(patches.Rectangle((Location[0]/XSize, Location[1]/YSize),
-                                               width=0.15, height=0.15, facecolor=color,
-                                               edgecolor="black", linewidth=3))
+        fig_Util.gca().add_patch(patches.Rectangle((Location[0]/XSize+Location[2]/(ZSize*XSize**2),
+                                                    Location[1]/YSize+Location[2]/(ZSize*YSize**2)),
+                                                    width=0.15, height=0.15, facecolor=color,
+                                                    edgecolor="black", linewidth=3,zorder=ZSize-Location[2]))
 
-    fig_Num.text(0.25, 0.03, 'Distribution of number of the tasks on the network', fontsize=35)
-    fig_Util.text(0.25, 0.03, 'Distribution of utilization of network nodes', fontsize=35)
+    fig_Num.text(0.25, 0.03, 'Distribution of number of the tasks on the network', fontsize=15)
+    fig_Util.text(0.25, 0.03, 'Distribution of utilization of network nodes', fontsize=15)
     fig_Num.savefig("GraphDrawings/Mapping_Num.png")
     fig_Util.savefig("GraphDrawings/Mapping_Util.png")
     fig_Num.clf()
@@ -79,6 +82,7 @@ def DrawMapping(TG, AG, SHM):
         Location = AG_Functions.ReturnNodeLocation(node)
         XSize = float(Config.Network_X_Size)
         YSize = float(Config.Network_Y_Size)
+        ZSize = float(Config.Network_Z_Size)
         if SHM.SHM.node[node]['NodeHealth']:
             if Config.EnablePartitioning:
                 if node in Config.CriticalRegionNodes:
@@ -93,16 +97,18 @@ def DrawMapping(TG, AG, SHM):
                 color = 'white'
         else:   # node is broken
             color = '#7B747B'
-        fig.gca().add_patch(patches.Rectangle((Location[0]/XSize, Location[1]/YSize),
-                                               width=0.15, height=0.15, facecolor=color,
+        fig.gca().add_patch(patches.Rectangle((Location[0]/XSize+Location[2]/(ZSize*XSize),
+                                               Location[1]/YSize+Location[2]/(ZSize*XSize)),
+                                               width=0.1, height=0.1, facecolor=color,
                                                edgecolor="black", linewidth=3, alpha= 0.5))
+
         OffsetX = 0
         OffsetY = 0.02
         TaskCount = 0
         for task in AG.node[node]['MappedTasks']:
             TaskCount += 1
             OffsetX += 0.03
-            if TaskCount == 5:
+            if TaskCount == 3:
                 TaskCount = 1
                 OffsetX = 0.03
                 OffsetY += 0.03
@@ -112,10 +118,11 @@ def DrawMapping(TG, AG, SHM):
             b = random.randrange(0,255)
             color = '#%02X%02X%02X' % (r,g,b)
             ColorList.append(color)
-            POS[task]=(Location[0]/XSize+OffsetX, Location[1]/YSize+OffsetY)
+            POS[task]=(Location[0]/XSize+Location[2]/(ZSize*XSize)+OffsetX,
+                       Location[1]/YSize+Location[2]/(ZSize*XSize)+OffsetY)
 
-    networkx.draw(TG, POS, with_labels=True, node_size=700, node_color=ColorList, width=0, alpha = 0.5)
-    fig.text(0.25, 0.02, 'Mapping visualization for network nodes', fontsize=35)
+    networkx.draw(TG, POS, with_labels=True, node_size=300, node_color=ColorList, width=0, alpha = 0.5)
+    fig.text(0.25, 0.02, 'Mapping visualization for network nodes', fontsize=15)
     fig.savefig("GraphDrawings/Mapping.png")
     plt.clf()
     plt.close(fig)

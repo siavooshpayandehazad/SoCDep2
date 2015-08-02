@@ -11,7 +11,7 @@ def AG_Test():
         raise ValueError('Error in ReturnNodeLocation function... CASE 1')
 
     if AG_Functions.ReturnNodeLocation(Config.Network_X_Size * Config.Network_Y_Size * Config.Network_Z_Size - 1) != \
-       (Config.Network_X_Size -1, Config.Network_Y_Size - 1, Config.Network_Z_Size -1):
+       (Config.Network_X_Size -1, Config.Network_Y_Size - 1, Config.Network_Z_Size - 1):
         raise ValueError('Error in ReturnNodeLocation function... CASE 2')
 
     if AG_Functions.ReturnNodeNumber(0, 0, 0) != 0:

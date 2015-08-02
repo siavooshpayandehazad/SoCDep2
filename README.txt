@@ -126,8 +126,6 @@ ToDo:
 
     - Generate multiple levels of priority levels for Non/Mid-critical tasks
 
-    - going 3D
-
     - Genetics Algorithm for Mapping
 
     - Add logarithmic and Boltzmann cooling for SA

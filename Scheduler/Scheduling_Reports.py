@@ -62,7 +62,7 @@ def GenerateGanttCharts(TG,AG):
     if NumberOfPlots<10:
         NumberOfPlots=10
     Count = 1
-    fig = plt.figure(figsize=(Max_Time/10,NumberOfPlots/2))
+    fig = plt.figure(figsize=(Max_Time/10+5,NumberOfPlots/2))
     plt.subplots_adjust(hspace=0.1)
     for Node in AG.nodes():
         if len(AG.node[Node]['MappedTasks'])>0:

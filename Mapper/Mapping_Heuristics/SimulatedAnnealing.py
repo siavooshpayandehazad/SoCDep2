@@ -153,7 +153,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
                 Huang_CostMean = sum(CostMonitor)/len(CostMonitor)
                 Huang_CostStdDev = statistics.stdev(CostMonitor)
                 if MoveAccepted:
-                    if Huang_CostMean - Config.HuangAlpha* Huang_CostStdDev <= CurrentCost <= \
+                    if Huang_CostMean - Config.HuangAlpha * Huang_CostStdDev <= CurrentCost <= \
                                     Huang_CostMean + Config.HuangAlpha * Huang_CostStdDev:
                         Huang_Counter1 += 1
                     else:
@@ -187,7 +187,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
             print "NO IMPROVEMENT POSSIBLE..."
             break
         if Config.TerminationCriteria == 'IterationNum':
-            if i == Config.IterationNum:
+            if i == Config.SimulatedAnnealingIteration:
                 print "REACHED MAXIMUM ITERATION NUMBER..."
                 break
         elif Config.TerminationCriteria == 'StopTemp':

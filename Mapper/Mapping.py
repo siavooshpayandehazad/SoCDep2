@@ -133,7 +133,7 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
             else:
                 Mapping_Reports.ReportMapping(AG, logging)
                 print "==========================================="
-                return None, None
+                raise ValueError("INITIAL MAPPING FAILED...")
         else :
             print "Initial Clustering Failed...."
             raise ValueError("INITIAL CLUSTERING FAILED...")

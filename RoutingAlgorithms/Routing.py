@@ -42,7 +42,10 @@ def GenerateNoCRouteGraph(AG, SystemHealthMap, TurnModel, Report, DetailedReport
 
     # the order is crucial... do not change
     # to find out why its important, check: connect direct paths
-    PortList = ['N', 'W', 'L', 'E', 'S']
+    if Config.Network_Z_Size == 1:
+        PortList = ['N', 'W', 'L', 'E', 'S']
+    elif Config.Network_Z_Size>1:
+        PortList = ['U','N', 'W', 'L', 'E', 'S','D']
 
     NoCRG = networkx.DiGraph()
     for node in AG.nodes():
