@@ -39,7 +39,7 @@ def InitializeSystem(logging):
     else:
         NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, Config.DebugInfo, Config.DebugDetails))
     # Some visualization...
-    RoutingGraph_Reports.DrawRG(NoCRG)
+    RoutingGraph_Reports.Draw2DRG(NoCRG)
     ####################################################################
     # PMC-Graph
     # at this point we assume that the system health map knows about the initial faults from

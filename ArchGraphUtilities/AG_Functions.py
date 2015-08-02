@@ -52,66 +52,110 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
         for i in range(0, SizeX*SizeY):
             AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region = 'N')
         for i in range(0, SizeX):
-            logging.info("CONNECTING  "+str(i)+" TO "+str((SizeY-1)*SizeX+i))
-            logging.info("CONNECTING  "+str((SizeY-1)*SizeX+i)+" TO "+str(i))
-            AG.add_edge(i, (SizeY-1)*SizeX+i, Port=('S', 'N'), MappedTasks=[], Scheduling={})
-            AG.add_edge((SizeY-1)*SizeX+i, i, Port=('N', 'S'), MappedTasks=[], Scheduling={})
+            CurrentNode = ReturnNodeNumber(i, 0, 0)
+            NextNode = ReturnNodeNumber(i, SizeY-1, 0)
+            logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
+            logging.info("CONNECTING  "+str((SizeY-1)*SizeX+i)+" TO "+str(CurrentNode))
+            AG.add_edge(CurrentNode, (SizeY-1)*SizeX+i, Port=('S', 'N'), MappedTasks=[], Scheduling={})
+            AG.add_edge(NextNode, CurrentNode, Port=('N', 'S'), MappedTasks=[], Scheduling={})
         for j in range(0, SizeY):
-            logging.info("CONNECTING  "+str(j*SizeX)+" TO "+str(j*SizeX+SizeX-1))
-            logging.info("CONNECTING  "+str(j*SizeX+SizeX-1)+" TO "+str(j*SizeX))
-            AG.add_edge(j*SizeX, j*SizeX+SizeX-1, Port=('W', 'E'), MappedTasks=[], Scheduling={})
-            AG.add_edge(j*SizeX+SizeX-1, j*SizeX, Port=('E', 'W'), MappedTasks=[], Scheduling={})
+            CurrentNode = ReturnNodeNumber(0, j, 0)
+            NextNode = ReturnNodeNumber(SizeX-1, j, 0)
+            logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
+            logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
+            AG.add_edge(CurrentNode, NextNode, Port=('W', 'E'), MappedTasks=[], Scheduling={})
+            AG.add_edge(NextNode, CurrentNode, Port=('E', 'W'), MappedTasks=[], Scheduling={})
             for i in range(0, SizeX-1):
-                logging.info("CONNECTING  " + str(j*SizeX+i) + " TO " + str(j*SizeX+i+1))
-                logging.info("CONNECTING  "+str(j*SizeX+i+1)+" TO "+str(j*SizeX+i))
-                AG.add_edge(j*SizeX+i, j*SizeX+i+1, Port=('E', 'W'), MappedTasks=[], Scheduling={})
-                AG.add_edge(j*SizeX+i+1, j*SizeX+i, Port=('W', 'E'), MappedTasks=[], Scheduling={})
+                CurrentNode = ReturnNodeNumber(i, j, 0)
+                NextNode = ReturnNodeNumber(i+1, j, 0)
+                logging.info("CONNECTING  " + str(CurrentNode) + " TO " + str(NextNode))
+                logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
+                AG.add_edge(CurrentNode, NextNode, Port=('E', 'W'), MappedTasks=[], Scheduling={})
+                AG.add_edge(NextNode, CurrentNode, Port=('W', 'E'), MappedTasks=[], Scheduling={})
         for j in range(0, SizeY-1):
             for i in range(0, SizeX):
-                logging.info("CONNECTING  "+str(j*SizeX+i)+" TO "+str((j+1)*SizeX+i))
-                logging.info("CONNECTING  "+str((j+1)*SizeX+i)+" TO "+str(j*SizeX+i))
-                AG.add_edge(j*SizeX+i, (j+1)*SizeX+i, Port=('N', 'S'), MappedTasks=[], Scheduling={})
-                AG.add_edge((j+1)*SizeX+i, j*SizeX+i, Port=('S', 'N'), MappedTasks=[], Scheduling={})
+                CurrentNode = ReturnNodeNumber(i, j, 0)
+                NextNode = ReturnNodeNumber(i, j+1, 0)
+                logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
+                logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
+                AG.add_edge(CurrentNode, NextNode, Port=('N', 'S'), MappedTasks=[], Scheduling={})
+                AG.add_edge(NextNode, CurrentNode, Port=('S', 'N'), MappedTasks=[], Scheduling={})
     ##############################################################
     if Topology == '2DMesh':
         for i in range(0, SizeX*SizeY):
             AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region = 'N')
         for j in range(0, SizeY):
             for i in range(0, SizeX-1):
-                logging.info("CONNECTING  "+str(j*SizeX+i)+" TO "+str(j*SizeX+i+1))
-                logging.info("CONNECTING  "+str(j*SizeX+i+1)+" TO "+str(j*SizeX+i))
-                AG.add_edge(j*SizeX+i, j*SizeX+i+1, Port=('E', 'W'), MappedTasks=[], Scheduling={})
-                AG.add_edge(j*SizeX+i+1, j*SizeX+i, Port=('W', 'E'), MappedTasks=[], Scheduling={})
+                CurrentNode = ReturnNodeNumber(i, j, 0)
+                NextNode = ReturnNodeNumber(i+1, j, 0)
+                logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
+                logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
+                AG.add_edge(CurrentNode, NextNode, Port=('E', 'W'), MappedTasks=[], Scheduling={})
+                AG.add_edge(NextNode, CurrentNode, Port=('W', 'E'), MappedTasks=[], Scheduling={})
         for j in range(0, SizeY-1):
             for i in range(0, SizeX):
-                logging.info("CONNECTING  "+str(j*SizeX+i)+" TO "+str((j+1)*SizeX+i))
-                logging.info("CONNECTING  "+str((j+1)*SizeX+i)+" TO "+str(j*SizeX+i))
-                AG.add_edge(j*SizeX+i, (j+1)*SizeX+i, Port=('N', 'S'), MappedTasks=[], Scheduling={})
-                AG.add_edge((j+1)*SizeX+i, j*SizeX+i, Port=('S', 'N'), MappedTasks=[], Scheduling={})
+                CurrentNode = ReturnNodeNumber(i, j, 0)
+                NextNode = ReturnNodeNumber(i, j+1, 0)
+                logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
+                logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
+                AG.add_edge(CurrentNode, NextNode, Port=('N', 'S'), MappedTasks=[], Scheduling={})
+                AG.add_edge(NextNode, CurrentNode, Port=('S', 'N'), MappedTasks=[], Scheduling={})
+    ##############################################################
+    if Topology == '3DMesh':
+        for i in range(0, SizeX*SizeY*SizeZ):
+            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region = 'N')
+        for z in range(0,SizeZ):
+            # connect the connections in each layer
+            for y in range(0, SizeY):
+                for x in range(0, SizeX-1):
+                    CurrentNode = ReturnNodeNumber(x, y, z)
+                    NextNode = ReturnNodeNumber(x+1, y, z)
+                    AG.add_edge(CurrentNode, NextNode, Port=('E', 'W'), MappedTasks=[], Scheduling={})
+                    AG.add_edge(NextNode, CurrentNode, Port=('W', 'E'), MappedTasks=[], Scheduling={})
+            for y in range(0, SizeY-1):
+                for x in range(0, SizeX):
+                    CurrentNode = ReturnNodeNumber(x, y, z)
+                    NextNode = ReturnNodeNumber(x, y+1, z)
+                    AG.add_edge(CurrentNode, NextNode, Port=('N', 'S'), MappedTasks=[], Scheduling={})
+                    AG.add_edge(NextNode, CurrentNode, Port=('S', 'N'), MappedTasks=[], Scheduling={})
+        for z in  range(0, SizeZ-1):
+            # connect routers between layers.
+            for y in range(0, SizeY):
+                for x in range(0, SizeX):
+                    CurrentNode = ReturnNodeNumber(x, y, z)
+                    NextNode = ReturnNodeNumber(x, y, z+1)
+                    AG.add_edge(CurrentNode, NextNode, Port=('U', 'D'), MappedTasks=[], Scheduling={})
+                    AG.add_edge(NextNode, CurrentNode, Port=('D', 'U'), MappedTasks=[], Scheduling={})
     ##############################################################
     elif Topology == '2DRing':
         for i in range(0, SizeX*SizeY):
             AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region = 'N')
         for j in range(0, SizeY):
-            logging.info("CONNECTING  "+str(j*SizeX)+" TO "+str(j*SizeX+SizeX-1))
-            logging.info("CONNECTING  "+str(j*SizeX+SizeX-1)+" TO "+str(j*SizeX))
-            AG.add_edge(j*SizeX, j*SizeX+SizeX-1, Port=('W', 'E'), MappedTasks=[], Scheduling={})
-            AG.add_edge(j*SizeX+SizeX-1, j*SizeX, Port=('E', 'W'), MappedTasks=[], Scheduling={})
+            CurrentNode = ReturnNodeNumber(0, j, 0)
+            NextNode = ReturnNodeNumber(SizeX-1, j, 0)
+            logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
+            logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
+            AG.add_edge(CurrentNode, j*SizeX+SizeX-1, Port=('W', 'E'), MappedTasks=[], Scheduling={})
+            AG.add_edge(NextNode, CurrentNode, Port=('E', 'W'), MappedTasks=[], Scheduling={})
             for i in range(0, SizeX-1):
-                logging.info("CONNECTING  "+str(j*SizeX+i)+" TO "+str(j*SizeX+i+1))
-                logging.info("CONNECTING  "+str(j*SizeX+i+1)+" TO "+str(j*SizeX+i))
-                AG.add_edge(j*SizeX+i, j*SizeX+i+1, Port=('E', 'W'), MappedTasks=[], Scheduling={})
-                AG.add_edge(j*SizeX+i+1, j*SizeX+i, Port=('W', 'E'), MappedTasks=[], Scheduling={})
+                CurrentNode = ReturnNodeNumber(i, j, 0)
+                NextNode = ReturnNodeNumber(i+1, j, 0)
+                logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
+                logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
+                AG.add_edge(CurrentNode, NextNode, Port=('E', 'W'), MappedTasks=[], Scheduling={})
+                AG.add_edge(NextNode, CurrentNode, Port=('W', 'E'), MappedTasks=[], Scheduling={})
     ##############################################################
     elif Topology == '2DLine':
         for i in range(0, SizeX*SizeY):
             AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region = 'N')
         for j in range(0, SizeY):
             for i in range(0, SizeX-1):
-                logging.info("CONNECTING  "+str(j*SizeX+i)+" TO "+str(j*SizeX+i+1))
-                logging.info("CONNECTING  "+str(j*SizeX+i+1)+" TO "+str(j*SizeX+i))
-                AG.add_edge(j*SizeX+i, j*SizeX+i+1, Port=('E', 'W'), MappedTasks=[], Scheduling={})
-                AG.add_edge(j*SizeX+i+1, j*SizeX+i, Port=('W', 'E'), MappedTasks=[], Scheduling={})
+                CurrentNode = ReturnNodeNumber(i, j, 0)
+                NextNode = ReturnNodeNumber(i+1, j, 0)
+                logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
+                logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
+                AG.add_edge(CurrentNode, NextNode, Port=('E', 'W'), MappedTasks=[], Scheduling={})
+                AG.add_edge(NextNode, CurrentNode, Port=('W', 'E'), MappedTasks=[], Scheduling={})
     print("ARCHITECTURE GRAPH (AG) IS READY...")
     return AG
 

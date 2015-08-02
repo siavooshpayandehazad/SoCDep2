@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import networkx
 from ConfigAndPackages import Config
 
-def DrawRG (RoutingGraph):
+def Draw2DRG(RoutingGraph):
     POS ={}
     ColorList =[]
     plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
@@ -14,10 +14,10 @@ def DrawRG (RoutingGraph):
     for node in RoutingGraph.nodes():
         Node = int(re.search(r'\d+', node).group())
         Location = AG_Functions.ReturnNodeLocation(Node)
-        circle1 = plt.Circle((Location[0]*100,Location[1]*100),radius=35,color='#8ABDFF',fill=False)
+        circle1 = plt.Circle((Location[0]*100, Location[1]*100),radius=35, color='#8ABDFF', fill=False)
         plt.gca().add_patch(circle1)
 
-        circle2 = plt.Circle((Location[0]*100 + 45, Location[1]*100 - 50),radius=10,color='#FF878B',fill=False)
+        circle2 = plt.Circle((Location[0]*100 + 45, Location[1]*100 - 50), radius=10, color='#FF878B', fill=False)
         plt.gca().add_patch(circle2)
 
         plt.text(Location[0]*100 - 30, Location[1]*100 + 30, str(Node), fontsize=15)

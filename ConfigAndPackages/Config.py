@@ -120,37 +120,37 @@ SA_InitialTemp = 100
 SA_StopTemp = 5             # Stops annealing earlier if reaches this temp
 SA_ReportSolutions = False   # if True, it prints every accepted move to console
 # Available Annealing Schedule: 'Linear', 'Exponential', 'Adaptive', 'Markov', 'Logarithmic', 'Aart', 'Huang'
-SA_AnnealingSchedule = 'Markov'
+SA_AnnealingSchedule = 'Huang'
 # Termination Criteria Could be either 'StopTemp' or 'IterationNum'
 TerminationCriteria = 'StopTemp'
-#--------------------------
+# --------------------------
 # only usable under Exponential and Adaptive mode
 SA_Alpha = 0.999
-#--------------------------
+# --------------------------
 # only for Markov Cooling
 MarkovNum = 2000
 MarkovTempStep = 1        # this is the amount of Temp decrease that the system would have after MarkovNum Steps
-#--------------------------
+# --------------------------
 # only for Aart's cooling schedule
 # The number K in Aart's cooling schedule is determined by CostMonitorQueSize
 Delta = 0.1     # smaller Delta would result in slower annealing
 
 # only for Adaptive, Aart's and Huang's Cooling
 CostMonitorQueSize = 2000
-#--------------------------
+# --------------------------
 # only for Huang Annealing Schedule
 HuangAlpha = 0.5
 HuangN = 30
 HuangTargetValue1 = 45          # should be equal to 3*erf(alpha)*N
 HuangTargetValue2 = 45          # should be equal to 3*(1-erf(alpha))*N
-#--------------------------
+# --------------------------
 # only for Adaptive Cooling
 SlopeRangeForCooling = 0.02     # If the slope falls between SlopeRangeForCooling and 0, the SA
                                 # starts cooling with rate of alpha.
 # A counter would count number of steps moved with slope = 0. when the counter reaches MaxSteadyState,
 # the process terminates
 MaxSteadyState = 15000          # 5-10% of the iteration numbers would makes sense
-#--------------------------
+# --------------------------
 # Only for Logarithmic cooling
 LogCoolingConstant = 1000       # c should be greater than or equal to the largest energy barrier in the problem
 ######################

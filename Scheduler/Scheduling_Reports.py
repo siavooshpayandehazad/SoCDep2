@@ -24,13 +24,13 @@ def ReportMappedTasks(AG,logging):
 
     return None
 
+
 ##########################################################################
 #
 #
 #                   Generating Gantt Charts
 #
 ##########################################################################
-
 def GenerateGanttCharts(TG,AG):
     print "==========================================="
     print "GENERATING SCHEDULING GANTT CHARTS..."
