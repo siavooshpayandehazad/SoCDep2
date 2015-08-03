@@ -98,41 +98,46 @@ def DrawMapping(TG, AG, SHM):
                 color = 'white'
         else:   # node is broken
             color = '#7B747B'
-        distance = 0.11 * ZSize * 1.2
-        fig.gca().add_patch(patches.Rectangle(((distance*Location[0])+Location[2]*0.11,
-                                               (distance*Location[1])+Location[2]*0.11),
-                                              width=0.1, height=0.1, facecolor=color,
+
+        NodeSize = 0.3
+        StepSize = NodeSize + 0.01
+        distance = StepSize * ZSize * 1.2
+        fig.gca().add_patch(patches.Rectangle(((distance*Location[0])+Location[2]*StepSize,
+                                               (distance*Location[1])+Location[2]*StepSize),
+                                              width=NodeSize, height=NodeSize, facecolor=color,
                                               linewidth=3, alpha= 0.5))
         if Location[0] < XSize-1:
-            X = distance*(Location[0])+Location[2]*0.11+0.1
-            Y = distance*(Location[1])+Location[2]*0.11+0.05
-            plt.plot([X, X+distance-0.1], [Y,Y], color ='black',lw=3)
+            X = distance*(Location[0])+Location[2]*StepSize+ NodeSize
+            Y = distance*(Location[1])+Location[2]*StepSize+ (NodeSize/2)
+            plt.plot([X, X+distance-NodeSize], [Y,Y], color ='black',lw=3)
             #plt.gca().add_patch(patches.Arrow(X, Y, 1.0/XSize - 0.1, 0, width=0.01))
         if Location[1] < YSize-1:
-            X = distance*(Location[0])+Location[2]*0.11+0.05
-            Y = distance*(Location[1])+Location[2]*0.11+0.1
+            X = distance*(Location[0])+Location[2]*StepSize+ (NodeSize/2)
+            Y = distance*(Location[1])+Location[2]*StepSize+ NodeSize
             #plt.plot([Y,Y], [X, X+1.0/XSize - 0.1], color ='black')
-            plt.plot([X, X], [Y,Y+distance-0.1], color ='black',lw=3)
-        OffsetX = 0
-        OffsetY = 0.02
+            plt.plot([X, X], [Y,Y+distance-NodeSize], color ='black',lw=3)
+
+        NumberOfTaskInRow = 3
+        OffsetX = -(NodeSize/(2* NumberOfTaskInRow))
+        OffsetY = NodeSize / (NumberOfTaskInRow+1)
         TaskCount = 0
         for task in AG.node[node]['MappedTasks']:
-            TaskCount += 1
-            OffsetX += 0.03
-            if TaskCount == 3:
+            OffsetX += NodeSize / NumberOfTaskInRow
+            if TaskCount == NumberOfTaskInRow:
                 TaskCount = 1
-                OffsetX = 0.03
-                OffsetY += 0.03
+                OffsetX = (NodeSize/(2* NumberOfTaskInRow))
+                OffsetY += NodeSize / NumberOfTaskInRow
             random.seed(task)
             r = random.randrange(0,255)
             g = random.randrange(0,255)
             b = random.randrange(0,255)
             color = '#%02X%02X%02X' % (r,g,b)
             ColorList.append(color)
-            POS[task]=(distance*Location[0]+Location[2]*0.11+OffsetX,
-                       distance*Location[1]+Location[2]*0.11+OffsetY)
-
-    networkx.draw(TG, POS, with_labels=True, node_size=300, node_color=ColorList, width=0, alpha = 0.5)
+            POS[task]=(distance*Location[0]+Location[2]*StepSize+OffsetX,
+                       distance*Location[1]+Location[2]*StepSize+OffsetY)
+            TaskCount += 1
+    Tasksize = 800/Config.Network_Z_Size
+    networkx.draw(TG, POS, with_labels=True, node_size=Tasksize, node_color=ColorList, width=0, alpha = 0.5)
     fig.text(0.25, 0.02, 'Mapping visualization for network nodes', fontsize=15)
     fig.savefig("GraphDrawings/Mapping.png")
     plt.clf()
