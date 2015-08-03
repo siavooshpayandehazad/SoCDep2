@@ -78,6 +78,7 @@ def DrawMapping(TG, AG, SHM):
     fig = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
     ColorList = []
     POS = {}
+
     for node in AG.nodes():
         Location = AG_Functions.ReturnNodeLocation(node)
         XSize = float(Config.Network_X_Size)
@@ -97,20 +98,21 @@ def DrawMapping(TG, AG, SHM):
                 color = 'white'
         else:   # node is broken
             color = '#7B747B'
-        fig.gca().add_patch(patches.Rectangle((Location[0]/XSize+Location[2]/(ZSize*XSize),
-                                               Location[1]/YSize+Location[2]/(ZSize*XSize)),
-                                               width=0.1, height=0.1, facecolor=color,
-                                               edgecolor="black", linewidth=3, alpha= 0.5))
+        distance = 0.11 * ZSize * 1.2
+        fig.gca().add_patch(patches.Rectangle(((distance*Location[0])+Location[2]*0.11,
+                                               (distance*Location[1])+Location[2]*0.11),
+                                              width=0.1, height=0.1, facecolor=color,
+                                              linewidth=3, alpha= 0.5))
         if Location[0] < XSize-1:
-            X = Location[0]/XSize+Location[2]/(ZSize*XSize)+0.1
-            Y = Location[1]/YSize+Location[2]/(ZSize*XSize)+0.05
-            plt.plot([X, X+1.0/XSize - 0.1], [Y,Y], color ='black',lw=3)
+            X = distance*(Location[0])+Location[2]*0.11+0.1
+            Y = distance*(Location[1])+Location[2]*0.11+0.05
+            plt.plot([X, X+distance-0.1], [Y,Y], color ='black',lw=3)
             #plt.gca().add_patch(patches.Arrow(X, Y, 1.0/XSize - 0.1, 0, width=0.01))
         if Location[1] < YSize-1:
-            X = Location[0]/XSize+Location[2]/(ZSize*XSize)+0.05
-            Y = Location[1]/YSize+Location[2]/(ZSize*XSize)+0.1
+            X = distance*(Location[0])+Location[2]*0.11+0.05
+            Y = distance*(Location[1])+Location[2]*0.11+0.1
             #plt.plot([Y,Y], [X, X+1.0/XSize - 0.1], color ='black')
-            plt.plot([X, X], [Y,Y+1.0/XSize - 0.1], color ='black',lw=3)
+            plt.plot([X, X], [Y,Y+distance-0.1], color ='black',lw=3)
         OffsetX = 0
         OffsetY = 0.02
         TaskCount = 0
@@ -127,8 +129,8 @@ def DrawMapping(TG, AG, SHM):
             b = random.randrange(0,255)
             color = '#%02X%02X%02X' % (r,g,b)
             ColorList.append(color)
-            POS[task]=(Location[0]/XSize+Location[2]/(ZSize*XSize)+OffsetX,
-                       Location[1]/YSize+Location[2]/(ZSize*XSize)+OffsetY)
+            POS[task]=(distance*Location[0]+Location[2]*0.11+OffsetX,
+                       distance*Location[1]+Location[2]*0.11+OffsetY)
 
     networkx.draw(TG, POS, with_labels=True, node_size=300, node_color=ColorList, width=0, alpha = 0.5)
     fig.text(0.25, 0.02, 'Mapping visualization for network nodes', fontsize=15)
