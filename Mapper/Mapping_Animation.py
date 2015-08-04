@@ -11,8 +11,8 @@ import random
 
 
 def GenerateFrames(TG, AG, SHM):
-    print "==========================================="
-    print "GENERATING MAPPING ANIMATION FRAMES..."
+    print ("===========================================")
+    print ("GENERATING MAPPING ANIMATION FRAMES...")
     MappingProcessFile = open("Generated_Files/Internal/MappingProcess.txt", 'r')
     XSize = float(Config.Network_X_Size)
     YSize = float(Config.Network_Y_Size)
@@ -26,7 +26,7 @@ def GenerateFrames(TG, AG, SHM):
         MappedPEList = line.split(" ")
         for node in AG.nodes():
             Location = AG_Functions.ReturnNodeLocation(node)
-            # print node, Location
+            # print (node, Location)
             if SHM.SHM.node[node]['NodeHealth']:
                 if Config.EnablePartitioning:
                     if node in Config.CriticalRegionNodes:
@@ -73,6 +73,6 @@ def GenerateFrames(TG, AG, SHM):
         Counter += 1
         line = MappingProcessFile.readline()
     MappingProcessFile.close()
-    print "\033[35m* VIZ::\033[0mMAPPING ANIMATION FRAMES READY AT: GraphDrawings/Mapping_Animation_Material"
+    print ("\033[35m* VIZ::\033[0mMAPPING ANIMATION FRAMES READY AT: GraphDrawings/Mapping_Animation_Material")
     return None
 

@@ -3,8 +3,8 @@ import SystemHealthMonitor
 from ConfigAndPackages import Config
 
 def TestSHM(AG):
-    print "==========================================="
-    print "STARTING SYSTEM HEALTH MAP TESTS..."
+    print ("===========================================")
+    print ("STARTING SYSTEM HEALTH MAP TESTS...")
     SHM4Test = SystemHealthMonitor.SystemHealthMonitor()
     SHM4Test.SetUp_NoC_SystemHealthMap(AG, Config.TurnsHealth)
     TestBreaking(SHM4Test)
@@ -12,7 +12,7 @@ def TestSHM(AG):
     TestAging(SHM4Test)
     # todo: needs more test etc...
     del SHM4Test
-    print "ALL SHM TESTS PASSED..."
+    print ("ALL SHM TESTS PASSED...")
     return None
 
 
@@ -29,7 +29,7 @@ def TestBreaking(SHM):
         SHM.BreakLink(link, False)
         if SHM.SHM.edge[link[0]][link[1]]['LinkHealth']:
             raise ValueError('SHM BreakLink DID NOT WORK FOR LINK', link)
-    print "  - BREAKING TESTS PASSED..."
+    print ("  - BREAKING TESTS PASSED...")
 
 
 def TestRestore(SHM):
@@ -45,7 +45,7 @@ def TestRestore(SHM):
         SHM.RestoreBrokenLink(link, False)
         if not SHM.SHM.edge[link[0]][link[1]]['LinkHealth']:
             raise ValueError('SHM RestoreBrokenLink DID NOT WORK FOR LINK', link)
-    print "  - RESTORE TESTS PASSED..."
+    print ("  - RESTORE TESTS PASSED...")
 
 
 def TestAging(SHM):
@@ -56,4 +56,4 @@ def TestAging(SHM):
         SHM.IntroduceAging(Node, 0.5, False)
         if SHM.SHM.node[Node]['NodeSpeed'] != 25:
             raise ValueError('SHM IntroduceAging ROUND 2 DID NOT WORK FOR NODE', Node)
-    print "  - AGING TESTS PASSED..."
+    print ("  - AGING TESTS PASSED...")

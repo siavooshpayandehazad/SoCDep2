@@ -74,8 +74,8 @@ def InitializeSystem(logging):
         # SHM.AddCurrentMappingToMPM(TG)
     Mapping_Reports.DrawMappingDistribution(AG, SHM)
     Mapping_Reports.DrawMapping(TG, AG, SHM)
-    print "==========================================="
-    print "SYSTEM IS UP..."
+    print ("===========================================")
+    print ("SYSTEM IS UP...")
     Scheduling_Reports.GenerateGanttCharts(TG, AG)
     TrafficTableGenerator.GenerateNoximTrafficTable()
     TrafficTableGenerator.GenerateGSNoCTrafficTable(AG, TG)

@@ -14,21 +14,21 @@ from collections import deque
 from scipy import stats
 import statistics
 
-def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
-                                      IterationNum, CostDataFile, logging):
+def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG,
+                       SHM, IterationNum, CostDataFile, logging):
 
-    print "==========================================="
-    print "STARTING MAPPING OPTIMIZATION...USING SIMULATED ANNEALING..."
-    print "STARTING TEMPERATURE:", Config.SA_InitialTemp
-    print "ANNEALING SCHEDULE:", Config.SA_AnnealingSchedule
-    print "TERMINATION CRITERIA:", Config.TerminationCriteria
-    print "================"
+    print ("===========================================")
+    print ("STARTING MAPPING OPTIMIZATION...USING SIMULATED ANNEALING...")
+    print ("STARTING TEMPERATURE:", Config.SA_InitialTemp)
+    print ("ANNEALING SCHEDULE:", Config.SA_AnnealingSchedule)
+    print ("TERMINATION CRITERIA:", Config.TerminationCriteria)
+    print ("================")
 
-    MappingCostFile = open('Generated_Files/Internal/'+CostDataFile+'.txt','a')
-    MappingProcessFile = open('Generated_Files/Internal/MappingProcess.txt','w')
-    SATemperatureFile = open('Generated_Files/Internal/SATemp.txt','w')
-    SACostSlopeFile = open('Generated_Files/Internal/SACostSlope.txt','w')
-    SAHuangRaceFile = open('Generated_Files/Internal/SAHuangRace.txt','w')
+    MappingCostFile = open('Generated_Files/Internal/'+CostDataFile+'.txt', 'a')
+    MappingProcessFile = open('Generated_Files/Internal/MappingProcess.txt', 'w')
+    SATemperatureFile = open('Generated_Files/Internal/SATemp.txt', 'w')
+    SACostSlopeFile = open('Generated_Files/Internal/SACostSlope.txt', 'w')
+    SAHuangRaceFile = open('Generated_Files/Internal/SAHuangRace.txt', 'w')
 
     if Config.SA_AnnealingSchedule in ['Adaptive', 'Aart', 'Huang']:
         CostMonitor = deque([])
@@ -39,21 +39,21 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
         InitMapString = Mapping_Functions.MappingIntoString(TG)
         if Config.Mapping_CostFunctionType == 'CONSTANT':
             Mapping_Functions.ClearMapping(TG,CTG,AG)
-            if not Mapping_Functions.MakeInitialMapping(TG, CTG, AG, SHM, NoCRG,
-                                                        CriticalRG, NonCriticalRG, True, logging):
+            if not Mapping_Functions.MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG,
+                                                        NonCriticalRG, True, logging):
                 raise ValueError("FEASIBLE MAPPING NOT FOUND...")
     else:
         InitMapString = None
 
-    CurrentTG=copy.deepcopy(TG)
-    CurrentAG=copy.deepcopy(AG)
-    CurrentCTG=copy.deepcopy(CTG)
+    CurrentTG = copy.deepcopy(TG)
+    CurrentAG = copy.deepcopy(AG)
+    CurrentCTG = copy.deepcopy(CTG)
     CurrentCost = Mapping_Functions.CostFunction(TG, AG, SHM, False, InitialMappingString=InitMapString)
     StartingCost = CurrentCost
 
     BestTG = copy.deepcopy(TG)
-    BestAG=copy.deepcopy(AG)
-    BestCTG=copy.deepcopy(CTG)
+    BestAG = copy.deepcopy(AG)
+    BestCTG = copy.deepcopy(CTG)
     BestCost = CurrentCost
 
     InitialTemp = Config.SA_InitialTemp
@@ -64,11 +64,8 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
     StdDeviation = None
 
     # for Huang Annealing schedule
-    MoveAccepted = False
-    Huang_Counter1= 0
-    Huang_Counter2= 0
-    Huang_CostMean = 0
-    Huang_CostStdDev = 0
+    Huang_Counter1 = 0
+    Huang_Counter2 = 0
     Huang_Steady_Counter = 0
 
     #for i in range(0,IterationNum):
@@ -86,14 +83,14 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
 
         if NewCost<BestCost:
             BestTG = copy.deepcopy(NewTG)
-            BestAG=copy.deepcopy(NewAG)
-            BestCTG=copy.deepcopy(NewCTG)
+            BestAG = copy.deepcopy(NewAG)
+            BestCTG = copy.deepcopy(NewCTG)
             BestCost = NewCost
-            print "\033[33m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:","{0:.2f}".format(NewCost), \
-                  "\t ITERATION:", i, "\tIMPROVEMENT:", "{0:.2f}".format(100*(StartingCost-NewCost)/StartingCost),"%"
+            print ("\033[33m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:", "{0:.2f}".format(NewCost),
+                  "\t ITERATION:", i, "\tIMPROVEMENT:", "{0:.2f}".format(100*(StartingCost-NewCost)/StartingCost), "%")
         # calculate the probability P of accepting the solution
         Prob = Metropolis(CurrentCost, NewCost, Temperature)
-        # print "Prob:",Prob
+        # print ("Prob:", Prob)
         # throw the coin with probability P
         if Prob > random.random():
             # accept the new solution
@@ -104,16 +101,17 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
             CurrentCost = NewCost
             if Config.SA_ReportSolutions:
                 if slope is not None:
-                    print "\033[32m* NOTE::\033[0mMOVED TO SOLUTION WITH COST:","{0:.2f}".format(CurrentCost), "\tProb:", \
-                          "{0:.2f}".format(Prob), "\tTemp:", "{0:.2f}".format(Temperature), "\t Iteration:", i, "\tSLOPE:", \
-                          "{0:.2f}".format(slope)
+                    print ("\033[32m* NOTE::\033[0mMOVED TO SOLUTION WITH COST:","{0:.2f}".format(CurrentCost),
+                           "\tProb:", "{0:.2f}".format(Prob), "\tTemp:", "{0:.2f}".format(Temperature),
+                           "\t Iteration:", i, "\tSLOPE:", "{0:.2f}".format(slope))
                 if StdDeviation is not None:
-                    print "\033[32m* NOTE::\033[0mMOVED TO SOLUTION WITH COST:","{0:.2f}".format(CurrentCost), "\tProb:", \
-                          "{0:.2f}".format(Prob), "\tTemp:", "{0:.2f}".format(Temperature), "\t Iteration:", i, "\tSTD_DEV:", \
-                          "{0:.2f}".format(StdDeviation)
+                    print ("\033[32m* NOTE::\033[0mMOVED TO SOLUTION WITH COST:","{0:.2f}".format(CurrentCost),
+                           "\tProb:", "{0:.2f}".format(Prob), "\tTemp:", "{0:.2f}".format(Temperature),
+                           "\t Iteration:", i, "\tSTD_DEV:", "{0:.2f}".format(StdDeviation))
                 else:
-                    print "\033[32m* NOTE::\033[0mMOVED TO SOLUTION WITH COST:","{0:.2f}".format(CurrentCost), "\tProb:", \
-                          "{0:.2f}".format(Prob), "\tTemp:", "{0:.2f}".format(Temperature), "\t Iteration:", i
+                    print ("\033[32m* NOTE::\033[0mMOVED TO SOLUTION WITH COST:","{0:.2f}".format(CurrentCost),
+                           "\tProb:", "{0:.2f}".format(Prob), "\tTemp:", "{0:.2f}".format(Temperature),
+                           "\t Iteration:", i)
         else:
             MoveAccepted = False
             # move back to initial solution
@@ -140,7 +138,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
             if len(CostMonitor) == Config.CostMonitorQueSize :
                 StdDeviation = statistics.stdev(CostMonitor)
                 CostMonitor.clear()
-                # print StdDeviation
+                # print (StdDeviation)
             else:
                 CostMonitor.appendleft(CurrentCost)
 
@@ -158,7 +156,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
                         Huang_Counter1 += 1
                     else:
                         Huang_Counter2 += 1
-            # print Huang_Counter1, Huang_Counter2
+            # print (Huang_Counter1, Huang_Counter2)
             SAHuangRaceFile.write(str(Huang_Counter1)+" "+str(Huang_Counter2)+"\n")
             if Huang_Counter1 == Config.HuangTargetValue1:
                 StdDeviation = statistics.stdev(CostMonitor)
@@ -176,7 +174,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
                 Huang_Counter1 = 0
                 Huang_Counter2 = 0
                 Huang_Steady_Counter = 0
-                print "\033[36m* COOLING::\033[0m REACHED MAX STEADY STATE... PREPARING FOR COOLING..."
+                print ("\033[36m* COOLING::\033[0m REACHED MAX STEADY STATE... PREPARING FOR COOLING...")
             else:
                 StdDeviation = None
 
@@ -186,81 +184,80 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
 
         if Config.SA_AnnealingSchedule == 'Adaptive':
             if ZeroSlopeCounter == Config.MaxSteadyState:
-                print "NO IMPROVEMENT POSSIBLE..."
+                print ("NO IMPROVEMENT POSSIBLE...")
                 break
         if Config.TerminationCriteria == 'IterationNum':
             if i == Config.SimulatedAnnealingIteration:
-                print "REACHED MAXIMUM ITERATION NUMBER..."
+                print ("REACHED MAXIMUM ITERATION NUMBER...")
                 break
         elif Config.TerminationCriteria == 'StopTemp':
             if Temperature <= Config.SA_StopTemp:
-                print "REACHED STOP TEMPERATURE..."
+                print ("REACHED STOP TEMPERATURE...")
                 break
-
 
     MappingCostFile.close()
     MappingProcessFile.close()
     SATemperatureFile.close()
     SACostSlopeFile.close()
     SAHuangRaceFile.close()
-    print "-------------------------------------"
-    print "STARTING COST:",StartingCost,"\tFINAL COST:",BestCost
-    print "IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost),"%"
+    print ("-------------------------------------")
+    print ("STARTING COST:", StartingCost, "\tFINAL COST:", BestCost)
+    print ("IMPROVEMENT:", "{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost), "%")
     return BestTG, BestCTG, BestAG
 
 
 def NextTemp(InitialTemp, Iteration, MaxIteration, CurrentTemp, Slope=None, StdDeviation = None):
     if Config.SA_AnnealingSchedule == 'Linear':
         Temp = (float(MaxIteration-Iteration)/MaxIteration)*InitialTemp
-        print "\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp
-    #----------------------------------------------------------------
+        print ("\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp)
+#   ----------------------------------------------------------------
     elif Config.SA_AnnealingSchedule == 'Exponential':
         Temp = CurrentTemp * Config.SA_Alpha
-        print "\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp
-    #----------------------------------------------------------------
+        print ("\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp)
+#   ----------------------------------------------------------------
     elif Config.SA_AnnealingSchedule == 'Logarithmic':
         # this is based on "A comparison of simulated annealing cooling strategies"
         # by Yaghout Nourani and Bjarne Andresen
         Temp = Config.LogCoolingConstant * (1.0/log10(1+(Iteration+1)))     # iteration should be > 1 so I added 1
-        print "\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp
-    #----------------------------------------------------------------
+        print ("\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp)
+#   ----------------------------------------------------------------
     elif Config.SA_AnnealingSchedule == 'Adaptive':
         Temp = CurrentTemp
         if Iteration > Config.CostMonitorQueSize:
             if Slope < Config.SlopeRangeForCooling and Slope > 0:
                 Temp = CurrentTemp * Config.SA_Alpha
-                print "\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp
-    #----------------------------------------------------------------
+                print ("\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp)
+#   ----------------------------------------------------------------
     elif Config.SA_AnnealingSchedule == 'Markov':
         Temp = InitialTemp - (Iteration/Config.MarkovNum)*Config.MarkovTempStep
         if Temp < CurrentTemp:
-            print "\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp
+            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp)
         if Temp <= 0:
             Temp = CurrentTemp
-    #----------------------------------------------------------------
+#   ----------------------------------------------------------------
     elif Config.SA_AnnealingSchedule == 'Aart':
         # This is coming from the following paper:
         # Job Shop Scheduling by Simulated Annealing Author(s): Peter J. M. van Laarhoven,
         # Emile H. L. Aarts, Jan Karel Lenstra
         if Iteration%Config.CostMonitorQueSize == 0 and StdDeviation is not None and StdDeviation != 0:
             Temp = float(CurrentTemp)/(1+(CurrentTemp*(log1p(Config.Delta)/StdDeviation)))
-            print "\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp
+            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp)
         elif StdDeviation == 0:
             Temp = float(CurrentTemp)*Config.SA_Alpha
-            print "\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp
+            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp)
         else:
             Temp = CurrentTemp
-    #----------------------------------------------------------------
+#   ----------------------------------------------------------------
     elif Config.SA_AnnealingSchedule == 'Huang':
         if StdDeviation is not None and StdDeviation != 0:
             Temp = float(CurrentTemp)/(1+(CurrentTemp*(log1p(Config.Delta)/StdDeviation)))
-            print "\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp
+            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp)
         elif StdDeviation == 0:
             Temp = float(CurrentTemp)*Config.SA_Alpha
-            print "\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp
+            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp)
         else:
             Temp = CurrentTemp
-    #----------------------------------------------------------------
+#   ----------------------------------------------------------------
     else:
         raise ValueError('Invalid Cooling Method for SA...')
     return Temp
@@ -268,10 +265,10 @@ def NextTemp(InitialTemp, Iteration, MaxIteration, CurrentTemp, Slope=None, StdD
 
 def CalculateSlopeOfCost(CostMonitor):
     slope = 0
-    if len(CostMonitor)>2:
-        x = range(0,len(CostMonitor))
+    if len(CostMonitor) > 2:
+        x = range(0, len(CostMonitor))
         y = list(CostMonitor)
-        slope = stats.linregress(x,y)[0]
+        slope = stats.linregress(x, y)[0]
     if len(CostMonitor) == 2:
         slope = list(CostMonitor)[1]-list(CostMonitor)[0]
     return slope
@@ -287,33 +284,33 @@ def Metropolis(CurrentCost, NewCost, Temperature):
 def MoveToAnotherSolution (TG, CTG, AG, NoCRG, SHM, CriticalRG, NonCriticalRG, logging):
     ClusterToMove= random.choice(CTG.nodes())
     CurrentNode=CTG.node[ClusterToMove]['Node']
-    Mapping_Functions.RemoveClusterFromNode(TG,CTG,AG,NoCRG,CriticalRG, NonCriticalRG,
-                                            ClusterToMove,CurrentNode,logging)
+    Mapping_Functions.RemoveClusterFromNode(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG,
+                                            ClusterToMove, CurrentNode, logging)
     DestNode = random.choice(AG.nodes())
     if Config.EnablePartitioning:
         while(CTG.node[ClusterToMove]['Criticality']!= AG.node[DestNode]['Region']):
             DestNode = random.choice(AG.nodes())
     TryCounter = 0
-    while not Mapping_Functions.AddClusterToNode(TG,CTG,AG,SHM,NoCRG,CriticalRG, NonCriticalRG,
-                                                 ClusterToMove,DestNode,logging):
+    while not Mapping_Functions.AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG,
+                                                 ClusterToMove, DestNode, logging):
 
             # If AddClusterToNode fails it automatically removes all the connections...
             # we need to add the cluster to the old place...
-            Mapping_Functions.AddClusterToNode(TG,CTG,AG,SHM,NoCRG,CriticalRG, NonCriticalRG,
-                                               ClusterToMove,CurrentNode,logging)
+            Mapping_Functions.AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG,
+                                               ClusterToMove, CurrentNode, logging)
             TryCounter+=1
             if TryCounter >= 3*len(AG.nodes()):
-                print "CAN NOT FIND ANY FEASIBLE SOLUTION... ABORTING LOCAL SEARCH..."
+                print ("CAN NOT FIND ANY FEASIBLE SOLUTION... ABORTING LOCAL SEARCH...")
                 return TG,CTG,AG
 
             # choosing another cluster to move
             ClusterToMove= random.choice(CTG.nodes())
             CurrentNode=CTG.node[ClusterToMove]['Node']
-            Mapping_Functions.RemoveClusterFromNode(TG,CTG,AG,NoCRG,CriticalRG, NonCriticalRG,
-                                                    ClusterToMove,CurrentNode,logging)
+            Mapping_Functions.RemoveClusterFromNode(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG,
+                                                    ClusterToMove, CurrentNode, logging)
             DestNode = random.choice(AG.nodes())
             if Config.EnablePartitioning:
                 while(CTG.node[ClusterToMove]['Criticality']!=AG.node[DestNode]['Region']):
                     DestNode = random.choice(AG.nodes())
 
-    return TG,CTG,AG
+    return TG, CTG, AG

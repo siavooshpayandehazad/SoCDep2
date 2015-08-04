@@ -6,8 +6,8 @@ import operator
 
 
 def GenerateManualAG(PE_List, AG_Edge_List, AG_Edge_Port_List):
-    print "==========================================="
-    print "PREPARING AN ARCHITECTURE GRAPH (AG)..."
+    print ("===========================================")
+    print ("PREPARING AN ARCHITECTURE GRAPH (AG)...")
     AG = networkx.DiGraph()
     for PE in PE_List:
         AG.add_node(PE, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region = 'L')
@@ -31,12 +31,12 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
     :return: AG
     """
     SupportedTopologies = ['2DSpidergon', '2DTorus', '2DMesh', '2DRing', '2DLine', '3DMesh']
-    print "==========================================="
-    print "PREPARING AN ARCHITECTURE GRAPH (AG)..."
-    print "TOPOLOGY:", Topology
-    print "X SIZE:", SizeX
-    print "Y SIZE:", SizeY
-    print "Z SIZE:", SizeZ
+    print ("===========================================")
+    print ("PREPARING AN ARCHITECTURE GRAPH (AG)...")
+    print ("TOPOLOGY:", Topology)
+    print ("X SIZE:", SizeX)
+    print ("Y SIZE:", SizeY)
+    print ("Z SIZE:", SizeZ)
     AG = networkx.DiGraph()
 
     if Topology not in SupportedTopologies:
@@ -176,8 +176,8 @@ def GenerateAG(logging):
 
 
 def UpdateAGRegions (AG):
-    print "==========================================="
-    print "UPDATING ARCHITECTURE GRAPH (AG) REGIONS..."
+    print ("===========================================")
+    print ("UPDATING ARCHITECTURE GRAPH (AG) REGIONS...")
     for Node in AG.nodes():
         if Node in Config.CriticalRegionNodes:
             AG.node[Node]['Region'] = 'H'

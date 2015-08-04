@@ -12,8 +12,8 @@ from ConfigAndPackages import Config
 import random, copy
 
 def GenerateOneStepDiagnosablePMCG(AG,SHM):
-    print "==========================================="
-    print "PREPARING ONE STEP DIAGNOSABLE PMC GRAPH (PMCG)..."
+    print ("===========================================")
+    print ("PREPARING ONE STEP DIAGNOSABLE PMC GRAPH (PMCG)...")
     PMCG = networkx.DiGraph()
     for PE in AG.nodes():
         if SHM.SHM.node[PE]['NodeHealth']:
@@ -51,14 +51,14 @@ def GenerateOneStepDiagnosablePMCG(AG,SHM):
             if (TesterNode - TestedNode)%n in delta_M:
                 #print "Connecting:",TesterNode, "to", TestedNode, "---> i-j = ", (TesterNode - TestedNode)%n, "mod", n
                 PMCG.add_edge(TesterNode, TestedNode, Weight=0)
-    print "PMC GRAPH (PMCG) IS READY..."
+    print ("PMC GRAPH (PMCG) IS READY...")
     return PMCG
 
 
 
 def GenerateSequentiallyDiagnosablePMCG(AG,SHM):
-    print "==========================================="
-    print "PREPARING SEQUENTIALLY DIAGNOSABLE PMC GRAPH (PMCG)..."
+    print ("===========================================")
+    print ("PREPARING SEQUENTIALLY DIAGNOSABLE PMC GRAPH (PMCG)...")
     PMCG = networkx.DiGraph()
     for PE in AG.nodes():
         if SHM.SHM.node[PE]['NodeHealth']:
@@ -81,7 +81,7 @@ def GenerateSequentiallyDiagnosablePMCG(AG,SHM):
     ChosenTestedNode = PMCG.nodes()[0]
     while Counter < 2*t-2:
         ChosenTester = random.choice(PMCG.nodes())
-        # print ChosenTester, Counter
+        # print (ChosenTester, Counter)
         if ChosenTester != 0 and ChosenTester != n-1 and (ChosenTester,ChosenTestedNode) not in PMCG.edges():
             PMCG.add_edge(ChosenTester, ChosenTestedNode, Weight=0)
             Counter += 1
@@ -106,27 +106,27 @@ def GenerateTestTGFromPMCG(PMCG):
 
 
 def DrawPMCG(PMCG):
-    print "==========================================="
-    print "PREPARING PMC GRAPH (PMCG) DRAWINGS..."
+    print ("===========================================")
+    print ("PREPARING PMC GRAPH (PMCG) DRAWINGS...")
     pos = networkx.circular_layout(PMCG)
     networkx.draw_networkx_nodes(PMCG, pos, node_size=500, color='b')
     networkx.draw_networkx_edges(PMCG, pos)
     networkx.draw_networkx_labels(PMCG, pos)
     plt.savefig("GraphDrawings/PMCG")
     plt.clf()
-    print "PMC GRAPH (PMCG) DRAWING IS READY..."
+    print ("PMC GRAPH (PMCG) DRAWING IS READY...")
     return None
 
 def DrawTTG(TTG):
-    print "==========================================="
-    print "PREPARING TEST TASK GRAPH (TTG) DRAWINGS..."
+    print ("===========================================")
+    print ("PREPARING TEST TASK GRAPH (TTG) DRAWINGS...")
     pos = networkx.circular_layout(TTG)
     networkx.draw_networkx_nodes(TTG, pos, node_size=500, color='b')
     networkx.draw_networkx_edges(TTG, pos)
     networkx.draw_networkx_labels(TTG, pos)
     plt.savefig("GraphDrawings/TTG")
     plt.clf()
-    print "TEST TASK GRAPH (TTG) DRAWING IS READY..."
+    print ("TEST TASK GRAPH (TTG) DRAWING IS READY...")
     return None
 
 # TODO: Schedule TTG

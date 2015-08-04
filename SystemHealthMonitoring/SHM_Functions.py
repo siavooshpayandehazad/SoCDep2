@@ -58,7 +58,7 @@ def ApplyFaultEvent(AG, SHM, NoCRG, FaultLocation, FaultType):
                     SHM.BreakLink(FaultLocation, True)
                     SHM.RestoreBrokenLink(FaultLocation, True)
                 else:
-                    print "\033[33mSHM:: NOTE:\033[0mLINK ALREADY BROKEN"
+                    print ("\033[33mSHM:: NOTE:\033[0mLINK ALREADY BROKEN")
             elif FaultType == 'P':   # Permanent Fault
                 Port = AG.edge[FaultLocation[0]][FaultLocation[1]]['Port']
                 FromPort = str(FaultLocation[0])+str(Port[0])+str('O')
@@ -71,7 +71,7 @@ def ApplyFaultEvent(AG, SHM, NoCRG, FaultLocation, FaultType):
                     SHM.BreakTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]], True)
                     SHM.RestoreBrokenTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]], True)
                 else:
-                    print "\033[33mSHM:: NOTE:\033[0mTURN ALREADY BROKEN"
+                    print ("\033[33mSHM:: NOTE:\033[0mTURN ALREADY BROKEN")
             elif FaultType == 'P':   # Permanent Fault
                 FromPort = str(FaultLocation.keys()[0])+str(FaultLocation[FaultLocation.keys()[0]][0])+str('I')
                 ToPort = str(FaultLocation.keys()[0])+str(FaultLocation[FaultLocation.keys()[0]][2])+str('O')
@@ -83,7 +83,7 @@ def ApplyFaultEvent(AG, SHM, NoCRG, FaultLocation, FaultType):
                     SHM.BreakNode(FaultLocation, True)
                     SHM.RestoreBrokenNode(FaultLocation, True)
                 else:
-                    print "\033[33mSHM:: NOTE:\033[0m NODE ALREADY BROKEN"
+                    print ("\033[33mSHM:: NOTE:\033[0m NODE ALREADY BROKEN")
             elif FaultType == 'P':   # Permanent Fault
                 SHM.BreakNode(FaultLocation, True)
         return None

@@ -14,7 +14,7 @@ EventDrivenFaultInjection = False
 #          TG  Config
 ################################################
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
-TG_Type = 'Manual'
+TG_Type = 'RandomDependent'
 # For Random TG_Type:
 NumberOfTasks = 25
 NumberOfCriticalTasks = 0

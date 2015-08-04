@@ -9,6 +9,7 @@ import Routing
 from ArchGraphUtilities import AG_Functions
 
 def CalculateReachability(AG, NoCRG):
+    # todo: fix this for 3d...
     PortList = ['N', 'E', 'W', 'S']
     for SourceNode in AG.nodes():
         for Port in PortList:
@@ -17,7 +18,7 @@ def CalculateReachability(AG, NoCRG):
             # if SourceNode != DestinationNode:
                 for Port in PortList:
                     if not IsDestinationReachableViaPort(NoCRG, SourceNode, Port, DestinationNode, False, False):
-                        # print "No Path From", SourceNode,Port,"To",DestinationNode
+                        # print ("No Path From", SourceNode,Port,"To",DestinationNode)
                         AG.node[SourceNode]['Unreachable'][Port].append(DestinationNode)
 
 
@@ -30,35 +31,35 @@ def IsDestinationReachableViaPort(NoCRG, SourceNode, Port, DestinationNode, Retu
     if networkx.has_path(NoCRG, Source, Destination):
         return True
     else:
-        if Report:print "\t\tNO PATH FOUND FROM: ", Source, "TO:", Destination
+        if Report:print ("\t\tNO PATH FOUND FROM: ", Source, "TO:", Destination)
         return False
 
 
 def IsDestReachableFromSource(NoCRG, Source, Destination):
-    return IsDestinationReachableViaPort(NoCRG, Source, 'L' , Destination, True, False)
+    return IsDestinationReachableViaPort(NoCRG, Source, 'L', Destination, True, False)
 
 
 def OptimizeReachabilityRectangles(AG, NumberOfRects):
     # the idea of merging is that we make a rectangle with representing 2 vertex of it,
     # namely north-west and south-east vertex.
     # Then we try to generate optimal rectangle set that covers all of the nodes...
-    print "====================================="
-    print "STARTING RECTANGLE OPTIMIZATION..."
+    print ("=====================================")
+    print ("STARTING RECTANGLE OPTIMIZATION...")
     for Node in AG.nodes():
         for Port in AG.node[Node]['Unreachable']:
             RectangleList = {}
             for i in range(0, NumberOfRects):
                 RectangleList[i] = (None, None)
-            if len( AG.node[Node]['Unreachable'][Port]) == Config.Network_X_Size * Config.Network_Y_Size:
-                RectangleList[0] = (0, Config.Network_X_Size*Config.Network_Y_Size -1)
+            if len( AG.node[Node]['Unreachable'][Port]) == Config.Network_X_Size*Config.Network_Y_Size:
+                RectangleList[0] = (0, Config.Network_X_Size*Config.Network_Y_Size-1)
             else:
                 RectangleList = copy.deepcopy(MergeNodeWithRectangles(RectangleList, AG.node[Node]['Unreachable'][Port]))
             AG.node[Node]['Unreachable'][Port] = RectangleList
-    print "RECTANGLE OPTIMIZATION FINISHED..."
+    print ("RECTANGLE OPTIMIZATION FINISHED...")
     return None
 
 
-def MergeNodeWithRectangles (RectangleList,UnreachableNodeList):
+def MergeNodeWithRectangles (RectangleList, UnreachableNodeList):
     # todo: in this function if we can not perform any loss-less merge, we terminate the process...
     # which is bad... we need to make sure that this node is covered
     for UnreachableNode in UnreachableNodeList:
@@ -66,18 +67,19 @@ def MergeNodeWithRectangles (RectangleList,UnreachableNodeList):
         for Rectangle in RectangleList:
             if RectangleList[Rectangle][0] == None:
                 # there is no entry, this is the first node to get in...
-                RectangleList[Rectangle] = (UnreachableNode,UnreachableNode)
+                RectangleList[Rectangle] = (UnreachableNode, UnreachableNode)
                 Covered = True
                 break
             else:
-                if IsNodeInsideRectangle(RectangleList[Rectangle],UnreachableNode):
+                if IsNodeInsideRectangle(RectangleList[Rectangle], UnreachableNode):
                     Covered = True
                     break
                 else:
                     MergedX1, MergedY1, MergedZ1, MergedX2, MergedY2, MergedZ2 = MergeRectangleWithNode(RectangleList[Rectangle][0],
                                                                                    RectangleList[Rectangle][1],
                                                                                    UnreachableNode)
-                    # print "Merged:" ,MergedY1 * Config.Network_X_Size + MergedX1, MergedY2 * Config.Network_X_Size + MergedX2
+                    # print ("Merged:" ,MergedY1 * Config.Network_X_Size + MergedX1,
+                    #        MergedY2 * Config.Network_X_Size + MergedX2)
                     LossLessMerge = True
                     for NetworkNode_X in range(MergedX1, MergedX2+1):
                         for NetworkNode_Y in range(MergedY1, MergedY2+1):
@@ -94,8 +96,8 @@ def MergeNodeWithRectangles (RectangleList,UnreachableNodeList):
                         Covered = True
                         break
         if not Covered:
-            print "COULD NOT PERFORM ANY LOSS_LESS MERGE FOR:", UnreachableNode
-            print RectangleList
+            print ("COULD NOT PERFORM ANY LOSS_LESS MERGE FOR:", UnreachableNode)
+            print (RectangleList)
     return RectangleList
 
 
@@ -103,24 +105,23 @@ def IsNodeInsideRectangle(Rect,Node):
     RX1, RY1, RZ1 = AG_Functions.ReturnNodeLocation(Rect[0])
     RX2, RY2, RZ2 = AG_Functions.ReturnNodeLocation(Rect[1])
     NodeX, NodeY, NodeZ = AG_Functions.ReturnNodeLocation(Node)
-    if NodeX >= RX1 and NodeX <= RX2 and NodeY >= RY1 and NodeY <= RY2 and NodeZ >= RZ1 and NodeZ <= RZ2:
+    if RX1 <= NodeX <= RX2 and RY1 <= NodeY <= RY2 and RZ1 <= NodeZ <= RZ2:
         return True
     else:
         return False
 
 
-
 def MergeRectangleWithNode(Rect_ll, Rect_ur, Node):
-    X1, Y1, Z1 = AG_Functions.ReturnNodeLocation(Rect_ll)
-    X2, Y2, Z2 = AG_Functions.ReturnNodeLocation(Rect_ur)
+    x1, y1, z1 = AG_Functions.ReturnNodeLocation(Rect_ll)
+    x2, y2, z2 = AG_Functions.ReturnNodeLocation(Rect_ur)
     NodeX, NodeY, NodeZ = AG_Functions.ReturnNodeLocation(Node)
-    MergedX1 = min(X1, NodeX)
-    MergedY1 = min(Y1, NodeY)
-    MergedZ1 = min(Z1, NodeZ)
-    MergedX2 = max(X2, NodeX)
-    MergedY2 = max(Y2, NodeY)
-    MergedZ2 = max(Z2, NodeZ)
-    return MergedX1,MergedY1,MergedZ1, MergedX2, MergedY2, MergedZ2
+    MergedX1 = min(x1, NodeX)
+    MergedY1 = min(y1, NodeY)
+    MergedZ1 = min(z1, NodeZ)
+    MergedX2 = max(x2, NodeX)
+    MergedY2 = max(y2, NodeY)
+    MergedZ2 = max(z2, NodeZ)
+    return MergedX1, MergedY1, MergedZ1, MergedX2, MergedY2, MergedZ2
 
 
 def ClearReachabilityCalculations(AG):
@@ -130,7 +131,7 @@ def ClearReachabilityCalculations(AG):
     return None
 
 
-def CalculateReachabilityWithRegions(AG,SHM):
+def CalculateReachabilityWithRegions(AG, SHM):
     # first Add the VirtualBrokenLinksForNonCritical
     AlreadyBrokenLinks= []
     for VirtualBrokenLink in Config.VirtualBrokenLinksForNonCritical:
@@ -159,7 +160,7 @@ def CalculateReachabilityWithRegions(AG,SHM):
     # Add VirtualBrokenLinksForCritical
     for VirtualBrokenLink in Config.VirtualBrokenLinksForCritical:
         if SHM.SHM.edge[VirtualBrokenLink[0]][VirtualBrokenLink[1]]['LinkHealth']:
-            SHM.BreakLink(VirtualBrokenLink,True)
+            SHM.BreakLink(VirtualBrokenLink, True)
         else:
             AlreadyBrokenLinks.append(VirtualBrokenLink)
     ClearReachabilityCalculations(AG)
@@ -176,7 +177,7 @@ def CalculateReachabilityWithRegions(AG,SHM):
     # Restore the VirtualBrokenLinksForNonCritical
     for VirtualBrokenLink in Config.VirtualBrokenLinksForCritical:
         if VirtualBrokenLink not in AlreadyBrokenLinks:
-            SHM.RestoreBrokenLink(VirtualBrokenLink,True)
+            SHM.RestoreBrokenLink(VirtualBrokenLink, True)
 
     # Combine Lists
     for Node in AG.nodes():

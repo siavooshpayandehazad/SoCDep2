@@ -40,13 +40,12 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
     elif Config.Mapping_Function == 'NMap':
         return NMap.NMap(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging)
 
-    elif Config.Mapping_Function == 'LocalSearch' or Config.Mapping_Function == 'IterativeLocalSearch'\
-         or Config.Mapping_Function == 'SimulatedAnnealing':
+    elif Config.Mapping_Function in ['LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing']:
         if Config.TG_Type == 'RandomDependent' or Config.TG_Type == 'Manual':
             pass
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomDependent')
-    # clustered task graph
+        # clustered task graph
         CTG = copy.deepcopy(Clustering.TaskClusterGeneration(len(AG.nodes())))
         if Clustering.InitialClustering(TG, CTG):
             # Clustered Task Graph Optimization
@@ -56,12 +55,12 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 TG = copy.deepcopy(BestTaskGraph)
                 CTG = copy.deepcopy(BestClustering)
                 del BestClustering, BestTaskGraph
-                #Clustering_Test.DoubleCheckCTG(TG, CTG)
+                # Clustering_Test.DoubleCheckCTG(TG, CTG)
                 ClusteringReports.ReportCTG(CTG, "CTG_PostOpt.png")
                 ClusteringReports.VizClusteringOpt()
             else:
-                print "CLUSTERING OPTIMIZATION TURNED OFF..."
-                print "REMOVING EMPTY CLUSTERS..."
+                print ("CLUSTERING OPTIMIZATION TURNED OFF...")
+                print ("REMOVING EMPTY CLUSTERS...")
                 Clustering_Functions.DeleteEmptyClusters(CTG)
                 ClusteringReports.ReportCTG(CTG, "CTG_PostCleaning.png")
 
@@ -70,7 +69,7 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
 
                 if Config.DistanceBetweenMapping:
                     initmpSr = Mapping_Functions.MappingIntoString(TG)
-                    #print initmpSr
+                    # print (initmpSr)
                 else:
                     initmpSr = None
 
@@ -126,15 +125,15 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                     TG = copy.deepcopy(BestTG)
                     AG = copy.deepcopy(BestAG)
                     del BestTG, BestCTG, BestAG
-                #print Mapping_Functions.MappingIntoString(TG)
+                # print (Mapping_Functions.MappingIntoString(TG))
                 Scheduling_Reports.ReportMappedTasks(AG, logging)
                 Mapping_Functions.CostFunction(TG, AG, SHM, True,  InitialMappingString = initmpSr)
                 return TG, AG
             else:
                 Mapping_Reports.ReportMapping(AG, logging)
-                print "==========================================="
+                print ("===========================================")
                 raise ValueError("INITIAL MAPPING FAILED...")
         else :
-            print "Initial Clustering Failed...."
+            print ("Initial Clustering Failed....")
             raise ValueError("INITIAL CLUSTERING FAILED...")
     return None, None

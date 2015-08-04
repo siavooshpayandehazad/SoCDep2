@@ -28,10 +28,10 @@ misc.DrawLogo()
 TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, PMCG = SystemInitialization.InitializeSystem(logging)
 
 # just to have a sense of how much time we are spending in each section
-print "==========================================="
+print ("===========================================")
 SystemStartingTime = time.time()
-print "\033[92mTIME::\033[0m SYSTEM STARTS AT:", round(SystemStartingTime - ProgramStartTime), \
-      "SECONDS AFTER PROGRAM START..."
+print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:", round(SystemStartingTime - ProgramStartTime), \
+      "SECONDS AFTER PROGRAM START...")
 
 ####################################################################
 #
@@ -42,24 +42,23 @@ print "\033[92mTIME::\033[0m SYSTEM STARTS AT:", round(SystemStartingTime - Prog
 def FaultEvent():
     global timer
     TimeAfterSystemStart = time.time() - SystemStartingTime
-    print "\033[92mTIME::\033[0m FAULT OCCURRED", "%.2f" % TimeAfterSystemStart, " SECONDS AFTER SYSTEM START..."
+    print ("\033[92mTIME::\033[0m FAULT OCCURRED", "%.2f" % TimeAfterSystemStart, " SECONDS AFTER SYSTEM START...")
     # Should we reset the timer or the next fault falls out of the program run time?
     TimeUntilNextFault = numpy.random.normal(Config.MTBF,Config.SD4MTBF)
     if TimeAfterSystemStart + TimeUntilNextFault <= Config.ProgramRunTime:
-        print "TIME UNTIL NEXT FAULT:", "%.2f" % TimeUntilNextFault, "Sec"
+        print ("TIME UNTIL NEXT FAULT:", "%.2f" % TimeUntilNextFault, "Sec")
         # reset the timer
         timer = threading.Timer(TimeUntilNextFault, FaultEvent)
         timer.start()
 
     # we generate some random fault to be inserted in the system
-
     FaultLocation, FaultType = SHM_Functions.RandomFaultGeneration(SHM)
     # here we actually insert the fault in the system
     SHM_Functions.ApplyFaultEvent(AG, SHM, NoCRG, FaultLocation, FaultType)
 
 if Config.EventDrivenFaultInjection:
     TimeUntilNextFault = numpy.random.normal(Config.MTBF,Config.SD4MTBF)
-    print "TIME UNTIL NEXT FAULT:", "%.2f" % TimeUntilNextFault, "Sec"
+    print ("TIME UNTIL NEXT FAULT:", "%.2f" % TimeUntilNextFault, "Sec")
     timer = threading.Timer(TimeUntilNextFault, FaultEvent)
     timer.start()
 

@@ -13,7 +13,7 @@ def GenerateManualTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List
         TG.add_node(Task_List[i], WCET=Task_WCET_List[i], Criticality=Task_Criticality_List[i],
                     Cluster=None, Node=None, Priority=None, Distance=None , Release=0)
 
-    print "\tCALCULATING THE CRITICALITY OF LINKS..."
+    print ("\tCALCULATING THE CRITICALITY OF LINKS...")
     GateWayEdges = []
     GatewayCounter = 0
     for edge in TG_Edge_List:
@@ -41,7 +41,7 @@ def GenerateManualTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List
 
         else:
             Edge_Criticality_List.append('L')
-    print "\tLINKS CRITICALITY CALCULATED!"
+    print ("\tLINKS CRITICALITY CALCULATED!")
 
     for edge in GateWayEdges:
         TG_Edge_List.remove(edge)
@@ -89,7 +89,7 @@ def GenerateRandomTG(NumberOfTasks,NumberOfCriticalTasks,NumberOfEdges,WCET_Rang
         TG.add_node(Task_List[i], WCET = Task_WCET_List[i], Criticality = Task_Criticality_List[i],
                     Cluster = None, Node = None, Priority = None, Distance=None ,Release = 0)
 
-    print "\tCALCULATING THE CRITICALITY OF LINKS..."
+    print ("\tCALCULATING THE CRITICALITY OF LINKS...")
     GateWayEdges = []
     GatewayCounter = 0
     for edge in TG_Edge_List:
@@ -120,7 +120,7 @@ def GenerateRandomTG(NumberOfTasks,NumberOfCriticalTasks,NumberOfEdges,WCET_Rang
             GatewayCounter += 1
         else:
             Edge_Criticality_List.append('L')
-    print "\tLINKS CRITICALITY CALCULATED!"
+    print ("\tLINKS CRITICALITY CALCULATED!")
 
     for edge in GateWayEdges:
         TG_Edge_List.remove(edge)

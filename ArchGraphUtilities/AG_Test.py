@@ -5,8 +5,8 @@ from ConfigAndPackages import Config
 
 
 def AG_Test():
-    print "==========================================="
-    print "STARTING AG TESTS..."
+    print ("===========================================")
+    print ("STARTING AG TESTS...")
     if AG_Functions.ReturnNodeLocation(0) != (0, 0, 0):
         raise ValueError('Error in ReturnNodeLocation function... CASE 1')
 
@@ -21,5 +21,5 @@ def AG_Test():
             Config.Network_X_Size * Config.Network_Y_Size * Config.Network_Z_Size - 1:
         raise ValueError('Error in ReturnNodeNumber function... CASE 2')
 
-    print "AG TESTS PASSED SUCCESSFULLY..."
+    print ("AG TESTS PASSED SUCCESSFULLY...")
     return None

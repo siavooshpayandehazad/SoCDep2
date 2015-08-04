@@ -16,8 +16,8 @@ def ReportMapping(AG, logging):
     return None
 
 def DrawMappingDistribution(AG, SHM):
-    print "==========================================="
-    print "GENERATING MAPPING DISTRIBUTIONS VISUALIZATION..."
+    print ("===========================================")
+    print ("GENERATING MAPPING DISTRIBUTIONS VISUALIZATION...")
     fig_Num = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
     fig_Util = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
     MaxNumberOfTasks = 0
@@ -28,9 +28,9 @@ def DrawMappingDistribution(AG, SHM):
 
     for node in AG.nodes():
         Location = AG_Functions.ReturnNodeLocation(node)
-        XSize= float(Config.Network_X_Size)
-        YSize= float(Config.Network_Y_Size)
-        ZSize= float(Config.Network_Y_Size)
+        XSize = float(Config.Network_X_Size)
+        YSize = float(Config.Network_Y_Size)
+        ZSize = float(Config.Network_Y_Size)
         Num = 255*len(AG.node[node]['MappedTasks'])/float(MaxNumberOfTasks)
         Util = 255*AG.node[node]['Utilization']/float(MaxUtilization)
         if SHM.SHM.node[node]['NodeHealth']:
@@ -40,7 +40,7 @@ def DrawMappingDistribution(AG, SHM):
         fig_Num.gca().add_patch(patches.Rectangle((Location[0]/XSize+Location[2]/(ZSize*XSize**2),
                                                    Location[1]/YSize+Location[2]/(ZSize*YSize**2)),
                                                    width=0.15, height=0.15, facecolor=color,
-                                                   edgecolor="black", linewidth=3,zorder=ZSize-Location[2]))
+                                                   edgecolor="black", linewidth=3, zorder=ZSize-Location[2]))
         if SHM.SHM.node[node]['NodeHealth']:
             color = '#%02X%02X%02X' % (255, 255-Util, 255-Util)
         else:   # node is broken
@@ -48,7 +48,7 @@ def DrawMappingDistribution(AG, SHM):
         fig_Util.gca().add_patch(patches.Rectangle((Location[0]/XSize+Location[2]/(ZSize*XSize**2),
                                                     Location[1]/YSize+Location[2]/(ZSize*YSize**2)),
                                                     width=0.15, height=0.15, facecolor=color,
-                                                    edgecolor="black", linewidth=3,zorder=ZSize-Location[2]))
+                                                    edgecolor="black", linewidth=3, zorder=ZSize-Location[2]))
 
     fig_Num.text(0.25, 0.03, 'Distribution of number of the tasks on the network', fontsize=15)
     fig_Util.text(0.25, 0.03, 'Distribution of utilization of network nodes', fontsize=15)
@@ -58,8 +58,8 @@ def DrawMappingDistribution(AG, SHM):
     fig_Util.clf()
     plt.close(fig_Num)
     plt.close(fig_Util)
-    print "\033[35m* VIZ::\033[0mMAPPING UTILIZATION DISTRIBUTION DRAWING CREATED AT: GraphDrawings/Mapping_Util.png"
-    print "\033[35m* VIZ::\033[0mMAPPING TASK NUMBER DISTRIBUTION DRAWING CREATED AT: GraphDrawings/Mapping_Num.png"
+    print ("\033[35m* VIZ::\033[0mMAPPING UTILIZATION DISTRIBUTION DRAWING CREATED AT: GraphDrawings/Mapping_Util.png")
+    print ("\033[35m* VIZ::\033[0mMAPPING TASK NUMBER DISTRIBUTION DRAWING CREATED AT: GraphDrawings/Mapping_Num.png")
 
     return None
 
@@ -73,17 +73,19 @@ def DrawMapping(TG, AG, SHM):
     :param SHM: System Health Management
     :return: None
     """
-    print "==========================================="
-    print "GENERATING MAPPING VISUALIZATION..."
+    print ("===========================================")
+    print ("GENERATING MAPPING VISUALIZATION...")
     fig = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
     ColorList = []
     POS = {}
-
+    XSize = float(Config.Network_X_Size)
+    YSize = float(Config.Network_Y_Size)
+    ZSize = float(Config.Network_Z_Size)
+    NodeSize = 0.3
+    StepSize = NodeSize * 1.08
+    distance = StepSize * ZSize * 1.2
     for node in AG.nodes():
         Location = AG_Functions.ReturnNodeLocation(node)
-        XSize = float(Config.Network_X_Size)
-        YSize = float(Config.Network_Y_Size)
-        ZSize = float(Config.Network_Z_Size)
         if SHM.SHM.node[node]['NodeHealth']:
             if Config.EnablePartitioning:
                 if node in Config.CriticalRegionNodes:
@@ -99,48 +101,46 @@ def DrawMapping(TG, AG, SHM):
         else:   # node is broken
             color = '#7B747B'
 
-        NodeSize = 0.3
-        StepSize = NodeSize * 1.08
-        distance = StepSize * ZSize * 1.2
+
         fig.gca().add_patch(patches.Rectangle(((distance*Location[0])+Location[2]*StepSize,
                                                (distance*Location[1])+Location[2]*StepSize),
-                                              width=NodeSize, height=NodeSize, facecolor=color,
-                                              linewidth=3, alpha= 0.5))
+                                                width=NodeSize, height=NodeSize, facecolor=color,
+                                                linewidth=3, alpha=0.5))
 
         plt.text((distance*Location[0])+Location[2]*StepSize,
-                 (distance*Location[1])+Location[2]*StepSize + NodeSize, str(node), fontsize=15)
+                 (distance*Location[1])+Location[2]*StepSize+NodeSize, str(node), fontsize=15)
         if Location[0] < XSize-1:
-            X = distance*(Location[0])+Location[2]*StepSize+ NodeSize
-            Y = distance*(Location[1])+Location[2]*StepSize+ (NodeSize/2)
-            plt.plot([X, X+distance-NodeSize], [Y,Y], color ='black',lw=3)
-            #plt.gca().add_patch(patches.Arrow(X, Y, 1.0/XSize - 0.1, 0, width=0.01))
+            X = distance*(Location[0])+Location[2]*StepSize+NodeSize
+            Y = distance*(Location[1])+Location[2]*StepSize+(NodeSize/2)
+            plt.plot([X, X+distance-NodeSize], [Y, Y], color='black', lw=3)
+            # plt.gca().add_patch(patches.Arrow(X, Y, 1.0/XSize - 0.1, 0, width=0.01))
         if Location[1] < YSize-1:
-            X = distance*(Location[0])+Location[2]*StepSize+ (NodeSize/2)
-            Y = distance*(Location[1])+Location[2]*StepSize+ NodeSize
-            #plt.plot([Y,Y], [X, X+1.0/XSize - 0.1], color ='black')
-            plt.plot([X, X], [Y,Y+distance-NodeSize], color ='black',lw=3)
+            X = distance*(Location[0])+Location[2]*StepSize+(NodeSize/2)
+            Y = distance*(Location[1])+Location[2]*StepSize+NodeSize
+            # plt.plot([Y, Y], [X, X+1.0/XSize - 0.1], color ='black')
+            plt.plot([X, X], [Y, Y+distance-NodeSize], color='black', lw=3)
 
         NumberOfTaskInRow = 3
-        OffsetX = -(NodeSize/(2* NumberOfTaskInRow))
+        OffsetX = -(NodeSize/(2*NumberOfTaskInRow))
         OffsetY = NodeSize / (NumberOfTaskInRow+1)
         TaskCount = 0
         for task in AG.node[node]['MappedTasks']:
             OffsetX += NodeSize / NumberOfTaskInRow
             if TaskCount == NumberOfTaskInRow:
                 TaskCount = 1
-                OffsetX = (NodeSize/(2* NumberOfTaskInRow))
+                OffsetX = (NodeSize/(2*NumberOfTaskInRow))
                 OffsetY += NodeSize / NumberOfTaskInRow
             random.seed(task)
-            r = random.randrange(0,255)
-            g = random.randrange(0,255)
-            b = random.randrange(0,255)
-            color = '#%02X%02X%02X' % (r,g,b)
+            r = random.randrange(0, 255)
+            g = random.randrange(0, 255)
+            b = random.randrange(0, 255)
+            color = '#%02X%02X%02X' % (r, g, b)
             ColorList.append(color)
-            POS[task]=(distance*Location[0]+Location[2]*StepSize+OffsetX,
-                       distance*Location[1]+Location[2]*StepSize+OffsetY)
+            POS[task] = (distance*Location[0]+Location[2]*StepSize+OffsetX,
+                         distance*Location[1]+Location[2]*StepSize+OffsetY)
             TaskCount += 1
     Tasksize = 800/Config.Network_Z_Size
-    networkx.draw(TG, POS, with_labels=True, node_size=Tasksize, node_color=ColorList, width=0, alpha = 0.5)
+    networkx.draw(TG, POS, with_labels=True, node_size=Tasksize, node_color=ColorList, width=0, alpha=0.5)
     fig.text(0.25, 0.02, 'Mapping visualization for network nodes', fontsize=15)
 
     plt.text(0, -NodeSize*2/3, 'X', fontsize=15)
@@ -154,22 +154,23 @@ def DrawMapping(TG, AG, SHM):
     fig.savefig("GraphDrawings/Mapping.png")
     plt.clf()
     plt.close(fig)
-    print "\033[35m* VIZ::\033[0mMAPPING DRAWING CREATED AT: GraphDrawings/Mapping.png"
+    print ("\033[35m* VIZ::\033[0mMAPPING DRAWING CREATED AT: GraphDrawings/Mapping.png")
     return None
+
 
 def VizMappingOpt(CostFileName):
     """
     Visualizes the cost of solutions during local search mapping optimization process
     :return: None
     """
-    print "==========================================="
-    print "GENERATING MAPPING OPTIMIZATION VISUALIZATIONS..."
+    print ("===========================================")
+    print ("GENERATING MAPPING OPTIMIZATION VISUALIZATIONS...")
 
     fig, ax1 = plt.subplots()
 
     try:
-        MappingCostFile = open('Generated_Files/Internal/'+CostFileName+'.txt','r')
-        Cost=[]
+        MappingCostFile = open('Generated_Files/Internal/'+CostFileName+'.txt', 'r')
+        Cost = []
         line = MappingCostFile.readline()
         MinCost = float(line)
         MinCostList = []
@@ -181,7 +182,7 @@ def VizMappingOpt(CostFileName):
                 MinCost = float(line)
             MinCostList.append(MinCost)
             line = MappingCostFile.readline()
-        SolutionNum =  range(0,len(Cost))
+        SolutionNum = range(0,len(Cost))
         MappingCostFile.close()
 
         ax1.set_ylabel('Mapping Cost')
@@ -196,68 +197,68 @@ def VizMappingOpt(CostFileName):
                 ax1.plot((x1, x2), (y1, y2), 'g')
 
     except IOError:
-        print 'CAN NOT OPEN', CostFileName+'.txt'
+        print ('CAN NOT OPEN', CostFileName+'.txt')
 
     if Config.Mapping_Function == 'SimulatedAnnealing':
         try:
-            SATempFile = open('Generated_Files/Internal/SATemp.txt','r')
+            SATempFile = open('Generated_Files/Internal/SATemp.txt', 'r')
             Temp = []
             line = SATempFile.readline()
             while line != '':
                 Temp.append(float(line))
                 line = SATempFile.readline()
             SATempFile.close()
-            # print len(Temp), len(SolutionNum)
+            # print (len(Temp), len(SolutionNum))
             ax2 = ax1.twinx()
             ax2.plot(SolutionNum, Temp, 'g')
             ax2.set_ylabel('Temperature')
             for tl in ax2.get_yticklabels():
                 tl.set_color('g')
         except IOError:
-            print 'CAN NOT OPEN SATemp.txt'
+            print ('CAN NOT OPEN SATemp.txt')
 
     plt.savefig("GraphDrawings/Mapping_Opt_Process.png")
     plt.clf()
     plt.close(fig)
-    print "\033[35m* VIZ::\033[0mMAPPING OPTIMIZATION PROCESS GRAPH CREATED AT: GraphDrawings/Mapping_Opt_Process.png"
+    print ("\033[35m* VIZ::\033[0mMAPPING OPTIMIZATION PROCESS GRAPH CREATED AT: GraphDrawings/Mapping_Opt_Process.png")
     return None
 
 
 def VizCostSlope():
 
-    print "==========================================="
-    print "GENERATING MAPPING OPTIMIZATION COST SLOPE VISUALIZATION..."
+    print ("===========================================")
+    print ("GENERATING MAPPING OPTIMIZATION COST SLOPE VISUALIZATION...")
 
     fig, ax1 = plt.subplots()
     try:
-        CostSlopeFile = open('Generated_Files/Internal/SACostSlope.txt','r')
+        CostSlopeFile = open('Generated_Files/Internal/SACostSlope.txt', 'r')
         CostSlope = []
         line = CostSlopeFile.readline()
         while line != '':
             CostSlope.append(float(line))
             line = CostSlopeFile.readline()
         CostSlopeFile.close()
-        #print len(Temp), len(SolutionNum)
+        # print (len(Temp), len(SolutionNum))
 
-        ax1.plot(range(0,len(CostSlope)), CostSlope)
+        ax1.plot(range(0, len(CostSlope)), CostSlope)
         ax1.set_ylabel('Cost Slope')
         plt.savefig("GraphDrawings/Mapping_Cost_Slope.png")
         plt.clf()
         plt.close(fig)
-        print "\033[35m* VIZ::\033[0mSA COST SLOPE GRAPH CREATED AT: GraphDrawings/Mapping_Cost_Slope.png"
+        print ("\033[35m* VIZ::\033[0mSA COST SLOPE GRAPH CREATED AT: GraphDrawings/Mapping_Cost_Slope.png")
     except IOError:
-            print 'CAN NOT OPEN SACostSlope.txt'
+            print ('CAN NOT OPEN SACostSlope.txt')
 
     return None
 
 
 def VizHuangRace():
 
-    print "==========================================="
-    print "GENERATING HUANG COUNTERS STATES VISUALIZATION..."
+    print ("===========================================")
+    print ("GENERATING HUANG COUNTERS STATES VISUALIZATION...")
     fig, ax1 = plt.subplots()
     try:
-        HuangRaceFile = open('Generated_Files/Internal/SAHuangRace.txt','r')
+        HuangRaceFile = open('Generated_Files/Internal/SAHuangRace.txt', 'r')
         Counter1 = []
         Counter2 = []
         line = HuangRaceFile.readline()
@@ -268,13 +269,13 @@ def VizHuangRace():
             line = HuangRaceFile.readline()
         HuangRaceFile.close()
 
-        ax1.plot(range(0,len(Counter1)), Counter1, 'b', range(0,len(Counter2)), Counter2, 'g')
+        ax1.plot(range(0, len(Counter1)), Counter1, 'b', range(0, len(Counter2)), Counter2, 'g')
         ax1.set_ylabel('Huang counters')
-        plt.savefig("GraphDrawings/Mapping_HuangCounters.png",dpi=300)
+        plt.savefig("GraphDrawings/Mapping_HuangCounters.png", dpi=300)
         plt.clf()
         plt.close(fig)
-        print "\033[35m* VIZ::\033[0mSA HUANG COUNTERS GRAPH CREATED AT: GraphDrawings/Mapping_HuangCounters.png"
+        print ("\033[35m* VIZ::\033[0mSA HUANG COUNTERS GRAPH CREATED AT: GraphDrawings/Mapping_HuangCounters.png")
     except IOError:
-            print 'CAN NOT OPEN SAHuangRace.txt'
+            print ('CAN NOT OPEN SAHuangRace.txt')
 
     return None

@@ -9,21 +9,21 @@ from ArchGraphUtilities import AG_Functions
 
 
 def Report_NoC_SystemHealthMap(SHM):
-        print "==========================================="
-        print "      REPORTING SYSTEM HEALTH MAP"
-        print "==========================================="
+        print ("===========================================")
+        print ("      REPORTING SYSTEM HEALTH MAP")
+        print ("===========================================")
         for Node in SHM.SHM.nodes():
-            print "\tNODE:", Node
-            print "\t\tNODE HEALTH:", SHM.SHM.node[Node]['NodeHealth']
-            print "\t\tNODE SPEED:", SHM.SHM.node[Node]['NodeSpeed']
-            print "\t\tTURNS:", SHM.SHM.node[Node]['TurnsHealth']
-            print "\t=============="
+            print ("\tNODE:", Node)
+            print ("\t\tNODE HEALTH:", SHM.SHM.node[Node]['NodeHealth'])
+            print ("\t\tNODE SPEED:", SHM.SHM.node[Node]['NodeSpeed'])
+            print ("\t\tTURNS:", SHM.SHM.node[Node]['TurnsHealth'])
+            print ("\t==============")
         for Edge in SHM.SHM.edges():
-            print "\tLINK:", Edge, "\t", SHM.SHM.edge[Edge[0]][Edge[1]]['LinkHealth']
+            print ("\tLINK:", Edge, "\t", SHM.SHM.edge[Edge[0]][Edge[1]]['LinkHealth'])
 
 
 def ReportTheEvent(FaultLocation, FaultType):
-    print "==========================================="
+    print ("===========================================")
     if FaultType == 'T':    # Transient Fault
             StringToPrint = "\033[33mSHM:: Event:\033[0m Transient Fault happened at "
     else:   # Permanent Fault
@@ -36,22 +36,22 @@ def ReportTheEvent(FaultLocation, FaultType):
             StringToPrint += 'Turn ' + str(Turn) + ' of Node ' + str(Node)
     else:
             StringToPrint += 'Node ' + str(FaultLocation)
-    print StringToPrint
+    print (StringToPrint)
     return None
 
 
 def ReportMPM(SHM):
-        print "==========================================="
-        print "      REPORTING MOST PROBABLE MAPPING "
-        print "==========================================="
+        print ("===========================================")
+        print ("      REPORTING MOST PROBABLE MAPPING ")
+        print ("===========================================")
         for item in SHM.MPM:
-            print "KEY:", item, "\t\tMAPPING:", SHM.MPM[item]
+            print ("KEY:", item, "\t\tMAPPING:", SHM.MPM[item])
         return None
 
 
 def DrawSHM(SHM):
-    print "==========================================="
-    print "GENERATING SYSTEM HEALTH MAP DRAWING..."
+    print ("===========================================")
+    print ("GENERATING SYSTEM HEALTH MAP DRAWING...")
 
     XSize = float(Config.Network_X_Size)
     YSize = float(Config.Network_Y_Size)
@@ -194,6 +194,6 @@ def DrawSHM(SHM):
     plt.savefig("GraphDrawings/SHM.png", dpi =100)
     plt.clf()
     plt.close(fig)
-    print "\033[35m* VIZ::\033[0mSYSTEM HEALTH MAP DRAWING CREATED AT: GraphDrawings/SHM.png"
+    print ("\033[35m* VIZ::\033[0mSYSTEM HEALTH MAP DRAWING CREATED AT: GraphDrawings/SHM.png")
     return None
 

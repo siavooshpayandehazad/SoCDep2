@@ -7,7 +7,7 @@ from ConfigAndPackages import Config
 
 def RemoveTaskFromCTG(TG,CTG,Task):
     TaskCluster = TG.node[Task]['Cluster']
-    #print "\tREMOVING TASK:", Task, " FROM CLUSTER:", TaskCluster
+    #print ("\tREMOVING TASK:", Task, " FROM CLUSTER:", TaskCluster)
     for edge in TG.edges():
         if Task in edge:
             WeightToRemove = TG.edge[edge[0]][edge[1]]['ComWeight']
@@ -15,10 +15,10 @@ def RemoveTaskFromCTG(TG,CTG,Task):
             DestCluster = TG.node[edge[1]]['Cluster']
             if SourceCluster is not None and DestCluster is not None:
                 if SourceCluster != DestCluster:
-                    #print "\t\tREMOVING TG EDGE:", edge, "WITH WEIGHT", WeightToRemove, "FROM CLUSTER:", \
-                    #    SourceCluster, "--->", DestCluster
+                    #print ("\t\tREMOVING TG EDGE:", edge, "WITH WEIGHT", WeightToRemove, "FROM CLUSTER:", \
+                    #    SourceCluster, "--->", DestCluster)
                     if (SourceCluster,DestCluster) not in CTG.edges():
-                        print "\t\033[31mERROR\033[0m:: EDGE ",SourceCluster, "--->", DestCluster,"DOESNT EXIST"
+                        print ("\t\033[31mERROR\033[0m:: EDGE ",SourceCluster, "--->", DestCluster,"DOESNT EXIST")
                         ClusteringReports.ReportCTG(CTG,"CTG_Error.png")
                         raise ValueError("RemoveTaskFromCTG::EDGE DOESNT EXIST")
                     else:
@@ -27,7 +27,7 @@ def RemoveTaskFromCTG(TG,CTG,Task):
                             if CTG.edge[SourceCluster][DestCluster]['Weight'] == 0:
                                 CTG.remove_edge(SourceCluster,DestCluster)
                         else:
-                            print "\t\033[31mERROR\033[0m::FINAL WEIGHT IS NEGATIVE"
+                            print ("\t\033[31mERROR\033[0m::FINAL WEIGHT IS NEGATIVE")
                             raise ValueError("RemoveTaskFromCTG::FINAL WEIGHT IS NEGATIVE")
     TG.node[Task]['Cluster'] = None
     CTG.node[TaskCluster]['TaskList'].remove(Task)
@@ -46,7 +46,7 @@ def AddTaskToCTG(TG,CTG,Task,Cluster):
     :param Cluster: destination cluster fro mapping the Task
     :return: True if addition is success, False if otherwise...
     """
-    #print "\tADDING TASK:", Task, " TO CLUSTER:", Cluster
+    #print ("\tADDING TASK:", Task, " TO CLUSTER:", Cluster)
     if len(CTG.node[Cluster]['TaskList']) == 0 :
         CTG.node[Cluster]['Criticality'] = TG.node[Task]['Criticality']
     else:
@@ -67,13 +67,13 @@ def AddTaskToCTG(TG,CTG,Task,Cluster):
                 if SrcCluster != DstCluster:
                     if (SrcCluster, DstCluster) in CTG.edges():
                         if Config.Clustering_DetailedReport:
-                            print "\t\tEDGE", SrcCluster,"--->", DstCluster, \
-                                  "ALREADY EXISTS... ADDING", WeightToAdd, "TO WEIGHT..."
+                            print ("\t\tEDGE", SrcCluster,"--->", DstCluster,
+                                   "ALREADY EXISTS... ADDING", WeightToAdd, "TO WEIGHT...")
                         CTG.edge[SrcCluster][DstCluster]['Weight'] += WeightToAdd
                     else:
                         if Config.Clustering_DetailedReport:
-                            print "\t\tEDGE", SrcCluster, DstCluster, "DOES NOT EXISTS... ADDING EDGE WITH WEIGHT:", \
-                                  TG.edge[Edge[0]][Edge[1]]['ComWeight']
+                            print ("\t\tEDGE", SrcCluster, DstCluster, "DOES NOT EXISTS... ADDING EDGE WITH WEIGHT:",
+                                  TG.edge[Edge[0]][Edge[1]]['ComWeight'])
                         CTG.add_edge(SrcCluster, DstCluster, Weight=WeightToAdd)
     return True
 
@@ -100,7 +100,7 @@ def CostFunction(CTG):
     ClusterUtilSD = statistics.stdev(ClusterUtilization)
     ComWeightSD = statistics.stdev(ComWeightList)
 
-    # print "\tCOMWEIGHT:",CommunicationWeight,"STDEV:",ClusterUtilSD, "MAXUTIL:", MaxUtil, "AVG_UTIL:", AvgUtil
+    # print ("\tCOMWEIGHT:",CommunicationWeight,"STDEV:",ClusterUtilSD, "MAXUTIL:", MaxUtil, "AVG_UTIL:", AvgUtil)
 
     if Config.Clustering_CostFunctionType == 'SD':
         Cost = ClusterUtilSD + ComWeightSD

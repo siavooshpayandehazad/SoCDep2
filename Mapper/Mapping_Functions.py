@@ -10,30 +10,30 @@ from math import ceil
 
 
 def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Report, logging):
-    if Report: print "==========================================="
-    if Report: print "STARTING INITIAL MAPPING..."
+    if Report: print ("===========================================")
+    if Report: print ("STARTING INITIAL MAPPING...")
     Itteration=0
     for Cluster in CTG.nodes():
         DestNode = random.choice(AG.nodes())
         if Config.EnablePartitioning:
             while(CTG.node[Cluster]['Criticality']!= AG.node[DestNode]['Region']):
                 DestNode = random.choice(AG.nodes())
-        #print CTG.node[Cluster]['Criticality'],AG.node[DestNode]['Region']
+        #print (CTG.node[Cluster]['Criticality'],AG.node[DestNode]['Region'])
         while not AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster, DestNode, logging):
             Itteration += 1
             DestNode = random.choice(AG.nodes())        # try another node
             if Config.EnablePartitioning:
                 while(CTG.node[Cluster]['Criticality']!= AG.node[DestNode]['Region']):
                     DestNode = random.choice(AG.nodes())
-            #print CTG.node[Cluster]['Criticality'],AG.node[DestNode]['Region']
+            #print (CTG.node[Cluster]['Criticality'],AG.node[DestNode]['Region'])
             logging.info("\tMAPPING ATTEMPT: #"+str(Itteration+1)+"FOR CLUSTER:"+str(Cluster))
             if Itteration == 10* len(CTG.nodes()):
-                if Report: print "\033[33mWARNING::\033[0m INITIAL MAPPING FAILED... AFTER", Itteration, "ITERATIONS"
+                if Report: print ("\033[33mWARNING::\033[0m INITIAL MAPPING FAILED... AFTER", Itteration, "ITERATIONS")
                 logging.warning("INITIAL MAPPING FAILED...")
                 ClearMapping(TG,CTG,AG)
                 return False
         Itteration=0
-    if Report: print "INITIAL MAPPING READY... "
+    if Report: print ("INITIAL MAPPING READY... ")
     return True
 
 
@@ -65,7 +65,7 @@ def MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, log
                     else:
                         RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging)
                         logging.warning( "\tNO PATH FOUND FROM ", SourceNode, " TO ", DestNode, "...")
-                        print "NO PATH FOUND FROM ", SourceNode, " TO ", DestNode, "..."
+                        print ("NO PATH FOUND FROM ", SourceNode, " TO ", DestNode, "...")
                         return False
     return True
 
@@ -120,14 +120,14 @@ def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster
                                                                                SourceNode, DestNode,
                                                                                False, False) # Find the links to be used
                     ListOfEdges = []
-                    # print "NumberOfPaths:",NumberOfPaths
+                    # print ("NumberOfPaths:", NumberOfPaths)
                     if ListOfLinks is not None:
                             #find all the edges in TaskGraph that contribute to this edge in CTG
                             for edge in TG.edges():
                                 if TG.node[edge[0]]['Cluster'] == Edge[0] and TG.node[edge[1]]['Cluster'] == Edge[1]:
                                     ListOfEdges.append(edge)
 
-                    #print "LIST OF LINKS:",ListOfLinks
+                    #print ("LIST OF LINKS:", ListOfLinks)
                     # add edges from list of edges to all links from list of links
                     # todo: I have to think more... this is not enough to add all the links there...
                     if ListOfLinks is not None and len(ListOfEdges) > 0:
@@ -236,16 +236,16 @@ def CostFunction(TG, AG, SHM, Report, InitialMappingString = None):
         Distance = HammingDistanceOfMapping(InitialMappingString,MappingIntoString(TG))
         Cost += Distance
     if Report:
-        print "==========================================="
-        print "      REPORTING MAPPING COST"
-        print "==========================================="
-        print "NODES MAKE SPAN MAX:", NodeMakeSpan_Max
-        print "NODES MAKE SPAN STANDARD DEVIATION:", NodeMakeSpan_Stdev
-        print "LINKS MAKE SPAN MAX:", LinkMakeSpan_Max
-        print "LINKS MAKE SPAN STANDARD DEVIATION:", LinkMakeSpan_Stdev
+        print ("===========================================")
+        print ("      REPORTING MAPPING COST")
+        print ("===========================================")
+        print ("NODES MAKE SPAN MAX:", NodeMakeSpan_Max)
+        print ("NODES MAKE SPAN STANDARD DEVIATION:", NodeMakeSpan_Stdev)
+        print ("LINKS MAKE SPAN MAX:", LinkMakeSpan_Max)
+        print ("LINKS MAKE SPAN STANDARD DEVIATION:", LinkMakeSpan_Stdev)
         if Distance is not None:
-            print "DISTANCE FROM STARTING SOLUTION:",Distance
-        print "MAPPING SCHEDULING COST:", Cost
+            print ("DISTANCE FROM STARTING SOLUTION:",Distance)
+        print ("MAPPING SCHEDULING COST:", Cost)
 
     if Cost == 0:
             raise ValueError("Mapping with 0 cost... Something is wrong here...")

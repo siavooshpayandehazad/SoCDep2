@@ -31,13 +31,13 @@ def ReportGSNoCFriendlyReachabilityInFile (AG):
     ReachabilityFile.close()
 
 def ReportReachability (AG):
-    print "====================================="
+    print ("=====================================")
     for Node in AG.nodes():
-        print "NODE", Node, "UNREACHABLE NODES:"
+        print ("NODE", Node, "UNREACHABLE NODES:")
         for Port in AG.node[Node]['Unreachable']:
-            print "Port:", Port, " ==>", AG.node[Node]['Unreachable'][Port]
+            print ("Port:", Port, " ==>", AG.node[Node]['Unreachable'][Port])
 
-def ReportReachabilityInFile (AG,FileName):
+def ReportReachabilityInFile (AG, FileName):
     ReachabilityFile = open('Generated_Files/'+FileName+".txt",'w')
     for Node in AG.nodes():
         ReachabilityFile.write( "=====================================\n")

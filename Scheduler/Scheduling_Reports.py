@@ -32,19 +32,19 @@ def ReportMappedTasks(AG,logging):
 #
 ##########################################################################
 def GenerateGanttCharts(TG,AG):
-    print "==========================================="
-    print "GENERATING SCHEDULING GANTT CHARTS..."
+    print ("===========================================")
+    print ("GENERATING SCHEDULING GANTT CHARTS...")
     NodeMakeSpanList=[]
     LinkMakeSpanList=[]
     for Node in AG.nodes():
-        NodeMakeSpanList.append(FindLastAllocatedTimeOnNode(TG,AG,Node,False))
+        NodeMakeSpanList.append(FindLastAllocatedTimeOnNode(TG, AG, Node, False))
     for link in AG.edges():
-        LinkMakeSpanList.append(FindLastAllocatedTimeOnLink(TG,AG,link,False))
-    if len(LinkMakeSpanList)>0:
+        LinkMakeSpanList.append(FindLastAllocatedTimeOnLink(TG, AG, link, False))
+    if len(LinkMakeSpanList) > 0:
         MAX_Time_Link = max(LinkMakeSpanList)
     else:
         MAX_Time_Link = 0
-    if len(NodeMakeSpanList)>0:
+    if len(NodeMakeSpanList) > 0:
         MAX_Time_Node = max(NodeMakeSpanList)
     else:
         MAX_Time_Node = 0
@@ -53,19 +53,19 @@ def GenerateGanttCharts(TG,AG):
     NodeCounter = 0
     EdgeCounter = 0
     for Node in AG.nodes():
-        if len(AG.node[Node]['MappedTasks'])>0:
+        if len(AG.node[Node]['MappedTasks']) > 0:
             NodeCounter += 1
     for Link in AG.edges():
-        if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
+        if len(AG.edge[Link[0]][Link[1]]['MappedTasks']) > 0:
             EdgeCounter += 1
     NumberOfPlots = NodeCounter + EdgeCounter
-    if NumberOfPlots<10:
-        NumberOfPlots=10
+    if NumberOfPlots < 10:
+        NumberOfPlots = 10
     Count = 1
     fig = plt.figure(figsize=(Max_Time/10+5,NumberOfPlots/2))
     plt.subplots_adjust(hspace=0.1)
     for Node in AG.nodes():
-        if len(AG.node[Node]['MappedTasks'])>0:
+        if len(AG.node[Node]['MappedTasks']) > 0:
             ax1 = fig.add_subplot(NumberOfPlots, 1, Count)
             for Task in AG.node[Node]['MappedTasks']:
                     PE_T = []
@@ -80,8 +80,8 @@ def GenerateGanttCharts(TG,AG):
                     if Task in AG.node[Node]['Scheduling']:
                         if TG.node[Task]['Criticality']=='H':
                             StartTime = AG.node[Node]['Scheduling'][Task][0]
-                            TaskLength = AG.node[Node]['Scheduling'][Task][1] - AG.node[Node]['Scheduling'][Task][0]
-                            EndTime = StartTime + (TaskLength / (Config.SlackCount+1))
+                            TaskLength = AG.node[Node]['Scheduling'][Task][1]-AG.node[Node]['Scheduling'][Task][0]
+                            EndTime = StartTime + (TaskLength/(Config.SlackCount+1))
                             PE_T.append(StartTime)
                             PE_P.append(0)
                             PE_T.append(StartTime)
@@ -121,7 +121,7 @@ def GenerateGanttCharts(TG,AG):
                                 TaskColor = '#CFECFF'
                     PE_T.append(Max_Time)
                     PE_P.append(0)
-                    ax1.fill_between(PE_T, PE_P, 0, facecolor = TaskColor, edgecolor='k')
+                    ax1.fill_between(PE_T, PE_P, 0, facecolor=TaskColor, edgecolor='k')
                     if Config.SlackCount > 0:
                         ax1.fill_between(Slack_T, Slack_P, 0, facecolor='#808080', edgecolor='k')
             plt.setp(ax1.get_yticklabels(), visible=False)
@@ -222,5 +222,5 @@ def GenerateGanttCharts(TG,AG):
     plt.savefig("GraphDrawings/Scheduling.png")
     plt.clf()
     plt.close(fig)
-    print  "\033[35m* VIZ::\033[0mSCHEDULING GANTT CHARTS CREATED AT: GraphDrawings/Scheduling.png"
+    print ("\033[35m* VIZ::\033[0mSCHEDULING GANTT CHARTS CREATED AT: GraphDrawings/Scheduling.png")
     return None
