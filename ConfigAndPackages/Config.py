@@ -14,7 +14,7 @@ EventDrivenFaultInjection = False
 #          TG  Config
 ################################################
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
-TG_Type = 'RandomIndependent'
+TG_Type = 'RandomDependent'
 # For Random TG_Type:
 NumberOfTasks = 25
 NumberOfCriticalTasks = 0
@@ -126,7 +126,7 @@ Clustering_CostFunctionType = 'SD+MAX'
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'MinimumCompletionTime'
+Mapping_Function = 'SimulatedAnnealing'
 LocalSearchIteration = 100
 IterativeLocalSearchIterations = 20
 #######################
