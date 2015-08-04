@@ -74,6 +74,7 @@ if '2D' in NetworkTopology:
             if Turn not in UsedTurnModel:
                 if Turn in TurnsHealth.keys():
                     TurnsHealth[Turn] = False
+
 elif '3D' in NetworkTopology:
     TurnsHealth = PackageFile.TurnsHealth_3DNetwork
     if not SetRoutingFromFile:
@@ -81,6 +82,7 @@ elif '3D' in NetworkTopology:
             if Turn not in UsedTurnModel:
                 if Turn in TurnsHealth.keys():
                     TurnsHealth[Turn] = False
+
 # ==========================
 # Number of Unreachable-Rectangles
 NumberOfRects = 5
@@ -90,9 +92,9 @@ NumberOfRects = 5
 # Sample for 2X2 network:
 # ListOfBrokenLinks = [(0, 1), (0, 2)]
 # Sample for 4X4 network:
-# ListOfBrokenLinks = [(0, 1), (0, 4)]
+ListOfBrokenLinks = [(0, 1), (8, 17)]
 # For those who don't need broken links
-ListOfBrokenLinks = []
+# ListOfBrokenLinks = []
 # Some random broken link
 # ListOfBrokenLinks = [(0, 1), (22, 21)]
 # ==========================

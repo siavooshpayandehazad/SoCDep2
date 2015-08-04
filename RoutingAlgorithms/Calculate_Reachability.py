@@ -9,8 +9,7 @@ import Routing
 from ArchGraphUtilities import AG_Functions
 
 def CalculateReachability(AG, NoCRG):
-    # todo: fix this for 3d...
-    PortList = ['N', 'E', 'W', 'S']
+    PortList = ['U', 'N', 'E', 'W', 'S', 'D']
     for SourceNode in AG.nodes():
         for Port in PortList:
             AG.node[SourceNode]['Unreachable'][Port]=[]
@@ -24,7 +23,8 @@ def CalculateReachability(AG, NoCRG):
 
 def IsDestinationReachableViaPort(NoCRG, SourceNode, Port, DestinationNode, ReturnAllPaths, Report):
 
-    Source = str(SourceNode)+str(Port)+str('I')
+    # the Source port should be output port since this is output of router to other routers
+    Source = str(SourceNode)+str(Port)+str('O')
     # the destination port should be output port since this is output of router to PE
     # (which will be connected to PE's input port)
     Destination = str(DestinationNode)+str('L')+str('O')
@@ -35,8 +35,19 @@ def IsDestinationReachableViaPort(NoCRG, SourceNode, Port, DestinationNode, Retu
         return False
 
 
-def IsDestReachableFromSource(NoCRG, Source, Destination):
-    return IsDestinationReachableViaPort(NoCRG, Source, 'L', Destination, True, False)
+def IsDestReachableFromSource(NoCRG, SourceNode, DestinationNode):
+
+    # the Source port should be input port since this is input of router
+    # (which will be connected to PE's output port)
+    Source = str(SourceNode)+str('L')+str('I')
+    # the destination port should be output port since this is output of router to PE
+    # (which will be connected to PE's input port)
+    Destination = str(DestinationNode)+str('L')+str('O')
+    if networkx.has_path(NoCRG, Source, Destination):
+        return True
+    else:
+        return False
+
 
 
 def OptimizeReachabilityRectangles(AG, NumberOfRects):
