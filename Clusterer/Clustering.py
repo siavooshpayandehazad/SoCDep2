@@ -19,7 +19,7 @@ def TaskClusterGeneration(NumberOfClusters):
     """
     print ("===========================================")
     print ("PREPARING FOR CLUSTERING THE TASK GRAPH...")
-    print ("   NUMBER OF CLUSTERS: ", NumberOfClusters)
+    print ("   NUMBER OF CLUSTERS: "+str(NumberOfClusters))
     CTG=networkx.DiGraph()
     for i in range(0, NumberOfClusters):
         CTG.add_node(i, TaskList=[], Node=None, Utilization=0, Criticality='L')

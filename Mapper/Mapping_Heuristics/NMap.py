@@ -22,48 +22,48 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
     for node in UnAllocatedNodes:
         if not SHM.SHM.node[node]['NodeHealth']:
             UnAllocatedNodes.remove(node)
-            print ("REMOVED BROKEN NODE", node, "FROM UN-ALLOCATED NODES")
+            print ("REMOVED BROKEN NODE "+str(node)+" FROM UN-ALLOCATED NODES")
 
     print ("------------------")
     print ("STEP 1:")
     # step 1: find the task with highest weighted communication volume
     TasksComDict = TG_Functions.TasksCommunicationWeight(TG)
     SortedTasksCom = sorted(TasksComDict, key=TasksComDict.get, reverse=True)
-    print ("\t SORTED TASKS BY COMMUNICATION WEIGHT:\n", "\t ", SortedTasksCom)
+    print ("\t SORTED TASKS BY COMMUNICATION WEIGHT:\n"+"\t "+str(SortedTasksCom))
     print ("\t -------------")
     ChosenTask = SortedTasksCom[0]
-    print ("\t CHOSEN TASK:", ChosenTask)
+    print ("\t CHOSEN TASK: "+str(ChosenTask))
     MappedTasks.append(ChosenTask)
-    print ("\t ADDED TASK", ChosenTask, "TO MAPPED TASKS LIST")
+    print ("\t ADDED TASK "+str(ChosenTask)+"TO MAPPED TASKS LIST")
     UnmappedTasks.remove(ChosenTask)
-    print ("\t REMOVED TASK", ChosenTask, "FROM UN-MAPPED TASKS LIST")
+    print ("\t REMOVED TASK "+str(ChosenTask)+"FROM UN-MAPPED TASKS LIST")
 
     print ("------------------")
     print ("STEP 2:")
     NodeNeighborsDict = AG_Functions.NodeNeighbors(AG, SHM)
     SortedNodeNeighbors = sorted(NodeNeighborsDict, key=NodeNeighborsDict.get, reverse=True)
     MaxNeighborsNode = AG_Functions.MaxNodeNeighbors(NodeNeighborsDict, SortedNodeNeighbors)
-    print ("\t SORTED NODES BY NUMBER OF NEIGHBOURS:\n", "\t ", SortedNodeNeighbors)
+    print ("\t SORTED NODES BY NUMBER OF NEIGHBOURS:\n"+"\t "+str(SortedNodeNeighbors))
     print ("\t -------------")
-    print ("\t NODES WITH MAX NEIGHBOURS:\t", MaxNeighborsNode)
+    print ("\t NODES WITH MAX NEIGHBOURS:\t"+str(MaxNeighborsNode))
     ChosenNode = random.choice(MaxNeighborsNode)
 
-    print ("\t CHOSEN NODE:", ChosenNode)
+    print ("\t CHOSEN NODE: "+str(ChosenNode))
     AllocatedNodes.append(ChosenNode)
-    print ("\t ADDED NODE", ChosenNode, "TO ALLOCATED NODES LIST")
+    print ("\t ADDED NODE "+str(ChosenNode)+" TO ALLOCATED NODES LIST")
     UnAllocatedNodes.remove(ChosenNode)
-    print ("\t REMOVED NODE", ChosenNode, "FROM UN-ALLOCATED NODES LIST")
+    print ("\t REMOVED NODE "+str(ChosenNode)+" FROM UN-ALLOCATED NODES LIST")
     # Map Chosen Task on Chosen Node...
     if Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG,
                                             NonCriticalRG, ChosenTask, ChosenNode, logging):
-        print ("\t \033[32m* NOTE::\033[0mTASK", ChosenTask, "MAPPED ON NODE", ChosenNode)
+        print ("\t \033[32m* NOTE::\033[0mTASK "+str(ChosenTask)+" MAPPED ON NODE "+str(ChosenNode))
     else:
         raise ValueError("Mapping task on node failed...")
 
     print ("------------------")
     print ("STEP 3:")
     while len(UnmappedTasks) > 0:
-        print ("\033[33m==>\033[0m  UN-MAPPED TASKS #:", len(UnmappedTasks))
+        print ("\033[33m==>\033[0m  UN-MAPPED TASKS #: "+str(len(UnmappedTasks)))
         print ("\t -------------")
         print ("\t STEP 3.1:")
         # find the unmapped task which communicates most with MappedTasks
@@ -83,8 +83,8 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 TasksWithMaxComToMapped = [Task]
             elif MaxCom == TaskWeight:
                 TasksWithMaxComToMapped.append(Task)
-        print ("\t MAX COMMUNICATION WITH THE MAPPED TASKS:", MaxCom)
-        print ("\t TASK(S) WITH MAX COMMUNICATION TO MAPPED TASKS:", TasksWithMaxComToMapped)
+        print ("\t MAX COMMUNICATION WITH THE MAPPED TASKS: "+str(MaxCom))
+        print ("\t TASK(S) WITH MAX COMMUNICATION TO MAPPED TASKS: "+str(TasksWithMaxComToMapped))
         if len(TasksWithMaxComToMapped) > 1:
             # multiple tasks with same comm to mapped
             # Find the one that communicate most with Un-mapped takss...
@@ -101,7 +101,7 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                     CandidTaskWithMaxComToUnMapped = [CandidateTask]
                 elif TaskWeight == MaxCom:
                     CandidTaskWithMaxComToUnMapped.append(CandidateTask)
-            print ("\t CANDIDATE TASK(S) THAT COMMUNICATE MOST WITH UN_MAPPED:", CandidTaskWithMaxComToUnMapped)
+            print ("\t CANDIDATE TASK(S) THAT COMMUNICATE MOST WITH UN_MAPPED: "+str(CandidTaskWithMaxComToUnMapped))
             if len(CandidTaskWithMaxComToUnMapped) > 1:
                 # if multiple tasks with the same com to unmmaped also,
                 # choose randomly
@@ -110,7 +110,7 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 ChosenTask = CandidTaskWithMaxComToUnMapped[0]
         else:
             ChosenTask = TasksWithMaxComToMapped[0]
-        print ("\t CHOSEN TASK:", ChosenTask)
+        print ("\t CHOSEN TASK: "+str(ChosenTask))
 
         # Find the unallocated tile with lowest communication cost to/from the allocated_tiles_set.
         print ("\t -------------")
@@ -149,9 +149,9 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 elif Cost == MinCost:
                     NodeCandidates.append(UnAllocatedNode)
             else:
-                print ("\t \033[33m* NOTE::\033[0m NODE", UnAllocatedNode, "CAN NOT REACH...")
+                print ("\t \033[33m* NOTE::\033[0m NODE "+str(UnAllocatedNode)+" CAN NOT REACH...")
                 pass
-        print ("\t CANDIDATE NODES:", NodeCandidates, "MIN COST:", MinCost)
+        print ("\t CANDIDATE NODES: "+str(NodeCandidates)+" MIN COST: "+str(MinCost))
 
         if len(NodeCandidates) == 0:
             raise ValueError("COULD NOT FIND A REACHABLE CANDIDATE NODE...")
@@ -164,18 +164,18 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
             ChosenNode = random.choice(UnAllocatedNodes)
 
         MappedTasks.append(ChosenTask)
-        print ("\t ADDED TASK", ChosenTask, "TO MAPPED TASKS LIST")
+        print ("\t ADDED TASK "+str(ChosenTask)+" TO MAPPED TASKS LIST")
         UnmappedTasks.remove(ChosenTask)
-        print ("\t REMOVED TASK", ChosenTask, "FROM UN-MAPPED TASKS LIST")
+        print ("\t REMOVED TASK "+str(ChosenTask)+" FROM UN-MAPPED TASKS LIST")
 
         AllocatedNodes.append(ChosenNode)
-        print ("\t ADDED NODE", ChosenNode, "TO ALLOCATED NODES LIST")
+        print ("\t ADDED NODE "+str(ChosenNode)+" TO ALLOCATED NODES LIST")
         UnAllocatedNodes.remove(ChosenNode)
-        print ("\t REMOVED NODE", ChosenNode, "FROM UN-ALLOCATED NODES LIST")
+        print ("\t REMOVED NODE "+str(ChosenNode)+" FROM UN-ALLOCATED NODES LIST")
 
         if Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG,
                                             NonCriticalRG, ChosenTask, ChosenNode, logging):
-            print ("\t \033[32m* NOTE::\033[0mTASK", ChosenTask, "MAPPED ON NODE", ChosenNode)
+            print ("\t \033[32m* NOTE::\033[0mTASK "+str(ChosenTask)+" MAPPED ON NODE "+str(ChosenNode))
         else:
             raise ValueError("Mapping task on node failed...")
 

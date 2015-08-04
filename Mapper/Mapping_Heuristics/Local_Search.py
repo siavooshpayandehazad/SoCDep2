@@ -13,8 +13,15 @@ def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SH
     if Report:print ("STARTING MAPPING OPTIMIZATION...USING LOCAL SEARCH...")
     if Report:print ("NUMBER OF ITERATIONS: "+str(IterationNum))
 
-    MappingCostFile = open('Generated_Files/Internal/'+CostDataFile+'.txt', 'a')
-    MappingProcessFile = open('Generated_Files/Internal/'+MappingProcess+'.txt', 'a')
+    if type(CostDataFile) is str:
+        MappingCostFile = open('Generated_Files/Internal/'+CostDataFile+'.txt', 'a')
+    else:
+        raise ValueError("CostDataFile name is not string: "+str(CostDataFile))
+
+    if type(MappingProcess) is str:
+        MappingProcessFile = open('Generated_Files/Internal/'+MappingProcess+'.txt', 'a')
+    else:
+        raise ValueError("MappingProcessFile name is not string: "+str(MappingProcess))
 
     BestTG=copy.deepcopy(TG)
     BestAG=copy.deepcopy(AG)
@@ -102,7 +109,7 @@ def OptimizeMappingIterativeLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriti
     BestCTG=copy.deepcopy(CTG)
     BestCost=Mapping_Functions.CostFunction(TG, AG, SHM, False)
     StartingCost = BestCost
-    if Report:print ("INITIAL COST:",StartingCost)
+    if Report:print ("INITIAL COST:"+str(StartingCost))
     MappingCostFile = open('Generated_Files/Internal/LocalSearchMappingCost.txt', 'w')
     MappingCostFile.close()
     MappingProcessFile = open('Generated_Files/Internal/MappingProcess.txt', 'w')

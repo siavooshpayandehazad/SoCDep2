@@ -24,7 +24,11 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG,
     print ("TERMINATION CRITERIA: "+Config.TerminationCriteria)
     print ("================")
 
-    MappingCostFile = open('Generated_Files/Internal/'+CostDataFile+'.txt', 'a')
+    if type(CostDataFile) is str:
+        MappingCostFile = open('Generated_Files/Internal/'+CostDataFile+'.txt', 'a')
+    else:
+        raise ValueError("CostDataFile name is not string: "+str(CostDataFile))
+
     MappingProcessFile = open('Generated_Files/Internal/MappingProcess.txt', 'w')
     SATemperatureFile = open('Generated_Files/Internal/SATemp.txt', 'w')
     SACostSlopeFile = open('Generated_Files/Internal/SACostSlope.txt', 'w')

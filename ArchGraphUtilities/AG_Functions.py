@@ -14,8 +14,8 @@ def GenerateManualAG(PE_List, AG_Edge_List, AG_Edge_Port_List):
     for i in range(0, len(AG_Edge_List)):
         EDGE = AG_Edge_List[i]
         AG.add_edge(EDGE[0], EDGE[1], Port=AG_Edge_Port_List[i], MappedTasks=[], Scheduling={})
-    print "\tNODES: ", AG.nodes(data=False)
-    print "\tEDGES: ", AG.edges(data=False)
+    print ("\tNODES: "+str(AG.nodes(data=False)))
+    print ("\tEDGES: "+str(AG.edges(data=False)))
     print("ARCHITECTURE GRAPH (AG) IS READY...")
     return AG
 
@@ -33,10 +33,10 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
     SupportedTopologies = ['2DSpidergon', '2DTorus', '2DMesh', '2DRing', '2DLine', '3DMesh']
     print ("===========================================")
     print ("PREPARING AN ARCHITECTURE GRAPH (AG)...")
-    print ("TOPOLOGY:", Topology)
-    print ("X SIZE:", SizeX)
-    print ("Y SIZE:", SizeY)
-    print ("Z SIZE:", SizeZ)
+    print ("TOPOLOGY: "+Topology)
+    print ("X SIZE:"+str(SizeX))
+    print ("Y SIZE:"+str(SizeY))
+    print ("Z SIZE:"+str(SizeZ))
     AG = networkx.DiGraph()
 
     if Topology not in SupportedTopologies:

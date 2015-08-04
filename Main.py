@@ -30,8 +30,8 @@ TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, PMCG = SystemInitialization.Initi
 # just to have a sense of how much time we are spending in each section
 print ("===========================================")
 SystemStartingTime = time.time()
-print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:"+str(round(SystemStartingTime - ProgramStartTime))+
-      " SECONDS AFTER PROGRAM START...")
+print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:"+str(round(SystemStartingTime-ProgramStartTime))+
+       " SECONDS AFTER PROGRAM START...")
 
 ####################################################################
 #

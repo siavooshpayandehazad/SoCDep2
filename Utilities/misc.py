@@ -16,8 +16,8 @@ def DrawLogo ():
     print ("THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME ")
     print ("DEPENDABILITY STUFF ON DIFFERENT ARCHITECTURES....")
     print ("================================================================================")
-    print ("DEBUG DETAILS:", Config.DebugDetails)
-    print ("DEBUG INFO:", Config.DebugInfo)
+    print ("DEBUG DETAILS:"+str(Config.DebugDetails))
+    print ("DEBUG INFO:"+str(Config.DebugInfo))
     print ("===========================================")
     return None
 

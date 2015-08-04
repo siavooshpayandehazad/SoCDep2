@@ -20,8 +20,8 @@ def ReportTaskGraph(TG,logging):
     print ("====================")
     print ("EDGES:")
     for Edge in TG.edges():
-        massage= "EDGE:"+ str(Edge)+"\tCRITICALITY:"+str(TG.edge[Edge[0]][Edge[1]]['Criticality'])+"\tLINK:"+\
-            str(TG.edge[Edge[0]][Edge[1]]['Link'])+"\tCOM WEIGHTt:"+str(TG.edge[Edge[0]][Edge[1]]['ComWeight'])
+        massage= "EDGE: "+str(Edge)+"\tCRITICALITY: "+str(TG.edge[Edge[0]][Edge[1]]['Criticality'])+"\tLINK: "+\
+                str(TG.edge[Edge[0]][Edge[1]]['Link'])+"\tCOM WEIGHTt: "+str(TG.edge[Edge[0]][Edge[1]]['ComWeight'])
         logging.info(massage)
         print (massage)
     return None

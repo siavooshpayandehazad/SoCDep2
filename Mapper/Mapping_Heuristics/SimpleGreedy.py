@@ -20,11 +20,11 @@ def Min_Min_Mapping (TG, AG, NoCRG, SHM, logging):
         TaskToBeMapped = ShortestTasks.pop()
         # map the task on the Node that yields smallest Completion time
         CandidateNodes=Mapping_Functions.FindNodeWithSmallestCompletionTime(AG, TG, SHM, TaskToBeMapped)
-        print ("\tCANDIDATE NODES FOR MAPPING:", CandidateNodes)
+        print ("\tCANDIDATE NODES FOR MAPPING: "+str(CandidateNodes))
         if len(CandidateNodes) > 0:
             ChosenNode = random.choice(CandidateNodes)
-            print ("\t\tMAPPING TASK", TaskToBeMapped, "WITH RELEASE:", TG.node[TaskToBeMapped]['Release'],
-                   "---> NODE:", ChosenNode)
+            print ("\t\tMAPPING TASK "+str(TaskToBeMapped)+" WITH RELEASE: "+str(TG.node[TaskToBeMapped]['Release'])+
+                   " ---> NODE: "+str(ChosenNode))
             TG.node[TaskToBeMapped]['Node'] = ChosenNode
             AG.node[ChosenNode]['MappedTasks'].append(TaskToBeMapped)
             AG.node[ChosenNode]['Utilization'] += TG.node[TaskToBeMapped]['WCET']
@@ -51,15 +51,15 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
         TaskToBeMapped = LongestTasks.pop()
         # map the task on the Node that yields smallest Completion time
         CandidateNodes=Mapping_Functions.FindNodeWithSmallestCompletionTime(AG, TG, SHM, TaskToBeMapped)
-        print "CANDIDATE NODES FOR MAPPING:",CandidateNodes
+        print ("CANDIDATE NODES FOR MAPPING: "+str(CandidateNodes))
         if len(CandidateNodes)>0:
             ChosenNode=random.choice(CandidateNodes)
             if len(CandidateNodes)>1:
-                print ("\tMAPPING TASK",TaskToBeMapped, "WITH RELEASE:", TG.node[TaskToBeMapped]['Release'],
-                       "---> NODE:", ChosenNode, "(RANDOMLY CHOSEN FROM CANDIDATES)")
+                print ("\tMAPPING TASK "+str(TaskToBeMapped)+" WITH RELEASE: "+str(TG.node[TaskToBeMapped]['Release'])+
+                       " ---> NODE: "+str(ChosenNode)+" (RANDOMLY CHOSEN FROM CANDIDATES)")
             else:
-                print ("\tMAPPING TASK", TaskToBeMapped, "WITH RELEASE:", TG.node[TaskToBeMapped]['Release'],
-                       "---> NODE:", ChosenNode)
+                print ("\tMAPPING TASK "+str(TaskToBeMapped)+" WITH RELEASE: "+str(TG.node[TaskToBeMapped]['Release'])+
+                       " ---> NODE: "+str(ChosenNode))
             TG.node[TaskToBeMapped]['Node'] = ChosenNode
             AG.node[ChosenNode]['MappedTasks'].append(TaskToBeMapped)
             AG.node[ChosenNode]['Utilization'] += TG.node[TaskToBeMapped]['WCET']
@@ -82,7 +82,7 @@ def MinExecutionTime(TG, AG, SHM, logging):
         AG.node[ChosenNode]['MappedTasks'].append(TaskToBeMapped)
         AG.node[ChosenNode]['Utilization'] += TG.node[TaskToBeMapped]['WCET']
         Scheduling_Functions.Add_TG_TaskToNode(TG, AG, SHM, TaskToBeMapped, ChosenNode, False)
-        print ("\tTASK", TaskToBeMapped, "MAPPED ON NODE:", ChosenNode)
+        print ("\tTASK "+str(TaskToBeMapped)+" MAPPED ON NODE: "+str(ChosenNode))
     print ("MIN EXECUTION TIME MAPPING FINISHED...")
     Scheduling_Reports.ReportMappedTasks(AG, logging)
     return TG, AG
@@ -99,7 +99,7 @@ def MinimumCompletionTime(TG, AG, SHM, logging):
         AG.node[ChosenNode]['MappedTasks'].append(TaskToBeMapped)
         AG.node[ChosenNode]['Utilization'] += TG.node[TaskToBeMapped]['WCET']
         Scheduling_Functions.Add_TG_TaskToNode(TG, AG, SHM, TaskToBeMapped, ChosenNode, False)
-        print "\tTASK", TaskToBeMapped, "MAPPED ON NODE:", ChosenNode
+        print ("\tTASK "+str(TaskToBeMapped)+" MAPPED ON NODE: "+str(ChosenNode))
     print ("MIN COMPLETION TIME MAPPING FINISHED...")
     Scheduling_Reports.ReportMappedTasks(AG, logging)
     return TG, AG
