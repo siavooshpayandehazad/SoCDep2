@@ -10,8 +10,8 @@ from ConfigAndPackages import Config
 def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
                                IterationNum, Report, DetailedReport, logging, CostDataFile, MappingProcess):
     if Report:print ("===========================================")
-    if Report:print ("STARTING MAPPING OPTIMIZATION...USING ITERATIVE LOCAL SEARCH...")
-    if Report:print ("NUMBER OF ITERATIONS:", IterationNum)
+    if Report:print ("STARTING MAPPING OPTIMIZATION...USING LOCAL SEARCH...")
+    if Report:print ("NUMBER OF ITERATIONS: "+str(IterationNum))
 
     MappingCostFile = open('Generated_Files/Internal/'+CostDataFile+'.txt', 'a')
     MappingProcessFile = open('Generated_Files/Internal/'+MappingProcess+'.txt', 'a')
@@ -72,8 +72,8 @@ def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SH
         MappingCostFile.write(str(CurrentCost)+"\n")
         if CurrentCost <= BestCost:
             if CurrentCost < BestCost:
-                if Report:print ("\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:", CurrentCost,
-                                 "\t ITERATION:", Iteration)
+                if Report:print ("\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:"+str(CurrentCost)+
+                                 "\t ITERATION:"+str(Iteration))
             BestTG=copy.deepcopy(TG)
             BestAG=copy.deepcopy(AG)
             BestCTG=copy.deepcopy(CTG)
@@ -86,8 +86,9 @@ def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SH
     MappingProcessFile.close()
     MappingCostFile.close()
     if Report:print ("-------------------------------------")
-    if Report:print ("STARTING COST:", StartingCost, "\tFINAL COST:", BestCost, "\tAFTER", IterationNum, "ITERATIONS")
-    if Report:print ("IMPROVEMENT:", "{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost), "%")
+    if Report:print ("STARTING COST: "+str(StartingCost)+"\tFINAL COST: "+str(BestCost)+
+                     "\tAFTER "+str(IterationNum)+" ITERATIONS")
+    if Report:print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost))+" %")
     return BestTG, BestCTG, BestAG
 
 
@@ -116,8 +117,8 @@ def OptimizeMappingIterativeLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriti
             CurrentCost= Mapping_Functions.CostFunction(CurrentTG, CurrentAG, SHM, False)
             if CurrentCost <= BestCost:
                 if CurrentCost < BestCost:
-                    if Report:print ("\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:", CurrentCost,
-                                     "\t ITERATION:", Iteration)
+                    if Report:print ("\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST: "+str(CurrentCost)+
+                                     "\t ITERATION: "+str(Iteration))
                 BestTG=copy.deepcopy(CurrentTG)
                 BestAG=copy.deepcopy(CurrentAG)
                 BestCTG=copy.deepcopy(CurrentCTG)
@@ -141,11 +142,11 @@ def OptimizeMappingIterativeLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriti
                              "ABORTING ITERATIVE LOCAL SEARCH...")
             logging.info("CAN NOT FIND ANOTHER FEASIBLE SOLUTION... ABORTING ITERATIVE LOCAL SEARCH...")
             if Report:print ("-------------------------------------")
-            if Report:print ("STARTING COST:", StartingCost, "\tFINAL COST:", BestCost)
-            if Report:print ("IMPROVEMENT:", "{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost), "%")
+            if Report:print ("STARTING COST: "+str(StartingCost)+"\tFINAL COST: "+str(BestCost))
+            if Report:print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost))+ " %")
             return BestTG, BestCTG, BestAG
 
     if Report:print ("-------------------------------------")
-    if Report:print ("STARTING COST:", StartingCost, "\tFINAL COST:", BestCost)
-    if Report:print ("IMPROVEMENT:", "{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost), "%")
+    if Report:print ("STARTING COST:"+str(StartingCost)+"\tFINAL COST:"+str(BestCost))
+    if Report:print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost))+" %")
     return BestTG, BestCTG, BestAG

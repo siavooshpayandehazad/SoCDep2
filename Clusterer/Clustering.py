@@ -67,7 +67,7 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter):
     ClusteringCostFile.write(str(Cost)+"\n")
     BestSolution = copy.deepcopy(CTG)
     BestTaskGraph = copy.deepcopy(TG)
-    print ("\tINITIAL COST:", Cost)
+    print ("\tINITIAL COST: "+ str(Cost))
     # choose a random task from TG
     for i in range(0,NumberOfIter):
 
@@ -91,14 +91,14 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter):
             RandomCluster = random.choice(CTG.nodes())
 
         if Config.Clustering_Report:
-            print ("TASK", RandomTask, "MOVED TO CLUSTER", RandomCluster, "RESULTS IN UTILIZATION:", \
-                   CTG.node[RandomCluster]['Utilization'] + TG.node[RandomTask]['WCET'])
+            print ("TASK"+str(RandomTask)+"MOVED TO CLUSTER"+str(RandomCluster)+"RESULTS IN UTILIZATION:"+
+                   str(CTG.node[RandomCluster]['Utilization']+TG.node[RandomTask]['WCET']))
 
         NewCost = CostFunction(CTG)
         ClusteringCostFile.write(str(NewCost)+"\n")
         if NewCost <= Cost:
             if NewCost < Cost:
-                print ("\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:\t",NewCost, "\t\tIteration #:",i)
+                print ("\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:\t"+str(NewCost)+"\t\tIteration #:"+str(i))
             BestSolution = copy.deepcopy(CTG)
             BestTaskGraph = copy.deepcopy(TG)
             Cost = NewCost
@@ -109,6 +109,6 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter):
     DeleteEmptyClusters(BestSolution)
     # DoubleCheckCTG(BestTaskGraph,BestSolution)
     print ("-------------------------------------")
-    print ("STARTING COST:",StartingCost,"\tFINAL COST:",Cost,"\tAFTER",NumberOfIter,"ITERATIONS")
-    print ("IMPROVEMENT:","{0:.2f}".format(100*(StartingCost-Cost)/StartingCost),"%")
+    print ("STARTING COST:"+str(StartingCost)+"\tFINAL COST:"+str(Cost)+"\tAFTER"+str(NumberOfIter)+"ITERATIONS")
+    print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(StartingCost-Cost)/StartingCost))+" %")
     return BestSolution,BestTaskGraph

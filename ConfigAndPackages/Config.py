@@ -126,7 +126,7 @@ Clustering_CostFunctionType = 'SD+MAX'
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'SimulatedAnnealing'
+Mapping_Function = 'LocalSearch'
 LocalSearchIteration = 100
 IterativeLocalSearchIterations = 20
 #######################

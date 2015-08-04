@@ -30,8 +30,8 @@ TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, PMCG = SystemInitialization.Initi
 # just to have a sense of how much time we are spending in each section
 print ("===========================================")
 SystemStartingTime = time.time()
-print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:", round(SystemStartingTime - ProgramStartTime), \
-      "SECONDS AFTER PROGRAM START...")
+print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:"+str(round(SystemStartingTime - ProgramStartTime))+
+      " SECONDS AFTER PROGRAM START...")
 
 ####################################################################
 #
@@ -42,11 +42,11 @@ print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:", round(SystemStartingTime - Pro
 def FaultEvent():
     global timer
     TimeAfterSystemStart = time.time() - SystemStartingTime
-    print ("\033[92mTIME::\033[0m FAULT OCCURRED", "%.2f" % TimeAfterSystemStart, " SECONDS AFTER SYSTEM START...")
+    print ("\033[92mTIME::\033[0m FAULT OCCURRED"+str("%.2f" % TimeAfterSystemStart)+" SECONDS AFTER SYSTEM START...")
     # Should we reset the timer or the next fault falls out of the program run time?
     TimeUntilNextFault = numpy.random.normal(Config.MTBF,Config.SD4MTBF)
     if TimeAfterSystemStart + TimeUntilNextFault <= Config.ProgramRunTime:
-        print ("TIME UNTIL NEXT FAULT:", "%.2f" % TimeUntilNextFault, "Sec")
+        print ("TIME UNTIL NEXT FAULT:"+str("%.2f" % TimeUntilNextFault)+" Sec")
         # reset the timer
         timer = threading.Timer(TimeUntilNextFault, FaultEvent)
         timer.start()
@@ -58,7 +58,7 @@ def FaultEvent():
 
 if Config.EventDrivenFaultInjection:
     TimeUntilNextFault = numpy.random.normal(Config.MTBF,Config.SD4MTBF)
-    print ("TIME UNTIL NEXT FAULT:", "%.2f" % TimeUntilNextFault, "Sec")
+    print ("TIME UNTIL NEXT FAULT:"+str("%.2f" % TimeUntilNextFault)+" Sec")
     timer = threading.Timer(TimeUntilNextFault, FaultEvent)
     timer.start()
 

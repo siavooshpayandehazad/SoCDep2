@@ -11,11 +11,11 @@ def ReportCTG(CTG, filename):
     ClusterTaskListDicForDraw = {}
     ClusterWeightDicForDraw = {}
     for node in CTG.nodes():
-        print ("\tCLUSTER #:", node, "\tTASKS:", CTG.node[node]['TaskList'], "\tUTILIZATION:",
-               CTG.node[node]['Utilization'])
+        print ("\tCLUSTER #: "+str(node)+"\tTASKS:"+str(CTG.node[node]['TaskList'])+"\tUTILIZATION: "+
+               str(CTG.node[node]['Utilization']))
         ClusterTaskListDicForDraw[node] = CTG.node[node]['TaskList']
     for edge in CTG.edges():
-        print "\tEDGE #:", edge, "\tWEIGHT:", CTG.edge[edge[0]][edge[1]]['Weight']
+        print ("\tEDGE #: "+str(edge)+"\tWEIGHT: "+str(CTG.edge[edge[0]][edge[1]]['Weight']))
         ClusterWeightDicForDraw[edge] = CTG.edge[edge[0]][edge[1]]['Weight']
     print ("PREPARING GRAPH DRAWINGS...")
     pos = networkx.shell_layout(CTG)

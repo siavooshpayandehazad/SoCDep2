@@ -28,7 +28,7 @@ def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Repor
             #print (CTG.node[Cluster]['Criticality'],AG.node[DestNode]['Region'])
             logging.info("\tMAPPING ATTEMPT: #"+str(Itteration+1)+"FOR CLUSTER:"+str(Cluster))
             if Itteration == 10* len(CTG.nodes()):
-                if Report: print ("\033[33mWARNING::\033[0m INITIAL MAPPING FAILED... AFTER", Itteration, "ITERATIONS")
+                if Report: print ("\033[33mWARNING::\033[0m INITIAL MAPPING FAILED... AFTER "+str(Itteration)+" ITERATIONS")
                 logging.warning("INITIAL MAPPING FAILED...")
                 ClearMapping(TG,CTG,AG)
                 return False
@@ -65,7 +65,7 @@ def MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, log
                     else:
                         RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging)
                         logging.warning( "\tNO PATH FOUND FROM ", SourceNode, " TO ", DestNode, "...")
-                        print ("NO PATH FOUND FROM ", SourceNode, " TO ", DestNode, "...")
+                        print ("NO PATH FOUND FROM "+str(SourceNode)+" TO "+str(DestNode)+" ...")
                         return False
     return True
 
@@ -239,13 +239,13 @@ def CostFunction(TG, AG, SHM, Report, InitialMappingString = None):
         print ("===========================================")
         print ("      REPORTING MAPPING COST")
         print ("===========================================")
-        print ("NODES MAKE SPAN MAX:", NodeMakeSpan_Max)
-        print ("NODES MAKE SPAN STANDARD DEVIATION:", NodeMakeSpan_Stdev)
-        print ("LINKS MAKE SPAN MAX:", LinkMakeSpan_Max)
-        print ("LINKS MAKE SPAN STANDARD DEVIATION:", LinkMakeSpan_Stdev)
+        print ("NODES MAKE SPAN MAX:"+str(NodeMakeSpan_Max))
+        print ("NODES MAKE SPAN STANDARD DEVIATION:"+str(NodeMakeSpan_Stdev))
+        print ("LINKS MAKE SPAN MAX:"+str(LinkMakeSpan_Max))
+        print ("LINKS MAKE SPAN STANDARD DEVIATION:"+str(LinkMakeSpan_Stdev))
         if Distance is not None:
-            print ("DISTANCE FROM STARTING SOLUTION:",Distance)
-        print ("MAPPING SCHEDULING COST:", Cost)
+            print ("DISTANCE FROM STARTING SOLUTION:"+str(Distance))
+        print ("MAPPING SCHEDULING COST:"+str(Cost))
 
     if Cost == 0:
             raise ValueError("Mapping with 0 cost... Something is wrong here...")

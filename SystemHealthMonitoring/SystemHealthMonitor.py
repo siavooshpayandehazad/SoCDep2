@@ -52,31 +52,31 @@ class SystemHealthMonitor:
     ##################################################
     def BreakLink(self,link,Report):
         if Report:print ("===========================================")
-        if Report:print ("\033[33mSHM::\033[0m BREAKING LINK:", link)
+        if Report:print ("\033[33mSHM::\033[0m BREAKING LINK: "+str(link))
         self.SHM.edge[link[0]][link[1]]['LinkHealth'] = False
 
     def RestoreBrokenLink(self, link, Report):
         if Report:print ("===========================================")
-        if Report:print ("\033[33mSHM::\033[0m LINK:", link, "RESTORED...")
+        if Report:print ("\033[33mSHM::\033[0m LINK: "+str(link)+" RESTORED...")
         self.SHM.edge[link[0]][link[1]]['LinkHealth'] = True
 
     ##################################################
     def BreakTurn(self, Node, Turn, Report):
         if Report:print ("===========================================")
-        if Report:print ("\033[33mSHM::\033[0m BREAKING TURN:", Turn, "IN NODE", Node)
+        if Report:print ("\033[33mSHM::\033[0m BREAKING TURN: "+str(Turn)+" IN NODE "+str(Node))
         self.SHM.node[Node]['TurnsHealth'][Turn] = False
 
     def RestoreBrokenTurn(self, Node, Turn, Report):
         if Report:print ("===========================================")
-        if Report:print ("\033[33mSHM::\033[0m TURN:", Turn, "IN NODE", Node, "RESTORED")
+        if Report:print ("\033[33mSHM::\033[0m TURN:"+str(Turn)+" IN NODE"+str(Node)+" RESTORED")
         self.SHM.node[Node]['TurnsHealth'][Turn] = True
 
     ##################################################
     def IntroduceAging(self, Node, SpeedDown, Report):
         if Report: print ("===========================================")
         self.SHM.node[Node]['NodeSpeed'] = self.SHM.node[Node]['NodeSpeed']*(1-SpeedDown)
-        if Report: print ("\033[33mSHM::\033[0m AGEING NODE:", Node, "... SPEED DROPPED TO:",
-                          self.SHM.node[Node]['NodeSpeed'], "%")
+        if Report: print ("\033[33mSHM::\033[0m AGEING NODE:"+str(Node)+" ... SPEED DROPPED TO: "+
+                          str(self.SHM.node[Node]['NodeSpeed'])+" %")
         if self.SHM.node[Node]['NodeSpeed'] == 0:
             self.BreakNode(Node, True)
 
@@ -84,12 +84,12 @@ class SystemHealthMonitor:
     def BreakNode(self, Node, Report):
         if Report: print ("===========================================")
         self.SHM.node[Node]['NodeHealth'] = False
-        if Report: print ("\033[33mSHM::\033[0m NODE", Node, "IS BROKEN...")
+        if Report: print ("\033[33mSHM::\033[0m NODE "+str(Node)+" IS BROKEN...")
 
     def RestoreBrokenNode(self, Node, Report):
         if Report: print ("===========================================")
         self.SHM.node[Node]['NodeHealth'] = True
-        if Report: print ("\033[33mSHM::\033[0m NODE", Node, "IS RESTORED...")
+        if Report: print ("\033[33mSHM::\033[0m NODE "+str(Node)+" IS RESTORED...")
 
     ##################################################
     def TakeSnapShotOfSystemHealth(self):

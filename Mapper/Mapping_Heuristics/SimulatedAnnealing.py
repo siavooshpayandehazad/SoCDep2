@@ -19,9 +19,9 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG,
 
     print ("===========================================")
     print ("STARTING MAPPING OPTIMIZATION...USING SIMULATED ANNEALING...")
-    print ("STARTING TEMPERATURE:", Config.SA_InitialTemp)
-    print ("ANNEALING SCHEDULE:", Config.SA_AnnealingSchedule)
-    print ("TERMINATION CRITERIA:", Config.TerminationCriteria)
+    print ("STARTING TEMPERATURE: "+str(Config.SA_InitialTemp))
+    print ("ANNEALING SCHEDULE: "+Config.SA_AnnealingSchedule)
+    print ("TERMINATION CRITERIA: "+Config.TerminationCriteria)
     print ("================")
 
     MappingCostFile = open('Generated_Files/Internal/'+CostDataFile+'.txt', 'a')
@@ -86,8 +86,8 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG,
             BestAG = copy.deepcopy(NewAG)
             BestCTG = copy.deepcopy(NewCTG)
             BestCost = NewCost
-            print ("\033[33m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:", "{0:.2f}".format(NewCost),
-                  "\t ITERATION:", i, "\tIMPROVEMENT:", "{0:.2f}".format(100*(StartingCost-NewCost)/StartingCost), "%")
+            print ("\033[33m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:"+"{0:.2f}".format(NewCost)+
+                  "\t ITERATION:"+str(i)+"\tIMPROVEMENT:"+"{0:.2f}".format(100*(StartingCost-NewCost)/StartingCost)+" %")
         # calculate the probability P of accepting the solution
         Prob = Metropolis(CurrentCost, NewCost, Temperature)
         # print ("Prob:", Prob)
@@ -201,37 +201,37 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG,
     SACostSlopeFile.close()
     SAHuangRaceFile.close()
     print ("-------------------------------------")
-    print ("STARTING COST:", StartingCost, "\tFINAL COST:", BestCost)
-    print ("IMPROVEMENT:", "{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost), "%")
+    print ("STARTING COST:"+str(StartingCost)+"\tFINAL COST:"+str(BestCost))
+    print ("IMPROVEMENT:"+"{0:.2f}".format(100*(StartingCost-BestCost)/StartingCost)+" %")
     return BestTG, BestCTG, BestAG
 
 
 def NextTemp(InitialTemp, Iteration, MaxIteration, CurrentTemp, Slope=None, StdDeviation = None):
     if Config.SA_AnnealingSchedule == 'Linear':
         Temp = (float(MaxIteration-Iteration)/MaxIteration)*InitialTemp
-        print ("\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp)
+        print ("\033[36m* COOLING::\033[0m CURRENT TEMP:"+str(Temp))
 #   ----------------------------------------------------------------
     elif Config.SA_AnnealingSchedule == 'Exponential':
         Temp = CurrentTemp * Config.SA_Alpha
-        print ("\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp)
+        print ("\033[36m* COOLING::\033[0m CURRENT TEMP:"+str(Temp))
 #   ----------------------------------------------------------------
     elif Config.SA_AnnealingSchedule == 'Logarithmic':
         # this is based on "A comparison of simulated annealing cooling strategies"
         # by Yaghout Nourani and Bjarne Andresen
         Temp = Config.LogCoolingConstant * (1.0/log10(1+(Iteration+1)))     # iteration should be > 1 so I added 1
-        print ("\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp)
+        print ("\033[36m* COOLING::\033[0m CURRENT TEMP:"+str(Temp))
 #   ----------------------------------------------------------------
     elif Config.SA_AnnealingSchedule == 'Adaptive':
         Temp = CurrentTemp
         if Iteration > Config.CostMonitorQueSize:
             if Slope < Config.SlopeRangeForCooling and Slope > 0:
                 Temp = CurrentTemp * Config.SA_Alpha
-                print ("\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp)
+                print ("\033[36m* COOLING::\033[0m CURRENT TEMP:"+str(Temp))
 #   ----------------------------------------------------------------
     elif Config.SA_AnnealingSchedule == 'Markov':
         Temp = InitialTemp - (Iteration/Config.MarkovNum)*Config.MarkovTempStep
         if Temp < CurrentTemp:
-            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp)
+            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:"+str(Temp))
         if Temp <= 0:
             Temp = CurrentTemp
 #   ----------------------------------------------------------------
@@ -241,20 +241,20 @@ def NextTemp(InitialTemp, Iteration, MaxIteration, CurrentTemp, Slope=None, StdD
         # Emile H. L. Aarts, Jan Karel Lenstra
         if Iteration%Config.CostMonitorQueSize == 0 and StdDeviation is not None and StdDeviation != 0:
             Temp = float(CurrentTemp)/(1+(CurrentTemp*(log1p(Config.Delta)/StdDeviation)))
-            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp)
+            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:"+str(Temp))
         elif StdDeviation == 0:
             Temp = float(CurrentTemp)*Config.SA_Alpha
-            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp)
+            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:"+str(Temp))
         else:
             Temp = CurrentTemp
 #   ----------------------------------------------------------------
     elif Config.SA_AnnealingSchedule == 'Huang':
         if StdDeviation is not None and StdDeviation != 0:
             Temp = float(CurrentTemp)/(1+(CurrentTemp*(log1p(Config.Delta)/StdDeviation)))
-            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp)
+            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:"+str(Temp))
         elif StdDeviation == 0:
             Temp = float(CurrentTemp)*Config.SA_Alpha
-            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp)
+            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:"+str(Temp))
         else:
             Temp = CurrentTemp
 #   ----------------------------------------------------------------
