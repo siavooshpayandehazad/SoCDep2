@@ -184,9 +184,10 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
 
         Temperature = NextTemp(InitialTemp, i, IterationNum, Temperature, slope, StdDeviation)
 
-        if ZeroSlopeCounter == Config.MaxSteadyState:
-            print "NO IMPROVEMENT POSSIBLE..."
-            break
+        if Config.SA_AnnealingSchedule == 'Adaptive':
+            if ZeroSlopeCounter == Config.MaxSteadyState:
+                print "NO IMPROVEMENT POSSIBLE..."
+                break
         if Config.TerminationCriteria == 'IterationNum':
             if i == Config.SimulatedAnnealingIteration:
                 print "REACHED MAXIMUM ITERATION NUMBER..."

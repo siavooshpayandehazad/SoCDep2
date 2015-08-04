@@ -14,7 +14,7 @@ EventDrivenFaultInjection = False
 #          TG  Config
 ################################################
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
-TG_Type = 'RandomDependent'
+TG_Type = 'Manual'
 # For Random TG_Type:
 NumberOfTasks = 25
 NumberOfCriticalTasks = 0
@@ -43,6 +43,12 @@ NetworkTopology = '3DMesh'
 Network_X_Size = 3
 Network_Y_Size = 3
 Network_Z_Size = 3
+
+# this is just for double check...
+if '2D' in NetworkTopology:
+    Network_Z_Size = 1
+
+
 # Only for Manual AG_Type:
 PE_List = [0, 1, 2, 3]
 AG_Edge_List = [(0, 1), (0, 2), (1, 0), (1, 3), (2, 0), (2, 3), (3, 2), (3, 1)]
@@ -61,12 +67,20 @@ SetRoutingFromFile = False
 #          SHM  Config
 ################################################
 # Do not change if you have conventional 2D NoC
-TurnsHealth = PackageFile.TurnsHealth_3DNetwork
-if not SetRoutingFromFile:
-    for Turn in PackageFile.FULL_TurnModel_3D:
-        if Turn not in UsedTurnModel:
-            if Turn in TurnsHealth.keys():
-                TurnsHealth[Turn] = False
+if '2D' in NetworkTopology:
+    TurnsHealth = PackageFile.TurnsHealth_2DNetwork
+    if not SetRoutingFromFile:
+        for Turn in PackageFile.FULL_TurnModel_2D:
+            if Turn not in UsedTurnModel:
+                if Turn in TurnsHealth.keys():
+                    TurnsHealth[Turn] = False
+elif '3D' in NetworkTopology:
+    TurnsHealth = PackageFile.TurnsHealth_3DNetwork
+    if not SetRoutingFromFile:
+        for Turn in PackageFile.FULL_TurnModel_3D:
+            if Turn not in UsedTurnModel:
+                if Turn in TurnsHealth.keys():
+                    TurnsHealth[Turn] = False
 # ==========================
 # Number of Unreachable-Rectangles
 NumberOfRects = 5
@@ -125,43 +139,48 @@ SA_AnnealingSchedule = 'Huang'
 # Termination Criteria Could be either 'StopTemp' or 'IterationNum'
 TerminationCriteria = 'StopTemp'
 # --------------------------
-# only usable under Exponential and Adaptive and Aart and Huang's Schedule
-SA_Alpha = 0.999
-# --------------------------
-# only for Markov Cooling
-MarkovNum = 2000
-MarkovTempStep = 1        # this is the amount of Temp decrease that the system would have after MarkovNum Steps
-# --------------------------
-# only for Aart's cooling schedule
-# The number K in Aart's cooling schedule is determined by CostMonitorQueSize
-Delta = 0.05     # smaller Delta would result in slower annealing
 
-# only for Adaptive, Aart's and Huang's Cooling
-CostMonitorQueSize = 2000
-# --------------------------
-# only for Huang Annealing Schedule
-HuangAlpha = 0.5
-HuangN = 30
-HuangTargetValue1 = 45          # should be equal to 3*erf(alpha)*N
-HuangTargetValue2 = 45          # should be equal to 3*(1-erf(alpha))*N
-# --------------------------
-# only for Adaptive Cooling
-SlopeRangeForCooling = 0.02     # If the slope falls between SlopeRangeForCooling and 0, the SA
-#                                 starts cooling with rate of alpha.
-# A counter would count number of steps moved with slope = 0. when the counter reaches MaxSteadyState,
-# the process terminates
-MaxSteadyState = 30000          # 5-10% of the iteration numbers would makes sense
-# --------------------------
-# Only for Logarithmic cooling
-LogCoolingConstant = 1000       # c should be greater than or equal to the largest energy barrier in the problem
+if SA_AnnealingSchedule == 'Linear':
+    pass
+elif SA_AnnealingSchedule == 'Exponential':
+    SA_Alpha = 0.999
+elif SA_AnnealingSchedule == 'Logarithmic':
+    LogCoolingConstant = 1000       # c should be greater than or equal to the largest energy barrier in the problem
+elif SA_AnnealingSchedule == 'Adaptive':
+    CostMonitorQueSize = 2000
+    SlopeRangeForCooling = 0.02     # If the slope falls between SlopeRangeForCooling and 0, the SA
+    #                                 starts cooling with rate of alpha.
+    # A counter would count number of steps moved with slope = 0. when the counter reaches MaxSteadyState,
+    # the process terminates
+    MaxSteadyState = 30000          # 5-10% of the iteration numbers would makes sense
+    SA_Alpha = 0.999
+elif SA_AnnealingSchedule == 'Markov':
+    MarkovNum = 2000
+    MarkovTempStep = 1          # this is the amount of Temp decrease that the system would have after MarkovNum Steps
+elif SA_AnnealingSchedule == 'Aart':
+    # The number K in Aart's cooling schedule is determined by CostMonitorQueSize
+    CostMonitorQueSize = 2000
+    Delta = 0.05                # smaller Delta would result in slower annealing
+    SA_Alpha = 0.999            # if we have a queue with standard deviation = 0, we cool with this factor
+elif SA_AnnealingSchedule == 'Huang':
+    Delta = 0.05                # smaller Delta would result in slower annealing
+    CostMonitorQueSize = 2000
+    HuangAlpha = 0.5
+    HuangN = 30
+    HuangTargetValue1 = 45      # should be equal to 3*erf(alpha)*N
+    HuangTargetValue2 = 45      # should be equal to 3*(1-erf(alpha))*N
+    SA_Alpha = 0.999            # if we have a queue with standard deviation = 0, we cool with this factor
+
 ######################
+# this is used for mapping frame generation. we need some upper bound for knowing how many digits '
+# we need in the file name or when arranging by name, doesnt show in a nice manner
 if Mapping_Function == 'LocalSearch':
     MaxNumberOfIterations = LocalSearchIteration
 elif Mapping_Function == 'IterativeLocalSearch':
     MaxNumberOfIterations = LocalSearchIteration * IterativeLocalSearchIterations
 elif Mapping_Function == 'SimulatedAnnealing':
     MaxNumberOfIterations = SimulatedAnnealingIteration
-
+######################
 # here you can change the type of cost function used for mapping the available cost functions are:
 # 'SD' = Com_MakeSpan_SD + Node_MakeSpan_SD
 # 'SD+MAX' = Link_MakeSpan_SD + MaxLinkMakeSpan + Node_MakeSpan_SD + MaxNodeMakeSpan
