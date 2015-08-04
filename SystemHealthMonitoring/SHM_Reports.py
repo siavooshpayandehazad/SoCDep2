@@ -7,6 +7,7 @@ from ConfigAndPackages import Config
 from ArchGraphUtilities import AG_Functions
 
 
+
 def Report_NoC_SystemHealthMap(SHM):
         print "==========================================="
         print "      REPORTING SYSTEM HEALTH MAP"
@@ -63,6 +64,7 @@ def DrawSHM(SHM):
     else:
         plt.ylim([0, ZSize])
         plt.xlim([0, ZSize])
+
     for node in SHM.SHM.nodes():
         Location = AG_Functions.ReturnNodeLocation(node)
         X = (Location[0]/XSize)*ZSize
@@ -170,21 +172,22 @@ def DrawSHM(SHM):
         if dz == 0:
             if dx == 0:
                 if dy > 0:
-                    plt.gca().add_patch(patches.Arrow(X+ 0.11 + X_offset, Y+ 0.15 + Y_offset, 0, dy*0.4, width=0.01, color=color))
+                    plt.gca().add_patch(patches.Arrow(X+ 0.11 + X_offset, Y+ 0.15 + Y_offset, 0, dy*ZSize - 0.1, width=0.01, color=color))
                 else:
-                    plt.gca().add_patch(patches.Arrow(X+ 0.09 + X_offset, Y+ 0.05 + Y_offset, 0, dy*0.4, width=0.01, color=color))
+                    plt.gca().add_patch(patches.Arrow(X+ 0.09 + X_offset, Y+ 0.05 + Y_offset, 0, dy*ZSize + 0.1, width=0.01, color=color))
 
             elif dy == 0:
                 if dx > 0:
-                    plt.gca().add_patch(patches.Arrow(X+ 0.15 + X_offset, Y+ 0.11 + Y_offset, dx*0.4, 0, width=0.01, color=color))
+                    plt.gca().add_patch(patches.Arrow(X+ 0.15 + X_offset, Y+ 0.11 + Y_offset, dx*ZSize - 0.1, 0, width=0.01, color=color))
                 else:
-                    plt.gca().add_patch(patches.Arrow(X+ 0.05 + X_offset, Y+ 0.09 + Y_offset, dx*0.4, 0, width=0.01, color=color))
+                    plt.gca().add_patch(patches.Arrow(X+ 0.05 + X_offset, Y+ 0.09 + Y_offset, dx*ZSize + 0.1, 0, width=0.01, color=color))
             else:
                 raise ValueError("Can not draw link", link)
         elif dz > 0:
-                plt.gca().add_patch(patches.Arrow(X + 0.135 + X_offset, Y + 0.135 + Y_offset, dz*0.2, dz*0.2, width=0.01, color=color))
+                Z_offset = 1.4/ZSize
+                plt.gca().add_patch(patches.Arrow(X + 0.130 + X_offset, Y + 0.140 + Y_offset, dz*Z_offset, dz*Z_offset, width=0.01, color=color))
         elif dz <0:
-                plt.gca().add_patch(patches.Arrow(X + 0.065 + X_offset, Y+ 0.065 + Y_offset, dz*0.2, dz*0.2, width=0.01, color=color))
+                plt.gca().add_patch(patches.Arrow(X + 0.07 + X_offset, Y+ 0.06 + Y_offset, dz*Z_offset, dz*Z_offset, width=0.01, color=color))
 
 
     fig.text(0.25, 0.02, "System Health Map", fontsize=35)

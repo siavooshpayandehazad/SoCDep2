@@ -11,8 +11,8 @@ def DrawArchGraph(AG):
     NumberOfLayers = Config.Network_Z_Size
     for Node in AG.nodes():
         x,y,z = ReturnNodeLocation(Node)
-        offsetX = Config.Network_X_Size* 100
-        offsetY = Config.Network_Y_Size* 100
+        offsetX = Config.Network_X_Size* 80
+        offsetY = Config.Network_Y_Size* 80
         POS[Node]= [x*100*Config.Network_X_Size*NumberOfLayers+z*offsetX, y*100*Config.Network_Y_Size*NumberOfLayers+z*offsetY]
         if AG.node[Node]['Region'] == 'H':
             ColorList.append('#FF878B')

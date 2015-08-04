@@ -179,6 +179,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM,
                 print "\033[36m* COOLING::\033[0m REACHED MAX STEADY STATE... PREPARING FOR COOLING..."
             else:
                 StdDeviation = None
+
             Huang_Steady_Counter += 1
 
         Temperature = NextTemp(InitialTemp, i, IterationNum, Temperature, slope, StdDeviation)
@@ -243,12 +244,18 @@ def NextTemp(InitialTemp, Iteration, MaxIteration, CurrentTemp, Slope=None, StdD
         if Iteration%Config.CostMonitorQueSize == 0 and StdDeviation is not None and StdDeviation != 0:
             Temp = float(CurrentTemp)/(1+(CurrentTemp*(log1p(Config.Delta)/StdDeviation)))
             print "\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp
+        elif StdDeviation == 0:
+            Temp = float(CurrentTemp)*Config.SA_Alpha
+            print "\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp
         else:
             Temp = CurrentTemp
     #----------------------------------------------------------------
     elif Config.SA_AnnealingSchedule == 'Huang':
         if StdDeviation is not None and StdDeviation != 0:
             Temp = float(CurrentTemp)/(1+(CurrentTemp*(log1p(Config.Delta)/StdDeviation)))
+            print "\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp
+        elif StdDeviation == 0:
+            Temp = float(CurrentTemp)*Config.SA_Alpha
             print "\033[36m* COOLING::\033[0m CURRENT TEMP:", Temp
         else:
             Temp = CurrentTemp

@@ -40,9 +40,9 @@ VirtualChannelNum = 0
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
 NetworkTopology = '3DMesh'
-Network_X_Size = 4
-Network_Y_Size = 4
-Network_Z_Size = 4
+Network_X_Size = 3
+Network_Y_Size = 3
+Network_Z_Size = 3
 # Only for Manual AG_Type:
 PE_List = [0, 1, 2, 3]
 AG_Edge_List = [(0, 1), (0, 2), (1, 0), (1, 3), (2, 0), (2, 3), (3, 2), (3, 1)]
@@ -112,7 +112,7 @@ Clustering_CostFunctionType = 'SD+MAX'
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'LocalSearch'
+Mapping_Function = 'SimulatedAnnealing'
 LocalSearchIteration = 100
 IterativeLocalSearchIterations = 20
 #######################
@@ -125,7 +125,7 @@ SA_AnnealingSchedule = 'Huang'
 # Termination Criteria Could be either 'StopTemp' or 'IterationNum'
 TerminationCriteria = 'StopTemp'
 # --------------------------
-# only usable under Exponential and Adaptive mode
+# only usable under Exponential and Adaptive and Aart and Huang's Schedule
 SA_Alpha = 0.999
 # --------------------------
 # only for Markov Cooling
@@ -134,7 +134,7 @@ MarkovTempStep = 1        # this is the amount of Temp decrease that the system 
 # --------------------------
 # only for Aart's cooling schedule
 # The number K in Aart's cooling schedule is determined by CostMonitorQueSize
-Delta = 0.1     # smaller Delta would result in slower annealing
+Delta = 0.05     # smaller Delta would result in slower annealing
 
 # only for Adaptive, Aart's and Huang's Cooling
 CostMonitorQueSize = 2000
@@ -150,7 +150,7 @@ SlopeRangeForCooling = 0.02     # If the slope falls between SlopeRangeForCoolin
 #                                 starts cooling with rate of alpha.
 # A counter would count number of steps moved with slope = 0. when the counter reaches MaxSteadyState,
 # the process terminates
-MaxSteadyState = 15000          # 5-10% of the iteration numbers would makes sense
+MaxSteadyState = 30000          # 5-10% of the iteration numbers would makes sense
 # --------------------------
 # Only for Logarithmic cooling
 LogCoolingConstant = 1000       # c should be greater than or equal to the largest energy barrier in the problem

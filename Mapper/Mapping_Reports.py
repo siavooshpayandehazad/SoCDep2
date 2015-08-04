@@ -100,12 +100,15 @@ def DrawMapping(TG, AG, SHM):
             color = '#7B747B'
 
         NodeSize = 0.3
-        StepSize = NodeSize + 0.01
+        StepSize = NodeSize * 1.08
         distance = StepSize * ZSize * 1.2
         fig.gca().add_patch(patches.Rectangle(((distance*Location[0])+Location[2]*StepSize,
                                                (distance*Location[1])+Location[2]*StepSize),
                                               width=NodeSize, height=NodeSize, facecolor=color,
                                               linewidth=3, alpha= 0.5))
+
+        plt.text((distance*Location[0])+Location[2]*StepSize,
+                 (distance*Location[1])+Location[2]*StepSize + NodeSize, str(node), fontsize=15)
         if Location[0] < XSize-1:
             X = distance*(Location[0])+Location[2]*StepSize+ NodeSize
             Y = distance*(Location[1])+Location[2]*StepSize+ (NodeSize/2)
@@ -139,6 +142,15 @@ def DrawMapping(TG, AG, SHM):
     Tasksize = 800/Config.Network_Z_Size
     networkx.draw(TG, POS, with_labels=True, node_size=Tasksize, node_color=ColorList, width=0, alpha = 0.5)
     fig.text(0.25, 0.02, 'Mapping visualization for network nodes', fontsize=15)
+
+    plt.text(0, -NodeSize*2/3, 'X', fontsize=15)
+    plt.text(-NodeSize*2/3, 0, 'Y', fontsize=15)
+    plt.text(-NodeSize*2/3 + NodeSize/3, -NodeSize*2/3 + NodeSize/3, 'Z', fontsize=15)
+
+    plt.gca().add_patch(patches.Arrow(-NodeSize*2/3, -NodeSize*2/3, NodeSize, 0, width=NodeSize/10))
+    plt.gca().add_patch(patches.Arrow(-NodeSize*2/3, -NodeSize*2/3, NodeSize/3, NodeSize/3, width=NodeSize/10))
+    plt.gca().add_patch(patches.Arrow(-NodeSize*2/3, -NodeSize*2/3, 0, NodeSize, width=NodeSize/10))
+
     fig.savefig("GraphDrawings/Mapping.png")
     plt.clf()
     plt.close(fig)
