@@ -1,6 +1,6 @@
 __author__ = 'siavoosh'
 
-import copy
+import copy,time
 
 from ConfigAndPackages import Config
 from Mapper import Mapping, Mapping_Reports, Mapping_Animation
@@ -34,22 +34,29 @@ def InitializeSystem(logging):
     SHM_Functions.ApplyInitialFaults(SHM)
     SHM_Reports.DrawSHM(SHM)
     # SHM_Reports.Report_NoC_SystemHealthMap()
+    ####################################################################
+    RoutingGraphStartTime = time.time()
     if Config.SetRoutingFromFile:
         NoCRG = Routing.GenerateNoCRouteGraphFromFile(AG, SHM, Config.RoutingFilePath, Config.DebugInfo, Config.DebugDetails)
     else:
         NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, Config.DebugInfo, Config.DebugDetails))
+    print ("\033[92mTIME::\033[0m ROUTING GRAPH GENERATION TOOK: "
+           + str(round(time.time()-RoutingGraphStartTime))+" SECONDS")
     # Some visualization...
     RoutingGraph_Reports.Draw2DRG(NoCRG)
     ####################################################################
     # PMC-Graph
     # at this point we assume that the system health map knows about the initial faults from
     # the diagnosis process
+    PMCGStartTime = time.time()
     if Config.OneStepDiagonosable:
         PMCG = TestSchedulingUnit.GenerateOneStepDiagnosablePMCG(AG,SHM)
     else:
         PMCG = TestSchedulingUnit.GenerateSequentiallyDiagnosablePMCG(AG,SHM)
-    TestSchedulingUnit.DrawPMCG(PMCG)
     TTG = TestSchedulingUnit.GenerateTestTGFromPMCG(PMCG)
+    print ("\033[92mTIME::\033[0m PMCG AND TTG GENERATION TOOK: "
+           + str(round(time.time()-PMCGStartTime)) + " SECONDS")
+    TestSchedulingUnit.DrawPMCG(PMCG)
     TestSchedulingUnit.DrawTTG(TTG)
     ####################################################################
     # in case of partitioning, we have to route based on different Route-graphs

@@ -1,6 +1,6 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
-import copy
+import copy, time
 
 from ConfigAndPackages import Config
 import Scheduler
@@ -45,6 +45,7 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
             pass
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomDependent')
+        ClusteringStartTime = time.time()
         # clustered task graph
         CTG = copy.deepcopy(Clustering.TaskClusterGeneration(len(AG.nodes())))
         if Clustering.InitialClustering(TG, CTG):
@@ -64,6 +65,9 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 Clustering_Functions.DeleteEmptyClusters(CTG)
                 ClusteringReports.ReportCTG(CTG, "CTG_PostCleaning.png")
 
+            print ("\033[92mTIME::\033[0m CLUSTERING AND OPTIMIZATION TOOK: "
+                   +str(round(time.time()-ClusteringStartTime))+" SECONDS")
+            MappingStartTime = time.time()
             # Mapping CTG on AG
             if Mapping_Functions.MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, True, logging):
 
@@ -126,6 +130,8 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                     AG = copy.deepcopy(BestAG)
                     del BestTG, BestCTG, BestAG
                 # print (Mapping_Functions.MappingIntoString(TG))
+                print ("\033[92mTIME::\033[0m MAPPING AND OPTIMIZATION TOOK: "
+                       +str(round(time.time()-MappingStartTime))+" SECONDS")
                 Scheduling_Reports.ReportMappedTasks(AG, logging)
                 Mapping_Functions.CostFunction(TG, AG, SHM, True,  InitialMappingString = initmpSr)
                 return TG, AG

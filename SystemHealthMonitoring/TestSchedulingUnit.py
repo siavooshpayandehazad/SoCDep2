@@ -114,7 +114,7 @@ def DrawPMCG(PMCG):
     networkx.draw_networkx_labels(PMCG, pos)
     plt.savefig("GraphDrawings/PMCG")
     plt.clf()
-    print ("PMC GRAPH (PMCG) DRAWING IS READY...")
+    print ("\033[35m* VIZ::\033[0m PMC GRAPH (PMCG) DRAWING CREATED AT:  GraphDrawings/PMCG.png")
     return None
 
 def DrawTTG(TTG):
@@ -126,7 +126,7 @@ def DrawTTG(TTG):
     networkx.draw_networkx_labels(TTG, pos)
     plt.savefig("GraphDrawings/TTG")
     plt.clf()
-    print ("TEST TASK GRAPH (TTG) DRAWING IS READY...")
+    print ("\033[35m* VIZ::\033[0m TEST TASK GRAPH (TTG) DRAWING CREATED AT: GraphDrawings/TTG.png")
     return None
 
 # TODO: Schedule TTG

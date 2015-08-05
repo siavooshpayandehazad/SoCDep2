@@ -109,6 +109,6 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter):
     DeleteEmptyClusters(BestSolution)
     # DoubleCheckCTG(BestTaskGraph,BestSolution)
     print ("-------------------------------------")
-    print ("STARTING COST:"+str(StartingCost)+"\tFINAL COST:"+str(Cost)+"\tAFTER"+str(NumberOfIter)+"ITERATIONS")
+    print ("STARTING COST:"+str(StartingCost)+"\tFINAL COST: "+str(Cost)+"\tAFTER "+str(NumberOfIter)+" ITERATIONS")
     print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(StartingCost-Cost)/StartingCost))+" %")
     return BestSolution,BestTaskGraph
