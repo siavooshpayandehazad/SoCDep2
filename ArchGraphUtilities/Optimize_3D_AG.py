@@ -135,3 +135,10 @@ def MoveToNewVLConfig(AG, SHM, VL_Lists):
     SHM.RestoreBrokenLink((SourceNode,DestinationNode), False)
     NewVL_Lists.append((SourceNode,DestinationNode))
     return NewVL_Lists
+
+
+def CleanUpAG(AG, SHM):
+    for link in SHM.SHM.edges():
+        if not SHM.SHM.edge[link[0]][link[1]]['LinkHealth']:
+            AG.remove_edge(link[0], link[1])
+    return None

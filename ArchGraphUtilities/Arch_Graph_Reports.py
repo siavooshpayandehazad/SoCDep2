@@ -5,12 +5,12 @@ import networkx
 from ConfigAndPackages import Config
 from AG_Functions import ReturnNodeLocation
 
-def DrawArchGraph(AG):
+def DrawArchGraph(AG, FileName):
     POS ={}
     ColorList = []
 
     NumberOfLayers = Config.Network_Z_Size
-    NodeSize = 1000/NumberOfLayers
+    NodeSize = 500/NumberOfLayers
 
     NodeDistanceX = (6 * NodeSize * Config.Network_X_Size * (NumberOfLayers+1))
     NodeDistanceY = (6 * NodeSize * Config.Network_Y_Size * (NumberOfLayers+1))
@@ -33,6 +33,6 @@ def DrawArchGraph(AG):
     # POS = networkx.spring_layout(AG)
 
     networkx.draw(AG, POS, with_labels=True, node_size=NodeSize ,node_color=ColorList, font_size=5, linewidths=1)
-    plt.savefig("GraphDrawings/AG.png", dpi=150)
+    plt.savefig("GraphDrawings/"+FileName+".png", dpi=150)
     plt.clf()
     return None

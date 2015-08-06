@@ -24,7 +24,7 @@ def InitializeSystem(logging):
     AG_Functions.UpdateAGRegions(AG)
     if Config.TestMode:
         AG_Test.AG_Test()
-    Arch_Graph_Reports.DrawArchGraph(AG)
+    Arch_Graph_Reports.DrawArchGraph(AG, "AG")
     ####################################################################
     if Config.TestMode:
         SHM_Test.TestSHM(AG)
@@ -34,6 +34,8 @@ def InitializeSystem(logging):
     # information is obtained by post manufacturing system diagnosis
     if Config.FindOptimumAG:
         Optimize_3D_AG.OptimizeAG_VL(AG, SHM, logging)
+        Optimize_3D_AG.CleanUpAG(AG, SHM)
+        Arch_Graph_Reports.DrawArchGraph(AG, "AG_VLOpt")
     SHM_Functions.ApplyInitialFaults(SHM)
     SHM_Reports.DrawSHM(SHM)
     # SHM_Reports.Report_NoC_SystemHealthMap()
