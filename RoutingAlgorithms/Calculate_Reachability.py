@@ -207,3 +207,18 @@ def CalculateReachabilityWithRegions(AG, SHM):
     # optimize the results
     OptimizeReachabilityRectangles(AG, Config.NumberOfRects)
     return CriticalRG, NonCriticalRG
+
+
+
+def ReachabilityMetric(AG, NoCRG, Report):
+    if Report:print ("=====================================")
+    if Report:print ("CALCULATING REACH-ABILITY METRIC OF THE CURRENT ROUTING ALGORITHM UNDER CURRENT FAULT CONFIG")
+    ReachabilityCounter = 0
+    for SourceNode in AG.nodes():
+        for DestinationNode in AG.nodes():
+            if SourceNode != DestinationNode:
+                if IsDestReachableFromSource(NoCRG,SourceNode,DestinationNode):
+                    ReachabilityCounter += 1
+    ReachabilityMetric = float(ReachabilityCounter)/(len(AG.nodes())*(len(AG.nodes())-1))
+    if Report:print ("REACH-ABILITY METRIC: "+str(ReachabilityMetric))
+    return ReachabilityMetric

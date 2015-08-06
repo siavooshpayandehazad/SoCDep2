@@ -39,10 +39,16 @@ AG_Type = 'Generic'
 VirtualChannelNum = 0
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
-NetworkTopology = '2DMesh'
+NetworkTopology = '3DMesh'
 Network_X_Size = 3
 Network_Y_Size = 3
-Network_Z_Size = 1
+Network_Z_Size = 3
+
+# Number of Vertical Links
+FindOptimumAG = True
+VL_OptAlg = "LocalSearch"
+AG_Opt_Iterations = 1000
+VerticalLinksNum = 12
 
 # this is just for double check...
 if '2D' in NetworkTopology:
@@ -92,9 +98,9 @@ NumberOfRects = 5
 # Sample for 2X2 network:
 # ListOfBrokenLinks = [(0, 1), (0, 2)]
 # Sample for 4X4 network:
-ListOfBrokenLinks = [(0, 1)]
+# ListOfBrokenLinks = [(0, 1), (2, 5), (4, 7)]
 # For those who don't need broken links
-# ListOfBrokenLinks = []
+ListOfBrokenLinks = []
 # Some random broken link
 # ListOfBrokenLinks = [(0, 1), (22, 21)]
 # ==========================

@@ -1,4 +1,4 @@
-__author__ = 'siavoosh'
+# Copyright (C) Siavoosh Payandeh Azad
 
 import copy,time
 
@@ -8,8 +8,9 @@ from Scheduler import Scheduling_Reports
 from SystemHealthMonitoring import SystemHealthMonitor, SHM_Reports, SHM_Functions, TestSchedulingUnit, SHM_Test
 from TaskGraphUtilities import Task_Graph_Reports, TG_Functions, TG_Test
 from RoutingAlgorithms import Routing, Calculate_Reachability, ReachabilityReports, RoutingGraph_Reports, Reachability_Test
-from ArchGraphUtilities import Arch_Graph_Reports, AG_Functions, AG_Test
+from ArchGraphUtilities import Arch_Graph_Reports, AG_Functions, AG_Test, Optimize_3D_AG
 from Scheduler import TrafficTableGenerator
+
 
 
 def InitializeSystem(logging):
@@ -31,17 +32,23 @@ def InitializeSystem(logging):
     SHM.SetUp_NoC_SystemHealthMap(AG, Config.TurnsHealth)
     # Here we are injecting initial faults of the system: we assume these fault
     # information is obtained by post manufacturing system diagnosis
+    if Config.FindOptimumAG:
+        Optimize_3D_AG.OptimizeAG_VL(AG, SHM, logging)
     SHM_Functions.ApplyInitialFaults(SHM)
     SHM_Reports.DrawSHM(SHM)
     # SHM_Reports.Report_NoC_SystemHealthMap()
     ####################################################################
     RoutingGraphStartTime = time.time()
     if Config.SetRoutingFromFile:
-        NoCRG = Routing.GenerateNoCRouteGraphFromFile(AG, SHM, Config.RoutingFilePath, Config.DebugInfo, Config.DebugDetails)
+        NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraphFromFile(AG, SHM, Config.RoutingFilePath,
+                                                                    Config.DebugInfo, Config.DebugDetails))
     else:
-        NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, Config.DebugInfo, Config.DebugDetails))
+        NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel,
+                                                            Config.DebugInfo, Config.DebugDetails))
     print ("\033[92mTIME::\033[0m ROUTING GRAPH GENERATION TOOK: "
            + str(round(time.time()-RoutingGraphStartTime))+" SECONDS")
+    # this is for double checking...
+    Calculate_Reachability.ReachabilityMetric(AG, NoCRG, True)
     # Some visualization...
     RoutingGraph_Reports.Draw2DRG(NoCRG)
     ####################################################################
