@@ -9,7 +9,11 @@ import Routing
 from ArchGraphUtilities import AG_Functions
 
 def CalculateReachability(AG, NoCRG):
-    PortList = ['U', 'N', 'E', 'W', 'S', 'D']
+    if '3D' in Config.NetworkTopology:
+        PortList = ['U', 'N', 'E', 'W', 'S', 'D']
+    else:
+        PortList = ['N', 'E', 'W', 'S']
+
     for SourceNode in AG.nodes():
         for Port in PortList:
             AG.node[SourceNode]['Unreachable'][Port]=[]
