@@ -69,7 +69,6 @@ def OptimizeAG_VL_IterativeLocalSearch(AG, SHM, logging):
     return SHM
 
 
-
 def OptimizeAG_VL_LocalSearch(AG, SHM, logging):
     RemoveAll_VL(SHM, AG)
     VL_List = FindFeasibleAG_VL(AG, SHM)
@@ -124,31 +123,31 @@ def RemoveAll_VL(SHM, AG):
 def FindFeasibleAG_VL(AG, SHM):
     NewVL_Lists = []
     for i in range(0, Config.VerticalLinksNum):
-        SourceX = random.randint(0,Config.Network_X_Size-1)
-        SourceY = random.randint(0,Config.Network_Y_Size-1)
-        SourceZ = random.randint(0,Config.Network_Z_Size-1)
+        SourceX = random.randint(0, Config.Network_X_Size-1)
+        SourceY = random.randint(0, Config.Network_Y_Size-1)
+        SourceZ = random.randint(0, Config.Network_Z_Size-1)
         SourceNode = ReturnNodeNumber(SourceX,SourceY,SourceZ)
         PossibleZ=[]
-        if SourceZ + 1 <= Config.Network_Z_Size-1:
-            PossibleZ.append(SourceZ + 1)
-        if 0 <= SourceZ - 1:
-            PossibleZ.append(SourceZ - 1)
-        DestinationNode =  ReturnNodeNumber(SourceX,SourceY,random.choice(PossibleZ))
+        if SourceZ+1 <= Config.Network_Z_Size-1:
+            PossibleZ.append(SourceZ+1)
+        if 0 <= SourceZ-1:
+            PossibleZ.append(SourceZ-1)
+        DestinationNode = ReturnNodeNumber(SourceX, SourceY, random.choice(PossibleZ))
         while SHM.SHM.edge[SourceNode][DestinationNode]['LinkHealth']:
-            SourceX = random.randint(0,Config.Network_X_Size-1)
-            SourceY = random.randint(0,Config.Network_Y_Size-1)
-            SourceZ = random.randint(0,Config.Network_Z_Size-1)
-            SourceNode = ReturnNodeNumber(SourceX,SourceY,SourceZ)
+            SourceX = random.randint(0, Config.Network_X_Size-1)
+            SourceY = random.randint(0, Config.Network_Y_Size-1)
+            SourceZ = random.randint(0, Config.Network_Z_Size-1)
+            SourceNode = ReturnNodeNumber(SourceX, SourceY, SourceZ)
             PossibleZ=[]
             if SourceZ + 1 <= Config.Network_Z_Size-1:
-                PossibleZ.append(SourceZ + 1)
-            if 0 <= SourceZ - 1:
-                PossibleZ.append(SourceZ - 1)
-            DestinationNode =  ReturnNodeNumber(SourceX,SourceY,random.choice(PossibleZ))
+                PossibleZ.append(SourceZ+1)
+            if 0 <= SourceZ-1:
+                PossibleZ.append(SourceZ-1)
+            DestinationNode = ReturnNodeNumber(SourceX, SourceY, random.choice(PossibleZ))
 
         # here we have a candidate to restore
-        SHM.RestoreBrokenLink((SourceNode,DestinationNode), False)
-        NewVL_Lists.append((SourceNode,DestinationNode))
+        SHM.RestoreBrokenLink((SourceNode, DestinationNode), False)
+        NewVL_Lists.append((SourceNode, DestinationNode))
     return NewVL_Lists
 
 
@@ -165,11 +164,11 @@ def MoveToNewVLConfig(AG, SHM, VL_Lists):
     NewVL_Lists.remove(ChosenLinkToFix)
     SHM.BreakLink(ChosenLinkToFix, False)
 
-    SourceX = random.randint(0,Config.Network_X_Size-1)
-    SourceY = random.randint(0,Config.Network_Y_Size-1)
-    SourceZ = random.randint(0,Config.Network_Z_Size-1)
-    SourceNode = ReturnNodeNumber(SourceX,SourceY,SourceZ)
-    PossibleZ=[]
+    SourceX = random.randint(0, Config.Network_X_Size-1)
+    SourceY = random.randint(0, Config.Network_Y_Size-1)
+    SourceZ = random.randint(0, Config.Network_Z_Size-1)
+    SourceNode = ReturnNodeNumber(SourceX, SourceY, SourceZ)
+    PossibleZ = []
     if SourceZ + 1 <= Config.Network_Z_Size-1:
         PossibleZ.append(SourceZ + 1)
     if 0 <= SourceZ - 1:
@@ -177,19 +176,19 @@ def MoveToNewVLConfig(AG, SHM, VL_Lists):
     DestinationNode = ReturnNodeNumber(SourceX,SourceY,random.choice(PossibleZ))
 
     while SourceNode == DestinationNode or SHM.SHM.edge[SourceNode][DestinationNode]['LinkHealth']:
-        SourceX = random.randint(0,Config.Network_X_Size-1)
-        SourceY = random.randint(0,Config.Network_Y_Size-1)
-        SourceZ = random.randint(0,Config.Network_Z_Size-1)
-        SourceNode = ReturnNodeNumber(SourceX,SourceY,SourceZ)
+        SourceX = random.randint(0, Config.Network_X_Size-1)
+        SourceY = random.randint(0, Config.Network_Y_Size-1)
+        SourceZ = random.randint(0, Config.Network_Z_Size-1)
+        SourceNode = ReturnNodeNumber(SourceX, SourceY, SourceZ)
         PossibleZ=[]
-        if SourceZ + 1 <= Config.Network_Z_Size-1:
-            PossibleZ.append(SourceZ + 1)
-        if 0 <= SourceZ - 1:
-            PossibleZ.append(SourceZ - 1)
-        DestinationNode =  ReturnNodeNumber(SourceX,SourceY,random.choice(PossibleZ))
+        if SourceZ+1 <= Config.Network_Z_Size-1:
+            PossibleZ.append(SourceZ+1)
+        if 0 <= SourceZ-1:
+            PossibleZ.append(SourceZ-1)
+        DestinationNode =  ReturnNodeNumber(SourceX, SourceY, random.choice(PossibleZ))
     # here we have a candidate to restore
-    SHM.RestoreBrokenLink((SourceNode,DestinationNode), False)
-    NewVL_Lists.append((SourceNode,DestinationNode))
+    SHM.RestoreBrokenLink((SourceNode, DestinationNode), False)
+    NewVL_Lists.append((SourceNode, DestinationNode))
     return NewVL_Lists
 
 

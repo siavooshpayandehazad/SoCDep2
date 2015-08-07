@@ -48,8 +48,8 @@ Network_Z_Size = 3
 FindOptimumAG = True
 # Available Choices: 'LocalSearch', 'IterativeLocalSearch'
 VL_OptAlg = "IterativeLocalSearch"
-AG_Opt_Iterations_LS = 100
-AG_Opt_Iterations_ILS = 10
+AG_Opt_Iterations_LS = 300
+AG_Opt_Iterations_ILS = 20
 VerticalLinksNum = 10
 
 # this is just for double check...
@@ -123,7 +123,7 @@ ListOfAgedPEs = {3: 0.3, 2: 0.1}
 #          Clustering Function  Config
 ################################################
 Clustering_Optimization = True     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
-ClusteringIteration = 1000
+ClusteringIteration = 10000
 Clustering_Report = False
 Clustering_DetailedReport = False
 # here you can change the type of cost function used for Clustering the available cost functions are:
