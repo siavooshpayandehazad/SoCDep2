@@ -35,7 +35,7 @@ def ReportReachability (AG):
     for Node in AG.nodes():
         print ("NODE", Node, "UNREACHABLE NODES:")
         for Port in AG.node[Node]['Unreachable']:
-            print ("Port:", Port, " ==>", AG.node[Node]['Unreachable'][Port])
+            print ("Port:"+str(Port)+" ==>"+str(AG.node[Node]['Unreachable'][Port]))
 
 def ReportReachabilityInFile (AG, FileName):
     ReachabilityFile = open('Generated_Files/'+FileName+".txt",'w')

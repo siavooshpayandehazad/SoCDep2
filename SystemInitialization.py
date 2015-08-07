@@ -24,7 +24,10 @@ def InitializeSystem(logging):
     AG_Functions.UpdateAGRegions(AG)
     if Config.TestMode:
         AG_Test.AG_Test()
-    Arch_Graph_Reports.DrawArchGraph(AG, "AG")
+    if Config.FindOptimumAG:
+        Arch_Graph_Reports.DrawArchGraph(AG, "AG_Full")
+    else:
+        Arch_Graph_Reports.DrawArchGraph(AG, "AG")
     ####################################################################
     if Config.TestMode:
         SHM_Test.TestSHM(AG)

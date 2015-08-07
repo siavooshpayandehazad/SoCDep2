@@ -53,6 +53,15 @@ def IsDestReachableFromSource(NoCRG, SourceNode, DestinationNode):
         return False
 
 
+def HowManyPathsFromSource(NoCRG, SourceNode, DestinationNode):
+    Source = str(SourceNode)+str('L')+str('I')
+    Destination = str(DestinationNode)+str('L')+str('O')
+    if networkx.has_path(NoCRG, Source, Destination):
+        NumberOfPaths = len(list(networkx.all_simple_paths(NoCRG, Source, Destination)))
+        return NumberOfPaths
+    else:
+        return 0
+
 
 def OptimizeReachabilityRectangles(AG, NumberOfRects):
     # the idea of merging is that we make a rectangle with representing 2 vertex of it,
@@ -111,7 +120,7 @@ def MergeNodeWithRectangles (RectangleList, UnreachableNodeList):
                         Covered = True
                         break
         if not Covered:
-            print ("COULD NOT PERFORM ANY LOSS_LESS MERGE FOR:"+ str(UnreachableNode))
+            print ("COULD NOT PERFORM ANY LOSS-LESS MERGE FOR:"+str(UnreachableNode))
             print (RectangleList)
     return RectangleList
 
@@ -217,8 +226,7 @@ def ReachabilityMetric(AG, NoCRG, Report):
     for SourceNode in AG.nodes():
         for DestinationNode in AG.nodes():
             if SourceNode != DestinationNode:
-                if IsDestReachableFromSource(NoCRG,SourceNode,DestinationNode):
-                    ReachabilityCounter += 1
+                ReachabilityCounter += HowManyPathsFromSource(NoCRG,SourceNode,DestinationNode)
     ReachabilityMetric = float(ReachabilityCounter)/(len(AG.nodes())*(len(AG.nodes())-1))
     if Report:print ("REACH-ABILITY METRIC: "+str(ReachabilityMetric))
     return ReachabilityMetric

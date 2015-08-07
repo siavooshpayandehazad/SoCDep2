@@ -46,14 +46,15 @@ Network_Z_Size = 3
 
 # Number of Vertical Links
 FindOptimumAG = True
-VL_OptAlg = "LocalSearch"
-AG_Opt_Iterations = 1000
-VerticalLinksNum = 12
+# Available Choices: 'LocalSearch', 'IterativeLocalSearch'
+VL_OptAlg = "IterativeLocalSearch"
+AG_Opt_Iterations_LS = 100
+AG_Opt_Iterations_ILS = 10
+VerticalLinksNum = 10
 
 # this is just for double check...
 if '2D' in NetworkTopology:
     Network_Z_Size = 1
-
 
 # Only for Manual AG_Type:
 PE_List = [0, 1, 2, 3]
