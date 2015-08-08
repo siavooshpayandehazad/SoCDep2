@@ -16,15 +16,13 @@ def OptimizeAG_VL(AG, SHM, logging):
 
 
 def OptimizeAG_VL_IterativeLocalSearch(AG, SHM, logging):
-
     BestVL_List = []
-
     for j in range(0, Config.AG_Opt_Iterations_ILS):
         RemoveAll_VL(SHM, AG)
         VL_List_init = copy.deepcopy(FindFeasibleAG_VL(AG, SHM))
         RG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, False, False))
         Cost = Calculate_Reachability.ReachabilityMetric(AG, RG, False)
-
+        CurrentBestCost = Cost
         if j == 0:
             print ("=====================================")
             print ("STARTING AG VERTICAL LINK PLACEMENT OPTIMIZATION")
@@ -41,26 +39,26 @@ def OptimizeAG_VL_IterativeLocalSearch(AG, SHM, logging):
                 BestCost = Cost
                 print ("\033[32m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:" +
                        str(Cost) + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS))
-
         VL_List = VL_List_init[:]
-
         for i in range(0, Config.AG_Opt_Iterations_LS):
             New_VL_List = copy.deepcopy(MoveToNewVLConfig(AG, SHM, VL_List))
             NewRG = Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, False, False)
             Cost = Calculate_Reachability.ReachabilityMetric(AG, NewRG, False)
-            if Cost >= BestCost:
+
+            if Cost >= CurrentBestCost:
                 VL_List = New_VL_List[:]
-                if Cost > BestCost:
-                    BestVL_List = VL_List[:]
-                    BestCost = Cost
-                    print ("\033[32m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:" +
-                           str(Cost) + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS+i))
-                else:
-                    # print ("\033[33m* NOTE::\033[0mMOVED TO SOLUTION WITH COST:" +
-                    #        str(Cost) + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS+i))
-                    pass
+                if Cost > CurrentBestCost:
+                    CurrentBestCost = Cost
+                    print ("\t \tMOVED TO SOLUTION WITH COST:" + str(Cost)
+                           + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS+i))
             else:
                 ReturnToSolution(AG, SHM, VL_List)
+
+            if Cost > BestCost:
+                BestVL_List = VL_List[:]
+                BestCost = Cost
+                print ("\033[32m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:" +
+                       str(Cost) + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS+i))
 
     ReturnToSolution(AG, SHM, BestVL_List)
     print ("-------------------------------------")
@@ -79,10 +77,8 @@ def OptimizeAG_VL_LocalSearch(AG, SHM, logging):
     print ("NUMBER OF LINKS: "+str(Config.VerticalLinksNum))
     print ("NUMBER OF ITERATIONS: "+str(Config.AG_Opt_Iterations))
     print ("INITIAL REACHABILITY METRIC: "+str(Cost))
-
     StartingCost = Cost
     BestCost = Cost
-
     for i in range(0, Config.AG_Opt_Iterations):
         New_VL_List = copy.deepcopy(MoveToNewVLConfig(AG, SHM, VL_List))
         NewRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, False, False))

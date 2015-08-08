@@ -48,8 +48,8 @@ Network_Z_Size = 3
 FindOptimumAG = True
 # Available Choices: 'LocalSearch', 'IterativeLocalSearch'
 VL_OptAlg = "IterativeLocalSearch"
-AG_Opt_Iterations_LS = 300
 AG_Opt_Iterations_ILS = 20
+AG_Opt_Iterations_LS = 100
 VerticalLinksNum = 10
 
 # this is just for double check...
