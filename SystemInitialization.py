@@ -40,7 +40,8 @@ def InitializeSystem(logging):
         Optimize_3D_AG.CleanUpAG(AG, SHM)
         Arch_Graph_Reports.DrawArchGraph(AG, "AG_VLOpt")
     SHM_Functions.ApplyInitialFaults(SHM)
-    SHM_Reports.DrawSHM(SHM)
+    if Config.SHM_Drawing:
+        SHM_Reports.DrawSHM(SHM)
     # SHM_Reports.Report_NoC_SystemHealthMap()
     ####################################################################
     RoutingGraphStartTime = time.time()

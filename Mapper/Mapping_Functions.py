@@ -18,7 +18,7 @@ def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Repor
         if Config.EnablePartitioning:
             while(CTG.node[Cluster]['Criticality']!= AG.node[DestNode]['Region']):
                 DestNode = random.choice(AG.nodes())
-        #print (CTG.node[Cluster]['Criticality'],AG.node[DestNode]['Region'])
+        # print (CTG.node[Cluster]['Criticality'],AG.node[DestNode]['Region'])
         while not AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster, DestNode, logging):
             Itteration += 1
             DestNode = random.choice(AG.nodes())        # try another node
@@ -53,18 +53,39 @@ def MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, log
             DestNode=TG.node[Edge[1]]['Node']
             if SourceNode is not None and DestNode is not None: # check if both ends of this edge is mapped
                 if SourceNode != DestNode:
-                    ListOfLinks,NumberOfPaths = Routing.FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG,
-                                                                SourceNode, DestNode, False, False) # Find the links to be used
+                    ListOfLinks, NumberOfPaths = Routing.FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG,
+                                                                SourceNode, DestNode, True, False) # Find the links to be used
+                    # print NumberOfPaths, ListOfLinks
                     if ListOfLinks is not None:
                         logging.info("\t\t\tADDING PATH FROM NODE:"+str(SourceNode)+"TO NODE"+str(DestNode))
                         logging.info("\t\t\tLIST OF LINKS:"+str(ListOfLinks))
                         if NumberOfPaths == 1:
                             for Link in ListOfLinks:
-                                AG.edge[Link[0]][Link[1]]['MappedTasks'].append(Edge)
-                                TG.edge[Edge[0]][Edge[1]]['Link'].append(Link)
+                                if Edge in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
+                                    raise AssertionError("Adding same Edge Twice....")
+                                else:
+                                    AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge] = [(0, 1)]
+                                if Link not in TG.edge[Edge[0]][Edge[1]]['Link']:
+                                    if Link not in TG.edge[Edge[0]][Edge[1]]['Link']:
+                                        TG.edge[Edge[0]][Edge[1]]['Link'].append((0, Link))
+                        else:
+                            Counter = 0
+                            for path in ListOfLinks:
+                                for Link in path:
+                                    if Edge in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
+                                        AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge].append((Counter,
+                                                                                              1.0/NumberOfPaths))
+                                    else:
+                                        AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge] = [(Counter,
+                                                                                              1.0/NumberOfPaths)]
+                                    if Link not in TG.edge[Edge[0]][Edge[1]]['Link']:
+                                        TG.edge[Edge[0]][Edge[1]]['Link'].append((Counter, Link))
+                                Counter += 1
+
+
                     else:
                         RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging)
-                        logging.warning( "\tNO PATH FOUND FROM ", SourceNode, " TO ", DestNode, "...")
+                        logging.warning("\tNO PATH FOUND FROM ", SourceNode, " TO ", DestNode, "...")
                         print ("NO PATH FOUND FROM "+str(SourceNode)+" TO "+str(DestNode)+" ...")
                         return False
     return True
@@ -79,15 +100,22 @@ def RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node
             if SourceNode is not None and DestNode is not None:
                 if SourceNode != DestNode:
                     ListOfLinks, NumberOfPaths = Routing.FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG,
-                                                                SourceNode, DestNode, False, False) #Find the links to be used
+                                                                SourceNode, DestNode, True, False) #Find the links to be used
                     if ListOfLinks is not None:
                         logging.info("\t\t\tREMOVING PATH FROM NODE:"+str(SourceNode)+"TO NODE"+str(DestNode))
                         logging.info("\t\t\tLIST OF LINKS:"+str(ListOfLinks))
                         if NumberOfPaths == 1:
                             for Link in ListOfLinks:
-                                if Edge in AG.edge[Link[0]][Link[1]]['MappedTasks']:
-                                        AG.edge[Link[0]][Link[1]]['MappedTasks'].remove(Edge)
+                                if Edge in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
+                                        del AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge]
                                         TG.edge[Edge[0]][Edge[1]]['Link'].remove(Link)
+                        else:
+                            for Link in ListOfLinks:
+                                if Edge in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
+                                    del AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge]
+                                    for LinkAndBatch in TG.edge[Edge[0]][Edge[1]]['Link']:
+                                            if LinkAndBatch[1] == Link:
+                                                TG.edge[Edge[0]][Edge[1]]['Link'].remove(LinkAndBatch)
                     else:
                         logging.warning("\tNOTHING TO BE REMOVED...")
     TG.node[Task]['Node'] = None
@@ -118,9 +146,10 @@ def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster
                 if SourceNode != DestNode:
                     ListOfLinks, NumberOfPaths = Routing.FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG,
                                                                                SourceNode, DestNode,
-                                                                               False, False) # Find the links to be used
+                                                                               True, False) # Find the links to be used
                     ListOfEdges = []
                     # print ("NumberOfPaths:", NumberOfPaths)
+                    # print NumberOfPaths, ListOfLinks
                     if ListOfLinks is not None:
                             #find all the edges in TaskGraph that contribute to this edge in CTG
                             for edge in TG.edges():
@@ -134,17 +163,30 @@ def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster
                         logging.info("\t\t\tADDING PATH FROM NODE:"+str(SourceNode)+"TO NODE"+str(DestNode))
                         logging.info("\t\t\tLIST OF LINKS:"+str(ListOfLinks))
                         logging.info("\t\t\tLIST OF EDGES:"+str(ListOfEdges))
+
                         if NumberOfPaths == 1:
                             for Link in ListOfLinks:
                                 for Edge in ListOfEdges:
-                                    AG.edge[Link[0]][Link[1]]['MappedTasks'].append(Edge)
-                                    TG.edge[Edge[0]][Edge[1]]['Link'].append(Link)
+                                    if Edge in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
+                                        raise AssertionError("Adding same Edge Twice....")
+                                    else:
+                                        AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge] = [(0, 1)]
+                                    if Link not in TG.edge[Edge[0]][Edge[1]]['Link']:
+                                        TG.edge[Edge[0]][Edge[1]]['Link'].append((0, Link))
                         else:
+                            Counter = 0
                             for path in ListOfLinks:
                                 for Link in path:
                                     for Edge in ListOfEdges:
-                                        AG.edge[Link[0]][Link[1]]['MappedTasks'].append(Edge)
-                                        TG.edge[Edge[0]][Edge[1]]['Link'].append(Link)
+                                        if Edge in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
+                                            AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge].append((Counter,
+                                                                                                  1.0/NumberOfPaths))
+                                        else:
+                                            AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge] =[(Counter,
+                                                                                              1.0/NumberOfPaths)]
+                                        if Link not in TG.edge[Edge[0]][Edge[1]]['Link']:
+                                            TG.edge[Edge[0]][Edge[1]]['Link'].append((Counter, Link))
+                                Counter += 1
                     else:
                         logging.warning( "\tNO PATH FOUND FROM SOURCE TO DESTINATION...")
                         logging.info("REMOVING ALL THE MAPPED CONNECTIONS FOR CLUSTER "+str(Cluster))
@@ -162,7 +204,7 @@ def RemoveClusterFromNode(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, Cluster
             if SourceNode is not None and DestNode is not None: #check if both ends of this edge is mapped
                 if SourceNode != DestNode:
                     ListOfLinks, NumberOfPaths = Routing.FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG,
-                                                                SourceNode, DestNode, False, False) #Find the links to be used
+                                                                SourceNode, DestNode, True, False) #Find the links to be used
                     ListOfEdges = []
                     if ListOfLinks is not None:
                         for edge in TG.edges(): #find all the edges in TaskGraph that contribute to this edge in CTG
@@ -171,16 +213,26 @@ def RemoveClusterFromNode(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, Cluster
 
                     # remove edges from list of edges to all links from list of links
                     if ListOfLinks is not None and len(ListOfEdges) > 0:
-
                         logging.info("\t\t\tREMOVING PATH FROM NODE:"+str(SourceNode)+"TO NODE"+str(DestNode))
                         logging.info("\t\t\tLIST OF LINKS:"+str(ListOfLinks))
                         logging.info("\t\t\tLIST OF EDGES:"+str(ListOfEdges))
                         if NumberOfPaths == 1:
                             for Link in ListOfLinks:
                                 for Edge in ListOfEdges:
-                                    if Edge in AG.edge[Link[0]][Link[1]]['MappedTasks']:
-                                        AG.edge[Link[0]][Link[1]]['MappedTasks'].remove(Edge)
-                                        TG.edge[Edge[0]][Edge[1]]['Link'].remove(Link)
+                                    if Edge in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
+                                        del AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge]
+                                        for LinkAndBatch in TG.edge[Edge[0]][Edge[1]]['Link']:
+                                            if LinkAndBatch[1] == Link:
+                                                TG.edge[Edge[0]][Edge[1]]['Link'].remove(LinkAndBatch)
+                        else:
+                            for path in ListOfLinks:
+                                for Link in path:
+                                    for Edge in ListOfEdges:
+                                        if Edge in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
+                                            del AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge]
+                                            for LinkAndBatch in TG.edge[Edge[0]][Edge[1]]['Link']:
+                                                if LinkAndBatch[1] == Link:
+                                                    TG.edge[Edge[0]][Edge[1]]['Link'].remove(LinkAndBatch)
                     else:
                         logging.warning("\tNOTHING TO BE REMOVED...")
     CTG.node[Cluster]['Node'] = None
@@ -203,7 +255,7 @@ def ClearMapping(TG, CTG, AG):
         AG.node[node]['Utilization'] = 0
         AG.node[node]['Scheduling'] = {}
     for link in AG.edges():
-        AG.edge[link[0]][link[1]]['MappedTasks'] = []
+        AG.edge[link[0]][link[1]]['MappedTasks'] = {}
         AG.edge[link[0]][link[1]]['Scheduling'] = {}
     return True
 

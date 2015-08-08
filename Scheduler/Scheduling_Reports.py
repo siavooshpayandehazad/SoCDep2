@@ -62,7 +62,7 @@ def GenerateGanttCharts(TG,AG):
     if NumberOfPlots < 10:
         NumberOfPlots = 10
     Count = 1
-    fig = plt.figure(figsize=(Max_Time/10+5,NumberOfPlots/2))
+    fig = plt.figure(figsize=(Max_Time/10+1,NumberOfPlots/2))
     plt.subplots_adjust(hspace=0.1)
     for Node in AG.nodes():
         if len(AG.node[Node]['MappedTasks']) > 0:
@@ -148,6 +148,8 @@ def GenerateGanttCharts(TG,AG):
             for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
                 PE_T = []
                 PE_P = []
+                PE_P.append(0.1)
+                PE_T.append(0)
                 PE_P.append(0)
                 PE_T.append(0)
                 EdgeColor='w'
@@ -181,45 +183,70 @@ def GenerateGanttCharts(TG,AG):
                             Slack_T.append(EndTime)
                             Slack_P.append(0)
                     else:
-                        StartTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
-                        EndTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1]
-                        PE_T.append(StartTime)
-                        PE_P.append(0)
-                        PE_T.append(StartTime)
-                        PE_P.append(0.1)
-                        PE_T.append(EndTime)
-                        PE_P.append(0.1)
-                        PE_T.append(EndTime)
-                        PE_P.append(0)
-                        EdgeColor = '#CFECFF'
+                        SchedulList= []
+                        for BatchAndSchedule in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
+
+                            StartTime = BatchAndSchedule[0]
+                            EndTime = BatchAndSchedule[1]
+                            BatchNum = BatchAndSchedule[2]
+                            PE_T.append(StartTime)
+                            PE_P.append(0)
+                            PE_T.append(StartTime)
+                            for BatchAndProb in AG.edge[Link[0]][Link[1]]['MappedTasks'][Task]:
+                                if BatchAndProb[0] == BatchNum:
+                                    Prob = BatchAndProb[1]
+
+                            OverLapCounter = 1
+                            for ScheduledItem in SchedulList:
+                                if ScheduledItem[0] <= StartTime < ScheduledItem[1]:
+                                    OverLapCounter += 1
+                                    StepEndTime = ScheduledItem[1]
+
+                            if OverLapCounter > 1:
+                                PE_P.append(0.1 * Prob * OverLapCounter)
+                                PE_T.append(StepEndTime)
+                                PE_P.append(0.1 * Prob * OverLapCounter)
+                                PE_T.append(StepEndTime)
+                                PE_P.append(0)
+                                PE_T.append(StepEndTime)
+
+                            PE_P.append(0.1 * Prob)
+                            PE_T.append(EndTime)
+                            PE_P.append(0.1 * Prob )
+                            PE_T.append(EndTime)
+                            PE_P.append(0)
+                            EdgeColor = '#CFECFF'
+                            SchedulList.append((StartTime,EndTime))
                 PE_T.append(Max_Time)
                 PE_P.append(0)
-                ax1.fill_between(PE_T, PE_P, 0 , color=EdgeColor, edgecolor='k')
+                ax1.fill_between(PE_T, PE_P, 0, color=EdgeColor, edgecolor='k')
                 if Config.SlackCount > 0:
                     ax1.fill_between(Slack_T, Slack_P, 0 , color='#808080', edgecolor='k')
             plt.setp(ax1.get_yticklabels(), visible=False)
             if Count < EdgeCounter+NodeCounter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
             for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
-                if AG.edge[Link[0]][Link[1]]['Scheduling']:
-                    StartTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
-                    if TG.edge[Task[0]][Task[1]]['Criticality']=='H':
-                            TaskLength=(AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1] - AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0])/(Config.SlackCount+1)
-                            stringToDisplay= str(Task[0])+"/"+str(Task[1])
-                            ax1.text(StartTime+(TaskLength)/2 - len(str(stringToDisplay))/2, 0.05, stringToDisplay, fontsize=10)
-                            EndTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1]
-                            stringToDisplay= str(Task[0])+"/"+str(Task[1])+'S'
-                            if Config.SlackCount > 0:
-                                ax1.text((StartTime+TaskLength+EndTime)/2 - len(str(stringToDisplay))/2, 0.05, stringToDisplay, fontsize=10)
-                    else:
-                        EndTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1]
-                        stringToDisplay= str(Task[0])+"/"+str(Task[1])
-                        ax1.text((StartTime+EndTime)/2 - len(str(stringToDisplay))/2, 0.05, stringToDisplay, fontsize=10)
+                if Task in AG.edge[Link[0]][Link[1]]['Scheduling']:
+                    for Batch in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
+                        StartTime=Batch[0]
+                        if TG.edge[Task[0]][Task[1]]['Criticality']=='H':
+                                TaskLength=(AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1] - AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0])/(Config.SlackCount+1)
+                                stringToDisplay= str(Task[0])+"/"+str(Task[1])
+                                ax1.text(StartTime+(TaskLength)/2 - len(str(stringToDisplay))/2, 0.01, stringToDisplay, fontsize=10)
+                                EndTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1]
+                                stringToDisplay= str(Task[0])+"/"+str(Task[1])+'S'
+                                if Config.SlackCount > 0:
+                                    ax1.text((StartTime+TaskLength+EndTime)/2 - len(str(stringToDisplay))/2, 0.01, stringToDisplay, fontsize=10)
+                        else:
+
+                                EndTime=Batch[1]
+                                stringToDisplay= str(Task[0])+"/"+str(Task[1])
+                                ax1.text((StartTime+EndTime)/2 - len(str(stringToDisplay))/2, 0.01, stringToDisplay, fontsize=10)
             ax1.set_ylabel(r'L'+str(Link), size=14, rotation=0)
             Count += 1
     if EdgeCounter+EdgeCounter > 0:
         ax1.xaxis.set_ticks_position('bottom')
-    plt.savefig("GraphDrawings/Scheduling.png")
+    plt.savefig("GraphDrawings/Scheduling.png", dpi=150)
     plt.clf()
     plt.close(fig)
     print ("\033[35m* VIZ::\033[0mSCHEDULING GANTT CHARTS CREATED AT: GraphDrawings/Scheduling.png")

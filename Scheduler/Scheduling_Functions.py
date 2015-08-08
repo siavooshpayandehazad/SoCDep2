@@ -46,16 +46,27 @@ def Add_TG_TaskToNode(TG, AG, SHM, Task, Node, Report):
     return True
 ################################################################
 
-def Add_TG_EdgeTo_link(TG, AG, Edge, Link, Report):
-    if Report:print ("\t\tADDING EDGE:", Edge, " TO LINK:", Link)
-    StartTime = max(FindLastAllocatedTimeOnLink(TG, AG, Link, Report), FindEdgePredecessorsFinishTime(TG, AG, Edge))
+def Add_TG_EdgeTo_link(TG, AG, Edge, Link, batch, Report):
+    if Report:print ("\t\tADDING EDGE:"+str(Edge)+"FROM BATCH:"+str(batch)+" TO LINK:"+str(Link))
+    StartTime = max(FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Report),
+                    FindEdgePredecessorsFinishTime(TG, AG, Edge, batch, Link))
     EndTime = StartTime+TG.edge[Edge[0]][Edge[1]]['ComWeight']
     if Report:print ("\t\tSTARTING TIME:",StartTime,"ENDING TIME:", EndTime)
     if TG.edge[Edge[0]][Edge[1]]['Criticality'] == 'H':
-        AG.edge[Link[0]][Link[1]]['Scheduling'][Edge] = [StartTime,
-                                                         EndTime+Config.SlackCount*TG.edge[Edge[0]][Edge[1]]['ComWeight']]
+        if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:
+            AG.edge[Link[0]][Link[1]]['Scheduling'][Edge].append([StartTime,
+                                                             EndTime+Config.SlackCount*TG.edge[Edge[0]][Edge[1]]['ComWeight']
+                                                             , batch])
+        else:
+            AG.edge[Link[0]][Link[1]]['Scheduling'][Edge] = [[StartTime,
+                                                             EndTime+Config.SlackCount*TG.edge[Edge[0]][Edge[1]]['ComWeight']
+                                                             , batch]]
     else:
-        AG.edge[Link[0]][Link[1]]['Scheduling'][Edge] = [StartTime, EndTime]
+        if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:
+            AG.edge[Link[0]][Link[1]]['Scheduling'][Edge].append([StartTime, EndTime, batch])
+        else:
+            AG.edge[Link[0]][Link[1]]['Scheduling'][Edge] = [[StartTime, EndTime, batch]]
+
     return True
 
 ##########################################################################
@@ -77,23 +88,32 @@ def FindTaskPredecessorsFinishTime(TG, AG, Task, CriticalityLevel):
         if Edge[1] == Task:
             # if TG.edge[Edge[0]][Edge[1]]['Criticality'] == CriticalityLevel:
                 if len(TG.edge[Edge[0]][Edge[1]]['Link']) > 0:    # if the edge is mapped
-                    for Link in  TG.edge[Edge[0]][Edge[1]]['Link']:     # for each link that this edge goes through
+                    for LinkAndBatch in TG.edge[Edge[0]][Edge[1]]['Link']:     # for each link that this edge goes through
+                        Link = LinkAndBatch[1]
                         if len(AG.edge[Link[0]][Link[1]]['Scheduling']) > 0:
                             if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:     # if this edge is scheduled
-                                FinishTime = max(AG.edge[Link[0]][Link[1]]['Scheduling'][Edge][1], FinishTime)
+                                for EdgeAndBatch in AG.edge[Link[0]][Link[1]]['Scheduling'][Edge]:
+                                    EndTime = EdgeAndBatch[1]
+                                    FinishTime = max(EndTime, FinishTime)
     return FinishTime
 ################################################################
 
-def FindEdgePredecessorsFinishTime(TG, AG, Edge):
+def FindEdgePredecessorsFinishTime(TG, AG, Edge, batch, CurrentLink):
     FinishTime = 0
     Node = TG.node[Edge[0]]['Node']
     if Edge[0] in AG.node[Node]['Scheduling']:
         if AG.node[Node]['Scheduling'][Edge[0]][1] > FinishTime:
             FinishTime = AG.node[Node]['Scheduling'][Edge[0]][1]
+
     for Link in AG.edges():
-        if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:
-            if AG.edge[Link[0]][Link[1]]['Scheduling'][Edge][1] > FinishTime:
-                FinishTime = AG.edge[Link[0]][Link[1]]['Scheduling'][Edge][1]
+        if Link[1] == CurrentLink[0]:
+            # if they are incoming links
+            if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:
+                for EdgeAndBatch in AG.edge[Link[0]][Link[1]]['Scheduling'][Edge]:
+                    if EdgeAndBatch[2] == batch:
+                        # print AG.edge[Link[0]][Link[1]]['Scheduling'][Edge][2], batch, Edge
+                        if EdgeAndBatch[1] > FinishTime:
+                            FinishTime = EdgeAndBatch[1]
 
     return FinishTime
 
@@ -108,20 +128,38 @@ def FindLastAllocatedTimeOnLink(TG, AG, Link, Report):
     if Report:print ("\t\tFINDING LAST ALLOCATED TIME ON LINK", Link)
     LastAllocatedTime = 0
     if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
-        for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
+        for Task in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
             if Task in AG.edge[Link[0]][Link[1]]['Scheduling']:
-                StartTime = AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
-                EndTime = AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1]
-                if StartTime is not None and EndTime is not None:
-                    if Report:print ("\t\t\tTASK STARTS AT:", StartTime, "AND ENDS AT:", EndTime)
-                    if EndTime > LastAllocatedTime:
-                        LastAllocatedTime = EndTime
+                for EdgeAndBatch in  AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
+                    StartTime = EdgeAndBatch[0]
+                    EndTime = EdgeAndBatch[1]
+                    if StartTime is not None and EndTime is not None:
+                        if Report:print ("\t\t\tTASK STARTS AT:", StartTime, "AND ENDS AT:", EndTime)
+                        LastAllocatedTime = max(LastAllocatedTime, EndTime)
     else:
         if Report:print ("\t\t\tNO SCHEDULED TASK FOUND")
         return 0
     if Report:print ("\t\t\tLAST ALLOCATED TIME:", LastAllocatedTime)
     return LastAllocatedTime
 ################################################################
+def FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Report):
+    if Report:print ("\t\tFINDING LAST ALLOCATED TIME ON LINK", Link)
+    LastAllocatedTime = 0
+    if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
+        for Task in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
+            if Task in AG.edge[Link[0]][Link[1]]['Scheduling']:
+                for EdgeAndBatch in  AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
+                    StartTime = EdgeAndBatch[0]
+                    EndTime = EdgeAndBatch[1]
+                    if StartTime is not None and EndTime is not None:
+                        if Report:print ("\t\t\tTASK STARTS AT:", StartTime, "AND ENDS AT:", EndTime)
+                        if Task != Edge:
+                            LastAllocatedTime = max(LastAllocatedTime, EndTime)
+    else:
+        if Report:print ("\t\t\tNO SCHEDULED TASK FOUND")
+        return 0
+    if Report:print ("\t\t\tLAST ALLOCATED TIME:", LastAllocatedTime)
+    return LastAllocatedTime
 
 def FindLastAllocatedTimeOnNode(TG, AG, Node, Report):
     if Report:print ("\t\tFINDING LAST ALLOCATED TIME ON NODE", Node)
@@ -141,3 +179,5 @@ def FindLastAllocatedTimeOnNode(TG, AG, Node, Report):
         return 0
     if Report:print ("\t\t\tLAST ALLOCATED TIME:", LastAllocatedTime)
     return LastAllocatedTime
+
+

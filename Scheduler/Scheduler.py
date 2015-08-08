@@ -19,7 +19,8 @@ def ScheduleAll(TG,AG,SHM,Report,DetailedReport):
                     if Edge[0] == Task:
                         if len(TG.edge[Edge[0]][Edge[1]]['Link'])>0:
                             for Link in TG.edge[Edge[0]][Edge[1]]['Link']:
-                                if DetailedReport:print ("\tSCHEDULING EDGE", Edge, "ON Link:", Link)
-                                Add_TG_EdgeTo_link(TG, AG, Edge, Link, DetailedReport)
+                                if DetailedReport:print ("\tSCHEDULING EDGE", Edge, "ON LINK:", Link[1],
+                                                         "FROM BATCH:", Link[0])
+                                Add_TG_EdgeTo_link(TG, AG, Edge, Link[1], Link[0], DetailedReport)
     if Report:print ("DONE SCHEDULING...")
     return None

@@ -16,7 +16,7 @@ EventDrivenFaultInjection = False
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
 TG_Type = 'RandomDependent'
 # For Random TG_Type:
-NumberOfTasks = 25
+NumberOfTasks = 35
 NumberOfCriticalTasks = 0
 NumberOfEdges = 20
 WCET_Range = 15
@@ -39,18 +39,18 @@ AG_Type = 'Generic'
 VirtualChannelNum = 0
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
-NetworkTopology = '3DMesh'
-Network_X_Size = 3
-Network_Y_Size = 3
-Network_Z_Size = 3
+NetworkTopology = '2DMesh'
+Network_X_Size = 4
+Network_Y_Size = 4
+Network_Z_Size = 1
 
 # Number of Vertical Links
-FindOptimumAG = True
+FindOptimumAG = False
 # Available Choices: 'LocalSearch', 'IterativeLocalSearch'
 VL_OptAlg = "IterativeLocalSearch"
-AG_Opt_Iterations_ILS = 20
+AG_Opt_Iterations_ILS = 10
 AG_Opt_Iterations_LS = 100
-VerticalLinksNum = 10
+VerticalLinksNum = 20
 
 # this is just for double check...
 if '2D' in NetworkTopology:
@@ -67,12 +67,13 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 # Todo: introduce more turn models
 # Available Turn Models : 'FULL_TurnModel', 'XY_TurnModel', 'WestFirst_TurnModel',
 #                         'NorthLast_TurnModel', 'XYZ_TurnModel'
-UsedTurnModel = PackageFile.XYZ_TurnModel
+UsedTurnModel = PackageFile.WestFirst_TurnModel
 RoutingFilePath = "User_Inputs/RoutingFile.txt"
 SetRoutingFromFile = False
 ################################################
 #          SHM  Config
 ################################################
+SHM_Drawing = True
 # Do not change if you have conventional 2D NoC
 if '2D' in NetworkTopology:
     TurnsHealth = PackageFile.TurnsHealth_2DNetwork
@@ -122,7 +123,7 @@ ListOfAgedPEs = {3: 0.3, 2: 0.1}
 ################################################
 #          Clustering Function  Config
 ################################################
-Clustering_Optimization = True     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
+Clustering_Optimization = False     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
 ClusteringIteration = 10000
 Clustering_Report = False
 Clustering_DetailedReport = False

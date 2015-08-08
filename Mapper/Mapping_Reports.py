@@ -127,7 +127,7 @@ def DrawMapping(TG, AG, SHM):
         for task in AG.node[node]['MappedTasks']:
             OffsetX += NodeSize / NumberOfTaskInRow
             if TaskCount == NumberOfTaskInRow:
-                TaskCount = 1
+                TaskCount = 0
                 OffsetX = (NodeSize/(2*NumberOfTaskInRow))
                 OffsetY += NodeSize / NumberOfTaskInRow
             random.seed(task)

@@ -251,7 +251,7 @@ def FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG, SourceNode,Destinati
     if networkx.has_path(CurrentRG, Source, Destination):
         ShortestPath = networkx.shortest_path(CurrentRG, Source, Destination)
         if ReturnAllPaths:
-            AllPaths = list(networkx.all_simple_paths(CurrentRG, Source, Destination))
+            AllPaths = list(networkx.all_shortest_paths(CurrentRG, Source, Destination))
         ShortestLinks = []
         for i in range(0, len(ShortestPath)-1):
                 # if ShortestPath[i][0] != ShortestPath[i+1][0]:
