@@ -19,13 +19,13 @@ def GenerateManualTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List
     for edge in TG_Edge_List:
         if Task_Criticality_List[Task_List.index(edge[0])] == 'H' and Task_Criticality_List[Task_List.index(edge[1])] == 'H':
             Edge_Criticality_List.append('H')
-        elif Task_Criticality_List[Task_List.index(edge[0])]=='H' and Task_Criticality_List[Task_List.index(edge[1])]=='L' :
+        elif Task_Criticality_List[Task_List.index(edge[0])]=='H' and Task_Criticality_List[Task_List.index(edge[1])] == 'L' :
             # gateway to Low
             GatewayNumber = len(Task_List)+GatewayCounter
             TG.add_node(GatewayNumber, WCET=1, Criticality= 'GNH',
                     Cluster=None, Node=None, Priority=None, Distance=None , Release=0)
-            TG.add_edge(edge[0],GatewayNumber,Criticality = 'H', Link=[], ComWeight = TG_Edge_Weight[TG_Edge_List.index(edge)])
-            TG.add_edge(GatewayNumber,edge[1],Criticality = 'L', Link=[], ComWeight = TG_Edge_Weight[TG_Edge_List.index(edge)])
+            TG.add_edge(edge[0],GatewayNumber, Criticality='H', Link=[], ComWeight=TG_Edge_Weight[TG_Edge_List.index(edge)])
+            TG.add_edge(GatewayNumber, edge[1], Criticality='L', Link=[], ComWeight=TG_Edge_Weight[TG_Edge_List.index(edge)])
             GateWayEdges.append(edge)
             GatewayCounter += 1
 

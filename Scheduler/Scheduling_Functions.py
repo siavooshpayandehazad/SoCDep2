@@ -49,9 +49,9 @@ def Add_TG_TaskToNode(TG, AG, SHM, Task, Node, Report):
     return True
 ################################################################
 
-def Add_TG_EdgeTo_link(TG, AG, Edge, Link, batch, Report):
+def Add_TG_EdgeTo_link(TG, AG, Edge, Link, batch, Prob, Report):
     if Report:print ("\t\tADDING EDGE:"+str(Edge)+"FROM BATCH:"+str(batch)+" TO LINK:"+str(Link))
-    StartTime = max(FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Report),
+    StartTime = max(FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Prob, Report),
                     FindEdgePredecessorsFinishTime(TG, AG, Edge, batch, Link))
     EndTime = StartTime+TG.edge[Edge[0]][Edge[1]]['ComWeight']
     if Report:print ("\t\tSTARTING TIME:",StartTime,"ENDING TIME:", EndTime)
@@ -59,16 +59,16 @@ def Add_TG_EdgeTo_link(TG, AG, Edge, Link, batch, Report):
         if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:
             AG.edge[Link[0]][Link[1]]['Scheduling'][Edge].append([StartTime,
                                                              EndTime+Config.SlackCount*TG.edge[Edge[0]][Edge[1]]['ComWeight']
-                                                             , batch])
+                                                             , batch, 1])
         else:
             AG.edge[Link[0]][Link[1]]['Scheduling'][Edge] = [[StartTime,
                                                              EndTime+Config.SlackCount*TG.edge[Edge[0]][Edge[1]]['ComWeight']
-                                                             , batch]]
+                                                             , batch, 1]]
     else:
         if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:
-            AG.edge[Link[0]][Link[1]]['Scheduling'][Edge].append([StartTime, EndTime, batch])
+            AG.edge[Link[0]][Link[1]]['Scheduling'][Edge].append([StartTime, EndTime, batch, Prob])
         else:
-            AG.edge[Link[0]][Link[1]]['Scheduling'][Edge] = [[StartTime, EndTime, batch]]
+            AG.edge[Link[0]][Link[1]]['Scheduling'][Edge] = [[StartTime, EndTime, batch, Prob]]
 
     return True
 
@@ -145,8 +145,8 @@ def FindLastAllocatedTimeOnLink(TG, AG, Link, Report):
     if Report:print ("\t\t\tLAST ALLOCATED TIME:", LastAllocatedTime)
     return LastAllocatedTime
 ################################################################
-def FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Report):
-    if Report:print ("\t\tFINDING LAST ALLOCATED TIME ON LINK", Link)
+def FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Prob, Report):
+    if Report:print ("\t\tFINDING LAST ALLOCATED TIME ON LINK "+str(Link)+"\tFOR EDGE: "+str(Edge)+" WITH PROB: "+str(Prob))
     LastAllocatedTime = 0
     if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
         for Task in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
@@ -154,14 +154,17 @@ def FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Report):
                 for ScheduleAndBatch in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
                     StartTime = ScheduleAndBatch[0]
                     EndTime = ScheduleAndBatch[1]
+                    TaskProb = ScheduleAndBatch[3]
                     if StartTime is not None and EndTime is not None:
-                        if Report:print ("\t\t\tTASK STARTS AT:", StartTime, "AND ENDS AT:", EndTime)
+                        if Report:print ("\t\t\tTASK "+str(Task)+" STARTS AT: "
+                                         +str(StartTime)+"AND ENDS AT: "+str(EndTime)+" PROB: "+str(TaskProb))
                         if Task != Edge:
-                            LastAllocatedTime = max(LastAllocatedTime, EndTime)
+                            if TaskProb + Prob > 1:
+                                LastAllocatedTime = max(LastAllocatedTime, EndTime)
     else:
         if Report:print ("\t\t\tNO SCHEDULED TASK FOUND")
         return 0
-    if Report:print ("\t\t\tLAST ALLOCATED TIME:", LastAllocatedTime)
+    if Report:print ("\t\t\tLAST ALLOCATED TIME:"+str(LastAllocatedTime))
     return LastAllocatedTime
 
 def FindLastAllocatedTimeOnNode(TG, AG, Node, Report):

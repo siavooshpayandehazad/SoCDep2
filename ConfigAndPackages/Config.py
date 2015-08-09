@@ -16,9 +16,9 @@ EventDrivenFaultInjection = False
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
 TG_Type = 'RandomDependent'
 # For Random TG_Type:
-NumberOfTasks = 35
+NumberOfTasks = 23
 NumberOfCriticalTasks = 0
-NumberOfEdges = 20
+NumberOfEdges = 15
 WCET_Range = 15
 EdgeWeightRange = 7
 Release_Range = 5      # task release time range
@@ -40,8 +40,8 @@ VirtualChannelNum = 0
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
 NetworkTopology = '2DMesh'
-Network_X_Size = 4
-Network_Y_Size = 4
+Network_X_Size = 5
+Network_Y_Size = 5
 Network_Z_Size = 1
 
 # Number of Vertical Links
@@ -69,7 +69,7 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 #                         'NorthLast_TurnModel', 'XYZ_TurnModel'
 UsedTurnModel = PackageFile.WestFirst_TurnModel
 # Available choices: 'MinimalPath', 'NonMinimalPath'
-RotingType = 'NonMinimalPath'
+RotingType = 'MinimalPath'
 RoutingFilePath = "User_Inputs/RoutingFile.txt"
 SetRoutingFromFile = False
 ################################################

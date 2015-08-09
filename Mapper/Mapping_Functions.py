@@ -56,20 +56,25 @@ def MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, log
                     ListOfLinks, NumberOfPaths = Routing.FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG,
                                                                 SourceNode, DestNode, False) # Find the links to be used
                     # print NumberOfPaths, ListOfLinks
+
                     if ListOfLinks is not None:
                         logging.info("\t\t\tADDING PATH FROM NODE:"+str(SourceNode)+"TO NODE"+str(DestNode))
                         logging.info("\t\t\tLIST OF LINKS:"+str(ListOfLinks))
                         Counter = 0
+                        if TG.edge[Link[0]][Link[1]]["Criticality"] == 'H':
+                            Probability = 1         # we reserve the whole bandwidth for critical packets...
+                        else:
+                            Probability = 1.0/NumberOfPaths
                         for path in ListOfLinks:
                             for Link in path:
                                 if Edge in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
                                     AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge].append((Counter,
-                                                                                           1.0/NumberOfPaths))
+                                                                                           Probability))
                                 else:
                                     AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge] = [(Counter,
-                                                                                       1.0/NumberOfPaths)]
+                                                                                       Probability)]
                                 if Link not in TG.edge[Edge[0]][Edge[1]]['Link']:
-                                    TG.edge[Edge[0]][Edge[1]]['Link'].append((Counter, Link))
+                                    TG.edge[Edge[0]][Edge[1]]['Link'].append((Counter, Link, Probability))
                             Counter += 1
 
 
@@ -149,17 +154,23 @@ def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster
                         logging.info("\t\t\tLIST OF LINKS:"+str(ListOfLinks))
                         logging.info("\t\t\tLIST OF EDGES:"+str(ListOfEdges))
                         Counter = 0
+
+                        if CTG.node[Cluster]['Criticality'] == 'H':
+                            Probability = 1         # we reserve the whole bandwidth for critical packets...
+                        else:
+                            Probability = 1.0/NumberOfPaths
+
                         for path in ListOfLinks:
                             for Link in path:
                                 for Edge in ListOfEdges:
                                     if Edge in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
                                         AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge].append((Counter,
-                                                                                               1.0/NumberOfPaths))
+                                                                                               Probability))
                                     else:
                                         AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge] =[(Counter,
-                                                                                          1.0/NumberOfPaths)]
+                                                                                          Probability)]
                                     if Link not in TG.edge[Edge[0]][Edge[1]]['Link']:
-                                        TG.edge[Edge[0]][Edge[1]]['Link'].append((Counter, Link))
+                                        TG.edge[Edge[0]][Edge[1]]['Link'].append((Counter, Link, Probability))
                             Counter += 1
                     else:
                         logging.warning( "\tNO PATH FOUND FROM SOURCE TO DESTINATION...")

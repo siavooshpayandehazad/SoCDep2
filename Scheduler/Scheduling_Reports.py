@@ -146,6 +146,7 @@ def GenerateGanttCharts(TG,AG):
     for Link in AG.edges():
         if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
             ax1 = fig.add_subplot(NumberOfPlots,1,Count)
+            SchedulList= []
             for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
                 PE_T = []
                 PE_P = []
@@ -158,8 +159,10 @@ def GenerateGanttCharts(TG,AG):
                 Slack_P = []
                 Slack_P.append(0)
                 Slack_T.append(0)
-                if AG.edge[Link[0]][Link[1]]['Scheduling']:
+
+                if Task in AG.edge[Link[0]][Link[1]]['Scheduling']:
                     if TG.edge[Task[0]][Task[1]]['Criticality']=='H':
+
                         for BatchAndSchedule in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
                             StartTime = BatchAndSchedule[0]
                             BatchNum = BatchAndSchedule[2]
@@ -185,37 +188,26 @@ def GenerateGanttCharts(TG,AG):
                                 Slack_P.append(0.1)
                                 Slack_T.append(EndTime)
                                 Slack_P.append(0)
+                        SchedulList.append((StartTime,EndTime))
                     else:
-                        SchedulList= []
                         for BatchAndSchedule in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
-
+                            Prob = 0
                             StartTime = BatchAndSchedule[0]
                             EndTime = BatchAndSchedule[1]
                             BatchNum = BatchAndSchedule[2]
-                            PE_T.append(StartTime)
-                            PE_P.append(0)
-                            PE_T.append(StartTime)
+
                             for BatchAndProb in AG.edge[Link[0]][Link[1]]['MappedTasks'][Task]:
                                 if BatchAndProb[0] == BatchNum:
                                     Prob = BatchAndProb[1]
+                                    break
 
-                            OverLapUpCounter = 1
-                            for ScheduledItem in SchedulList:
-                                if ScheduledItem[0] <= StartTime < ScheduledItem[1]:
-                                    OverLapUpCounter += 1
-                                    StepEndTime = ScheduledItem[1]
-
-                            if OverLapUpCounter > 1:
-                                PE_P.append(0.1 * Prob * OverLapUpCounter)
-                                PE_T.append(StepEndTime)
-                                PE_P.append(0.1 * Prob * OverLapUpCounter)
-                                PE_T.append(StepEndTime)
-                                PE_P.append(0)
-                                PE_T.append(StepEndTime)
-
+                            PE_T.append(StartTime)
+                            PE_P.append(0)
+                            PE_T.append(StartTime)
                             PE_P.append(0.1 * Prob)
+
                             PE_T.append(EndTime)
-                            PE_P.append(0.1 * Prob )
+                            PE_P.append(0.1 * Prob)
                             PE_T.append(EndTime)
                             PE_P.append(0)
                             random.seed(Task)
@@ -225,6 +217,7 @@ def GenerateGanttCharts(TG,AG):
                             EdgeColor = '#%02X%02X%02X' % (r, g, b)
                             #EdgeColor = '#CFECFF'
                             SchedulList.append((StartTime,EndTime))
+
                 PE_T.append(Max_Time)
                 PE_P.append(0)
                 PE_T.append(Max_Time)
@@ -235,9 +228,14 @@ def GenerateGanttCharts(TG,AG):
                 ax1.fill_between(PE_T, PE_P, 0, color=EdgeColor, edgecolor=EdgeColor)
                 if Config.SlackCount > 0:
                     ax1.fill_between(Slack_T, Slack_P, 0 , color='#808080', edgecolor='#808080')
+
+
             plt.setp(ax1.get_yticklabels(), visible=False)
             if Count < EdgeCounter+NodeCounter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
+
+
+
             for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
                 if Task in AG.edge[Link[0]][Link[1]]['Scheduling']:
                     for ScheduleAndBatch in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
@@ -255,6 +253,7 @@ def GenerateGanttCharts(TG,AG):
                                 EndTime = ScheduleAndBatch[1]
                                 stringToDisplay= str(Task[0])+"/"+str(Task[1])
                                 ax1.text((StartTime+EndTime)/2 - len(str(stringToDisplay))/4, 0.01, stringToDisplay, fontsize=5)
+
             ax1.set_ylabel(r'L'+str(Link), size=14, rotation=0)
             Count += 1
     if EdgeCounter+EdgeCounter > 0:
