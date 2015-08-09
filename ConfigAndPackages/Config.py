@@ -68,12 +68,13 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 # Available Turn Models : 'FULL_TurnModel', 'XY_TurnModel', 'WestFirst_TurnModel',
 #                         'NorthLast_TurnModel', 'XYZ_TurnModel'
 UsedTurnModel = PackageFile.WestFirst_TurnModel
+# Available choices: 'MinimalPath', 'NonMinimalPath'
+RotingType = 'NonMinimalPath'
 RoutingFilePath = "User_Inputs/RoutingFile.txt"
 SetRoutingFromFile = False
 ################################################
 #          SHM  Config
 ################################################
-SHM_Drawing = True
 # Do not change if you have conventional 2D NoC
 if '2D' in NetworkTopology:
     TurnsHealth = PackageFile.TurnsHealth_2DNetwork
@@ -137,7 +138,7 @@ Clustering_CostFunctionType = 'SD+MAX'
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
 Mapping_Function = 'LocalSearch'
-LocalSearchIteration = 100
+LocalSearchIteration = 10
 IterativeLocalSearchIterations = 20
 #######################
 SimulatedAnnealingIteration = 50000
@@ -248,5 +249,11 @@ NodeTestComWeight = 2
 ###############################################
 #           VISUALIZATION Config
 ###############################################
+RG_Draw = False
+PMCG_Drawing = False
+TTG_Drawing = False
+Mapping_Dstr_Drawing = True
+Mapping_Drawing = True
+SHM_Drawing = False          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks

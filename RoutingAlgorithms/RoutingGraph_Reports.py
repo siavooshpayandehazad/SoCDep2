@@ -8,7 +8,7 @@ from ConfigAndPackages import Config
 import matplotlib.patches as patches
 
 
-def Draw2DRG(RoutingGraph):
+def DrawRG(RoutingGraph):
     print ("===========================================")
     print ("GENERATING ROUTING GRAPH VISUALIZATION...")
     POS = {}

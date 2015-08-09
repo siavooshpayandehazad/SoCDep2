@@ -227,12 +227,11 @@ def UpdateNoCRouteGraph(NoCRG, FromPort, ToPort, AddOrRemove):
     return None
 
 
-def FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG, SourceNode,DestinationNode,ReturnAllPaths,Report):
+def FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG, SourceNode, DestinationNode, Report):
     """
     :param NoCRG: NoC Routing Graph
     :param SourceNode: Source node on AG
     :param DestinationNode: Destination node on AG
-    :param ReturnAllPaths: boolean that decides to return shortest path or all the paths between two nodes
     :return: return a path (by name of links) on AG from source to destination if possible, None if not.
     """
     if Config.EnablePartitioning:
@@ -249,33 +248,22 @@ def FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG, SourceNode,Destinati
     Source = str(SourceNode)+str('L')+str('I')
     Destination = str(DestinationNode)+str('L')+str('O')
     if networkx.has_path(CurrentRG, Source, Destination):
-        ShortestPath = networkx.shortest_path(CurrentRG, Source, Destination)
-        if ReturnAllPaths:
+        if Config.RotingType == 'MinimalPath':
             AllPaths = list(networkx.all_shortest_paths(CurrentRG, Source, Destination))
-        ShortestLinks = []
-        for i in range(0, len(ShortestPath)-1):
-                # if ShortestPath[i][0] != ShortestPath[i+1][0]:
-            if int(re.search(r'\d+', ShortestPath[i]).group()) != int(re.search(r'\d+', ShortestPath[i+1]).group()):
-                    ShortestLinks.append((int(re.search(r'\d+', ShortestPath[i]).group()),
-                                          int(re.search(r'\d+', ShortestPath[i+1]).group())))
+        elif Config.RotingType == 'NonMinimalPath':
+            AllPaths = list(networkx.all_simple_paths(CurrentRG, Source, Destination))
         AllLinks = []
-        if ReturnAllPaths:
-            for j in range(0, len(AllPaths)):
-                Path = AllPaths[j]
-                Links = []
-                for i in range (0, len(Path)-1):
-                    if int(re.search(r"\d+", Path[i]).group()) != int(re.search(r"\d+", Path[i+1]).group()):
-                        Links.append((int(re.search(r"\d+", Path[i]).group()), int(re.search(r"\d+", Path[i+1]).group())))
-                AllLinks.append(Links)
+        for j in range(0, len(AllPaths)):
+            Path = AllPaths[j]
+            Links = []
+            for i in range (0, len(Path)-1):
+                if int(re.search(r"\d+", Path[i]).group()) != int(re.search(r"\d+", Path[i+1]).group()):
+                    Links.append((int(re.search(r"\d+", Path[i]).group()), int(re.search(r"\d+", Path[i+1]).group())))
+            AllLinks.append(Links)
         if Report:print "\t\tFINDING PATH(S) FROM: ", Source, "TO:", Destination, " ==>", \
-                            AllLinks if ReturnAllPaths else ShortestLinks
-        if ReturnAllPaths:
-            if len(AllPaths) == 1:
-                return AllLinks[0], len(AllPaths)
-            else:
-                return AllLinks, len(AllPaths)
-        else:
-            return ShortestLinks, 1
+                            AllLinks
+
+        return AllLinks, len(AllPaths)
     else:
         if Report:print "\t\tNO PATH FOUND FROM: ", Source, "TO:", Destination
         return None, None

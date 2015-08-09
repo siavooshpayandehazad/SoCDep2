@@ -3,6 +3,7 @@
 import matplotlib.pyplot as plt
 from Scheduling_Functions import FindLastAllocatedTimeOnNode,FindLastAllocatedTimeOnLink
 from ConfigAndPackages import Config
+import random
 
 ##########################################################################
 #
@@ -133,13 +134,13 @@ def GenerateGanttCharts(TG,AG):
                         StartTime=AG.node[Node]['Scheduling'][Task][0]
                         if TG.node[Task]['Criticality']=='H':
                             TaskLength=(AG.node[Node]['Scheduling'][Task][1] - AG.node[Node]['Scheduling'][Task][0])/(Config.SlackCount+1)
-                            ax1.text(StartTime+(TaskLength)/2 - len(str(Task))/2, 0.05, str(Task), fontsize=10)
+                            ax1.text(StartTime+(TaskLength)/2 - len(str(Task))/2, 0.01, str(Task), fontsize=10)
                             EndTime=AG.node[Node]['Scheduling'][Task][1]
                             if Config.SlackCount > 0:
-                                ax1.text((StartTime+TaskLength+EndTime)/2 - len(str(Task)+'S')/2, 0.05, str(Task)+'S', fontsize=10)
+                                ax1.text((StartTime+TaskLength+EndTime)/2 - len(str(Task)+'S')/2, 0.01, str(Task)+'S', fontsize=5)
                         else:
                             EndTime=AG.node[Node]['Scheduling'][Task][1]
-                            ax1.text((StartTime+EndTime)/2 - len(str(Task))/2, 0.05, str(Task), fontsize=10)
+                            ax1.text((StartTime+EndTime)/2 - len(str(Task))/2, 0.01, str(Task), fontsize=5)
             ax1.set_ylabel(r'PE'+str(Node), size=14, rotation=0)
             Count += 1
     for Link in AG.edges():
@@ -159,29 +160,31 @@ def GenerateGanttCharts(TG,AG):
                 Slack_T.append(0)
                 if AG.edge[Link[0]][Link[1]]['Scheduling']:
                     if TG.edge[Task[0]][Task[1]]['Criticality']=='H':
-                        StartTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
-                        TaskLength = AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1] - AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0]
-                        EndTime= StartTime + (TaskLength / (Config.SlackCount+1))
-                        PE_T.append(StartTime)
-                        PE_P.append(0)
-                        PE_T.append(StartTime)
-                        PE_P.append(0.1)
-                        PE_T.append(EndTime)
-                        PE_P.append(0.1)
-                        PE_T.append(EndTime)
-                        PE_P.append(0)
-                        EdgeColor = '#FF878B'
-                        if Config.SlackCount > 0:
-                            StartTime =EndTime
-                            EndTime = StartTime + (TaskLength / (Config.SlackCount+1)) * Config.SlackCount
-                            Slack_T.append(StartTime)
-                            Slack_P.append(0)
-                            Slack_T.append(StartTime)
-                            Slack_P.append(0.1)
-                            Slack_T.append(EndTime)
-                            Slack_P.append(0.1)
-                            Slack_T.append(EndTime)
-                            Slack_P.append(0)
+                        for BatchAndSchedule in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
+                            StartTime = BatchAndSchedule[0]
+                            BatchNum = BatchAndSchedule[2]
+                            TaskLength = BatchAndSchedule[1] - StartTime
+                            EndTime = StartTime + (TaskLength / (Config.SlackCount+1))
+                            PE_T.append(StartTime)
+                            PE_P.append(0)
+                            PE_T.append(StartTime)
+                            PE_P.append(0.1)
+                            PE_T.append(EndTime)
+                            PE_P.append(0.1)
+                            PE_T.append(EndTime)
+                            PE_P.append(0)
+                            EdgeColor = '#FF878B'
+                            if Config.SlackCount > 0:
+                                StartTime =EndTime
+                                EndTime = StartTime + (TaskLength / (Config.SlackCount+1)) * Config.SlackCount
+                                Slack_T.append(StartTime)
+                                Slack_P.append(0)
+                                Slack_T.append(StartTime)
+                                Slack_P.append(0.1)
+                                Slack_T.append(EndTime)
+                                Slack_P.append(0.1)
+                                Slack_T.append(EndTime)
+                                Slack_P.append(0)
                     else:
                         SchedulList= []
                         for BatchAndSchedule in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
@@ -196,16 +199,16 @@ def GenerateGanttCharts(TG,AG):
                                 if BatchAndProb[0] == BatchNum:
                                     Prob = BatchAndProb[1]
 
-                            OverLapCounter = 1
+                            OverLapUpCounter = 1
                             for ScheduledItem in SchedulList:
                                 if ScheduledItem[0] <= StartTime < ScheduledItem[1]:
-                                    OverLapCounter += 1
+                                    OverLapUpCounter += 1
                                     StepEndTime = ScheduledItem[1]
 
-                            if OverLapCounter > 1:
-                                PE_P.append(0.1 * Prob * OverLapCounter)
+                            if OverLapUpCounter > 1:
+                                PE_P.append(0.1 * Prob * OverLapUpCounter)
                                 PE_T.append(StepEndTime)
-                                PE_P.append(0.1 * Prob * OverLapCounter)
+                                PE_P.append(0.1 * Prob * OverLapUpCounter)
                                 PE_T.append(StepEndTime)
                                 PE_P.append(0)
                                 PE_T.append(StepEndTime)
@@ -215,38 +218,48 @@ def GenerateGanttCharts(TG,AG):
                             PE_P.append(0.1 * Prob )
                             PE_T.append(EndTime)
                             PE_P.append(0)
-                            EdgeColor = '#CFECFF'
+                            random.seed(Task)
+                            r = random.randrange(0, 255)
+                            g = random.randrange(0, 255)
+                            b = random.randrange(0, 255)
+                            EdgeColor = '#%02X%02X%02X' % (r, g, b)
+                            #EdgeColor = '#CFECFF'
                             SchedulList.append((StartTime,EndTime))
                 PE_T.append(Max_Time)
                 PE_P.append(0)
-                ax1.fill_between(PE_T, PE_P, 0, color=EdgeColor, edgecolor='k')
+                PE_T.append(Max_Time)
+                PE_P.append(0.1)
+                PE_T.append(Max_Time)
+                PE_P.append(0)
+
+                ax1.fill_between(PE_T, PE_P, 0, color=EdgeColor, edgecolor=EdgeColor)
                 if Config.SlackCount > 0:
-                    ax1.fill_between(Slack_T, Slack_P, 0 , color='#808080', edgecolor='k')
+                    ax1.fill_between(Slack_T, Slack_P, 0 , color='#808080', edgecolor='#808080')
             plt.setp(ax1.get_yticklabels(), visible=False)
             if Count < EdgeCounter+NodeCounter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
             for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
                 if Task in AG.edge[Link[0]][Link[1]]['Scheduling']:
-                    for Batch in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
-                        StartTime=Batch[0]
+                    for ScheduleAndBatch in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
+                        StartTime=ScheduleAndBatch[0]
                         if TG.edge[Task[0]][Task[1]]['Criticality']=='H':
-                                TaskLength=(AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1] - AG.edge[Link[0]][Link[1]]['Scheduling'][Task][0])/(Config.SlackCount+1)
-                                stringToDisplay= str(Task[0])+"/"+str(Task[1])
-                                ax1.text(StartTime+(TaskLength)/2 - len(str(stringToDisplay))/2, 0.01, stringToDisplay, fontsize=10)
-                                EndTime=AG.edge[Link[0]][Link[1]]['Scheduling'][Task][1]
+                                TaskLength = (ScheduleAndBatch[1]-StartTime)/(Config.SlackCount+1)
+                                stringToDisplay = str(Task[0])+"/"+str(Task[1])
+                                ax1.text(StartTime + TaskLength/2 - len(str(stringToDisplay))/4, 0.01, stringToDisplay, fontsize=5)
+                                EndTime = ScheduleAndBatch[1]
                                 stringToDisplay= str(Task[0])+"/"+str(Task[1])+'S'
                                 if Config.SlackCount > 0:
-                                    ax1.text((StartTime+TaskLength+EndTime)/2 - len(str(stringToDisplay))/2, 0.01, stringToDisplay, fontsize=10)
+                                    ax1.text((EndTime + StartTime + TaskLength)/2 - len(str(stringToDisplay))/4, 0.01, stringToDisplay, fontsize=5)
                         else:
 
-                                EndTime=Batch[1]
+                                EndTime = ScheduleAndBatch[1]
                                 stringToDisplay= str(Task[0])+"/"+str(Task[1])
-                                ax1.text((StartTime+EndTime)/2 - len(str(stringToDisplay))/2, 0.01, stringToDisplay, fontsize=10)
+                                ax1.text((StartTime+EndTime)/2 - len(str(stringToDisplay))/4, 0.01, stringToDisplay, fontsize=5)
             ax1.set_ylabel(r'L'+str(Link), size=14, rotation=0)
             Count += 1
     if EdgeCounter+EdgeCounter > 0:
         ax1.xaxis.set_ticks_position('bottom')
-    plt.savefig("GraphDrawings/Scheduling.png", dpi=150)
+    plt.savefig("GraphDrawings/Scheduling.png", dpi=200)
     plt.clf()
     plt.close(fig)
     print ("\033[35m* VIZ::\033[0mSCHEDULING GANTT CHARTS CREATED AT: GraphDrawings/Scheduling.png")

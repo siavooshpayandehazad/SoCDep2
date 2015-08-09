@@ -3,6 +3,9 @@
 from math import ceil
 from ConfigAndPackages import Config
 
+
+# Todo: need to be able to schedule something if there is less than 100% probability...
+
 def FindScheduleMakeSpan(AG):
     MakeSpan = 0
     for Node in AG.nodes():
@@ -88,12 +91,13 @@ def FindTaskPredecessorsFinishTime(TG, AG, Task, CriticalityLevel):
         if Edge[1] == Task:
             # if TG.edge[Edge[0]][Edge[1]]['Criticality'] == CriticalityLevel:
                 if len(TG.edge[Edge[0]][Edge[1]]['Link']) > 0:    # if the edge is mapped
-                    for LinkAndBatch in TG.edge[Edge[0]][Edge[1]]['Link']:     # for each link that this edge goes through
-                        Link = LinkAndBatch[1]
+                    # TG.edge[Edge[0]][Edge[1]]['Link'] is a list of tuples of (batch, Link)
+                    for BatchAndLink in TG.edge[Edge[0]][Edge[1]]['Link']:     # for each link that this edge goes through
+                        Link = BatchAndLink[1]
                         if len(AG.edge[Link[0]][Link[1]]['Scheduling']) > 0:
                             if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:     # if this edge is scheduled
-                                for EdgeAndBatch in AG.edge[Link[0]][Link[1]]['Scheduling'][Edge]:
-                                    EndTime = EdgeAndBatch[1]
+                                for ScheduleAndBatch in AG.edge[Link[0]][Link[1]]['Scheduling'][Edge]:
+                                    EndTime = ScheduleAndBatch[1]
                                     FinishTime = max(EndTime, FinishTime)
     return FinishTime
 ################################################################
@@ -109,11 +113,10 @@ def FindEdgePredecessorsFinishTime(TG, AG, Edge, batch, CurrentLink):
         if Link[1] == CurrentLink[0]:
             # if they are incoming links
             if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:
-                for EdgeAndBatch in AG.edge[Link[0]][Link[1]]['Scheduling'][Edge]:
-                    if EdgeAndBatch[2] == batch:
-                        # print AG.edge[Link[0]][Link[1]]['Scheduling'][Edge][2], batch, Edge
-                        if EdgeAndBatch[1] > FinishTime:
-                            FinishTime = EdgeAndBatch[1]
+                for ScheduleAndBatch in AG.edge[Link[0]][Link[1]]['Scheduling'][Edge]:
+                    if ScheduleAndBatch[2] == batch:
+                        if ScheduleAndBatch[1] > FinishTime:
+                            FinishTime = ScheduleAndBatch[1]
 
     return FinishTime
 
@@ -130,9 +133,9 @@ def FindLastAllocatedTimeOnLink(TG, AG, Link, Report):
     if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
         for Task in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
             if Task in AG.edge[Link[0]][Link[1]]['Scheduling']:
-                for EdgeAndBatch in  AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
-                    StartTime = EdgeAndBatch[0]
-                    EndTime = EdgeAndBatch[1]
+                for ScheduleAndBatch in  AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
+                    StartTime = ScheduleAndBatch[0]
+                    EndTime = ScheduleAndBatch[1]
                     if StartTime is not None and EndTime is not None:
                         if Report:print ("\t\t\tTASK STARTS AT:", StartTime, "AND ENDS AT:", EndTime)
                         LastAllocatedTime = max(LastAllocatedTime, EndTime)
@@ -148,9 +151,9 @@ def FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Report):
     if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
         for Task in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
             if Task in AG.edge[Link[0]][Link[1]]['Scheduling']:
-                for EdgeAndBatch in  AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
-                    StartTime = EdgeAndBatch[0]
-                    EndTime = EdgeAndBatch[1]
+                for ScheduleAndBatch in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
+                    StartTime = ScheduleAndBatch[0]
+                    EndTime = ScheduleAndBatch[1]
                     if StartTime is not None and EndTime is not None:
                         if Report:print ("\t\t\tTASK STARTS AT:", StartTime, "AND ENDS AT:", EndTime)
                         if Task != Edge:

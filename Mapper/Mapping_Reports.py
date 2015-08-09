@@ -101,7 +101,6 @@ def DrawMapping(TG, AG, SHM):
         else:   # node is broken
             color = '#7B747B'
 
-
         fig.gca().add_patch(patches.Rectangle(((distance*Location[0])+Location[2]*StepSize,
                                                (distance*Location[1])+Location[2]*StepSize),
                                                 width=NodeSize, height=NodeSize, facecolor=color,
@@ -120,7 +119,7 @@ def DrawMapping(TG, AG, SHM):
             # plt.plot([Y, Y], [X, X+1.0/XSize - 0.1], color ='black')
             plt.plot([X, X], [Y, Y+distance-NodeSize], color='black', lw=3)
 
-        NumberOfTaskInRow = 3
+        NumberOfTaskInRow = 4
         OffsetX = -(NodeSize/(2*NumberOfTaskInRow))
         OffsetY = NodeSize / (NumberOfTaskInRow+1)
         TaskCount = 0

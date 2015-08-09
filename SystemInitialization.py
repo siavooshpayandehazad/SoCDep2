@@ -56,7 +56,8 @@ def InitializeSystem(logging):
     # this is for double checking...
     Calculate_Reachability.ReachabilityMetric(AG, NoCRG, True)
     # Some visualization...
-    RoutingGraph_Reports.Draw2DRG(NoCRG)
+    if Config.RG_Draw:
+        RoutingGraph_Reports.DrawRG(NoCRG)
     ####################################################################
     # PMC-Graph
     # at this point we assume that the system health map knows about the initial faults from
@@ -69,8 +70,10 @@ def InitializeSystem(logging):
     TTG = TestSchedulingUnit.GenerateTestTGFromPMCG(PMCG)
     print ("\033[92mTIME::\033[0m PMCG AND TTG GENERATION TOOK: "
            + str(round(time.time()-PMCGStartTime)) + " SECONDS")
-    TestSchedulingUnit.DrawPMCG(PMCG)
-    TestSchedulingUnit.DrawTTG(TTG)
+    if Config.PMCG_Drawing:
+        TestSchedulingUnit.DrawPMCG(PMCG)
+    if Config.TTG_Drawing:
+        TestSchedulingUnit.DrawTTG(TTG)
     ####################################################################
     # in case of partitioning, we have to route based on different Route-graphs
     if Config.EnablePartitioning:
@@ -92,8 +95,10 @@ def InitializeSystem(logging):
         AG = copy.deepcopy(BestAG)
         del BestTG, BestAG
         # SHM.AddCurrentMappingToMPM(TG)
-    Mapping_Reports.DrawMappingDistribution(AG, SHM)
-    Mapping_Reports.DrawMapping(TG, AG, SHM)
+    if Config.Mapping_Dstr_Drawing:
+        Mapping_Reports.DrawMappingDistribution(AG, SHM)
+    if Config.Mapping_Drawing:
+        Mapping_Reports.DrawMapping(TG, AG, SHM)
     print ("===========================================")
     print ("SYSTEM IS UP...")
     Scheduling_Reports.GenerateGanttCharts(TG, AG)
