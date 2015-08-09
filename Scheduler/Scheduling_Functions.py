@@ -59,11 +59,11 @@ def Add_TG_EdgeTo_link(TG, AG, Edge, Link, batch, Prob, Report):
         if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:
             AG.edge[Link[0]][Link[1]]['Scheduling'][Edge].append([StartTime,
                                                              EndTime+Config.SlackCount*TG.edge[Edge[0]][Edge[1]]['ComWeight']
-                                                             , batch, 1])
+                                                             , batch, Prob])
         else:
             AG.edge[Link[0]][Link[1]]['Scheduling'][Edge] = [[StartTime,
                                                              EndTime+Config.SlackCount*TG.edge[Edge[0]][Edge[1]]['ComWeight']
-                                                             , batch, 1]]
+                                                             , batch, Prob]]
     else:
         if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:
             AG.edge[Link[0]][Link[1]]['Scheduling'][Edge].append([StartTime, EndTime, batch, Prob])

@@ -21,11 +21,9 @@ def ScheduleAll(TG,AG,SHM,Report,DetailedReport):
                             for BatchAndLink in TG.edge[Edge[0]][Edge[1]]['Link']:
                                 Link = BatchAndLink[1]
                                 Batch =  BatchAndLink[0]
-                                Prob = BatchAndLink[2]
-                                if TG.edge[Edge[0]][Edge[1]]['Criticality']=='H':
-                                    Prob = 1
+                                Probability = BatchAndLink[2]
                                 if DetailedReport:print ("\tSCHEDULING EDGE", Edge, "ON LINK:", Link[1],
                                                          "FROM BATCH:", Link[0])
-                                Add_TG_EdgeTo_link(TG, AG, Edge, Link, Batch, Prob, DetailedReport)
+                                Add_TG_EdgeTo_link(TG, AG, Edge, Link, Batch, Probability, DetailedReport)
     if Report:print ("DONE SCHEDULING...")
     return None
