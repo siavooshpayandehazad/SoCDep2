@@ -53,6 +53,10 @@ ScheduleAndDepend
  |          |------- Config
  |          |------- PackageFile
  |
+ |------GUI_Util
+ |          |
+ |          |------- GUI
+ |
  |------Generated_Files
  |------GraphDrawings
  |------LOGS

@@ -45,7 +45,7 @@ Network_Y_Size = 4
 Network_Z_Size = 4
 
 # Number of Vertical Links
-FindOptimumAG = True
+FindOptimumAG = False
 # Available Choices: 'LocalSearch', 'IterativeLocalSearch'
 VL_OptAlg = "IterativeLocalSearch"
 AG_Opt_Iterations_ILS = 10
@@ -242,6 +242,7 @@ else:
 ###############################################
 #           PMCG Config
 ###############################################
+GeneratePMCG = False
 OneStepDiagonosable = False     # set to False if you need Sequentially diagnosable PMCG
 TFaultDiagnosable = None        # one-step t-fault diagnosable system, if set to none, default value would be
 #                                 (n-1)/2

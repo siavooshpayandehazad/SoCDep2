@@ -1,6 +1,6 @@
 # Copyright (C) Siavoosh Payandeh Azad
 
-import copy,time
+import copy, time
 
 from ConfigAndPackages import Config
 from Mapper import Mapping, Mapping_Reports, Mapping_Animation
@@ -54,7 +54,8 @@ def InitializeSystem(logging):
     print ("\033[92mTIME::\033[0m ROUTING GRAPH GENERATION TOOK: "
            + str(round(time.time()-RoutingGraphStartTime))+" SECONDS")
     # this is for double checking...
-    Calculate_Reachability.ReachabilityMetric(AG, NoCRG, True)
+    if Config.FindOptimumAG:
+        Calculate_Reachability.ReachabilityMetric(AG, NoCRG, True)
     # Some visualization...
     if Config.RG_Draw:
         RoutingGraph_Reports.DrawRG(NoCRG)
@@ -62,18 +63,21 @@ def InitializeSystem(logging):
     # PMC-Graph
     # at this point we assume that the system health map knows about the initial faults from
     # the diagnosis process
-    PMCGStartTime = time.time()
-    if Config.OneStepDiagonosable:
-        PMCG = TestSchedulingUnit.GenerateOneStepDiagnosablePMCG(AG,SHM)
+    if Config.GeneratePMCG:
+        PMCGStartTime = time.time()
+        if Config.OneStepDiagonosable:
+            PMCG = TestSchedulingUnit.GenerateOneStepDiagnosablePMCG(AG,SHM)
+        else:
+            PMCG = TestSchedulingUnit.GenerateSequentiallyDiagnosablePMCG(AG,SHM)
+        TTG = TestSchedulingUnit.GenerateTestTGFromPMCG(PMCG)
+        print ("\033[92mTIME::\033[0m PMCG AND TTG GENERATION TOOK: "
+               + str(round(time.time()-PMCGStartTime)) + " SECONDS")
+        if Config.PMCG_Drawing:
+            TestSchedulingUnit.DrawPMCG(PMCG)
+        if Config.TTG_Drawing:
+            TestSchedulingUnit.DrawTTG(TTG)
     else:
-        PMCG = TestSchedulingUnit.GenerateSequentiallyDiagnosablePMCG(AG,SHM)
-    TTG = TestSchedulingUnit.GenerateTestTGFromPMCG(PMCG)
-    print ("\033[92mTIME::\033[0m PMCG AND TTG GENERATION TOOK: "
-           + str(round(time.time()-PMCGStartTime)) + " SECONDS")
-    if Config.PMCG_Drawing:
-        TestSchedulingUnit.DrawPMCG(PMCG)
-    if Config.TTG_Drawing:
-        TestSchedulingUnit.DrawTTG(TTG)
+        PMCG = None
     ####################################################################
     # in case of partitioning, we have to route based on different Route-graphs
     if Config.EnablePartitioning:
