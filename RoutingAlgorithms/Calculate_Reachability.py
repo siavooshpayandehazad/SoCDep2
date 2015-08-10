@@ -227,6 +227,6 @@ def ReachabilityMetric(AG, NoCRG, Report):
         for DestinationNode in AG.nodes():
             if SourceNode != DestinationNode:
                 ReachabilityCounter += HowManyPathsFromSource(NoCRG,SourceNode,DestinationNode)
-    ReachabilityMetric = float(ReachabilityCounter)/(len(AG.nodes())*(len(AG.nodes())-1))
+    ReachabilityMetric = float(ReachabilityCounter)
     if Report:print ("REACH-ABILITY METRIC: "+str(ReachabilityMetric))
     return ReachabilityMetric

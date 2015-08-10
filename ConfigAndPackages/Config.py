@@ -16,9 +16,9 @@ EventDrivenFaultInjection = False
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
 TG_Type = 'RandomDependent'
 # For Random TG_Type:
-NumberOfTasks = 23
+NumberOfTasks = 35
 NumberOfCriticalTasks = 5
-NumberOfEdges = 15
+NumberOfEdges = 20
 WCET_Range = 15
 EdgeWeightRange = 7
 Release_Range = 5      # task release time range
@@ -39,17 +39,17 @@ AG_Type = 'Generic'
 VirtualChannelNum = 0
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
-NetworkTopology = '2DMesh'
-Network_X_Size = 5
-Network_Y_Size = 5
-Network_Z_Size = 1
+NetworkTopology = '3DMesh'
+Network_X_Size = 4
+Network_Y_Size = 4
+Network_Z_Size = 4
 
 # Number of Vertical Links
-FindOptimumAG = False
+FindOptimumAG = True
 # Available Choices: 'LocalSearch', 'IterativeLocalSearch'
 VL_OptAlg = "IterativeLocalSearch"
 AG_Opt_Iterations_ILS = 10
-AG_Opt_Iterations_LS = 100
+AG_Opt_Iterations_LS = 10
 VerticalLinksNum = 20
 
 # this is just for double check...
@@ -65,9 +65,10 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 #          Routing  Config
 ################################################
 # Todo: introduce more turn models
-# Available Turn Models : 'FULL_TurnModel', 'XY_TurnModel', 'WestFirst_TurnModel',
-#                         'NorthLast_TurnModel', 'XYZ_TurnModel'
-UsedTurnModel = PackageFile.WestFirst_TurnModel
+# Available Turn Models :
+#         2D Turn Models: XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel
+#         3D Turn Models: XYZ_TurnModel, NegativeFirst3D_TurnModel
+UsedTurnModel = PackageFile.NegativeFirst3D_TurnModel
 # Available choices: 'MinimalPath', 'NonMinimalPath'
 RotingType = 'MinimalPath'
 RoutingFilePath = "User_Inputs/RoutingFile.txt"
@@ -124,7 +125,7 @@ ListOfAgedPEs = {3: 0.3, 2: 0.1}
 ################################################
 #          Clustering Function  Config
 ################################################
-Clustering_Optimization = False     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
+Clustering_Optimization = True     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
 ClusteringIteration = 10000
 Clustering_Report = False
 Clustering_DetailedReport = False
@@ -137,8 +138,8 @@ Clustering_CostFunctionType = 'SD+MAX'
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'LocalSearch'
-LocalSearchIteration = 10
+Mapping_Function = 'IterativeLocalSearch'
+LocalSearchIteration = 100
 IterativeLocalSearchIterations = 20
 #######################
 SimulatedAnnealingIteration = 50000
@@ -249,11 +250,11 @@ NodeTestComWeight = 2
 ###############################################
 #           VISUALIZATION Config
 ###############################################
-RG_Draw = False
-PMCG_Drawing = False
-TTG_Drawing = False
+RG_Draw = True
+PMCG_Drawing = True
+TTG_Drawing = True
 Mapping_Dstr_Drawing = True
 Mapping_Drawing = True
-SHM_Drawing = False          # if True generates SHM Drawing
+SHM_Drawing = True          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks
