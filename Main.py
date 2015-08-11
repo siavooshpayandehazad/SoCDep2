@@ -11,9 +11,9 @@ import SystemInitialization
 from GUI_Util import GUI
 
 # Im still working on GUI....
-# app = GUI.ConfigAppp(None)
-# app.title('Schedule And Depend')
-# app.mainloop()
+app = GUI.ConfigAppp(None)
+app.title('Schedule And Depend')
+app.mainloop()
 
 
 ProgramStartTime = time.time()
@@ -75,3 +75,4 @@ if Config.EventDrivenFaultInjection:
     timer.join()
 
 logging.info('Logging finished...')
+
