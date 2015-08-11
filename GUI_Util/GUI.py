@@ -415,7 +415,7 @@ class ConfigAppp(Tkinter.Tk):
         Config.Network_Z_Size = int(self.NetworkSize_Z.get())
 
         # Clustering Config
-        Config.ClusteringIteration =  self.ClusteringIterations.get()
+        Config.ClusteringIteration =  int(self.ClusteringIterations.get())
         Config.Clustering_Optimization = self.ClusteringOptVar.get()
         Config.Clustering_CostFunctionType = self.ClusterCost.get()
 
@@ -423,9 +423,9 @@ class ConfigAppp(Tkinter.Tk):
         Config.Mapping_Function = self.Mapping.get()
         Config.SA_AnnealingSchedule = self.Annealing.get()
         Config.TerminationCriteria = self.Termination.get()
-        Config.SimulatedAnnealingIteration = self.SA_Iterations.get()
-        Config.SA_InitialTemp =  self.SA_InitTemp.get()
-        Config.SA_StopTemp = self.SA_StopTemp.get()
+        Config.SimulatedAnnealingIteration = int(self.SA_Iterations.get())
+        Config.SA_InitialTemp =  int(self.SA_InitTemp.get())
+        Config.SA_StopTemp = int(self.SA_StopTemp.get())
         self.destroy()
 
     def CancelButton(self):
