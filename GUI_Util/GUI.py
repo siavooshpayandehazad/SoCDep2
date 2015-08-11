@@ -7,6 +7,8 @@ from ConfigAndPackages import Config
 
 class ConfigAppp(Tkinter.Tk):
 
+    Cancel_Button = False
+
     Cl_OptStartRow = 1
     Cl_OptStartCol = 4
 
@@ -533,4 +535,5 @@ class ConfigAppp(Tkinter.Tk):
         self.destroy()
 
     def CancelButton(self):
+        self.Cancel_Button = True
         self.destroy()
