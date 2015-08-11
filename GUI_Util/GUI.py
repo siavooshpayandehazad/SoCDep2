@@ -8,20 +8,23 @@ from ConfigAndPackages import Config
 class ConfigAppp(Tkinter.Tk):
 
     Cl_OptStartRow = 1
-    Cl_OptStartCol = 5
+    Cl_OptStartCol = 4
 
     Mapping_OptStartRow = 5
-    Mapping_OptStartCol = 5
+    Mapping_OptStartCol = 4
 
-    Topology_StartingRow = 0
+    Topology_StartingRow = 1
     Topology_StartingCol = 0
 
-    TG_StartingRow = 6
+    TG_StartingRow = 7
     TG_StartingCol = 0
 
     def __init__(self,parent):
         Tkinter.Tk.__init__(self,parent)
         self.parent = parent
+
+        self.LOGO = Tkinter.Label(self, text="SCHEDULE AND DEPEND CONFIG GUI")
+
         # ---------------------------------------------
         #                   Topology
         # ---------------------------------------------
@@ -91,26 +94,61 @@ class ConfigAppp(Tkinter.Tk):
         self.Annealing = Tkinter.StringVar()
         self.Annealing.set('Linear')
         self.AnnealingOption = Tkinter.OptionMenu(self, self.Annealing,
-                                                  *AvailableAnnealing, command=self.AnnealingOpt)
+                                                  *AvailableAnnealing, command=self.Annealing_Termination)
 
         self.SA_Term_Label = Tkinter.Label(self, text="Termination Criteria:")
         AvailableTermination = ['StopTemp', 'IterationNum']
         self.Termination = Tkinter.StringVar()
         self.Termination.set('StopTemp')
         self.TerminationOption = Tkinter.OptionMenu(self, self.Termination,
-                                                    *AvailableTermination, command=self.TerminationOpt)
+                                                    *AvailableTermination, command=self.Annealing_Termination)
 
         self.SA_IterLabel = Tkinter.Label(self, text="Number of Iterations:")
         self.SA_Iterations = Tkinter.Entry(self)
         self.SA_Iterations.insert(0, '100000')
 
-        self.SA_InitTemp_Label = Tkinter.Label(self, text=" Initial Temperature:")
+        self.SA_InitTemp_Label = Tkinter.Label(self, text="Initial Temperature:")
         self.SA_InitTemp = Tkinter.Entry(self)
         self.SA_InitTemp.insert(0, '100')
 
-        self.SA_StopTemp_Label = Tkinter.Label(self, text=" Stop Temperature:")
+        self.SA_StopTemp_Label = Tkinter.Label(self, text="Stop Temperature:")
         self.SA_StopTemp = Tkinter.Entry(self)
         self.SA_StopTemp.insert(0, '5')
+
+        self.SA_Alpha_Label = Tkinter.Label(self, text="Cooling ratio:")
+        self.SA_Alpha = Tkinter.Entry(self)
+        self.SA_Alpha.insert(0, '0.999')
+
+
+        self.SA_LoG_Const_Label = Tkinter.Label(self, text="Log cooling constant:")
+        self.SA_LoG_Const = Tkinter.Entry(self)
+        self.SA_LoG_Const.insert(0, '1000')
+
+        self.CostMonitor_Label = Tkinter.Label(self, text="Cost Monitor Queue Size:")
+        self.CostMonitor = Tkinter.Entry(self)
+        self.CostMonitor.insert(0, '2000')
+
+
+        self.CostMonitorSlope_Label = Tkinter.Label(self, text="Slope Range For Cooling:")
+        self.CostMonitorSlope = Tkinter.Entry(self)
+        self.CostMonitorSlope.insert(0, '0.02')
+
+        self.MaxSteadyState_Label = Tkinter.Label(self, text="Maximum steps without improvement:")
+        self.MaxSteadyState = Tkinter.Entry(self)
+        self.MaxSteadyState.insert(0, '30000')
+
+
+        self.MarkovNum_Label = Tkinter.Label(self, text="Length of Markov Chain:")
+        self.MarkovNum = Tkinter.Entry(self)
+        self.MarkovNum.insert(0, '2000')
+
+        self.MarkovTempStep_Label = Tkinter.Label(self, text="Temperature step:")
+        self.MarkovTempStep = Tkinter.Entry(self)
+        self.MarkovTempStep.insert(0, '1')
+
+        self.SA_Delta_Label = Tkinter.Label(self, text="Delta:")
+        self.SA_Delta = Tkinter.Entry(self)
+        self.SA_Delta.insert(0, '0.05')
 
         # ---------------------------------------------
         self.initialize()
@@ -119,6 +157,7 @@ class ConfigAppp(Tkinter.Tk):
     def initialize(self):
 
         self.grid()
+        self.LOGO.grid(column=1, row=0, columnspan=3)
         # ----------------------------------------
         Tkinter.Label(self, text="Topology Settings").grid(column=self.Topology_StartingCol,
                                                                      row=self.Topology_StartingRow)
@@ -147,8 +186,8 @@ class ConfigAppp(Tkinter.Tk):
 
         ttk.Separator(self, orient='vertical').grid(column=self.Topology_StartingCol+2,
                                                     row=self.Topology_StartingRow+1, rowspan=10, sticky="ns")
-        ttk.Separator(self, orient='horizontal').grid(column=self.Topology_StartingCol+1,
-                                                      row=self.Topology_StartingRow+5, columnspan=1, sticky="ew")
+        ttk.Separator(self, orient='horizontal').grid(column=self.Topology_StartingCol,
+                                                      row=self.Topology_StartingRow+5, columnspan=2, sticky="ew")
         # ----------------------------------------
         #                   TG
         # ----------------------------------------
@@ -181,12 +220,13 @@ class ConfigAppp(Tkinter.Tk):
         self.Release_Range.grid(column=self.TG_StartingCol+1,row=self.TG_StartingRow+7)
         self.Release_Range.insert(0, '5')
 
-        ttk.Separator(self, orient='horizontal').grid(column=self.TG_StartingCol+1,
-                                                      row=self.TG_StartingRow+8, columnspan=1, sticky="ew")
+        ttk.Separator(self, orient='horizontal').grid(column=self.TG_StartingCol,
+                                                      row=self.TG_StartingRow+8, columnspan=2, sticky="ew")
         # ----------------------------------------
-        #                   TG
+        #                   CTG
         # ----------------------------------------
         self.ClusteringOptVar.set('False')
+        self.ClusteringIterations.insert(0, '1000')
         self.ClusteringOptEnable.grid(column=self.Cl_OptStartCol, row=self.Cl_OptStartRow)
         ttk.Separator(self, orient='horizontal').grid(column=self.Cl_OptStartCol, row=self.Cl_OptStartRow+3,
                                                       columnspan=2, sticky="ew")
@@ -196,6 +236,11 @@ class ConfigAppp(Tkinter.Tk):
         self.Mapping_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow)
         self.MappingOption.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow)
 
+
+        ttk.Separator(self, orient='vertical').grid(column=self.Cl_OptStartCol+2,
+                                                    row=self.Cl_OptStartRow, rowspan=10, sticky="ns")
+        ttk.Separator(self, orient='horizontal').grid(column=self.Mapping_OptStartCol,
+                                                      row=self.Mapping_OptStartRow+9, columnspan=2, sticky="ew")
         # ----------------------------------------
         #                   Buttons
         # ----------------------------------------
@@ -310,7 +355,6 @@ class ConfigAppp(Tkinter.Tk):
 
     def MappingAlgCont(self, Mapping):
         if self.Mapping.get() == 'SimulatedAnnealing':
-
             self.Annealing.set('Linear')
             self.SA_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+1)
             self.AnnealingOption.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+1)
@@ -348,7 +392,7 @@ class ConfigAppp(Tkinter.Tk):
             self.SA_Label.grid_forget()
             self.AnnealingOption.grid_forget()
 
-    def AnnealingOpt(self, Annealing):
+    def Annealing_Termination(self, Annealing):
         if self.Mapping.get() == 'SimulatedAnnealing':
             if self.Annealing.get()=='Linear' or self.Termination.get()=='IterationNum':
                 self.SA_StopTemp.grid_forget()
@@ -356,7 +400,7 @@ class ConfigAppp(Tkinter.Tk):
 
                 self.SA_IterLabel.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+4)
                 self.SA_Iterations.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+4)
-            elif self.Termination.get()=='StopTemp' and self.Annealing.get()!= 'Linear':
+            elif self.Termination.get()=='StopTemp' and self.Annealing.get() != 'Linear':
                 self.SA_Iterations.grid_forget()
                 self.SA_IterLabel.grid_forget()
 
@@ -371,30 +415,81 @@ class ConfigAppp(Tkinter.Tk):
                 self.SA_Iterations.grid_forget()
                 self.SA_IterLabel.grid_forget()
 
-    def TerminationOpt(self, Termination):
-        if self.Mapping.get() == 'SimulatedAnnealing':
-            if self.Annealing.get()== 'Linear' or self.Termination.get()=='IterationNum':
-                self.SA_StopTemp.grid_forget()
-                self.SA_StopTemp_Label.grid_forget()
+            if self.Annealing.get() in ['Exponential','Adaptive','Aart', 'Huang']:
+                self.SA_Alpha.delete(0, 'end')
+                self.SA_Alpha.insert(0, '0.999')
+                self.SA_Alpha_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+5)
+                self.SA_Alpha.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+5)
+            else:
+                self.SA_Alpha_Label.grid_forget()
+                self.SA_Alpha.grid_forget()
 
-                self.SA_IterLabel.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+4)
-                self.SA_Iterations.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+4)
+            if self.Annealing.get() == 'Logarithmic':
+                self.SA_LoG_Const.delete(0, 'end')
+                self.SA_LoG_Const.insert(0, '1000')
+                self.SA_LoG_Const_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+5)
+                self.SA_LoG_Const.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+5)
+            else:
+                self.SA_LoG_Const_Label.grid_forget()
+                self.SA_LoG_Const.grid_forget()
 
-            elif self.Termination.get()=='StopTemp' and self.Annealing.get()!= 'Linear':
-                self.SA_Iterations.grid_forget()
-                self.SA_IterLabel.grid_forget()
+            if self.Annealing.get() == 'Adaptive':
 
-                self.SA_StopTemp.delete(0, 'end')
-                self.SA_StopTemp.insert(0, '5')
-                self.SA_StopTemp_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+4)
-                self.SA_StopTemp.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+4)
+                self.CostMonitorSlope.delete(0, 'end')
+                self.CostMonitorSlope.insert(0, '0.02')
+                self.CostMonitorSlope_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+7)
+                self.CostMonitorSlope.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+7)
+
+                self.MaxSteadyState.delete(0, 'end')
+                self.MaxSteadyState.insert(0, '30000')
+                self.MaxSteadyState_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+8)
+                self.MaxSteadyState.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+8)
+
 
             else:
-                self.SA_StopTemp.grid_forget()
-                self.SA_StopTemp_Label.grid_forget()
+                self.MaxSteadyState_Label.grid_forget()
+                self.MaxSteadyState.grid_forget()
 
-                self.SA_Iterations.grid_forget()
-                self.SA_IterLabel.grid_forget()
+                self.CostMonitorSlope_Label.grid_forget()
+                self.CostMonitorSlope.grid_forget()
+
+
+            if self.Annealing.get() == 'Markov':
+                self.MarkovNum.delete(0, 'end')
+                self.MarkovNum.insert(0, '2000')
+                self.MarkovNum_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+5)
+                self.MarkovNum.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+5)
+
+                self.MarkovTempStep.delete(0, 'end')
+                self.MarkovTempStep.insert(0, '1')
+                self.MarkovTempStep_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+6)
+                self.MarkovTempStep.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+6)
+            else:
+                self.MarkovNum_Label.grid_forget()
+                self.MarkovNum.grid_forget()
+
+                self.MarkovTempStep_Label.grid_forget()
+                self.MarkovTempStep.grid_forget()
+
+            if self.Annealing.get() in ['Aart', 'Adaptive', 'Huang']:
+                self.CostMonitor.delete(0, 'end')
+                self.CostMonitor.insert(0, '2000')
+                self.CostMonitor_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+6)
+                self.CostMonitor.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+6)
+
+            else:
+                self.CostMonitor_Label.grid_forget()
+                self.CostMonitor.grid_forget()
+
+            if self.Annealing.get() in ['Aart', 'Huang']:
+                self.SA_Delta.delete(0, 'end')
+                self.SA_Delta.insert(0, '0.05')
+                self.SA_Delta_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+7)
+                self.SA_Delta.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+7)
+            else:
+                self.SA_Delta_Label.grid_forget()
+                self.SA_Delta.grid_forget()
+
 
     def ApplyButton(self):
         # apply changes...
@@ -426,6 +521,15 @@ class ConfigAppp(Tkinter.Tk):
         Config.SimulatedAnnealingIteration = int(self.SA_Iterations.get())
         Config.SA_InitialTemp =  int(self.SA_InitTemp.get())
         Config.SA_StopTemp = int(self.SA_StopTemp.get())
+        Config.SA_Alpha = float(self.SA_Alpha.get())
+        Config.LogCoolingConstant = int(self.SA_LoG_Const.get())
+        Config.CostMonitorQueSize = int(self.CostMonitor.get())
+        Config.SlopeRangeForCooling = float(self.CostMonitorSlope.get())
+        Config.MaxSteadyState = int(self.MaxSteadyState.get())
+        Config.MarkovTempStep = float(self.MarkovTempStep.get())
+        Config.MarkovNum = int(self.MarkovNum.get())
+        Config.Delta = float(self.SA_Delta.get())
+
         self.destroy()
 
     def CancelButton(self):

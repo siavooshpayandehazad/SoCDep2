@@ -75,4 +75,3 @@ if Config.EventDrivenFaultInjection:
     timer.join()
 
 logging.info('Logging finished...')
-
