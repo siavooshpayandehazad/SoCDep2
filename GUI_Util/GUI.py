@@ -9,23 +9,24 @@ class ConfigAppp(Tkinter.Tk):
 
     Cancel_Button = False
 
-    Cl_OptStartRow = 1
-    Cl_OptStartCol = 4
+    Cl_OptStartRow = 2
+    Cl_OptStartCol = 3
 
-    Mapping_OptStartRow = 5
-    Mapping_OptStartCol = 4
+    Mapping_OptStartRow = 7
+    Mapping_OptStartCol = 3
 
-    Topology_StartingRow = 1
+    Topology_StartingRow = 2
     Topology_StartingCol = 0
 
-    TG_StartingRow = 7
+    TG_StartingRow = 8
     TG_StartingCol = 0
+
+    Fault_StartingRow = 2
+    Fault_StartingCol = 6
 
     def __init__(self,parent):
         Tkinter.Tk.__init__(self,parent)
         self.parent = parent
-
-        self.LOGO = Tkinter.Label(self, text="SCHEDULE AND DEPEND CONFIG GUI")
 
         # ---------------------------------------------
         #                   Topology
@@ -38,14 +39,15 @@ class ConfigAppp(Tkinter.Tk):
         self.NetworkSize_X = Tkinter.Spinbox(self, from_=0, to=10)
         self.NetworkSize_Y = Tkinter.Spinbox(self, from_=0, to=10)
         self.NetworkSize_Z = Tkinter.Spinbox(self, from_=0, to=10)
+
         # ---------------------------------------------
         #                   TG
         # ---------------------------------------------
         self.TG_Label = Tkinter.Label(self, text="Task Graph Type:")
-        AvailableTGs = ['RandomDependent','RandomIndependent','Manual']
+        self.AvailableTGs = ['RandomDependent','RandomIndependent','Manual']
         self.TGType = Tkinter.StringVar(self)
         self.TGType.set('RandomDependent')
-        self.TGTypeOption = Tkinter.OptionMenu(self, self.TGType, *AvailableTGs, command=self.TGTypeCont)
+        self.TGTypeOption = Tkinter.OptionMenu(self, self.TGType, *self.AvailableTGs, command=self.TGTypeCont)
 
         self.NumOfTasks_Label = Tkinter.Label(self, text="Number of Tasks:")
         self.NumOfTasks = Tkinter.Entry(self)
@@ -78,15 +80,28 @@ class ConfigAppp(Tkinter.Tk):
         self.ClusterCost = Tkinter.StringVar(self)
         self.ClusterCost.set('SD+MAX')
         self.ClusterCostOpt = Tkinter.OptionMenu(self, self.ClusterCost, *AvailableCosts)
+
         # ---------------------------------------------
         #                   Mapping
         # ---------------------------------------------
         self.Mapping_Label = Tkinter.Label(self, text="Mapping Algorithm:")
-        AvailableMappings = ['MinMin', 'MaxMin', 'MinExecutionTime', 'MinimumCompletionTime',
-                             'LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing', 'NMap']
+        self.AvailableMappings = ['MinMin', 'MaxMin', 'MinExecutionTime', 'MinimumCompletionTime',
+                                  'LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing', 'NMap']
         self.Mapping = Tkinter.StringVar(self)
         self.Mapping.set('LocalSearch')
-        self.MappingOption = Tkinter.OptionMenu(self, self.Mapping, *AvailableMappings, command=self.MappingAlgCont)
+        self.MappingOption = Tkinter.OptionMenu(self, self.Mapping, *self.AvailableMappings, command=self.MappingAlgCont)
+
+        # ---------------------------------------------
+        #           Local Search
+        # ---------------------------------------------
+        self.LS_Iter_Label = Tkinter.Label(self, text="LS Iterations:")
+        self.LS_Iter = Tkinter.Entry(self)
+        self.LS_Iter.insert(0, '100')
+
+        self.ILS_Iter_Label = Tkinter.Label(self, text="ILS Iterations:")
+        self.ILS_Iter = Tkinter.Entry(self)
+        self.ILS_Iter.insert(0, '10')
+
         # ---------------------------------------------
         #           Simulated Annealing
         # ---------------------------------------------
@@ -153,16 +168,28 @@ class ConfigAppp(Tkinter.Tk):
         self.SA_Delta.insert(0, '0.05')
 
         # ---------------------------------------------
+        #               Fault Injection
+        # ---------------------------------------------
+        self.FaultInjection = Tkinter.BooleanVar(self)
+        self.FaultInjectionEnable = Tkinter.Checkbutton(self, text="Event Driven Fault Injection",
+                                                       variable =self.FaultInjection,
+                                                       command =self.Fault_Injection)
+
         self.initialize()
 
 
     def initialize(self):
 
         self.grid()
-        self.LOGO.grid(column=1, row=0, columnspan=3)
+
+        LOGO = Tkinter.Label(self, text="SCHEDULE AND DEPEND CONFIG GUI", font="-weight bold")
+        LOGO.grid(column=1, row=0, columnspan=5)
+        ttk.Separator(self, orient='horizontal').grid(column=0, row=1, columnspan=8, sticky="ew")
+
         # ----------------------------------------
-        Tkinter.Label(self, text="Topology Settings").grid(column=self.Topology_StartingCol,
-                                                                     row=self.Topology_StartingRow)
+        Tkinter.Label(self, text="Topology Config",font="-weight bold").grid(column=self.Topology_StartingCol,
+                                                                             row=self.Topology_StartingRow,
+                                                                             columnspan=2)
         self.Topology.set('2DMesh')
         self.TopologyLabel.grid(column=self.Topology_StartingCol,row=self.Topology_StartingRow+1)
         self.TopologyOption.grid(column=self.Topology_StartingCol+1,row=self.Topology_StartingRow+1)
@@ -187,14 +214,15 @@ class ConfigAppp(Tkinter.Tk):
         self.NetworkSize_Z.config(state='disabled')
 
         ttk.Separator(self, orient='vertical').grid(column=self.Topology_StartingCol+2,
-                                                    row=self.Topology_StartingRow+1, rowspan=10, sticky="ns")
+                                                    row=self.Topology_StartingRow+1, rowspan=15, sticky="ns")
         ttk.Separator(self, orient='horizontal').grid(column=self.Topology_StartingCol,
                                                       row=self.Topology_StartingRow+5, columnspan=2, sticky="ew")
         # ----------------------------------------
         #                   TG
         # ----------------------------------------
-        Tkinter.Label(self, text="Task Graph Settings").grid(column=self.TG_StartingCol,
-                                                             row=self.TG_StartingRow)
+        Tkinter.Label(self, text="Task Graph Settings",font="-weight bold").grid(column=self.TG_StartingCol,
+                                                             row=self.TG_StartingRow,
+                                                             columnspan=2)
         self.TG_Label.grid(column=self.TG_StartingCol,row=self.TG_StartingRow+1)
         self.TGTypeOption.grid(column=self.TG_StartingCol+1,row=self.TG_StartingRow+1)
 
@@ -224,33 +252,56 @@ class ConfigAppp(Tkinter.Tk):
 
         ttk.Separator(self, orient='horizontal').grid(column=self.TG_StartingCol,
                                                       row=self.TG_StartingRow+8, columnspan=2, sticky="ew")
+
         # ----------------------------------------
         #                   CTG
         # ----------------------------------------
+        Tkinter.Label(self, text="Clustering Settings",font="-weight bold").grid(column=self.Cl_OptStartCol,
+                                                             row=self.Cl_OptStartRow,
+                                                             columnspan=2)
         self.ClusteringOptVar.set('False')
         self.ClusteringIterations.insert(0, '1000')
-        self.ClusteringOptEnable.grid(column=self.Cl_OptStartCol, row=self.Cl_OptStartRow)
-        ttk.Separator(self, orient='horizontal').grid(column=self.Cl_OptStartCol, row=self.Cl_OptStartRow+3,
+        self.ClusteringOptEnable.grid(column=self.Cl_OptStartCol, row=self.Cl_OptStartRow+1)
+
+        ttk.Separator(self, orient='horizontal').grid(column=self.Cl_OptStartCol, row=self.Cl_OptStartRow+4,
                                                       columnspan=2, sticky="ew")
+
         # ----------------------------------------
         #                   Mapping
         # ----------------------------------------
-        self.Mapping_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow)
-        self.MappingOption.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow)
+        Tkinter.Label(self, text="Mapping Settings",font="-weight bold").grid(column=self.Mapping_OptStartCol,
+                                                             row=self.Mapping_OptStartRow,
+                                                             columnspan=2)
+        self.Mapping_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+1)
+        self.MappingOption.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+1)
 
+
+        self.LS_Iter_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+2)
+        self.LS_Iter.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+2)
 
         ttk.Separator(self, orient='vertical').grid(column=self.Cl_OptStartCol+2,
-                                                    row=self.Cl_OptStartRow, rowspan=10, sticky="ns")
+                                                    row=self.Cl_OptStartRow+1, rowspan=15, sticky="ns")
         ttk.Separator(self, orient='horizontal').grid(column=self.Mapping_OptStartCol,
-                                                      row=self.Mapping_OptStartRow+9, columnspan=2, sticky="ew")
+                                                      row=self.Mapping_OptStartRow+10, columnspan=2, sticky="ew")
+
+
+        # ----------------------------------------
+        #               Fault
+        # ----------------------------------------
+        Tkinter.Label(self, text="Fault Settings",font="-weight bold").grid(column=self.Fault_StartingCol,
+                                                             row=self.Fault_StartingRow,
+                                                             columnspan=2)
+        self.FaultInjection.set('False')
+        self.FaultInjectionEnable.grid (column=self.Fault_StartingCol, row=self.Fault_StartingRow+1)
+
         # ----------------------------------------
         #                   Buttons
         # ----------------------------------------
         quitButton = Tkinter.Button(self, text="Apply", command=self.ApplyButton)
-        quitButton.grid(column=1,row=20)
+        quitButton.grid(column=3,row=20)
 
         quitButton = Tkinter.Button(self, text="cancel", command=self.CancelButton)
-        quitButton.grid(column=2,row=20)
+        quitButton.grid(column=4,row=20)
 
     def NetworkSizeCont(self, Topology):
         if '3D' in Topology:
@@ -260,8 +311,10 @@ class ConfigAppp(Tkinter.Tk):
             self.NetworkSize_Z.insert(0, 1)
             self.NetworkSize_Z.config(state='disabled')
 
+
     def TGTypeCont(self, TGType):
         if TGType == 'RandomDependent':
+
             self.NumOfTasks_Label.grid(column=self.TG_StartingCol,row=self.TG_StartingRow+2)
             self.NumOfTasks.grid(column=self.TG_StartingCol+1,row=self.TG_StartingRow+2)
             self.NumOfTasks.delete(0, 'end')
@@ -293,6 +346,7 @@ class ConfigAppp(Tkinter.Tk):
             self.Release_Range.insert(0, '5')
 
         elif TGType == 'RandomIndependent':
+
             self.NumOfTasks_Label.grid(column=self.TG_StartingCol,row=self.TG_StartingRow+2)
             self.NumOfTasks.grid(column=self.TG_StartingCol+1,row=self.TG_StartingRow+2)
             self.NumOfTasks.delete(0, 'end')
@@ -341,13 +395,13 @@ class ConfigAppp(Tkinter.Tk):
 
     def ClusteringCont(self):
         if self.ClusteringOptVar.get():
-            self.ClusteringIterLabel.grid(column=self.Cl_OptStartCol, row=self.Cl_OptStartRow + 1)
-            self.ClusteringIterations.grid(column=self.Cl_OptStartCol+1, row=self.Cl_OptStartRow + 1)
+            self.ClusteringIterLabel.grid(column=self.Cl_OptStartCol, row=self.Cl_OptStartRow + 2)
+            self.ClusteringIterations.grid(column=self.Cl_OptStartCol+1, row=self.Cl_OptStartRow + 2)
             self.ClusteringIterations.delete(0, 'end')
             self.ClusteringIterations.insert(0, '1000')
 
-            self.ClusteringCostLabel.grid(column=self.Cl_OptStartCol, row=self.Cl_OptStartRow + 2)
-            self.ClusterCostOpt.grid(column=self.Cl_OptStartCol+1, row=self.Cl_OptStartRow + 2)
+            self.ClusteringCostLabel.grid(column=self.Cl_OptStartCol, row=self.Cl_OptStartRow + 3)
+            self.ClusterCostOpt.grid(column=self.Cl_OptStartCol+1, row=self.Cl_OptStartRow + 3)
         else:
             self.ClusteringIterLabel.grid_forget()
             self.ClusteringIterations.grid_forget()
@@ -358,27 +412,24 @@ class ConfigAppp(Tkinter.Tk):
     def MappingAlgCont(self, Mapping):
         if self.Mapping.get() == 'SimulatedAnnealing':
             self.Annealing.set('Linear')
-            self.SA_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+1)
-            self.AnnealingOption.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+1)
+            self.SA_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+2)
+            self.AnnealingOption.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+2)
 
             self.SA_InitTemp.delete(0, 'end')
             self.SA_InitTemp.insert(0, '100')
-            self.SA_InitTemp_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+2)
-            self.SA_InitTemp.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+2)
+            self.SA_InitTemp_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+3)
+            self.SA_InitTemp.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+3)
 
             self.Termination.set('StopTemp')
-            self.SA_Term_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+3)
-            self.TerminationOption.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+3)
+            self.SA_Term_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+4)
+            self.TerminationOption.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+4)
 
             self.SA_Iterations.delete(0, 'end')
             self.SA_Iterations.insert(0, '100000')
-            self.SA_IterLabel.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+4)
-            self.SA_Iterations.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+4)
-
-
+            self.SA_IterLabel.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+5)
+            self.SA_Iterations.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+5)
 
         else:
-
             self.SA_InitTemp.grid_forget()
             self.SA_InitTemp_Label.grid_forget()
 
@@ -394,22 +445,64 @@ class ConfigAppp(Tkinter.Tk):
             self.SA_Label.grid_forget()
             self.AnnealingOption.grid_forget()
 
+            self.SA_Alpha_Label.grid_forget()
+            self.SA_Alpha.grid_forget()
+
+            self.SA_LoG_Const_Label.grid_forget()
+            self.SA_LoG_Const.grid_forget()
+
+            self.SA_Delta_Label.grid_forget()
+            self.SA_Delta.grid_forget()
+
+            self.MaxSteadyState_Label.grid_forget()
+            self.MaxSteadyState.grid_forget()
+
+            self.CostMonitorSlope_Label.grid_forget()
+            self.CostMonitorSlope.grid_forget()
+
+            self.MarkovNum_Label.grid_forget()
+            self.MarkovNum.grid_forget()
+
+            self.MarkovTempStep_Label.grid_forget()
+            self.MarkovTempStep.grid_forget()
+
+        if self.Mapping.get() in ['LocalSearch','IterativeLocalSearch'] :
+            self.LS_Iter.delete(0, 'end')
+            self.LS_Iter.insert(0, '100')
+            self.LS_Iter_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+2)
+            self.LS_Iter.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+2)
+
+        else:
+            self.LS_Iter_Label.grid_forget()
+            self.LS_Iter.grid_forget()
+
+        if self.Mapping.get()=='IterativeLocalSearch':
+            self.ILS_Iter.delete(0, 'end')
+            self.ILS_Iter.insert(0, '10')
+            self.ILS_Iter_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+3)
+            self.ILS_Iter.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+3)
+
+        else:
+            self.ILS_Iter_Label.grid_forget()
+            self.ILS_Iter.grid_forget()
+
+
     def Annealing_Termination(self, Annealing):
         if self.Mapping.get() == 'SimulatedAnnealing':
             if self.Annealing.get()=='Linear' or self.Termination.get()=='IterationNum':
                 self.SA_StopTemp.grid_forget()
                 self.SA_StopTemp_Label.grid_forget()
 
-                self.SA_IterLabel.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+4)
-                self.SA_Iterations.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+4)
+                self.SA_IterLabel.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+5)
+                self.SA_Iterations.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+5)
             elif self.Termination.get()=='StopTemp' and self.Annealing.get() != 'Linear':
                 self.SA_Iterations.grid_forget()
                 self.SA_IterLabel.grid_forget()
 
                 self.SA_StopTemp.delete(0, 'end')
                 self.SA_StopTemp.insert(0, '5')
-                self.SA_StopTemp_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+4)
-                self.SA_StopTemp.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+4)
+                self.SA_StopTemp_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+5)
+                self.SA_StopTemp.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+5)
             else:
                 self.SA_StopTemp.grid_forget()
                 self.SA_StopTemp_Label.grid_forget()
@@ -420,8 +513,8 @@ class ConfigAppp(Tkinter.Tk):
             if self.Annealing.get() in ['Exponential','Adaptive','Aart', 'Huang']:
                 self.SA_Alpha.delete(0, 'end')
                 self.SA_Alpha.insert(0, '0.999')
-                self.SA_Alpha_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+5)
-                self.SA_Alpha.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+5)
+                self.SA_Alpha_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+6)
+                self.SA_Alpha.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+6)
             else:
                 self.SA_Alpha_Label.grid_forget()
                 self.SA_Alpha.grid_forget()
@@ -429,8 +522,8 @@ class ConfigAppp(Tkinter.Tk):
             if self.Annealing.get() == 'Logarithmic':
                 self.SA_LoG_Const.delete(0, 'end')
                 self.SA_LoG_Const.insert(0, '1000')
-                self.SA_LoG_Const_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+5)
-                self.SA_LoG_Const.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+5)
+                self.SA_LoG_Const_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+6)
+                self.SA_LoG_Const.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+6)
             else:
                 self.SA_LoG_Const_Label.grid_forget()
                 self.SA_LoG_Const.grid_forget()
@@ -439,13 +532,13 @@ class ConfigAppp(Tkinter.Tk):
 
                 self.CostMonitorSlope.delete(0, 'end')
                 self.CostMonitorSlope.insert(0, '0.02')
-                self.CostMonitorSlope_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+7)
-                self.CostMonitorSlope.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+7)
+                self.CostMonitorSlope_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+8)
+                self.CostMonitorSlope.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+8)
 
                 self.MaxSteadyState.delete(0, 'end')
                 self.MaxSteadyState.insert(0, '30000')
-                self.MaxSteadyState_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+8)
-                self.MaxSteadyState.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+8)
+                self.MaxSteadyState_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+9)
+                self.MaxSteadyState.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+9)
 
 
             else:
@@ -459,13 +552,13 @@ class ConfigAppp(Tkinter.Tk):
             if self.Annealing.get() == 'Markov':
                 self.MarkovNum.delete(0, 'end')
                 self.MarkovNum.insert(0, '2000')
-                self.MarkovNum_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+5)
-                self.MarkovNum.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+5)
+                self.MarkovNum_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+6)
+                self.MarkovNum.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+6)
 
                 self.MarkovTempStep.delete(0, 'end')
                 self.MarkovTempStep.insert(0, '1')
-                self.MarkovTempStep_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+6)
-                self.MarkovTempStep.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+6)
+                self.MarkovTempStep_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+7)
+                self.MarkovTempStep.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+7)
             else:
                 self.MarkovNum_Label.grid_forget()
                 self.MarkovNum.grid_forget()
@@ -476,8 +569,8 @@ class ConfigAppp(Tkinter.Tk):
             if self.Annealing.get() in ['Aart', 'Adaptive', 'Huang']:
                 self.CostMonitor.delete(0, 'end')
                 self.CostMonitor.insert(0, '2000')
-                self.CostMonitor_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+6)
-                self.CostMonitor.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+6)
+                self.CostMonitor_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+7)
+                self.CostMonitor.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+7)
 
             else:
                 self.CostMonitor_Label.grid_forget()
@@ -486,11 +579,16 @@ class ConfigAppp(Tkinter.Tk):
             if self.Annealing.get() in ['Aart', 'Huang']:
                 self.SA_Delta.delete(0, 'end')
                 self.SA_Delta.insert(0, '0.05')
-                self.SA_Delta_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+7)
-                self.SA_Delta.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+7)
+                self.SA_Delta_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+8)
+                self.SA_Delta.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+8)
             else:
                 self.SA_Delta_Label.grid_forget()
                 self.SA_Delta.grid_forget()
+
+    def Fault_Injection(self):
+        if self.FaultInjection.get():
+            pass
+
 
 
     def ApplyButton(self):
@@ -517,6 +615,10 @@ class ConfigAppp(Tkinter.Tk):
         Config.Clustering_CostFunctionType = self.ClusterCost.get()
 
         # Mapping Config
+
+        Config.LocalSearchIteration = int(self.LS_Iter.get())
+        Config.IterativeLocalSearchIterations = int(self.ILS_Iter.get())
+
         Config.Mapping_Function = self.Mapping.get()
         Config.SA_AnnealingSchedule = self.Annealing.get()
         Config.TerminationCriteria = self.Termination.get()
@@ -531,6 +633,9 @@ class ConfigAppp(Tkinter.Tk):
         Config.MarkovTempStep = float(self.MarkovTempStep.get())
         Config.MarkovNum = int(self.MarkovNum.get())
         Config.Delta = float(self.SA_Delta.get())
+
+        # Fault Config
+        Config.EventDrivenFaultInjection = self.FaultInjection.get()
 
         self.destroy()
 
