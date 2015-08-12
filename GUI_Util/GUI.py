@@ -4,6 +4,7 @@
 import Tkinter
 import ttk
 from ConfigAndPackages import Config
+from ConfigAndPackages import PackageFile
 
 class ConfigAppp(Tkinter.Tk):
 
@@ -828,6 +829,28 @@ class ConfigAppp(Tkinter.Tk):
             Config.Mapping_Drawing = self.Mapping_Draw.get()
             Config.RG_Draw = self.RG_Draw.get()
             Config.SHM_Drawing = self.SHM_Draw.get()
+
+            # Routing Confing
+            if '3D' in self.Topology.get():
+                if self.RoutingAlg.get() == 'Negative First':
+                    Config.UsedTurnModel = PackageFile.NegativeFirst3D_TurnModel
+                elif self.RoutingAlg.get() == 'XYZ':
+                    Config.UsedTurnModel = PackageFile.XYZ_TurnModel
+            elif '2D' in self.Topology.get():
+                if self.RoutingAlg.get() == 'XY':
+                    Config.UsedTurnModel = PackageFile.XY_TurnModel
+                elif self.RoutingAlg.get() == 'West First':
+                    Config.UsedTurnModel = PackageFile.WestFirst_TurnModel
+                elif self.RoutingAlg.get() == 'North Last':
+                    Config.UsedTurnModel = PackageFile.NorthLast_TurnModel
+                elif self.RoutingAlg.get() == 'Negative First':
+                    Config.UsedTurnModel = PackageFile.NegativeFirst2D_TurnModel
+
+            if self.RoutingAlg.get() == 'XY':
+                if self.RoutingType.get()=='Please Select...':
+                    Config.RotingType = 'MinimalPath'
+            else:
+                Config.RotingType = self.RoutingType.get()
 
             self.Apply_Button = True
             self.destroy()
