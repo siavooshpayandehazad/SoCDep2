@@ -15,7 +15,7 @@ app = GUI.ConfigAppp(None)
 app.title('Schedule And Depend')
 app.mainloop()
 
-if not app.Cancel_Button:
+if app.Apply_Button:
     ProgramStartTime = time.time()
     ##############################
     # Just for getting a copy of the current console

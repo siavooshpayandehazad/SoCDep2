@@ -7,7 +7,7 @@ from ConfigAndPackages import Config
 
 class ConfigAppp(Tkinter.Tk):
 
-    Cancel_Button = False
+    Apply_Button = False
 
     Cl_OptStartRow = 2
     Cl_OptStartCol = 3
@@ -21,9 +21,19 @@ class ConfigAppp(Tkinter.Tk):
     TG_StartingRow = 8
     TG_StartingCol = 0
 
+
+    Routing_StartingRow = 17
+    Routing_StartingCol = 0
+
     Fault_StartingRow = 2
     Fault_StartingCol = 6
 
+    Viz_StartingRow = 7
+    Viz_StartingCol = 6
+
+    RoutingDict = {'2D': ['XY', 'West First', 'North Last', 'Negative First'],
+                   '3D':['XYZ', 'Negative First'],
+                    }
 
     MappingDict = {'Manual': ['LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing',
                                'NMap','MinMin', 'MaxMin', 'MinExecutionTime', 'MinimumCompletionTime'],
@@ -73,6 +83,20 @@ class ConfigAppp(Tkinter.Tk):
 
         self.Release_Range_Label = Tkinter.Label(self, text="Task Release Range:")
         self.Release_Range = Tkinter.Entry(self)
+        # ---------------------------------------------
+        #                   Routing
+        # ---------------------------------------------
+        self.RoutingLabel = Tkinter.Label(self, text="Routing Algorithm:")
+        AvailableRoutings = self.RoutingDict['2D']
+        self.RoutingAlg = Tkinter.StringVar()
+        self.RoutingAlg.set(self.RoutingDict['2D'][0])
+        self.RoutingAlgOption = Tkinter.OptionMenu(self, self.RoutingAlg, *AvailableRoutings, command=self.RoutingFunc)
+
+        self.RoutingTypeLabel = Tkinter.Label(self, text="Routing type:")
+        AvailableRoutingsTypes = ['MinimalPath', 'NonMinimalPath']
+        self.RoutingType = Tkinter.StringVar()
+        self.RoutingType.set('MinimalPath')
+        self.RoutingTypeOption = Tkinter.OptionMenu(self, self.RoutingType, *AvailableRoutingsTypes)
 
         # ---------------------------------------------
         #                   Clustering
@@ -93,11 +117,11 @@ class ConfigAppp(Tkinter.Tk):
         #                   Mapping
         # ---------------------------------------------
         self.Mapping_Label = Tkinter.Label(self, text="Mapping Algorithm:")
-        self.AvailableMappings = ['MinMin', 'MaxMin', 'MinExecutionTime', 'MinimumCompletionTime',
-                                  'LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing', 'NMap']
+        AvailableMappings = ['MinMin', 'MaxMin', 'MinExecutionTime', 'MinimumCompletionTime',
+                             'LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing', 'NMap']
         self.Mapping = Tkinter.StringVar(self)
         self.Mapping.set('LocalSearch')
-        self.MappingOption = Tkinter.OptionMenu(self, self.Mapping, *self.AvailableMappings, command=self.MappingAlgCont)
+        self.MappingOption = Tkinter.OptionMenu(self, self.Mapping, *AvailableMappings, command=self.MappingAlgCont)
 
         self.MappingCostLabel = Tkinter.Label(self, text="Cost Function Type:")
         AvailableMappingCosts = ['SD', 'SD+MAX', 'CONSTANT']
@@ -189,6 +213,30 @@ class ConfigAppp(Tkinter.Tk):
                                                        variable =self.FaultInjection,
                                                        command =self.Fault_Injection)
 
+        self.MTBF_Label = Tkinter.Label(self, text="MTBF (sec):")
+        self.MTBF = Tkinter.Entry(self)
+        self.MTBF.insert(0, '2')
+
+        self.SDMTBF_Label = Tkinter.Label(self, text="TBF's Standard Deviation:")
+        self.SDMTBF = Tkinter.Entry(self)
+        self.SDMTBF.insert(0, '0.1')
+
+        # ---------------------------------------------
+        #               Viz
+        # ---------------------------------------------
+        self.RG_Draw = Tkinter.BooleanVar(self)
+        self.RG_Draw.set('False')
+        self.RG_DrawEnable = Tkinter.Checkbutton(self, text="Routing Graph", variable=self.RG_Draw)
+
+        self.SHM_Draw = Tkinter.BooleanVar(self)
+        self.SHM_Draw.set('False')
+        self.SHM_DrawEnable = Tkinter.Checkbutton(self, text="System Health Map", variable=self.SHM_Draw)
+
+        self.Mapping_Draw = Tkinter.BooleanVar(self)
+        self.Mapping_Draw.set('False')
+        self.Mapping_DrawEnable = Tkinter.Checkbutton(self, text="Mapping Report", variable=self.Mapping_Draw)
+
+        self.ErrorMessage=Tkinter.Label(self, text="",font="-weight bold", fg="red")
         self.initialize()
 
 
@@ -267,6 +315,18 @@ class ConfigAppp(Tkinter.Tk):
         ttk.Separator(self, orient='horizontal').grid(column=self.TG_StartingCol,
                                                       row=self.TG_StartingRow+8, columnspan=2, sticky="ew")
 
+        # ---------------------------------------------
+        #                   Routing
+        # ---------------------------------------------
+        Tkinter.Label(self, text="Routing Settings",font="-weight bold").grid(column=self.Routing_StartingCol,
+                                                             row=self.Routing_StartingRow,
+                                                             columnspan=2)
+        self.RoutingLabel.grid(column=self.Routing_StartingCol, row=self.Routing_StartingRow+1)
+        self.RoutingAlgOption.grid(column=self.Routing_StartingCol+1, row=self.Routing_StartingRow+1)
+
+        self.RoutingTypeLabel.grid(column=self.Routing_StartingCol, row=self.Routing_StartingRow+2)
+        self.RoutingTypeOption.grid(column=self.Routing_StartingCol+1, row=self.Routing_StartingRow+2)
+        self.RoutingTypeOption.config(state='disable')
         # ----------------------------------------
         #                   CTG
         # ----------------------------------------
@@ -299,8 +359,6 @@ class ConfigAppp(Tkinter.Tk):
                                                     row=self.Cl_OptStartRow+1, rowspan=15, sticky="ns")
         ttk.Separator(self, orient='horizontal').grid(column=self.Mapping_OptStartCol,
                                                       row=self.Mapping_OptStartRow+12, columnspan=2, sticky="ew")
-
-
         # ----------------------------------------
         #               Fault
         # ----------------------------------------
@@ -308,11 +366,28 @@ class ConfigAppp(Tkinter.Tk):
                                                              row=self.Fault_StartingRow,
                                                              columnspan=2)
         self.FaultInjection.set('False')
-        self.FaultInjectionEnable.grid (column=self.Fault_StartingCol, row=self.Fault_StartingRow+1)
+        self.FaultInjectionEnable.grid(column=self.Fault_StartingCol, row=self.Fault_StartingRow+1)
 
+        ttk.Separator(self, orient='horizontal').grid(column=self.Fault_StartingCol,
+                                                      row=self.Fault_StartingRow+4, columnspan=2, sticky="ew")
+
+
+        # ----------------------------------------
+        #                   Viz
+        # ----------------------------------------
+        Tkinter.Label(self, text="Visualization Config",font="-weight bold").grid(column=self.Viz_StartingCol,
+                      row=self.Viz_StartingRow, columnspan=2)
+
+        self.SHM_DrawEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+1, sticky='W')
+        self.RG_DrawEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+2, sticky='W')
+        self.Mapping_DrawEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+3, sticky='W')
         # ----------------------------------------
         #                   Buttons
         # ----------------------------------------
+
+        self.ErrorMessage.grid(column=1, row=20, columnspan=2)
+
+
         quitButton = Tkinter.Button(self, text="Apply", command=self.ApplyButton)
         quitButton.grid(column=3,row=20)
 
@@ -325,7 +400,22 @@ class ConfigAppp(Tkinter.Tk):
     def NetworkSizeCont(self, Topology):
         if '3D' in Topology:
             self.NetworkSize_Z.config(state='normal')
+            self.RoutingAlgOption.grid_forget()
+            del self.RoutingAlgOption
+            self.RoutingAlg.set('Please Select...')
+            self.RoutingAlgOption = Tkinter.OptionMenu(self, self.RoutingAlg, *self.RoutingDict['3D'], command=self.RoutingFunc)
+            self.RoutingAlgOption.grid(column=self.Routing_StartingCol+1, row=self.Routing_StartingRow+1)
+            self.RoutingType.set("Please Select...")
+            self.RoutingTypeOption.config(state='disable')
         else:
+            self.RoutingAlgOption.grid_forget()
+            del self.RoutingAlgOption
+            self.RoutingAlg.set('Please Select...')
+            self.RoutingAlgOption = Tkinter.OptionMenu(self, self.RoutingAlg, *self.RoutingDict['2D'], command=self.RoutingFunc)
+            self.RoutingAlgOption.grid(column=self.Routing_StartingCol+1, row=self.Routing_StartingRow+1)
+            self.RoutingType.set("Please Select...")
+            self.RoutingTypeOption.config(state='disable')
+
             self.NetworkSize_Z.delete(0, 'end')
             self.NetworkSize_Z.insert(0, 1)
             self.NetworkSize_Z.config(state='disabled')
@@ -430,6 +520,12 @@ class ConfigAppp(Tkinter.Tk):
 
             self.EdgeWeight_Range.grid_forget()
             self.EdgeWeight_Range_Label.grid_forget()
+
+    def RoutingFunc(self, Routing):
+        if self.RoutingAlg.get() == 'XY':
+            self.RoutingTypeOption.config(state='disable')
+        else:
+            self.RoutingTypeOption.config(state='normal')
 
     def ClusteringCont(self):
         if self.ClusteringOptVar.get():
@@ -650,59 +746,94 @@ class ConfigAppp(Tkinter.Tk):
 
     def Fault_Injection(self):
         if self.FaultInjection.get():
-            pass
+            self.MTBF_Label.grid(column=self.Fault_StartingCol, row=self.Fault_StartingRow+2)
+            self.MTBF.grid(column=self.Fault_StartingCol+1, row=self.Fault_StartingRow+2)
 
+            self.SDMTBF_Label.grid(column=self.Fault_StartingCol, row=self.Fault_StartingRow+3)
+            self.SDMTBF.grid(column=self.Fault_StartingCol+1, row=self.Fault_StartingRow+3)
+        else:
+            self.MTBF_Label.grid_forget()
+            self.MTBF.grid_forget()
+            self.SDMTBF_Label.grid_forget()
+            self.SDMTBF.grid_forget()
+
+    def CheckForErrors(self):
+        if self.Mapping.get()=='Please Select...':
+            self.ErrorMessage.config(text = "Please Select Mapping Algorithm" )
+            return False
+
+        elif self.RoutingAlg.get()=='Please Select...':
+            self.ErrorMessage.config(text = "Please Select Routing Algorithm" )
+            return False
+
+        elif self.RoutingType.get()=='Please Select...':
+            if self.RoutingAlg.get() != 'XY':
+                self.ErrorMessage.config(text = "Please Select Routing Type" )
+                return False
+            else:
+                self.ErrorMessage.config(text = "" )
+                return True
+        else:
+            self.ErrorMessage.config(text = "" )
+            return True
 
     def ApplyButton(self):
         # apply changes...
+        if self.CheckForErrors():
+            # TG Config
+            Config.TG_Type = self.TGType.get()
+            Config.NumberOfTasks = int(self.NumOfTasks.get())
+            Config.NumberOfCriticalTasks = int(self.NumOfCritTasks.get())
+            Config.NumberOfEdges = int(self.NumOfEdge.get())
+            Config.WCET_Range = int(self.WCET_Range.get())
+            Config.EdgeWeightRange = int(self.EdgeWeight_Range.get())
+            Config.Release_Range = int(self.Release_Range.get())
 
-        # TG Config
-        Config.TG_Type = self.TGType.get()
-        Config.NumberOfTasks = int(self.NumOfTasks.get())
-        Config.NumberOfCriticalTasks = int(self.NumOfCritTasks.get())
-        Config.NumberOfEdges = int(self.NumOfEdge.get())
-        Config.WCET_Range = int(self.WCET_Range.get())
-        Config.EdgeWeightRange = int(self.EdgeWeight_Range.get())
-        Config.Release_Range = int(self.Release_Range.get())
+            # Topology Config
+            Config.NetworkTopology = self.Topology.get()
+            Config.Network_X_Size = int(self.NetworkSize_X.get())
+            Config.Network_Y_Size = int(self.NetworkSize_Y.get())
+            Config.Network_Z_Size = int(self.NetworkSize_Z.get())
 
-        # Topology Config
-        Config.NetworkTopology = self.Topology.get()
-        Config.Network_X_Size = int(self.NetworkSize_X.get())
-        Config.Network_Y_Size = int(self.NetworkSize_Y.get())
-        Config.Network_Z_Size = int(self.NetworkSize_Z.get())
+            # Clustering Config
+            Config.ClusteringIteration =  int(self.ClusteringIterations.get())
+            Config.Clustering_Optimization = self.ClusteringOptVar.get()
+            Config.Clustering_CostFunctionType = self.ClusterCost.get()
 
-        # Clustering Config
-        Config.ClusteringIteration =  int(self.ClusteringIterations.get())
-        Config.Clustering_Optimization = self.ClusteringOptVar.get()
-        Config.Clustering_CostFunctionType = self.ClusterCost.get()
+            # Mapping Config
 
-        # Mapping Config
+            Config.Mapping_CostFunctionType = self.MappingCost.get()
 
-        Config.Mapping_CostFunctionType = self.MappingCost.get()
+            Config.LocalSearchIteration = int(self.LS_Iter.get())
+            Config.IterativeLocalSearchIterations = int(self.ILS_Iter.get())
 
-        Config.LocalSearchIteration = int(self.LS_Iter.get())
-        Config.IterativeLocalSearchIterations = int(self.ILS_Iter.get())
+            Config.Mapping_Function = self.Mapping.get()
+            Config.SA_AnnealingSchedule = self.Annealing.get()
+            Config.TerminationCriteria = self.Termination.get()
+            Config.SimulatedAnnealingIteration = int(self.SA_Iterations.get())
+            Config.SA_InitialTemp =  int(self.SA_InitTemp.get())
+            Config.SA_StopTemp = int(self.SA_StopTemp.get())
+            Config.SA_Alpha = float(self.SA_Alpha.get())
+            Config.LogCoolingConstant = int(self.SA_LoG_Const.get())
+            Config.CostMonitorQueSize = int(self.CostMonitor.get())
+            Config.SlopeRangeForCooling = float(self.CostMonitorSlope.get())
+            Config.MaxSteadyState = int(self.MaxSteadyState.get())
+            Config.MarkovTempStep = float(self.MarkovTempStep.get())
+            Config.MarkovNum = int(self.MarkovNum.get())
+            Config.Delta = float(self.SA_Delta.get())
 
-        Config.Mapping_Function = self.Mapping.get()
-        Config.SA_AnnealingSchedule = self.Annealing.get()
-        Config.TerminationCriteria = self.Termination.get()
-        Config.SimulatedAnnealingIteration = int(self.SA_Iterations.get())
-        Config.SA_InitialTemp =  int(self.SA_InitTemp.get())
-        Config.SA_StopTemp = int(self.SA_StopTemp.get())
-        Config.SA_Alpha = float(self.SA_Alpha.get())
-        Config.LogCoolingConstant = int(self.SA_LoG_Const.get())
-        Config.CostMonitorQueSize = int(self.CostMonitor.get())
-        Config.SlopeRangeForCooling = float(self.CostMonitorSlope.get())
-        Config.MaxSteadyState = int(self.MaxSteadyState.get())
-        Config.MarkovTempStep = float(self.MarkovTempStep.get())
-        Config.MarkovNum = int(self.MarkovNum.get())
-        Config.Delta = float(self.SA_Delta.get())
+            # Fault Config
+            Config.EventDrivenFaultInjection = self.FaultInjection.get()
+            Config.MTBF = float(self.MTBF.get())
+            Config.SD4MTBF = float(self.SDMTBF.get())
 
-        # Fault Config
-        Config.EventDrivenFaultInjection = self.FaultInjection.get()
+            # Viz Config
+            Config.Mapping_Drawing = self.Mapping_Draw.get()
+            Config.RG_Draw = self.RG_Draw.get()
+            Config.SHM_Drawing = self.SHM_Draw.get()
 
-        self.destroy()
+            self.Apply_Button = True
+            self.destroy()
 
     def CancelButton(self):
-        self.Cancel_Button = True
         self.destroy()
