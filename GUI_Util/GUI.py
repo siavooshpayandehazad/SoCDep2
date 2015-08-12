@@ -333,6 +333,13 @@ class ConfigAppp(Tkinter.Tk):
 
     def TGTypeCont(self, TGType):
         if TGType == 'RandomDependent':
+            self.MappingOption.grid_forget()
+            del self.MappingOption
+            self.Mapping.set('Please Select...')
+            self.MappingOption = Tkinter.OptionMenu(self, self.Mapping, *self.MappingDict['RandomDependent'], command=self.MappingAlgCont)
+            self.MappingOption.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+1)
+            self.ClearMapping()
+
             self.NumOfTasks_Label.grid(column=self.TG_StartingCol,row=self.TG_StartingRow+2)
             self.NumOfTasks.grid(column=self.TG_StartingCol+1,row=self.TG_StartingRow+2)
             self.NumOfTasks.delete(0, 'end')
@@ -364,6 +371,13 @@ class ConfigAppp(Tkinter.Tk):
             self.Release_Range.insert(0, '5')
 
         elif TGType == 'RandomIndependent':
+            self.MappingOption.grid_forget()
+            del self.MappingOption
+            self.Mapping.set('Please Select...')
+            self.MappingOption = Tkinter.OptionMenu(self, self.Mapping, *self.MappingDict['RandomIndependent'], command=self.MappingAlgCont)
+            self.MappingOption.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+1)
+            self.ClearMapping()
+
             self.NumOfTasks_Label.grid(column=self.TG_StartingCol,row=self.TG_StartingRow+2)
             self.NumOfTasks.grid(column=self.TG_StartingCol+1,row=self.TG_StartingRow+2)
             self.NumOfTasks.delete(0, 'end')
@@ -392,6 +406,13 @@ class ConfigAppp(Tkinter.Tk):
             self.EdgeWeight_Range_Label.grid_forget()
 
         elif TGType == 'Manual':
+            self.MappingOption.grid_forget()
+            del self.MappingOption
+            self.Mapping.set('Please Select...')
+            self.MappingOption = Tkinter.OptionMenu(self, self.Mapping, *self.MappingDict['Manual'], command=self.MappingAlgCont)
+            self.MappingOption.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+1)
+            self.ClearMapping()
+
             self.NumOfTasks_Label.grid_forget()
             self.NumOfTasks.grid_forget()
 
@@ -426,8 +447,18 @@ class ConfigAppp(Tkinter.Tk):
             self.ClusterCostOpt.grid_forget()
 
 
-    def MappingAlgCont(self, Mapping):
 
+    def ClearMapping(self):
+        self.Clear_SA_Mapping()
+        self.LS_Iter_Label.grid_forget()
+        self.LS_Iter.grid_forget()
+        self.ILS_Iter_Label.grid_forget()
+        self.ILS_Iter.grid_forget()
+        self.MappingCostLabel.grid_forget()
+        self.MappingCostOpt.grid_forget()
+
+
+    def MappingAlgCont(self, Mapping):
         if self.Mapping.get() in ['SimulatedAnnealing','LocalSearch','IterativeLocalSearch']:
             self.MappingCostLabel.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+2)
             self.MappingCostOpt.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+2)
@@ -607,6 +638,9 @@ class ConfigAppp(Tkinter.Tk):
 
         self.CostMonitorSlope_Label.grid_forget()
         self.CostMonitorSlope.grid_forget()
+
+        self.CostMonitor_Label.grid_forget()
+        self.CostMonitor.grid_forget()
 
         self.MarkovNum_Label.grid_forget()
         self.MarkovNum.grid_forget()
