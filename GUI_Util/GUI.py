@@ -117,11 +117,9 @@ class ConfigAppp(Tkinter.Tk):
         #                   Mapping
         # ---------------------------------------------
         self.Mapping_Label = Tkinter.Label(self, text="Mapping Algorithm:")
-        AvailableMappings = ['MinMin', 'MaxMin', 'MinExecutionTime', 'MinimumCompletionTime',
-                             'LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing', 'NMap']
         self.Mapping = Tkinter.StringVar(self)
         self.Mapping.set('LocalSearch')
-        self.MappingOption = Tkinter.OptionMenu(self, self.Mapping, *AvailableMappings, command=self.MappingAlgCont)
+        self.MappingOption = Tkinter.OptionMenu(self, self.Mapping, *self.MappingDict['RandomDependent'], command=self.MappingAlgCont)
 
         self.MappingCostLabel = Tkinter.Label(self, text="Cost Function Type:")
         AvailableMappingCosts = ['SD', 'SD+MAX', 'CONSTANT']
@@ -276,7 +274,7 @@ class ConfigAppp(Tkinter.Tk):
         self.NetworkSize_Z.config(state='disabled')
 
         ttk.Separator(self, orient='vertical').grid(column=self.Topology_StartingCol+2,
-                                                    row=self.Topology_StartingRow+1, rowspan=15, sticky="ns")
+                                                    row=self.Topology_StartingRow+1, rowspan=17, sticky="ns")
         ttk.Separator(self, orient='horizontal').grid(column=self.Topology_StartingCol,
                                                       row=self.Topology_StartingRow+5, columnspan=2, sticky="ew")
         # ----------------------------------------
@@ -356,9 +354,9 @@ class ConfigAppp(Tkinter.Tk):
         self.LS_Iter.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+3)
 
         ttk.Separator(self, orient='vertical').grid(column=self.Cl_OptStartCol+2,
-                                                    row=self.Cl_OptStartRow+1, rowspan=15, sticky="ns")
+                                                    row=self.Cl_OptStartRow+1, rowspan=17, sticky="ns")
         ttk.Separator(self, orient='horizontal').grid(column=self.Mapping_OptStartCol,
-                                                      row=self.Mapping_OptStartRow+12, columnspan=2, sticky="ew")
+                                                      row=self.Mapping_OptStartRow+11, columnspan=2, sticky="ew")
         # ----------------------------------------
         #               Fault
         # ----------------------------------------
@@ -370,7 +368,6 @@ class ConfigAppp(Tkinter.Tk):
 
         ttk.Separator(self, orient='horizontal').grid(column=self.Fault_StartingCol,
                                                       row=self.Fault_StartingRow+4, columnspan=2, sticky="ew")
-
 
         # ----------------------------------------
         #                   Viz
