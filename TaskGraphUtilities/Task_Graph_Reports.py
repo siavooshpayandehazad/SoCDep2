@@ -74,9 +74,9 @@ def DrawTaskGraph(TG):
                     Counter+=1
                     pos[node] = (Counter*(width/NumTasksWithSameDistance), (MaxDistance-CurrentDistance)*height/MaxDistance)
 
-    networkx.draw_networkx_nodes(TG, pos, with_labels=True, node_color=NodeColors, node_size= 200,font_size=10)
+    networkx.draw_networkx_nodes(TG, pos, with_labels=True, node_color=NodeColors, node_size= 200, font_size=10)
 
-    networkx.draw_networkx_edges(TG, pos, edge_color=TG_Edge_Weight, edge_cmap=plt.cm.Reds,width = 3, arrows= False)
+    networkx.draw_networkx_edges(TG, pos, edge_color=TG_Edge_Weight, edge_cmap=plt.cm.Reds, width=3, arrows= False)
     networkx.draw_networkx_edges(TG, pos,  arrows= False, width = 0.5)
     networkx.draw_networkx_labels(TG, pos)
     #networkx.draw_networkx_edge_labels(TG, pos, edge_labels=dict(zip(TG_Edge_List, TG_Edge_Weight)), font_size=10, label_pos=0.7)

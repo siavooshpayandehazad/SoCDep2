@@ -520,7 +520,7 @@ class ConfigAppp(Tkinter.Tk):
             self.EdgeWeight_Range_Label.grid_forget()
 
     def RoutingFunc(self, Routing):
-        if self.RoutingAlg.get() == 'XY':
+        if self.RoutingAlg.get() in ['XY', 'XYZ']:
             self.RoutingTypeOption.config(state='disable')
         else:
             self.RoutingTypeOption.config(state='normal')
@@ -765,7 +765,7 @@ class ConfigAppp(Tkinter.Tk):
             return False
 
         elif self.RoutingType.get()=='Please Select...':
-            if self.RoutingAlg.get() != 'XY':
+            if self.RoutingAlg.get() != 'XY' or self.RoutingAlg.get() != 'XYZ':
                 self.ErrorMessage.config(text = "Please Select Routing Type" )
                 return False
             else:
@@ -846,7 +846,7 @@ class ConfigAppp(Tkinter.Tk):
                 elif self.RoutingAlg.get() == 'Negative First':
                     Config.UsedTurnModel = PackageFile.NegativeFirst2D_TurnModel
 
-            if self.RoutingAlg.get() == 'XY':
+            if self.RoutingAlg.get() in ['XY', 'XYZ']:
                 if self.RoutingType.get()=='Please Select...':
                     Config.RotingType = 'MinimalPath'
             else:
