@@ -147,6 +147,7 @@ def GenerateGanttCharts(TG,AG):
         if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
             ax1 = fig.add_subplot(NumberOfPlots,1,Count)
             SchedulList= []
+            Zorder = len(AG.edge[Link[0]][Link[1]]['MappedTasks'])
             for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
                 PE_T = []
                 PE_P = []
@@ -162,7 +163,6 @@ def GenerateGanttCharts(TG,AG):
 
                 if Task in AG.edge[Link[0]][Link[1]]['Scheduling']:
                     if TG.edge[Task[0]][Task[1]]['Criticality']=='H':
-
                         for BatchAndSchedule in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
                             StartTime = BatchAndSchedule[0]
                             BatchNum = BatchAndSchedule[2]
@@ -188,24 +188,77 @@ def GenerateGanttCharts(TG,AG):
                                 Slack_P.append(0.1)
                                 Slack_T.append(EndTime)
                                 Slack_P.append(0)
-                        SchedulList.append((StartTime,EndTime))
+                        SchedulList.append((StartTime,EndTime,1))
+                        Zorder -= 1
                     else:
                         for BatchAndSchedule in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
-                            #Prob = 0
+
                             StartTime = BatchAndSchedule[0]
                             EndTime = BatchAndSchedule[1]
                             BatchNum = BatchAndSchedule[2]
                             Prob = BatchAndSchedule[3]
-                            #for BatchAndProb in AG.edge[Link[0]][Link[1]]['MappedTasks'][Task]:
-                            #    if BatchAndProb[0] == BatchNum:
-                            #        Prob = BatchAndProb[1]
-                            #        break
+
 
                             PE_T.append(StartTime)
                             PE_P.append(0)
                             PE_T.append(StartTime)
                             PE_P.append(0.1 * Prob)
+                            '''
+                            PastProb = 0
+                            for AddedRect in SchedulList:
+                                if AddedRect[0] <= StartTime < AddedRect[1]:
+                                        PastProb += AddedRect[2]
 
+                            if PastProb > 0:
+                                PE_T.append(StartTime)
+                                PE_P.append(0.1 * BatchAndSchedule[3]+PastProb)
+
+                            # -----------------------------------------
+
+                            PastProb = 0
+                            for AddedRect in SchedulList:
+                                if StartTime < AddedRect[0] <  EndTime:
+                                    for OtherAddedRect in SchedulList:
+                                        if OtherAddedRect[0] < AddedRect[1] < OtherAddedRect[1]:
+                                            PastProb += OtherAddedRect[2]
+
+
+                                if PastProb > 0:
+                                    PE_T.append(AddedRect[0])
+                                    PE_P.append(0.1 * Prob)
+
+                                    PE_T.append(AddedRect[0])
+                                    PE_P.append(0.1 * (BatchAndSchedule[3]+PastProb+AddedRect[2]))
+
+                            # -----------------------------------------
+
+
+                            for AddedRect in SchedulList:
+                                PastProb = 0
+                                if StartTime < AddedRect[1] < EndTime:
+                                    for OtherAddedRect in SchedulList:
+                                        if OtherAddedRect[0] < AddedRect[1] < OtherAddedRect[1]:
+                                            PastProb += OtherAddedRect[2]
+
+                                    if PastProb > 0:
+                                        PE_T.append(AddedRect[1])
+                                        PE_P.append(0.1 * (BatchAndSchedule[3]+PastProb+AddedRect[2]))
+
+                                        PE_T.append(AddedRect[1])
+                                        PE_P.append(0.1 * (BatchAndSchedule[3]+PastProb))
+
+
+                            # -----------------------------------------
+                            PastProb = 0
+                            for AddedRect in SchedulList:
+                                if AddedRect[0] < EndTime <= AddedRect[1]:
+                                        PastProb += AddedRect[2]
+
+                            if PastProb > 0:
+                                PE_T.append(EndTime)
+                                PE_P.append(0.1 * (BatchAndSchedule[3]+PastProb))
+
+                            '''
                             PE_T.append(EndTime)
                             PE_P.append(0.1 * Prob)
                             PE_T.append(EndTime)
@@ -216,7 +269,8 @@ def GenerateGanttCharts(TG,AG):
                             b = random.randrange(0, 255)
                             EdgeColor = '#%02X%02X%02X' % (r, g, b)
                             #EdgeColor = '#CFECFF'
-                            SchedulList.append((StartTime,EndTime))
+                            SchedulList.append((StartTime,EndTime,BatchAndSchedule[3]))
+                            Zorder -= 1
 
                 PE_T.append(Max_Time)
                 PE_P.append(0)
