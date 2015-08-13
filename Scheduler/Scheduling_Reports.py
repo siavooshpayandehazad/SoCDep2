@@ -191,15 +191,15 @@ def GenerateGanttCharts(TG,AG):
                         SchedulList.append((StartTime,EndTime))
                     else:
                         for BatchAndSchedule in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
-                            Prob = 0
+                            #Prob = 0
                             StartTime = BatchAndSchedule[0]
                             EndTime = BatchAndSchedule[1]
                             BatchNum = BatchAndSchedule[2]
-
-                            for BatchAndProb in AG.edge[Link[0]][Link[1]]['MappedTasks'][Task]:
-                                if BatchAndProb[0] == BatchNum:
-                                    Prob = BatchAndProb[1]
-                                    break
+                            Prob = BatchAndSchedule[3]
+                            #for BatchAndProb in AG.edge[Link[0]][Link[1]]['MappedTasks'][Task]:
+                            #    if BatchAndProb[0] == BatchNum:
+                            #        Prob = BatchAndProb[1]
+                            #        break
 
                             PE_T.append(StartTime)
                             PE_P.append(0)

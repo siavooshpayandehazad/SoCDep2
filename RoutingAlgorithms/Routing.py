@@ -253,6 +253,8 @@ def FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG, SourceNode, Destinat
             AllPaths = ReturnMinimalPaths(CurrentRG, SourceNode, DestinationNode)
         elif Config.RotingType == 'NonMinimalPath':
             AllPaths = list(networkx.all_simple_paths(CurrentRG, Source, Destination))
+        else:
+            raise ValueError("Invalid RotingType")
         AllLinks = []
         for j in range(0, len(AllPaths)):
             Path = AllPaths[j]
@@ -277,7 +279,7 @@ def ReturnMinimalPaths(CurrentRG, SourceNode, DestinationNode):
     Destination = str(DestinationNode)+str('L')+str('O')
     AllPaths = list(networkx.all_shortest_paths(CurrentRG, Source, Destination))
     for Path in AllPaths:
-        if len(Path) <= MaxHopCount:
+        if (len(Path)-2)/2 <= MaxHopCount:
             AllMinimalPaths.append(Path)
     return AllMinimalPaths
 
