@@ -24,6 +24,6 @@ def ScheduleAll(TG, AG, SHM, Report, DetailedReport, logging):
                                 Probability = BatchAndLink[2]
                                 logging.info("\tSCHEDULING EDGE "+str(Edge)+" ON LINK: "+str(Link)+
                                              " FROM BATCH: "+str(Batch))
-                                Add_TG_EdgeTo_link(TG, AG, Edge, Link, Batch, Probability, DetailedReport)
+                                Add_TG_EdgeTo_link(TG, AG, Edge, Link, Batch, Probability, DetailedReport, logging)
     logging.info("DONE SCHEDULING...")
     return None
