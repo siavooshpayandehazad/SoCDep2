@@ -5,6 +5,7 @@ import os
 import re
 from ConfigAndPackages import Config
 import Calculate_Reachability
+from ArchGraphUtilities import AG_Functions
 
 def GenerateNoCRouteGraph(AG, SystemHealthMap, TurnModel, Report, DetailedReport):
     """
@@ -249,7 +250,7 @@ def FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG, SourceNode, Destinat
     Destination = str(DestinationNode)+str('L')+str('O')
     if networkx.has_path(CurrentRG, Source, Destination):
         if Config.RotingType == 'MinimalPath':
-            AllPaths = list(networkx.all_shortest_paths(CurrentRG, Source, Destination))
+            AllPaths = ReturnMinimalPaths(CurrentRG, SourceNode, DestinationNode)
         elif Config.RotingType == 'NonMinimalPath':
             AllPaths = list(networkx.all_simple_paths(CurrentRG, Source, Destination))
         AllLinks = []
@@ -267,3 +268,16 @@ def FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG, SourceNode, Destinat
     else:
         if Report:print "\t\tNO PATH FOUND FROM: ", Source, "TO:", Destination
         return None, None
+
+
+def ReturnMinimalPaths(CurrentRG, SourceNode, DestinationNode):
+    AllMinimalPaths=[]
+    MaxHopCount= AG_Functions.ManhattanDistance(SourceNode, DestinationNode)
+    Source = str(SourceNode)+str('L')+str('I')
+    Destination = str(DestinationNode)+str('L')+str('O')
+    AllPaths = list(networkx.all_shortest_paths(CurrentRG, Source, Destination))
+    for Path in AllPaths:
+        if len(Path) <= MaxHopCount:
+            AllMinimalPaths.append(Path)
+    return AllMinimalPaths
+
