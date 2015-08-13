@@ -7,7 +7,7 @@ import Scheduler
 import Mapping_Functions, Mapping_Reports, Mapping_Animation
 from Clusterer import Clustering, ClusteringReports, Clustering_Functions
 from Mapping_Heuristics import SimpleGreedy,Local_Search,SimulatedAnnealing,NMap
-from Scheduler import Scheduler,Scheduling_Reports
+from Scheduler import Scheduler,Scheduling_Reports, Scheduling_Functions
 
 
 def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
@@ -79,7 +79,8 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
 
                 Mapping_Reports.ReportMapping(AG, logging)
                 # Schedule all tasks
-                Scheduler.ScheduleAll(TG, AG, SHM, Config.DebugInfo, Config.DebugDetails)
+                Scheduling_Functions.ClearScheduling(AG, TG)
+                Scheduler.ScheduleAll(TG, AG, SHM, Config.DebugInfo, Config.DebugDetails, logging)
                 Scheduling_Reports.ReportMappedTasks(AG, logging)
                 Mapping_Functions.CostFunction(TG, AG, SHM, Config.DebugInfo)
                 if Config.Mapping_Function == 'LocalSearch':
@@ -132,6 +133,9 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 # print (Mapping_Functions.MappingIntoString(TG))
                 print ("\033[92mTIME::\033[0m MAPPING AND OPTIMIZATION TOOK: "
                        +str(round(time.time()-MappingStartTime))+" SECONDS")
+
+                Scheduling_Functions.ClearScheduling(AG, TG)
+                Scheduler.ScheduleAll(TG, AG, SHM, False, False, logging)
                 Scheduling_Reports.ReportMappedTasks(AG, logging)
                 Mapping_Functions.CostFunction(TG, AG, SHM, True,  InitialMappingString = initmpSr)
                 return TG, AG

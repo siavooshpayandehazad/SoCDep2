@@ -179,5 +179,5 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
         else:
             raise ValueError("Mapping task on node failed...")
 
-    Scheduler.ScheduleAll(TG, AG, SHM, True, False)
+    Scheduler.ScheduleAll(TG, AG, SHM, True, False, logging)
     return TG, AG
