@@ -116,9 +116,6 @@ ScheduleAndDepend
 
 ToDo:
 
-    - At the moment thinking about a better name and a better logo for
-      the project
-
     - I want to run a reliability Analysis of the system... so we can have
       a sense about the system state...
 
@@ -133,11 +130,7 @@ ToDo:
 
     - Genetics Algorithm for Mapping
 
-    - Add logarithmic and Boltzmann cooling for SA
-
-    - Support for adaptive routing! but have to solve some scheduling issues... 
-      have no idea how to schedule on multiple paths... should be stochastic... 
-      needs more reading...
+    - Add Boltzmann cooling for SA
 
     - Support for virtual channels!
 
