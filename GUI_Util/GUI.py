@@ -32,10 +32,10 @@ class ConfigAppp(Tkinter.Tk):
     Fault_StartingRow = 2
     Fault_StartingCol = 6
 
-    Viz_StartingRow = 7
+    Viz_StartingRow = 8
     Viz_StartingCol = 6
 
-    Anim_StartingRow = 14
+    Anim_StartingRow = 15
     Anim_StartingCol = 6
 
     RoutingDict = {'2D': ['XY', 'West First', 'North Last', 'Negative First'],
@@ -225,6 +225,11 @@ class ConfigAppp(Tkinter.Tk):
         self.SDMTBF = Tkinter.Entry(self)
         self.SDMTBF.insert(0, '0.1')
 
+        self.RunTime_Label = Tkinter.Label(self, text="Program RunTime:")
+        self.RunTime = Tkinter.Entry(self)
+        self.RunTime.insert(0, '10')
+
+
         # ---------------------------------------------
         #               Viz
         # ---------------------------------------------
@@ -408,7 +413,7 @@ class ConfigAppp(Tkinter.Tk):
         self.FaultInjectionEnable.grid(column=self.Fault_StartingCol, row=self.Fault_StartingRow+1)
 
         ttk.Separator(self, orient='horizontal').grid(column=self.Fault_StartingCol,
-                                                      row=self.Fault_StartingRow+4, columnspan=2, sticky="ew")
+                                                      row=self.Fault_StartingRow+5, columnspan=2, sticky="ew")
 
         # ----------------------------------------
         #                   Viz
@@ -806,11 +811,17 @@ class ConfigAppp(Tkinter.Tk):
 
             self.SDMTBF_Label.grid(column=self.Fault_StartingCol, row=self.Fault_StartingRow+3)
             self.SDMTBF.grid(column=self.Fault_StartingCol+1, row=self.Fault_StartingRow+3)
+
+            self.RunTime_Label.grid(column=self.Fault_StartingCol, row=self.Fault_StartingRow+4)
+            self.RunTime.grid(column=self.Fault_StartingCol+1, row=self.Fault_StartingRow+4)
         else:
             self.MTBF_Label.grid_forget()
             self.MTBF.grid_forget()
             self.SDMTBF_Label.grid_forget()
             self.SDMTBF.grid_forget()
+            self.RunTime_Label.grid_forget()
+            self.RunTime.grid_forget()
+
 
     def CheckForErrors(self):
         if self.Mapping.get()=='Please Select...':
@@ -896,6 +907,7 @@ class ConfigAppp(Tkinter.Tk):
             Config.EventDrivenFaultInjection = self.FaultInjection.get()
             Config.MTBF = float(self.MTBF.get())
             Config.SD4MTBF = float(self.SDMTBF.get())
+            Config.ProgramRunTime = float(self.RunTime.get())
 
             # Viz Config
             Config.Mapping_Drawing = self.Mapping_Draw.get()
