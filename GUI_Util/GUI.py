@@ -3,8 +3,11 @@
 
 import Tkinter
 import ttk
+import tkMessageBox
 from ConfigAndPackages import Config
 from ConfigAndPackages import PackageFile
+
+from PIL import ImageTk, Image
 
 class ConfigAppp(Tkinter.Tk):
 
@@ -45,7 +48,6 @@ class ConfigAppp(Tkinter.Tk):
     def __init__(self,parent):
         Tkinter.Tk.__init__(self,parent)
         self.parent = parent
-
         # ---------------------------------------------
         #                   Topology
         # ---------------------------------------------
@@ -242,6 +244,19 @@ class ConfigAppp(Tkinter.Tk):
     def initialize(self):
 
         self.grid()
+
+        img = ImageTk.PhotoImage(Image.open("GUI_Util/Jelly.png"))
+
+        # This work, "Jelly.png", is a derivative of "Sea Ghost" by Joey Gannon,
+        # used under CC BY-SA.  The original version can be found here:
+        # https://www.flickr.com/photos/brunkfordbraun/679827214
+        # This work is under same license as the original
+
+        self.label1 = Tkinter.Label(self, text="", image=img)
+        self.label1.image = img
+        self.label1.grid(row=0, column=1, sticky='NW')
+        self.label1.bind("<Enter>", self.on_enter)
+
 
         LOGO = Tkinter.Label(self, text="SCHEDULE AND DEPEND CONFIG GUI", font="-weight bold")
         LOGO.grid(column=1, row=0, columnspan=5)
@@ -757,16 +772,16 @@ class ConfigAppp(Tkinter.Tk):
 
     def CheckForErrors(self):
         if self.Mapping.get()=='Please Select...':
-            self.ErrorMessage.config(text = "Please Select Mapping Algorithm" )
+            self.ErrorMessage.config(text="Please Select Mapping Algorithm" )
             return False
 
         elif self.RoutingAlg.get()=='Please Select...':
-            self.ErrorMessage.config(text = "Please Select Routing Algorithm" )
+            self.ErrorMessage.config(text="Please Select Routing Algorithm" )
             return False
 
         elif self.RoutingType.get()=='Please Select...':
             if self.RoutingAlg.get() != 'XY' or self.RoutingAlg.get() != 'XYZ':
-                self.ErrorMessage.config(text = "Please Select Routing Type" )
+                self.ErrorMessage.config(text="Please Select Routing Type" )
                 return False
             else:
                 self.ErrorMessage.config(text = "" )
@@ -857,3 +872,12 @@ class ConfigAppp(Tkinter.Tk):
 
     def CancelButton(self):
         self.destroy()
+
+    def on_enter(self, event):
+
+        tkMessageBox.showinfo("License Message", "The logo picture is a derivative of \"Sea Ghost\" by Joey Gannon, "+
+                            "used under CC BY-SA. The original version can be found here: "+
+                            "https://www.flickr.com/photos/brunkfordbraun/679827214 "+
+                            "This work is under same license as the original.")
+
+
