@@ -400,7 +400,7 @@ class ConfigAppp(Tkinter.Tk):
         self.LS_Iter.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+3)
 
         ttk.Separator(self, orient='vertical').grid(column=self.Cl_OptStartCol+2,
-                                                    row=self.Cl_OptStartRow+1, rowspan=17, sticky="ns")
+                                                    row=self.Cl_OptStartRow+1, rowspan=15, sticky="ns")
         ttk.Separator(self, orient='horizontal').grid(column=self.Mapping_OptStartCol,
                                                       row=self.Mapping_OptStartRow+11, columnspan=2, sticky="ew")
         # ----------------------------------------
@@ -447,12 +447,11 @@ class ConfigAppp(Tkinter.Tk):
 
         self.ErrorMessage.grid(column=1, row=20, columnspan=2)
 
-
-        quitButton = Tkinter.Button(self, text="Apply", command=self.ApplyButton)
-        quitButton.grid(column=3,row=20)
+        quitButton = Tkinter.Button(self, text="Apply", command=self.ApplyButton, width=15)
+        quitButton.grid(column=4,row=19, columnspan=2, rowspan=2)
 
         quitButton = Tkinter.Button(self, text="cancel", command=self.CancelButton)
-        quitButton.grid(column=4,row=20)
+        quitButton.grid(column=6,row=19, columnspan=2, rowspan=2)
 
 
 
@@ -623,6 +622,7 @@ class ConfigAppp(Tkinter.Tk):
             self.MappingCostOpt.grid_forget()
 
         if self.Mapping.get() == 'SimulatedAnnealing':
+            self.Clear_SA_Mapping()
             self.Annealing.set('Linear')
             self.SA_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+3)
             self.AnnealingOption.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+3)
