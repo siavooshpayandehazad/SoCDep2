@@ -35,6 +35,9 @@ class ConfigAppp(Tkinter.Tk):
     Viz_StartingRow = 7
     Viz_StartingCol = 6
 
+    Anim_StartingRow = 14
+    Anim_StartingCol = 6
+
     RoutingDict = {'2D': ['XY', 'West First', 'North Last', 'Negative First'],
                    '3D':['XYZ', 'Negative First'],
                     }
@@ -237,9 +240,28 @@ class ConfigAppp(Tkinter.Tk):
         self.Mapping_Draw.set('False')
         self.Mapping_DrawEnable = Tkinter.Checkbutton(self, text="Mapping Report", variable=self.Mapping_Draw)
 
+        self.PMCG_Draw = Tkinter.BooleanVar(self)
+        self.PMCG_Draw.set('False')
+        self.PMCG_DrawEnable = Tkinter.Checkbutton(self, text="PMCG Report", variable=self.PMCG_Draw)
+
+        self.TTG_Draw = Tkinter.BooleanVar(self)
+        self.TTG_Draw.set('False')
+        self.TTG_DrawEnable = Tkinter.Checkbutton(self, text="TTG Report", variable=self.TTG_Draw)
+
+        # ---------------------------------------------
+        #               Anim
+        # ---------------------------------------------
+        self.AnimEnable = Tkinter.BooleanVar(self)
+        self.AnimEnable.set('False')
+        self.AnimEnableBox = Tkinter.Checkbutton(self, text="Generate Animation Frames",
+                                                 variable=self.AnimEnable, command=self.AnimationConfig)
+
+        self.FrameRezLabel = Tkinter.Label(self, text="Frame Resolution(dpi):")
+        self.FrameRez = Tkinter.Entry(self)
+        self.FrameRez.insert(0, '20')
+
         self.ErrorMessage=Tkinter.Label(self, text="",font="-weight bold", fg="red")
         self.initialize()
-
 
     def initialize(self):
 
@@ -341,6 +363,9 @@ class ConfigAppp(Tkinter.Tk):
         self.RoutingTypeLabel.grid(column=self.Routing_StartingCol, row=self.Routing_StartingRow+2)
         self.RoutingTypeOption.grid(column=self.Routing_StartingCol+1, row=self.Routing_StartingRow+2)
         self.RoutingTypeOption.config(state='disable')
+
+        ttk.Separator(self, orient='horizontal').grid(column=self.Routing_StartingCol,
+                                                      row=self.Routing_StartingRow+3, columnspan=2, sticky="ew")
         # ----------------------------------------
         #                   CTG
         # ----------------------------------------
@@ -394,6 +419,23 @@ class ConfigAppp(Tkinter.Tk):
         self.SHM_DrawEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+1, sticky='W')
         self.RG_DrawEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+2, sticky='W')
         self.Mapping_DrawEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+3, sticky='W')
+        self.PMCG_DrawEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+4, sticky='W')
+        self.TTG_DrawEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+5, sticky='W')
+
+        ttk.Separator(self, orient='horizontal').grid(column=self.Viz_StartingCol,
+                                                      row=self.Viz_StartingRow+6, columnspan=2, sticky="ew")
+
+        # ----------------------------------------
+        #               Animation
+        # ----------------------------------------
+        Tkinter.Label(self, text="Animation Frames Config",font="-weight bold").grid(column=self.Anim_StartingCol,
+                      row=self.Anim_StartingRow, columnspan=2)
+
+        self.AnimEnableBox.grid(column=self.Anim_StartingCol, row=self.Anim_StartingRow+1,
+                                sticky='W')
+        ttk.Separator(self, orient='horizontal').grid(column=self.Anim_StartingCol,
+                                                      row=self.Anim_StartingRow+3, columnspan=2, sticky="ew")
+
         # ----------------------------------------
         #                   Buttons
         # ----------------------------------------
@@ -790,6 +832,21 @@ class ConfigAppp(Tkinter.Tk):
             self.ErrorMessage.config(text = "" )
             return True
 
+    def on_enter(self, event):
+        tkMessageBox.showinfo("License Message", "The logo picture is a derivative of \"Sea Ghost\" by Joey Gannon, "+
+                            "used under CC BY-SA. The original version can be found here: "+
+                            "https://www.flickr.com/photos/brunkfordbraun/679827214 "+
+                            "This work is under same license as the original.")
+
+
+    def AnimationConfig(self):
+        if self.AnimEnable.get() == True:
+            self.FrameRezLabel.grid(column=self.Anim_StartingCol, row=self.Anim_StartingRow+2)
+            self.FrameRez.grid(column=self.Anim_StartingCol+1, row=self.Anim_StartingRow+2)
+        else:
+            self.FrameRez.grid_forget()
+            self.FrameRezLabel.grid_forget()
+
     def ApplyButton(self):
         # apply changes...
         if self.CheckForErrors():
@@ -844,6 +901,11 @@ class ConfigAppp(Tkinter.Tk):
             Config.Mapping_Drawing = self.Mapping_Draw.get()
             Config.RG_Draw = self.RG_Draw.get()
             Config.SHM_Drawing = self.SHM_Draw.get()
+            Config.PMCG_Drawing = self.PMCG_Draw.get()
+            Config.TTG_Drawing = self.TTG_Draw.get()
+
+            Config.GenMappingFrames = self.AnimEnable.get()
+            Config.FrameResolution = int(self.FrameRez.get())
 
             # Routing Confing
             if '3D' in self.Topology.get():
@@ -872,12 +934,3 @@ class ConfigAppp(Tkinter.Tk):
 
     def CancelButton(self):
         self.destroy()
-
-    def on_enter(self, event):
-
-        tkMessageBox.showinfo("License Message", "The logo picture is a derivative of \"Sea Ghost\" by Joey Gannon, "+
-                            "used under CC BY-SA. The original version can be found here: "+
-                            "https://www.flickr.com/photos/brunkfordbraun/679827214 "+
-                            "This work is under same license as the original.")
-
-
