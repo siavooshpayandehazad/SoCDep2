@@ -43,7 +43,7 @@ class ConfigAppp(Tkinter.Tk):
     Viz_StartingCol = 6
 
     # Animation Frame generation
-    Anim_StartingRow = 15
+    Anim_StartingRow = 14
     Anim_StartingCol = 6
 
     # vertical Link placement optimization
@@ -348,7 +348,7 @@ class ConfigAppp(Tkinter.Tk):
 
         self.label1 = Tkinter.Label(self, text="", image=img)
         self.label1.image = img
-        self.label1.grid(row=0, column=1, sticky='NW')
+        self.label1.grid(row=0, column=1, sticky='eW')
         self.label1.bind("<Enter>", self.on_enter)
 
 
@@ -529,7 +529,7 @@ class ConfigAppp(Tkinter.Tk):
         #                   Buttons
         # ----------------------------------------
 
-        self.ErrorMessage.grid(column=4, row=19, columnspan=2)
+        self.ErrorMessage.grid(column=4, row=19, columnspan=5)
 
         quitButton = Tkinter.Button(self, text="Apply", command=self.ApplyButton, width=15)
         quitButton.grid(column=4,row=20, columnspan=2, rowspan=2)
@@ -549,6 +549,8 @@ class ConfigAppp(Tkinter.Tk):
             self.RoutingAlg.set('Please Select...')
             self.RoutingAlgOption = Tkinter.OptionMenu(self, self.RoutingAlg, *self.RoutingDict['3D'], command=self.RoutingFunc)
             self.RoutingAlgOption.grid(column=self.Routing_StartingCol+1, row=self.Routing_StartingRow+1)
+            self.RoutingAlgOption.config(width=self.OptionMenuWidth)
+
             self.RoutingType.set("Please Select...")
             self.RoutingTypeOption.config(state='disable')
             self.RoutingBrowse.grid_forget()
@@ -560,6 +562,8 @@ class ConfigAppp(Tkinter.Tk):
             self.RoutingAlg.set('Please Select...')
             self.RoutingAlgOption = Tkinter.OptionMenu(self, self.RoutingAlg, *self.RoutingDict['2D'], command=self.RoutingFunc)
             self.RoutingAlgOption.grid(column=self.Routing_StartingCol+1, row=self.Routing_StartingRow+1)
+            self.RoutingAlgOption.config(width=self.OptionMenuWidth)
+
             self.RoutingType.set("Please Select...")
             self.RoutingTypeOption.config(state='disable')
             self.RoutingBrowse.grid_forget()
@@ -577,6 +581,7 @@ class ConfigAppp(Tkinter.Tk):
             self.Mapping.set('Please Select...')
             self.MappingOption = Tkinter.OptionMenu(self, self.Mapping, *self.MappingDict['RandomDependent'], command=self.MappingAlgCont)
             self.MappingOption.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+1)
+            self.MappingOption.config(width=self.OptionMenuWidth)
             self.ClearMapping()
 
             self.NumOfTasks_Label.grid(column=self.TG_StartingCol,row=self.TG_StartingRow+2)
@@ -618,6 +623,7 @@ class ConfigAppp(Tkinter.Tk):
             self.Mapping.set('Please Select...')
             self.MappingOption = Tkinter.OptionMenu(self, self.Mapping, *self.MappingDict['RandomIndependent'], command=self.MappingAlgCont)
             self.MappingOption.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+1)
+            self.MappingOption.config(width=self.OptionMenuWidth)
             self.ClearMapping()
 
             self.NumOfTasks_Label.grid(column=self.TG_StartingCol,row=self.TG_StartingRow+2)
@@ -656,6 +662,7 @@ class ConfigAppp(Tkinter.Tk):
             self.Mapping.set('Please Select...')
             self.MappingOption = Tkinter.OptionMenu(self, self.Mapping, *self.MappingDict['Manual'], command=self.MappingAlgCont)
             self.MappingOption.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+1)
+            self.MappingOption.config(width=self.OptionMenuWidth)
             self.ClearMapping()
 
             self.TGBrowse.grid(column=self.TG_StartingCol, row=self.TG_StartingRow+2, sticky='e')

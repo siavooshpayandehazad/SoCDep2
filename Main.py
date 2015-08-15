@@ -13,7 +13,13 @@ from GUI_Util import GUI
 
 Start_Program = True
 # Im still working on GUI....
-if '-GUI' in sys.argv[1:]:
+if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
+    print("Usage:    python Main.py [option1]")
+    print("Options and arguments:")
+    print("-GUI\t:Graphical User Interface for Configuration")
+    print("")
+    sys.exit()
+elif '-GUI' in sys.argv[1:]:
     app = GUI.ConfigAppp(None)
     app.title('Schedule And Depend')
     app.mainloop()
