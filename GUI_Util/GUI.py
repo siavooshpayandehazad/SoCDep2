@@ -1135,14 +1135,13 @@ class ConfigAppp(Tkinter.Tk):
 
             # VL Placement
             Config.FindOptimumAG = self.VLPlacementEnable.get()
-            Config.VL_OptAlg = self.VLP_Alg.get()
-
-            Config.VerticalLinksNum = int(self.NumOfVLs.get())
+            if self.VLPlacementEnable.get():
+                Config.VL_OptAlg = self.VLP_Alg.get()
+                Config.VerticalLinksNum = int(self.NumOfVLs.get())
 
 
             self.Apply_Button = True
             self.destroy()
 
     def CancelButton(self):
-        print self.VLP_Alg.get()
         self.destroy()
