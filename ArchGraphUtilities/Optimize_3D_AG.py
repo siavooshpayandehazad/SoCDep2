@@ -75,11 +75,11 @@ def OptimizeAG_VL_LocalSearch(AG, SHM, logging):
     print ("=====================================")
     print ("STARTING AG VERTICAL LINK PLACEMENT OPTIMIZATION")
     print ("NUMBER OF LINKS: "+str(Config.VerticalLinksNum))
-    print ("NUMBER OF ITERATIONS: "+str(Config.AG_Opt_Iterations))
+    print ("NUMBER OF ITERATIONS: "+str(Config.AG_Opt_Iterations_LS))
     print ("INITIAL REACHABILITY METRIC: "+str(Cost))
     StartingCost = Cost
     BestCost = Cost
-    for i in range(0, Config.AG_Opt_Iterations):
+    for i in range(0, Config.AG_Opt_Iterations_LS):
         New_VL_List = copy.deepcopy(MoveToNewVLConfig(AG, SHM, VL_List))
         NewRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, False, False))
         Cost = Calculate_Reachability.ReachabilityMetric(AG, NewRG, False)
