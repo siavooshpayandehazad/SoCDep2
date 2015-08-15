@@ -3,6 +3,7 @@
 
 import Tkinter
 import ttk
+import tkFileDialog
 import tkMessageBox
 from ConfigAndPackages import Config
 from ConfigAndPackages import PackageFile
@@ -38,8 +39,8 @@ class ConfigAppp(Tkinter.Tk):
     Anim_StartingRow = 15
     Anim_StartingCol = 6
 
-    RoutingDict = {'2D': ['XY', 'West First', 'North Last', 'Negative First'],
-                   '3D':['XYZ', 'Negative First'],
+    RoutingDict = {'2D': ['XY', 'West First', 'North Last', 'Negative First', 'From File'],
+                   '3D': ['XYZ', 'Negative First', 'From File'],
                     }
 
     MappingDict = {'Manual': ['LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing',
@@ -89,6 +90,12 @@ class ConfigAppp(Tkinter.Tk):
 
         self.Release_Range_Label = Tkinter.Label(self, text="Task Release Range:")
         self.Release_Range = Tkinter.Entry(self)
+
+        self.TGBrowse = Tkinter.Entry(self, bg='gray')
+        self.TGBrowse.insert(0, "TG File Path...")
+
+        self.TGBrowseButton = Tkinter.Button(self, text="Browse", command=self.GetTGFile)
+
         # ---------------------------------------------
         #                   Routing
         # ---------------------------------------------
@@ -103,6 +110,12 @@ class ConfigAppp(Tkinter.Tk):
         self.RoutingType = Tkinter.StringVar()
         self.RoutingType.set('MinimalPath')
         self.RoutingTypeOption = Tkinter.OptionMenu(self, self.RoutingType, *AvailableRoutingsTypes)
+
+
+        self.RoutingBrowse = Tkinter.Entry(self,bg='gray')
+        self.RoutingBrowse.insert(0, "Routing File Path...")
+
+        self.RoutingBrowseButton = Tkinter.Button(self, text="Browse", command=self.GetRoutingFile)
 
         # ---------------------------------------------
         #                   Clustering
@@ -233,6 +246,11 @@ class ConfigAppp(Tkinter.Tk):
         # ---------------------------------------------
         #               Viz
         # ---------------------------------------------
+        self.AllViz = Tkinter.BooleanVar(self)
+        self.AllViz.set('False')
+        self.AllVizEnable = Tkinter.Checkbutton(self, text="Check/Un-check all reports",
+                                                variable=self.AllViz, command=self.AllVizFunc)
+
         self.RG_Draw = Tkinter.BooleanVar(self)
         self.RG_Draw.set('False')
         self.RG_DrawEnable = Tkinter.Checkbutton(self, text="Routing Graph", variable=self.RG_Draw)
@@ -370,7 +388,7 @@ class ConfigAppp(Tkinter.Tk):
         self.RoutingTypeOption.config(state='disable')
 
         ttk.Separator(self, orient='horizontal').grid(column=self.Routing_StartingCol,
-                                                      row=self.Routing_StartingRow+3, columnspan=2, sticky="ew")
+                                                      row=self.Routing_StartingRow+4, columnspan=2, sticky="ew")
         # ----------------------------------------
         #                   CTG
         # ----------------------------------------
@@ -421,14 +439,16 @@ class ConfigAppp(Tkinter.Tk):
         Tkinter.Label(self, text="Visualization Config",font="-weight bold").grid(column=self.Viz_StartingCol,
                       row=self.Viz_StartingRow, columnspan=2)
 
-        self.SHM_DrawEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+1, sticky='W')
-        self.RG_DrawEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+2, sticky='W')
-        self.Mapping_DrawEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+3, sticky='W')
-        self.PMCG_DrawEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+4, sticky='W')
-        self.TTG_DrawEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+5, sticky='W')
+        self.AllVizEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+1, columnspan=2)
+
+        self.SHM_DrawEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+2, sticky='W')
+        self.RG_DrawEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+3, sticky='W')
+        self.Mapping_DrawEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+4, sticky='W')
+        self.PMCG_DrawEnable.grid(column=self.Viz_StartingCol+1, row=self.Viz_StartingRow+3, sticky='W')
+        self.TTG_DrawEnable.grid(column=self.Viz_StartingCol+1, row=self.Viz_StartingRow+4, sticky='W')
 
         ttk.Separator(self, orient='horizontal').grid(column=self.Viz_StartingCol,
-                                                      row=self.Viz_StartingRow+6, columnspan=2, sticky="ew")
+                                                      row=self.Viz_StartingRow+5, columnspan=2, sticky="ew")
 
         # ----------------------------------------
         #               Animation
@@ -445,13 +465,13 @@ class ConfigAppp(Tkinter.Tk):
         #                   Buttons
         # ----------------------------------------
 
-        self.ErrorMessage.grid(column=1, row=20, columnspan=2)
+        self.ErrorMessage.grid(column=4, row=19, columnspan=2)
 
         quitButton = Tkinter.Button(self, text="Apply", command=self.ApplyButton, width=15)
-        quitButton.grid(column=4,row=19, columnspan=2, rowspan=2)
+        quitButton.grid(column=4,row=20, columnspan=2, rowspan=2)
 
         quitButton = Tkinter.Button(self, text="cancel", command=self.CancelButton)
-        quitButton.grid(column=6,row=19, columnspan=2, rowspan=2)
+        quitButton.grid(column=6,row=20, columnspan=2, rowspan=2)
 
 
 
@@ -466,6 +486,8 @@ class ConfigAppp(Tkinter.Tk):
             self.RoutingAlgOption.grid(column=self.Routing_StartingCol+1, row=self.Routing_StartingRow+1)
             self.RoutingType.set("Please Select...")
             self.RoutingTypeOption.config(state='disable')
+            self.RoutingBrowse.grid_forget()
+            self.RoutingBrowseButton.grid_forget()
         else:
             self.RoutingAlgOption.grid_forget()
             del self.RoutingAlgOption
@@ -474,6 +496,8 @@ class ConfigAppp(Tkinter.Tk):
             self.RoutingAlgOption.grid(column=self.Routing_StartingCol+1, row=self.Routing_StartingRow+1)
             self.RoutingType.set("Please Select...")
             self.RoutingTypeOption.config(state='disable')
+            self.RoutingBrowse.grid_forget()
+            self.RoutingBrowseButton.grid_forget()
 
             self.NetworkSize_Z.delete(0, 'end')
             self.NetworkSize_Z.insert(0, 1)
@@ -519,6 +543,9 @@ class ConfigAppp(Tkinter.Tk):
             self.Release_Range.delete(0, 'end')
             self.Release_Range.insert(0, '5')
 
+            self.TGBrowse.grid_forget()
+            self.TGBrowseButton.grid_forget()
+
         elif TGType == 'RandomIndependent':
             self.MappingOption.grid_forget()
             del self.MappingOption
@@ -554,6 +581,9 @@ class ConfigAppp(Tkinter.Tk):
             self.EdgeWeight_Range.grid_forget()
             self.EdgeWeight_Range_Label.grid_forget()
 
+            self.TGBrowse.grid_forget()
+            self.TGBrowseButton.grid_forget()
+
         elif TGType == 'Manual':
             self.MappingOption.grid_forget()
             del self.MappingOption
@@ -561,6 +591,9 @@ class ConfigAppp(Tkinter.Tk):
             self.MappingOption = Tkinter.OptionMenu(self, self.Mapping, *self.MappingDict['Manual'], command=self.MappingAlgCont)
             self.MappingOption.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+1)
             self.ClearMapping()
+
+            self.TGBrowse.grid(column=self.TG_StartingCol, row=self.TG_StartingRow+2, sticky='e')
+            self.TGBrowseButton.grid(column=self.TG_StartingCol+1, row=self.TG_StartingRow+2)
 
             self.NumOfTasks_Label.grid_forget()
             self.NumOfTasks.grid_forget()
@@ -580,11 +613,45 @@ class ConfigAppp(Tkinter.Tk):
             self.EdgeWeight_Range.grid_forget()
             self.EdgeWeight_Range_Label.grid_forget()
 
+    def AllVizFunc(self):
+        if self.AllViz.get():
+            self.PMCG_Draw.set(True)
+            self.Mapping_Draw.set(True)
+            self.RG_Draw.set(True)
+            self.SHM_Draw.set(True)
+            self.TTG_Draw.set(True)
+        else:
+            self.PMCG_Draw.set(False)
+            self.Mapping_Draw.set(False)
+            self.RG_Draw.set(False)
+            self.SHM_Draw.set(False)
+            self.TTG_Draw.set(False)
+
+    def GetTGFile(self):
+        Path = tkFileDialog.askopenfilename()
+        if Path:
+            self.TGBrowse.delete(0,'end')
+            self.TGBrowse.insert(1, Path)
+
+    def GetRoutingFile(self):
+        Path = tkFileDialog.askopenfilename()
+        if Path:
+            self.RoutingBrowse.delete(0,'end')
+            self.RoutingBrowse.insert(1, Path)
+
+
     def RoutingFunc(self, Routing):
         if self.RoutingAlg.get() in ['XY', 'XYZ']:
             self.RoutingTypeOption.config(state='disable')
         else:
             self.RoutingTypeOption.config(state='normal')
+
+        if self.RoutingAlg.get() == 'From File':
+            self.RoutingBrowse.grid(column = self.Routing_StartingCol, row=self.Routing_StartingRow+3, sticky='e')
+            self.RoutingBrowseButton.grid(column = self.Routing_StartingCol+1, row=self.Routing_StartingRow+3)
+        else:
+            self.RoutingBrowse.grid_forget()
+            self.RoutingBrowseButton.grid_forget()
 
     def ClusteringCont(self):
         if self.ClusteringOptVar.get():
@@ -825,22 +892,26 @@ class ConfigAppp(Tkinter.Tk):
 
     def CheckForErrors(self):
         if self.Mapping.get()=='Please Select...':
-            self.ErrorMessage.config(text="Please Select Mapping Algorithm" )
+            self.ErrorMessage.config(text="Please Select Mapping Algorithm!")
             return False
 
         elif self.RoutingAlg.get()=='Please Select...':
-            self.ErrorMessage.config(text="Please Select Routing Algorithm" )
+            self.ErrorMessage.config(text="Please Select Routing Algorithm!")
             return False
 
         elif self.RoutingType.get()=='Please Select...':
             if self.RoutingAlg.get() != 'XY' or self.RoutingAlg.get() != 'XYZ':
-                self.ErrorMessage.config(text="Please Select Routing Type" )
+                self.ErrorMessage.config(text="Please Select Routing Type!")
                 return False
             else:
-                self.ErrorMessage.config(text = "" )
+                self.ErrorMessage.config(text ="")
                 return True
+        elif self.RoutingAlg.get() == 'From File':
+            if self.RoutingBrowse.get() == 'Routing File Path...':
+                self.ErrorMessage.config(text="Please Select Routing File!")
+                return False
         else:
-            self.ErrorMessage.config(text = "" )
+            self.ErrorMessage.config(text="")
             return True
 
     def on_enter(self, event):
@@ -919,27 +990,31 @@ class ConfigAppp(Tkinter.Tk):
             Config.GenMappingFrames = self.AnimEnable.get()
             Config.FrameResolution = int(self.FrameRez.get())
 
-            # Routing Confing
-            if '3D' in self.Topology.get():
-                if self.RoutingAlg.get() == 'Negative First':
-                    Config.UsedTurnModel = PackageFile.NegativeFirst3D_TurnModel
-                elif self.RoutingAlg.get() == 'XYZ':
-                    Config.UsedTurnModel = PackageFile.XYZ_TurnModel
-            elif '2D' in self.Topology.get():
-                if self.RoutingAlg.get() == 'XY':
-                    Config.UsedTurnModel = PackageFile.XY_TurnModel
-                elif self.RoutingAlg.get() == 'West First':
-                    Config.UsedTurnModel = PackageFile.WestFirst_TurnModel
-                elif self.RoutingAlg.get() == 'North Last':
-                    Config.UsedTurnModel = PackageFile.NorthLast_TurnModel
-                elif self.RoutingAlg.get() == 'Negative First':
-                    Config.UsedTurnModel = PackageFile.NegativeFirst2D_TurnModel
-
-            if self.RoutingAlg.get() in ['XY', 'XYZ']:
-                if self.RoutingType.get()=='Please Select...':
-                    Config.RotingType = 'MinimalPath'
+            # Routing
+            if self.Topology.get() == 'From File':
+                Config.SetRoutingFromFile  = True
+                Config.RoutingFilePath = self.RoutingBrowse.get()
             else:
-                Config.RotingType = self.RoutingType.get()
+                if '3D' in self.Topology.get():
+                    if self.RoutingAlg.get() == 'Negative First':
+                        Config.UsedTurnModel = PackageFile.NegativeFirst3D_TurnModel
+                    elif self.RoutingAlg.get() == 'XYZ':
+                        Config.UsedTurnModel = PackageFile.XYZ_TurnModel
+                elif '2D' in self.Topology.get():
+                    if self.RoutingAlg.get() == 'XY':
+                        Config.UsedTurnModel = PackageFile.XY_TurnModel
+                    elif self.RoutingAlg.get() == 'West First':
+                        Config.UsedTurnModel = PackageFile.WestFirst_TurnModel
+                    elif self.RoutingAlg.get() == 'North Last':
+                        Config.UsedTurnModel = PackageFile.NorthLast_TurnModel
+                    elif self.RoutingAlg.get() == 'Negative First':
+                        Config.UsedTurnModel = PackageFile.NegativeFirst2D_TurnModel
+
+                if self.RoutingAlg.get() in ['XY', 'XYZ']:
+                    if self.RoutingType.get()=='Please Select...':
+                        Config.RotingType = 'MinimalPath'
+                else:
+                    Config.RotingType = self.RoutingType.get()
 
             self.Apply_Button = True
             self.destroy()
