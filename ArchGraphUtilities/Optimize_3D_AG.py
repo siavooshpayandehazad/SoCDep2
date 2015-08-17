@@ -7,6 +7,8 @@ import random, copy
 
 
 def OptimizeAG_VL(AG, SHM, logging):
+    if Config.Network_Z_Size < 2:
+        raise ValueError("Can not optimize VL placement with 1 layer... (NOC is still 2D)")
     if Config.VL_OptAlg == "LocalSearch":
         return OptimizeAG_VL_LocalSearch(AG, SHM, logging)
     elif Config.VL_OptAlg == "IterativeLocalSearch":

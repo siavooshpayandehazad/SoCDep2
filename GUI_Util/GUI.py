@@ -1027,6 +1027,10 @@ class ConfigAppp(Tkinter.Tk):
             if self.RoutingBrowse.get() == 'Routing File Path...':
                 self.ErrorMessage.config(text="Please Select Routing File!")
                 return False
+        elif int(self.NetworkSize_Z.get()) <2 and '3D' in self.Topology.get():
+            if self.VLPlacementEnable.get():
+                self.ErrorMessage.config(text="Can not optimize VL placement for 1 layer NoC")
+                return False
         else:
             self.ErrorMessage.config(text="")
             return True
