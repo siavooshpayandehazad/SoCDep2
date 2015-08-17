@@ -50,6 +50,10 @@ class ConfigAppp(Tkinter.Tk):
     VLPlacement_StartingRow = 2
     VLPlacement_StartingCol = 9
 
+    # PMC Config
+    PMC_StartingRow = 9
+    PMC_StartingCol = 9
+
     OptionMenuWidth = 15
     EntryWidth = 10
 
@@ -332,6 +336,25 @@ class ConfigAppp(Tkinter.Tk):
         self.VLP_IterationsILS_Label = Tkinter.Label(self, text="ILS Iterations:")
         self.VLP_IterationsILS = Tkinter.Entry(self , width=self.EntryWidth)
 
+        # ----------------------------------------
+        #           PMC config
+        # ----------------------------------------
+        self.PMCEnable = Tkinter.BooleanVar(self)
+        self.PMCEnable.set('False')
+        self.PMCEnableEnableBox = Tkinter.Checkbutton(self, text="Enable PMC config",
+                                                      variable=self.PMCEnable, command=self.PMCFunc)
+
+        self.PMCType_Label = Tkinter.Label(self, text="PMC Model:")
+        self.AvailablePMCTypes = ['Sequentially diagnosable', 'One Step Diagnosable']
+        self.PMCType = Tkinter.StringVar(self)
+        self.PMCType.set('Sequentially diagnosable')
+        self.PMCTypeOption = Tkinter.OptionMenu(self, self.PMCType, *self.AvailablePMCTypes, command=self.TfaultControl)
+        self.PMCTypeOption.config(width=self.OptionMenuWidth)
+
+        self.TfaultDiagnosable_Label = Tkinter.Label(self, text="T Fault Diagnosable:")
+        self.TfaultDiagnosable = Tkinter.Entry(self , width=self.EntryWidth)
+
+
         self.ErrorMessage=Tkinter.Label(self, text="",font="-weight bold", fg="red")
         self.initialize()
 
@@ -524,6 +547,16 @@ class ConfigAppp(Tkinter.Tk):
 
         ttk.Separator(self, orient='horizontal').grid(column=self.VLPlacement_StartingCol,
                                                       row=self.VLPlacement_StartingRow+6, columnspan=2, sticky="ew")
+        # ----------------------------------------
+        #           PMC Graph
+        # ----------------------------------------
+        Tkinter.Label(self, text="PMC Config",font="-weight bold").grid(column=self.PMC_StartingCol,
+                      row=self.PMC_StartingRow, columnspan=2)
+
+        self.PMCEnableEnableBox.grid(column=self.PMC_StartingCol, row=self.PMC_StartingRow+1, sticky='w')
+
+        ttk.Separator(self, orient='horizontal').grid(column=self.PMC_StartingCol,
+                                                      row=self.PMC_StartingRow+4, columnspan=2, sticky="ew")
 
         # ----------------------------------------
         #                   Buttons
@@ -735,6 +768,21 @@ class ConfigAppp(Tkinter.Tk):
             self.VLP_IterationsLS.grid_forget()
             self.VLP_IterationsILS_Label.grid_forget()
             self.VLP_IterationsILS.grid_forget()
+    def PMCFunc(self):
+        if self.PMCEnable.get():
+            self.PMCType_Label.grid(column=self.PMC_StartingCol, row=self.PMC_StartingRow+2, sticky='w')
+            self.PMCTypeOption.grid(column=self.PMC_StartingCol+1, row=self.PMC_StartingRow+2, sticky='w')
+        else:
+            self.PMCType_Label.grid_forget()
+            self.PMCTypeOption.grid_forget()
+
+    def TfaultControl(self, PMCType):
+        if self.PMCType.get()=='One Step Diagnosable':
+            self.TfaultDiagnosable_Label.grid(column=self.PMC_StartingCol, row=self.PMC_StartingRow+3, sticky='w')
+            self.TfaultDiagnosable.grid(column=self.PMC_StartingCol+1, row=self.PMC_StartingRow+3, sticky='w')
+        else:
+            self.TfaultDiagnosable_Label.grid_forget()
+            self.TfaultDiagnosable.grid_forget()
 
     def VLPAlgFunc(self, VLP_Alg):
         if self.VLP_Alg.get()=='LocalSearch':
@@ -1142,6 +1190,15 @@ class ConfigAppp(Tkinter.Tk):
             if self.VLPlacementEnable.get():
                 Config.VL_OptAlg = self.VLP_Alg.get()
                 Config.VerticalLinksNum = int(self.NumOfVLs.get())
+
+            # PMC Config
+            if self.PMCEnable.get():
+                Config.GeneratePMCG = self.PMCEnable.get()
+                if self.PMCType.get() == 'One Step Diagnosable':
+                    Config.OneStepDiagnosable = True
+                    Config.OneStepDiagnosable = int(self.TfaultDiagnosable.get())
+                else:
+                    Config.OneStepDiagnosable = False
 
 
             self.Apply_Button = True

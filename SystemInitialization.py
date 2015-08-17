@@ -65,7 +65,7 @@ def InitializeSystem(logging):
     # the diagnosis process
     if Config.GeneratePMCG:
         PMCGStartTime = time.time()
-        if Config.OneStepDiagonosable:
+        if Config.OneStepDiagnosable:
             PMCG = TestSchedulingUnit.GenerateOneStepDiagnosablePMCG(AG,SHM)
         else:
             PMCG = TestSchedulingUnit.GenerateSequentiallyDiagnosablePMCG(AG,SHM)
