@@ -19,7 +19,7 @@ class ConfigAppp(Tkinter.Tk):
     Cl_OptStartCol = 3
 
     # Mapping Algorithm Config
-    Mapping_OptStartRow = 7
+    Mapping_OptStartRow = 6
     Mapping_OptStartCol = 3
 
     # Architecture Graph Config
@@ -27,11 +27,11 @@ class ConfigAppp(Tkinter.Tk):
     Topology_StartingCol = 0
 
     # Task Graph Config
-    TG_StartingRow = 8
+    TG_StartingRow = 7
     TG_StartingCol = 0
 
     # Routing Config
-    Routing_StartingRow = 17
+    Routing_StartingRow = 15
     Routing_StartingCol = 0
 
     # Fault Handling
@@ -39,11 +39,11 @@ class ConfigAppp(Tkinter.Tk):
     Fault_StartingCol = 6
 
     # visualization
-    Viz_StartingRow = 8
+    Viz_StartingRow = 7
     Viz_StartingCol = 6
 
     # Animation Frame generation
-    Anim_StartingRow = 14
+    Anim_StartingRow = 12
     Anim_StartingCol = 6
 
     # vertical Link placement optimization
@@ -51,11 +51,11 @@ class ConfigAppp(Tkinter.Tk):
     VLPlacement_StartingCol = 9
 
     # Dependability Config
-    Dependability_StartingRow = 9
+    Dependability_StartingRow = 8
     Dependability_StartingCol = 9
 
     # PMC Config
-    PMC_StartingRow = 13
+    PMC_StartingRow = 11
     PMC_StartingCol = 9
 
     OptionMenuWidth = 15
@@ -272,7 +272,6 @@ class ConfigAppp(Tkinter.Tk):
         self.RunTime = Tkinter.Entry(self, width=self.EntryWidth)
         self.RunTime.insert(0, '10')
 
-
         # ---------------------------------------------
         #               Viz
         # ---------------------------------------------
@@ -366,7 +365,7 @@ class ConfigAppp(Tkinter.Tk):
         self.PMCTypeOption = Tkinter.OptionMenu(self, self.PMCType, *self.AvailablePMCTypes, command=self.TfaultControl)
         self.PMCTypeOption.config(width=self.OptionMenuWidth)
 
-        self.TfaultDiagnosable_Label = Tkinter.Label(self, text="T Fault Diagnosable:")
+        self.TfaultDiagnosable_Label = Tkinter.Label(self, text="T-Fault Diagnosable:")
         self.TfaultDiagnosable = Tkinter.Entry(self , width=self.EntryWidth)
 
 
@@ -423,7 +422,7 @@ class ConfigAppp(Tkinter.Tk):
         self.NetworkSize_Z.config(state='disabled')
 
         ttk.Separator(self, orient='vertical').grid(column=self.Topology_StartingCol+2,
-                                                    row=self.Topology_StartingRow+1, rowspan=17, sticky="ns")
+                                                    row=self.Topology_StartingRow+1, rowspan=16, sticky="ns")
         ttk.Separator(self, orient='horizontal').grid(column=self.Topology_StartingCol,
                                                       row=self.Topology_StartingRow+5, columnspan=2, sticky="ew")
         # ----------------------------------------
@@ -506,7 +505,7 @@ class ConfigAppp(Tkinter.Tk):
         self.LS_Iter.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+3)
 
         ttk.Separator(self, orient='vertical').grid(column=self.Cl_OptStartCol+2,
-                                                    row=self.Cl_OptStartRow+1, rowspan=15, sticky="ns")
+                                                    row=self.Cl_OptStartRow+1, rowspan=14, sticky="ns")
         ttk.Separator(self, orient='horizontal').grid(column=self.Mapping_OptStartCol,
                                                       row=self.Mapping_OptStartRow+11, columnspan=2, sticky="ew")
         # ----------------------------------------
@@ -522,8 +521,7 @@ class ConfigAppp(Tkinter.Tk):
                                                       row=self.Fault_StartingRow+5, columnspan=2, sticky="ew")
 
         ttk.Separator(self, orient='vertical').grid(column=self.Fault_StartingCol+2,
-                                                    row=self.Fault_StartingRow+1, rowspan=15, sticky="ns")
-
+                                                    row=self.Fault_StartingRow+1, rowspan=12, sticky="ns")
         # ----------------------------------------
         #                   Viz
         # ----------------------------------------
@@ -550,7 +548,7 @@ class ConfigAppp(Tkinter.Tk):
 
         self.AnimEnableBox.grid(column=self.Anim_StartingCol, row=self.Anim_StartingRow+1,
                                 sticky='W')
-        ttk.Separator(self, orient='horizontal').grid(column=self.Anim_StartingCol, row=self.Anim_StartingRow+4,
+        ttk.Separator(self, orient='horizontal').grid(column=self.Anim_StartingCol, row=self.Anim_StartingRow+3,
                                                       columnspan=2, sticky="ew")
 
         # ----------------------------------------
