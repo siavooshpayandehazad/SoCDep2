@@ -101,7 +101,7 @@ def GenerateTestTGFromPMCG(PMCG):
     for edge in PMCG.edges():
         TTG.add_node("S"+str(edge[0])+str(edge[1]), TET=Config.NodeTestExeTime, Node=edge[0])
         TTG.add_node("R"+str(edge[0])+str(edge[1]), TET=1, Node=edge[1])
-        TTG.add_edge("S"+str(edge[0])+str(edge[1]),"R"+str(edge[0])+str(edge[1]), Weight=Config.NodeTestComWeight)
+        TTG.add_edge("S"+str(edge[0])+str(edge[1]), "R"+str(edge[0])+str(edge[1]), Weight=Config.NodeTestComWeight)
     return TTG
 
 

@@ -32,7 +32,7 @@ def DrawArchGraph(AG, FileName):
 
     # POS = networkx.spring_layout(AG)
 
-    networkx.draw(AG, POS, with_labels=True, node_size=NodeSize ,node_color=ColorList, font_size=5, linewidths=1)
+    networkx.draw(AG, POS, with_labels=True, node_size=NodeSize, arrows=False, node_color=ColorList, font_size=5, linewidths=1)
     plt.savefig("GraphDrawings/"+FileName+".png", dpi=150)
     plt.clf()
     return None

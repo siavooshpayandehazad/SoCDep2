@@ -23,16 +23,16 @@ def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SH
     else:
         raise ValueError("MappingProcessFile name is not string: "+str(MappingProcess))
 
-    BestTG=copy.deepcopy(TG)
-    BestAG=copy.deepcopy(AG)
-    BestCTG=copy.deepcopy(CTG)
-    BestCost=Mapping_Functions.CostFunction(TG, AG, SHM, False)
-    StartingCost=BestCost
+    BestTG = copy.deepcopy(TG)
+    BestAG = copy.deepcopy(AG)
+    BestCTG = copy.deepcopy(CTG)
+    BestCost = Mapping_Functions.CostFunction(TG, AG, SHM, False)
+    StartingCost = BestCost
 
     for Iteration in range(0, IterationNum):
-        if DetailedReport:print ("\tITERATION:", Iteration)
-        ClusterToMove= random.choice(CTG.nodes())
-        CurrentNode=CTG.node[ClusterToMove]['Node']
+        logging.info("       ITERATION:"+str(Iteration))
+        ClusterToMove = random.choice(CTG.nodes())
+        CurrentNode = CTG.node[ClusterToMove]['Node']
         Mapping_Functions.RemoveClusterFromNode(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG,
                                                 ClusterToMove, CurrentNode, logging)
         DestNode = random.choice(AG.nodes())
@@ -51,44 +51,50 @@ def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SH
                                                ClusterToMove, CurrentNode, logging)
 
             # choosing another cluster to move
-            ClusterToMove= random.choice(CTG.nodes())
-            CurrentNode=CTG.node[ClusterToMove]['Node']
+            ClusterToMove = random.choice(CTG.nodes())
+            CurrentNode = CTG.node[ClusterToMove]['Node']
             Mapping_Functions.RemoveClusterFromNode(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG,
                                                     ClusterToMove, CurrentNode, logging)
             DestNode = random.choice(AG.nodes())
             if Config.EnablePartitioning:
-                while(CTG.node[ClusterToMove]['Criticality']!=AG.node[DestNode]['Region']):
+                while CTG.node[ClusterToMove]['Criticality'] != AG.node[DestNode]['Region']:
                     DestNode = random.choice(AG.nodes())
             #print (CTG.node[ClusterToMove]['Criticality'],AG.node[DestNode]['Region'])
 
             if TryCounter >= 3*len(AG.nodes()):
                 if Report:print ("CAN NOT FIND ANY FEASIBLE SOLUTION... ABORTING LOCAL SEARCH...")
-                TG=copy.deepcopy(BestTG)
-                AG=copy.deepcopy(BestAG)
-                CTG=copy.deepcopy(BestCTG)
-                if Report:Scheduling_Reports.ReportMappedTasks(AG)
-                if Report:Mapping_Functions.CostFunction(TG, AG, SHM, True)
-                return (BestTG,BestCTG,BestAG)
-            TryCounter+=1
+                logging.info("CAN NOT FIND ANY FEASIBLE SOLUTION... ABORTING LOCAL SEARCH...")
+                TG = copy.deepcopy(BestTG)
+                AG = copy.deepcopy(BestAG)
+                CTG = copy.deepcopy(BestCTG)
+                if Report:
+                    Scheduling_Reports.ReportMappedTasks(AG)
+                    Mapping_Functions.CostFunction(TG, AG, SHM, True)
+                return BestTG, BestCTG, BestAG
+            TryCounter += 1
 
         Scheduling_Functions.ClearScheduling(AG, TG)
         Scheduler.ScheduleAll(TG, AG, SHM, False, DetailedReport, logging)
 
-        CurrentCost=Mapping_Functions.CostFunction(TG, AG, SHM, DetailedReport)
+        CurrentCost = Mapping_Functions.CostFunction(TG, AG, SHM, DetailedReport)
         MappingProcessFile.write(Mapping_Functions.MappingIntoString(TG)+"\n")
         MappingCostFile.write(str(CurrentCost)+"\n")
         if CurrentCost <= BestCost:
             if CurrentCost < BestCost:
-                if Report:print ("\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:"+str(CurrentCost)+
+                if Report:print ("\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST: "+str(CurrentCost)+
                                  "\t ITERATION:"+str(Iteration))
-            BestTG=copy.deepcopy(TG)
-            BestAG=copy.deepcopy(AG)
-            BestCTG=copy.deepcopy(CTG)
-            BestCost=CurrentCost
+                logging.info("NOTE:: MOVED TO SOLUTION WITH COST: "+str(CurrentCost)+"ITERATION: "+str(Iteration))
+            else:
+                logging.info("NOTE:: MOVED TO SOLUTION WITH COST: "+str(CurrentCost)+"ITERATION: "+str(Iteration))
+
+            BestTG = copy.deepcopy(TG)
+            BestAG = copy.deepcopy(AG)
+            BestCTG = copy.deepcopy(CTG)
+            BestCost = CurrentCost
         else:
-            TG=copy.deepcopy(BestTG)
-            AG=copy.deepcopy(BestAG)
-            CTG=copy.deepcopy(BestCTG)
+            TG = copy.deepcopy(BestTG)
+            AG = copy.deepcopy(BestAG)
+            CTG = copy.deepcopy(BestCTG)
             MappingProcessFile.write(Mapping_Functions.MappingIntoString(TG)+"\n")
 
     Scheduling_Functions.ClearScheduling(AG, TG)
@@ -107,44 +113,47 @@ def OptimizeMappingIterativeLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriti
     if Report:print ("===========================================")
     if Report:print ("STARTING MAPPING OPTIMIZATION...USING ITERATIVE LOCAL SEARCH...")
 
-    BestTG=copy.deepcopy(TG)
-    BestAG=copy.deepcopy(AG)
-    BestCTG=copy.deepcopy(CTG)
-    BestCost=Mapping_Functions.CostFunction(TG, AG, SHM, False)
+    BestTG = copy.deepcopy(TG)
+    BestAG = copy.deepcopy(AG)
+    BestCTG = copy.deepcopy(CTG)
+    BestCost = Mapping_Functions.CostFunction(TG, AG, SHM, False)
     StartingCost = BestCost
     if Report:print ("INITIAL COST:"+str(StartingCost))
     MappingCostFile = open('Generated_Files/Internal/LocalSearchMappingCost.txt', 'w')
     MappingCostFile.close()
     MappingProcessFile = open('Generated_Files/Internal/MappingProcess.txt', 'w')
     MappingProcessFile.close()
-    for Iteration in range(0,IterationNum):
+    for Iteration in range(0, IterationNum):
         if DetailedReport:print ("\tITERATION:", Iteration)
         (CurrentTG,CurrentCTG,CurrentAG) = OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG,
                                                                       SHM, SubIteration, False, DetailedReport,
                                                                       logging, "LocalSearchMappingCost",
                                                                       "MappingProcess")
         if CurrentTG is not False:
-            CurrentCost= Mapping_Functions.CostFunction(CurrentTG, CurrentAG, SHM, False)
+            CurrentCost = Mapping_Functions.CostFunction(CurrentTG, CurrentAG, SHM, False)
             if CurrentCost <= BestCost:
                 if CurrentCost < BestCost:
                     if Report:print ("\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST: "+str(CurrentCost)+
                                      "\t ITERATION: "+str(Iteration))
-                BestTG=copy.deepcopy(CurrentTG)
-                BestAG=copy.deepcopy(CurrentAG)
-                BestCTG=copy.deepcopy(CurrentCTG)
+                    logging.info("NOTE:: MOVED TO SOLUTION WITH COST: "+str(CurrentCost)+"ITERATION: "+str(Iteration))
+                else:
+                    logging.info("NOTE:: MOVED TO SOLUTION WITH COST: "+str(CurrentCost)+"ITERATION: "+str(Iteration))
+                BestTG = copy.deepcopy(CurrentTG)
+                BestAG = copy.deepcopy(CurrentAG)
+                BestCTG = copy.deepcopy(CurrentCTG)
                 BestCost = CurrentCost
         del CurrentTG
         del CurrentAG
         del CurrentCTG
         Mapping_Functions.ClearMapping(TG, CTG, AG)
-        counter=0
-        Schedule=True
+        counter = 0
+        Schedule = True
         while not Mapping_Functions.MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG,
                                                        NonCriticalRG, False, logging):
             if counter == 10:   # we try 10 times to find some initial solution... how ever if it fails...
-                Schedule=False
+                Schedule = False
                 break
-            counter+=1
+            counter += 1
         if Schedule:
             Scheduling_Functions.ClearScheduling(AG, TG)
             Scheduler.ScheduleAll(TG, AG, SHM, False, False, logging)

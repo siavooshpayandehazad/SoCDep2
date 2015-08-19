@@ -9,7 +9,7 @@ from SystemHealthMonitoring import SystemHealthMonitor, SHM_Reports, SHM_Functio
 from TaskGraphUtilities import Task_Graph_Reports, TG_Functions, TG_Test
 from RoutingAlgorithms import Routing, Calculate_Reachability, ReachabilityReports, RoutingGraph_Reports, Reachability_Test
 from ArchGraphUtilities import Arch_Graph_Reports, AG_Functions, AG_Test, Optimize_3D_AG
-from Scheduler import TrafficTableGenerator
+from Scheduler import TrafficTableGenerator, Scheduler
 
 
 
