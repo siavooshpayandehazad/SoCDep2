@@ -15,8 +15,8 @@ class ConfigAppp(Tkinter.Tk):
     Apply_Button = False
 
     # Task clustering Config
-    Cl_OptStartRow = 2
-    Cl_OptStartCol = 3
+    cl_opt_start_row = 2
+    cl_opt_start_col = 3
 
     # Mapping Algorithm Config
     Mapping_OptStartRow = 6
@@ -64,35 +64,45 @@ class ConfigAppp(Tkinter.Tk):
     RoutingDict = {'2D': ['XY', 'West First', 'North Last', 'Negative First', 'From File'],
                    '3D': ['XYZ', 'Negative First', 'From File']}
 
-    MappingDict = {'Manual': ['LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing',
-                   'NMap', 'MinMin', 'MaxMin', 'MinExecutionTime', 'MinimumCompletionTime'],
-                   'RandomDependent':['LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing', 'NMap'],
-                   'RandomIndependent':['MinMin', 'MaxMin', 'MinExecutionTime', 'MinimumCompletionTime']}
+    MappingDict = {'Manual': ['LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing', 'NMap', 'MinMin',
+                              'MaxMin', 'MinExecutionTime', 'MinimumCompletionTime'],
+                   'RandomDependent': ['LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing', 'NMap'],
+                   'RandomIndependent': ['MinMin', 'MaxMin', 'MinExecutionTime', 'MinimumCompletionTime']}
 
     VLP_Alg_List = ['LocalSearch', 'IterativeLocalSearch']
 
     def __init__(self, parent):
         Tkinter.Tk.__init__(self, parent)
         self.parent = parent
+
+        img = ImageTk.PhotoImage(Image.open("GUI_Util/Jelly.png"))
+
+        # This work, "Jelly.png", is a derivative of "Sea Ghost" by Joey Gannon,
+        # used under CC BY-SA.  The original version can be found here:
+        # https://www.flickr.com/photos/brunkfordbraun/679827214
+        # This work is under same license as the original
+        
+        self.label1 = Tkinter.Label(self, text="", image=img)
+        self.label1.image = img
         # ---------------------------------------------
         #                   Topology
         # ---------------------------------------------
         self.TopologyLabel = Tkinter.Label(self, text="Topology:")
-        AvailableTopologies = ['2DTorus', '2DMesh', '2DLine', '2DRing', '3DMesh']
+        available_topologies = ['2DTorus', '2DMesh', '2DLine', '2DRing', '3DMesh']
         self.Topology = Tkinter.StringVar()
-        self.TopologyOption = Tkinter.OptionMenu(self, self.Topology, *AvailableTopologies,
+        self.TopologyOption = Tkinter.OptionMenu(self, self.Topology, *available_topologies,
                                                  command=self.NetworkSizeCont)
         self.TopologyOption.config(width=self.OptionMenuWidth)
 
-        self.NetworkSize_X = Tkinter.Spinbox(self, from_=1, to=10, width=self.EntryWidth)
-        self.NetworkSize_Y = Tkinter.Spinbox(self, from_=1, to=10, width=self.EntryWidth)
-        self.NetworkSize_Z = Tkinter.Spinbox(self, from_=1, to=10, width=self.EntryWidth)
+        self.network_size_x = Tkinter.Spinbox(self, from_=1, to=10, width=self.EntryWidth)
+        self.network_size_y = Tkinter.Spinbox(self, from_=1, to=10, width=self.EntryWidth)
+        self.network_size_z = Tkinter.Spinbox(self, from_=1, to=10, width=self.EntryWidth)
 
         # ---------------------------------------------
         #                   TG
         # ---------------------------------------------
         self.TG_Label = Tkinter.Label(self, text="Task Graph Type:")
-        self.AvailableTGs = ['RandomDependent','RandomIndependent','Manual']
+        self.AvailableTGs = ['RandomDependent', 'RandomIndependent', 'Manual']
         self.TGType = Tkinter.StringVar(self)
         self.TGType.set('RandomDependent')
         self.TGTypeOption = Tkinter.OptionMenu(self, self.TGType, *self.AvailableTGs, command=self.TGTypeCont)
@@ -125,17 +135,17 @@ class ConfigAppp(Tkinter.Tk):
         #                   Routing
         # ---------------------------------------------
         self.RoutingLabel = Tkinter.Label(self, text="Routing Algorithm:")
-        AvailableRoutings = self.RoutingDict['2D']
+        available_routings = self.RoutingDict['2D']
         self.RoutingAlg = Tkinter.StringVar()
         self.RoutingAlg.set(self.RoutingDict['2D'][0])
-        self.RoutingAlgOption = Tkinter.OptionMenu(self, self.RoutingAlg, *AvailableRoutings, command=self.RoutingFunc)
+        self.RoutingAlgOption = Tkinter.OptionMenu(self, self.RoutingAlg, *available_routings, command=self.RoutingFunc)
         self.RoutingAlgOption.config(width=self.OptionMenuWidth)
 
         self.RoutingTypeLabel = Tkinter.Label(self, text="Routing type:")
-        AvailableRoutingsTypes = ['MinimalPath', 'NonMinimalPath']
+        available_routings_types = ['MinimalPath', 'NonMinimalPath']
         self.RoutingType = Tkinter.StringVar()
         self.RoutingType.set('MinimalPath')
-        self.RoutingTypeOption = Tkinter.OptionMenu(self, self.RoutingType, *AvailableRoutingsTypes)
+        self.RoutingTypeOption = Tkinter.OptionMenu(self, self.RoutingType, *available_routings_types)
         self.RoutingTypeOption.config(width=self.OptionMenuWidth)
 
         self.RoutingBrowse = Tkinter.Entry(self, bg='gray')
@@ -153,10 +163,10 @@ class ConfigAppp(Tkinter.Tk):
         self.ClusteringIterations = Tkinter.Entry(self, width=self.EntryWidth)
 
         self.ClusteringCostLabel = Tkinter.Label(self, text="Cost Function Type:")
-        AvailableCosts = ['SD', 'SD+MAX']
+        available_costs = ['SD', 'SD+MAX']
         self.ClusterCost = Tkinter.StringVar(self)
         self.ClusterCost.set('SD+MAX')
-        self.ClusterCostOpt = Tkinter.OptionMenu(self, self.ClusterCost, *AvailableCosts)
+        self.ClusterCostOpt = Tkinter.OptionMenu(self, self.ClusterCost, *available_costs)
         self.ClusterCostOpt.config(width=self.OptionMenuWidth)
         # ---------------------------------------------
         #                   Mapping
@@ -169,10 +179,10 @@ class ConfigAppp(Tkinter.Tk):
         self.MappingOption.config(width=self.OptionMenuWidth)
 
         self.MappingCostLabel = Tkinter.Label(self, text="Cost Function Type:")
-        AvailableMappingCosts = ['SD', 'SD+MAX', 'CONSTANT']
+        available_mapping_costs = ['SD', 'SD+MAX', 'CONSTANT']
         self.MappingCost = Tkinter.StringVar(self)
         self.MappingCost.set('SD+MAX')
-        self.MappingCostOpt = Tkinter.OptionMenu(self, self.MappingCost, *AvailableMappingCosts)
+        self.MappingCostOpt = Tkinter.OptionMenu(self, self.MappingCost, *available_mapping_costs)
         self.MappingCostOpt.config(width=self.OptionMenuWidth)
         # ---------------------------------------------
         #           Local Search
@@ -198,11 +208,11 @@ class ConfigAppp(Tkinter.Tk):
         self.AnnealingOption.config(width=self.OptionMenuWidth)
 
         self.SA_Term_Label = Tkinter.Label(self, text="Termination Criteria:")
-        AvailableTermination = ['StopTemp', 'IterationNum']
+        available_termination = ['StopTemp', 'IterationNum']
         self.Termination = Tkinter.StringVar()
         self.Termination.set('StopTemp')
         self.TerminationOption = Tkinter.OptionMenu(self, self.Termination,
-                                                    *AvailableTermination, command=self.Annealing_Termination)
+                                                    *available_termination, command=self.Annealing_Termination)
         self.TerminationOption.config(width=self.OptionMenuWidth)
 
         self.SA_IterLabel = Tkinter.Label(self, text="Number of Iterations:")
@@ -221,7 +231,6 @@ class ConfigAppp(Tkinter.Tk):
         self.SA_Alpha = Tkinter.Entry(self, width=self.EntryWidth)
         self.SA_Alpha.insert(0, '0.999')
 
-
         self.SA_LoG_Const_Label = Tkinter.Label(self, text="Log cooling constant:")
         self.SA_LoG_Const = Tkinter.Entry(self, width=self.EntryWidth)
         self.SA_LoG_Const.insert(0, '1000')
@@ -230,7 +239,6 @@ class ConfigAppp(Tkinter.Tk):
         self.CostMonitor = Tkinter.Entry(self, width=self.EntryWidth)
         self.CostMonitor.insert(0, '2000')
 
-
         self.CostMonitorSlope_Label = Tkinter.Label(self, text="Slope Range For Cooling:")
         self.CostMonitorSlope = Tkinter.Entry(self, width=self.EntryWidth)
         self.CostMonitorSlope.insert(0, '0.02')
@@ -238,7 +246,6 @@ class ConfigAppp(Tkinter.Tk):
         self.MaxSteadyState_Label = Tkinter.Label(self, text="Max steps/no improvement:")
         self.MaxSteadyState = Tkinter.Entry(self, width=self.EntryWidth)
         self.MaxSteadyState.insert(0, '30000')
-
 
         self.MarkovNum_Label = Tkinter.Label(self, text="Length of Markov Chain:")
         self.MarkovNum = Tkinter.Entry(self, width=self.EntryWidth)
@@ -325,8 +332,7 @@ class ConfigAppp(Tkinter.Tk):
         self.VLP_Alg_Label = Tkinter.Label(self, text="Opt algorithm:")
         self.VLP_Alg = Tkinter.StringVar()
         self.VLP_Alg.set('LocalSearch')
-        self.VLP_AlgOption = Tkinter.OptionMenu(self, self.VLP_Alg,
-                                                  *self.VLP_Alg_List, command=self.VLPAlgFunc)
+        self.VLP_AlgOption = Tkinter.OptionMenu(self, self.VLP_Alg, *self.VLP_Alg_List, command=self.VLPAlgFunc)
         self.VLP_AlgOption.config(width=self.OptionMenuWidth)
 
         self.NumOfVLs_Label = Tkinter.Label(self, text="Number of VLs:")
@@ -366,10 +372,9 @@ class ConfigAppp(Tkinter.Tk):
         self.PMCTypeOption.config(width=self.OptionMenuWidth)
 
         self.TfaultDiagnosable_Label = Tkinter.Label(self, text="T-Fault Diagnosable:")
-        self.TfaultDiagnosable = Tkinter.Entry(self , width=self.EntryWidth)
+        self.TfaultDiagnosable = Tkinter.Entry(self, width=self.EntryWidth)
 
-
-        self.ErrorMessage = Tkinter.Label(self, text="",font="-weight bold", fg="red")
+        self.ErrorMessage = Tkinter.Label(self, text="", font="-weight bold", fg="red")
 
         self.initialize()
 
@@ -377,21 +382,11 @@ class ConfigAppp(Tkinter.Tk):
 
         self.grid()
 
-        img = ImageTk.PhotoImage(Image.open("GUI_Util/Jelly.png"))
-
-        # This work, "Jelly.png", is a derivative of "Sea Ghost" by Joey Gannon,
-        # used under CC BY-SA.  The original version can be found here:
-        # https://www.flickr.com/photos/brunkfordbraun/679827214
-        # This work is under same license as the original
-
-        self.label1 = Tkinter.Label(self, text="", image=img)
-        self.label1.image = img
         self.label1.grid(row=0, column=1, sticky='eW')
         self.label1.bind("<Enter>", self.on_enter)
 
-
-        LOGO = Tkinter.Label(self, text="SCHEDULE AND DEPEND CONFIG GUI", font="-weight bold")
-        LOGO.grid(column=1, row=0, columnspan=7)
+        logo = Tkinter.Label(self, text="SCHEDULE AND DEPEND CONFIG GUI", font="-weight bold")
+        logo.grid(column=1, row=0, columnspan=7)
         ttk.Separator(self, orient='horizontal').grid(column=0, row=1, columnspan=11, sticky="ew")
 
         # ----------------------------------------
@@ -402,24 +397,24 @@ class ConfigAppp(Tkinter.Tk):
         self.TopologyLabel.grid(column=self.Topology_StartingCol, row=self.Topology_StartingRow+1)
         self.TopologyOption.grid(column=self.Topology_StartingCol+1, row=self.Topology_StartingRow+1, sticky='w')
 
-        XSizeLabel = Tkinter.Label(self, text="X Size:")
-        YSizeLabel = Tkinter.Label(self, text="Y Size:")
-        ZSizeLabel = Tkinter.Label(self, text="Z Size:")
+        x_size_label = Tkinter.Label(self, text="X Size:")
+        y_size_label = Tkinter.Label(self, text="Y Size:")
+        z_size_label = Tkinter.Label(self, text="Z Size:")
 
-        self.NetworkSize_X.delete(0, 'end')
-        self.NetworkSize_X.insert(0, 3)
-        self.NetworkSize_Y.delete(0, 'end')
-        self.NetworkSize_Y.insert(0, 3)
-        self.NetworkSize_Z.delete(0, 'end')
-        self.NetworkSize_Z.insert(0, 1)
+        self.network_size_x.delete(0, 'end')
+        self.network_size_x.insert(0, 3)
+        self.network_size_y.delete(0, 'end')
+        self.network_size_y.insert(0, 3)
+        self.network_size_z.delete(0, 'end')
+        self.network_size_z.insert(0, 1)
 
-        XSizeLabel.grid(column=self.Topology_StartingCol, row=self.Topology_StartingRow+2)
-        self.NetworkSize_X.grid(column=self.Topology_StartingCol+1, row=self.Topology_StartingRow+2, sticky ='w')
-        YSizeLabel.grid(column=self.Topology_StartingCol, row=self.Topology_StartingRow+3)
-        self.NetworkSize_Y.grid(column=self.Topology_StartingCol+1, row=self.Topology_StartingRow+3, sticky ='w')
-        ZSizeLabel.grid(column=self.Topology_StartingCol, row=self.Topology_StartingRow+4)
-        self.NetworkSize_Z.grid(column=self.Topology_StartingCol+1, row=self.Topology_StartingRow+4, sticky ='w')
-        self.NetworkSize_Z.config(state='disabled')
+        x_size_label.grid(column=self.Topology_StartingCol, row=self.Topology_StartingRow+2)
+        self.network_size_x.grid(column=self.Topology_StartingCol+1, row=self.Topology_StartingRow+2, sticky='w')
+        y_size_label.grid(column=self.Topology_StartingCol, row=self.Topology_StartingRow+3)
+        self.network_size_y.grid(column=self.Topology_StartingCol+1, row=self.Topology_StartingRow+3, sticky='w')
+        z_size_label.grid(column=self.Topology_StartingCol, row=self.Topology_StartingRow+4)
+        self.network_size_z.grid(column=self.Topology_StartingCol+1, row=self.Topology_StartingRow+4, sticky='w')
+        self.network_size_z.config(state='disabled')
 
         ttk.Separator(self, orient='vertical').grid(column=self.Topology_StartingCol+2,
                                                     row=self.Topology_StartingRow+1, rowspan=16, sticky="ns")
@@ -428,9 +423,9 @@ class ConfigAppp(Tkinter.Tk):
         # ----------------------------------------
         #                   TG
         # ----------------------------------------
-        Tkinter.Label(self, text="Task Graph Settings",font="-weight bold").grid(column=self.TG_StartingCol,
-                                                                                 row=self.TG_StartingRow,
-                                                                                 columnspan=2)
+        Tkinter.Label(self, text="Task Graph Settings", font="-weight bold").grid(column=self.TG_StartingCol,
+                                                                                  row=self.TG_StartingRow,
+                                                                                  columnspan=2)
         self.TG_Label.grid(column=self.TG_StartingCol, row=self.TG_StartingRow+1, sticky='w')
         self.TGTypeOption.grid(column=self.TG_StartingCol+1, row=self.TG_StartingRow+1, sticky='w')
 
@@ -464,9 +459,9 @@ class ConfigAppp(Tkinter.Tk):
         # ---------------------------------------------
         #                   Routing
         # ---------------------------------------------
-        Tkinter.Label(self, text="Routing Settings",font="-weight bold").grid(column=self.Routing_StartingCol,
-                                                                              row=self.Routing_StartingRow,
-                                                                              columnspan=2)
+        Tkinter.Label(self, text="Routing Settings", font="-weight bold").grid(column=self.Routing_StartingCol,
+                                                                               row=self.Routing_StartingRow,
+                                                                               columnspan=2)
         self.RoutingLabel.grid(column=self.Routing_StartingCol, row=self.Routing_StartingRow+1)
         self.RoutingAlgOption.grid(column=self.Routing_StartingCol+1, row=self.Routing_StartingRow+1)
 
@@ -479,22 +474,22 @@ class ConfigAppp(Tkinter.Tk):
         # ----------------------------------------
         #                   CTG
         # ----------------------------------------
-        Tkinter.Label(self, text="Clustering Settings",font="-weight bold").grid(column=self.Cl_OptStartCol,
-                                                                                 row=self.Cl_OptStartRow,
-                                                                                 columnspan=2)
+        Tkinter.Label(self, text="Clustering Settings", font="-weight bold").grid(column=self.cl_opt_start_col,
+                                                                                  row=self.cl_opt_start_row,
+                                                                                  columnspan=2)
         self.ClusteringOptVar.set('False')
         self.ClusteringIterations.insert(0, '1000')
-        self.ClusteringOptEnable.grid(column=self.Cl_OptStartCol, row=self.Cl_OptStartRow+1)
+        self.ClusteringOptEnable.grid(column=self.cl_opt_start_col, row=self.cl_opt_start_row+1)
 
-        ttk.Separator(self, orient='horizontal').grid(column=self.Cl_OptStartCol, row=self.Cl_OptStartRow+4,
+        ttk.Separator(self, orient='horizontal').grid(column=self.cl_opt_start_col, row=self.cl_opt_start_row+4,
                                                       columnspan=2, sticky="ew")
 
         # ----------------------------------------
         #                   Mapping
         # ----------------------------------------
         Tkinter.Label(self, text="Mapping Settings", font="-weight bold").grid(column=self.Mapping_OptStartCol,
-                                                                              row=self.Mapping_OptStartRow,
-                                                                              columnspan=2)
+                                                                               row=self.Mapping_OptStartRow,
+                                                                               columnspan=2)
         self.Mapping_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+1)
         self.MappingOption.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+1)
 
@@ -504,16 +499,16 @@ class ConfigAppp(Tkinter.Tk):
         self.LS_Iter_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+3)
         self.LS_Iter.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+3)
 
-        ttk.Separator(self, orient='vertical').grid(column=self.Cl_OptStartCol+2,
-                                                    row=self.Cl_OptStartRow+1, rowspan=14, sticky="ns")
+        ttk.Separator(self, orient='vertical').grid(column=self.cl_opt_start_col+2,
+                                                    row=self.cl_opt_start_row+1, rowspan=14, sticky="ns")
         ttk.Separator(self, orient='horizontal').grid(column=self.Mapping_OptStartCol,
                                                       row=self.Mapping_OptStartRow+11, columnspan=2, sticky="ew")
         # ----------------------------------------
         #               Fault
         # ----------------------------------------
-        Tkinter.Label(self, text="Fault Settings",font="-weight bold").grid(column=self.Fault_StartingCol,
-                                                                            row=self.Fault_StartingRow,
-                                                                            columnspan=2)
+        Tkinter.Label(self, text="Fault Settings", font="-weight bold").grid(column=self.Fault_StartingCol,
+                                                                             row=self.Fault_StartingRow,
+                                                                             columnspan=2)
         self.FaultInjection.set('False')
         self.FaultInjectionEnable.grid(column=self.Fault_StartingCol, row=self.Fault_StartingRow+1)
 
@@ -525,8 +520,9 @@ class ConfigAppp(Tkinter.Tk):
         # ----------------------------------------
         #                   Viz
         # ----------------------------------------
-        Tkinter.Label(self, text="Visualization Config",font="-weight bold").grid(column=self.Viz_StartingCol,
-                      row=self.Viz_StartingRow, columnspan=2)
+        Tkinter.Label(self, text="Visualization Config", font="-weight bold").grid(column=self.Viz_StartingCol,
+                                                                                   row=self.Viz_StartingRow,
+                                                                                   columnspan=2)
 
         self.AllVizEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+1, columnspan=1, sticky='w' )
 
@@ -538,19 +534,17 @@ class ConfigAppp(Tkinter.Tk):
 
         ttk.Separator(self, orient='horizontal').grid(column=self.Viz_StartingCol,
                                                       row=self.Viz_StartingRow+5, columnspan=2, sticky="ew")
-
         # ----------------------------------------
         #               Animation
         # ----------------------------------------
-        Tkinter.Label(self, text="Animation Frames Config",font="-weight bold").grid(column=self.Anim_StartingCol,
-                                                                                     row=self.Anim_StartingRow,
-                                                                                     columnspan=2)
+        Tkinter.Label(self, text="Animation Frames Config", font="-weight bold").grid(column=self.Anim_StartingCol,
+                                                                                      row=self.Anim_StartingRow,
+                                                                                      columnspan=2)
 
         self.AnimEnableBox.grid(column=self.Anim_StartingCol, row=self.Anim_StartingRow+1,
                                 sticky='W')
         ttk.Separator(self, orient='horizontal').grid(column=self.Anim_StartingCol, row=self.Anim_StartingRow+3,
                                                       columnspan=2, sticky="ew")
-
         # ----------------------------------------
         #           Vertical Link Placement
         # ----------------------------------------
@@ -566,45 +560,40 @@ class ConfigAppp(Tkinter.Tk):
         #           Dependability section
         # ----------------------------------------
         Tkinter.Label(self, text="Dependability Config", font="-weight bold").grid(column=self.Dependability_StartingCol,
-                      row=self.Dependability_StartingRow, columnspan=2)
-
+                                                                                   row=self.Dependability_StartingRow,
+                                                                                   columnspan=2)
         self.SlackNumber_Label.grid(column=self.Dependability_StartingCol, row=self.Dependability_StartingRow+1)
         self.SlackNumber.grid(column=self.Dependability_StartingCol+1, row=self.Dependability_StartingRow+1)
-
 
         self.NumberOfRects_Label.grid(column=self.Dependability_StartingCol, row=self.Dependability_StartingRow+2)
         self.NumberOfRects.grid(column=self.Dependability_StartingCol+1, row=self.Dependability_StartingRow+2)
 
         ttk.Separator(self, orient='horizontal').grid(column=self.Dependability_StartingCol,
                                                       row=self.Dependability_StartingRow+3, columnspan=2, sticky="ew")
-
         # ----------------------------------------
         #           PMC Graph
         # ----------------------------------------
-        Tkinter.Label(self, text="PMC Config",font="-weight bold").grid(column=self.PMC_StartingCol,
-                      row=self.PMC_StartingRow, columnspan=2)
+        Tkinter.Label(self, text="PMC Config", font="-weight bold").grid(column=self.PMC_StartingCol,
+                                                                         row=self.PMC_StartingRow, columnspan=2)
 
         self.PMCEnableEnableBox.grid(column=self.PMC_StartingCol, row=self.PMC_StartingRow+1, sticky='w')
 
         ttk.Separator(self, orient='horizontal').grid(column=self.PMC_StartingCol,
                                                       row=self.PMC_StartingRow+4, columnspan=2, sticky="ew")
-
         # ----------------------------------------
         #                   Buttons
         # ----------------------------------------
-
         self.ErrorMessage.grid(column=4, row=19, columnspan=5)
 
         quitButton = Tkinter.Button(self, text="Apply", command=self.ApplyButton, width=15)
-        quitButton.grid(column=4,row=20, columnspan=2, rowspan=2)
+        quitButton.grid(column=4, row=20, columnspan=2, rowspan=2)
 
         quitButton = Tkinter.Button(self, text="cancel", command=self.CancelButton)
-        quitButton.grid(column=6,row=20, columnspan=2, rowspan=2)
-
+        quitButton.grid(column=6, row=20, columnspan=2, rowspan=2)
 
     def NetworkSizeCont(self, Topology):
         if '3D' in Topology:
-            self.NetworkSize_Z.config(state='normal')
+            self.network_size_z.config(state='normal')
             self.VLPlacementEnableBox.config(state='normal')
             self.RoutingAlgOption.grid_forget()
             del self.RoutingAlgOption
@@ -619,8 +608,8 @@ class ConfigAppp(Tkinter.Tk):
             self.RoutingBrowse.grid_forget()
             self.RoutingBrowseButton.grid_forget()
 
-            self.NetworkSize_Z.delete(0, 'end')
-            self.NetworkSize_Z.insert(0, 2)
+            self.network_size_z.delete(0, 'end')
+            self.network_size_z.insert(0, 2)
         else:
             self.VLPlacementEnableBox.config(state='disable')
             self.RoutingAlgOption.grid_forget()
@@ -636,10 +625,9 @@ class ConfigAppp(Tkinter.Tk):
             self.RoutingBrowse.grid_forget()
             self.RoutingBrowseButton.grid_forget()
 
-            self.NetworkSize_Z.delete(0, 'end')
-            self.NetworkSize_Z.insert(0, 1)
-            self.NetworkSize_Z.config(state='disabled')
-
+            self.network_size_z.delete(0, 'end')
+            self.network_size_z.insert(0, 1)
+            self.network_size_z.config(state='disabled')
 
     def TGTypeCont(self, TGType):
         if TGType == 'RandomDependent':
@@ -715,7 +703,6 @@ class ConfigAppp(Tkinter.Tk):
             self.Release_Range.delete(0, 'end')
             self.Release_Range.insert(0, '5')
 
-
             self.NumOfEdge_Label.grid_forget()
             self.NumOfEdge.grid_forget()
 
@@ -771,16 +758,16 @@ class ConfigAppp(Tkinter.Tk):
             self.TTG_Draw.set(False)
 
     def GetTGFile(self):
-        Path = tkFileDialog.askopenfilename()
-        if Path:
-            self.TGBrowse.delete(0,'end')
-            self.TGBrowse.insert(1, Path)
+        path = tkFileDialog.askopenfilename()
+        if path:
+            self.TGBrowse.delete(0, 'end')
+            self.TGBrowse.insert(1, path)
 
     def GetRoutingFile(self):
-        Path = tkFileDialog.askopenfilename()
-        if Path:
-            self.RoutingBrowse.delete(0,'end')
-            self.RoutingBrowse.insert(1, Path)
+        path = tkFileDialog.askopenfilename()
+        if path:
+            self.RoutingBrowse.delete(0, 'end')
+            self.RoutingBrowse.insert(1, path)
 
     def VLPlacementFunc(self):
         if self.VLPlacementEnable.get():
@@ -792,14 +779,14 @@ class ConfigAppp(Tkinter.Tk):
                                      row=self.VLPlacement_StartingRow+3, sticky='w')
             self.NumOfVLs.grid(column=self.VLPlacement_StartingCol+1,
                                row=self.VLPlacement_StartingRow+3, sticky='w')
-            self.NumOfVLs.delete(0,'end')
+            self.NumOfVLs.delete(0, 'end')
             self.NumOfVLs.insert(0, '5')
 
             self.VLP_IterationsLS_Label.grid(column=self.VLPlacement_StartingCol,
                                              row=self.VLPlacement_StartingRow+4, sticky='w')
             self.VLP_IterationsLS.grid(column=self.VLPlacement_StartingCol+1,
                                        row=self.VLPlacement_StartingRow+4, sticky='w')
-            self.VLP_IterationsLS.delete(0,'end')
+            self.VLP_IterationsLS.delete(0, 'end')
             self.VLP_IterationsLS.insert(0, '10')
 
         else:
@@ -811,6 +798,7 @@ class ConfigAppp(Tkinter.Tk):
             self.VLP_IterationsLS.grid_forget()
             self.VLP_IterationsILS_Label.grid_forget()
             self.VLP_IterationsILS.grid_forget()
+
     def PMCFunc(self):
         if self.PMCEnable.get():
             self.PMCType_Label.grid(column=self.PMC_StartingCol, row=self.PMC_StartingRow+2, sticky='w')
@@ -819,16 +807,16 @@ class ConfigAppp(Tkinter.Tk):
             self.PMCType_Label.grid_forget()
             self.PMCTypeOption.grid_forget()
 
-    def TfaultControl(self, PMCType):
-        if self.PMCType.get()=='One Step Diagnosable':
+    def TfaultControl(self, pmc_type):
+        if self.PMCType.get() == 'One Step Diagnosable':
             self.TfaultDiagnosable_Label.grid(column=self.PMC_StartingCol, row=self.PMC_StartingRow+3, sticky='w')
             self.TfaultDiagnosable.grid(column=self.PMC_StartingCol+1, row=self.PMC_StartingRow+3, sticky='w')
         else:
             self.TfaultDiagnosable_Label.grid_forget()
             self.TfaultDiagnosable.grid_forget()
 
-    def VLPAlgFunc(self, VLP_Alg):
-        if self.VLP_Alg.get()=='LocalSearch':
+    def VLPAlgFunc(self, vlp_alg):
+        if self.VLP_Alg.get() == 'LocalSearch':
             self.VLP_IterationsLS_Label.grid(column=self.VLPlacement_StartingCol,
                                              row=self.VLPlacement_StartingRow+4, sticky='w')
             self.VLP_IterationsLS.grid(column=self.VLPlacement_StartingCol+1,
@@ -839,7 +827,7 @@ class ConfigAppp(Tkinter.Tk):
             self.VLP_IterationsILS_Label.grid_forget()
             self.VLP_IterationsILS.grid_forget()
 
-        elif self.VLP_Alg.get()=='IterativeLocalSearch':
+        elif self.VLP_Alg.get() == 'IterativeLocalSearch':
             self.VLP_IterationsLS_Label.grid(column=self.VLPlacement_StartingCol,
                                              row=self.VLPlacement_StartingRow+4, sticky='w')
             self.VLP_IterationsLS.grid(column=self.VLPlacement_StartingCol+1,
@@ -854,28 +842,28 @@ class ConfigAppp(Tkinter.Tk):
             self.VLP_IterationsILS.delete(0, 'end')
             self.VLP_IterationsILS.insert(0, '10')
 
-    def RoutingFunc(self, Routing):
+    def RoutingFunc(self, routing):
         if self.RoutingAlg.get() in ['XY', 'XYZ']:
             self.RoutingTypeOption.config(state='disable')
         else:
             self.RoutingTypeOption.config(state='normal')
 
         if self.RoutingAlg.get() == 'From File':
-            self.RoutingBrowse.grid(column = self.Routing_StartingCol, row=self.Routing_StartingRow+3, sticky='e')
-            self.RoutingBrowseButton.grid(column = self.Routing_StartingCol+1, row=self.Routing_StartingRow+3)
+            self.RoutingBrowse.grid(column=self.Routing_StartingCol, row=self.Routing_StartingRow+3, sticky='e')
+            self.RoutingBrowseButton.grid(column=self.Routing_StartingCol+1, row=self.Routing_StartingRow+3)
         else:
             self.RoutingBrowse.grid_forget()
             self.RoutingBrowseButton.grid_forget()
 
     def ClusteringCont(self):
         if self.ClusteringOptVar.get():
-            self.ClusteringIterLabel.grid(column=self.Cl_OptStartCol, row=self.Cl_OptStartRow+2)
-            self.ClusteringIterations.grid(column=self.Cl_OptStartCol+1, row=self.Cl_OptStartRow+2)
+            self.ClusteringIterLabel.grid(column=self.cl_opt_start_col, row=self.cl_opt_start_row+2)
+            self.ClusteringIterations.grid(column=self.cl_opt_start_col+1, row=self.cl_opt_start_row+2)
             self.ClusteringIterations.delete(0, 'end')
             self.ClusteringIterations.insert(0, '1000')
 
-            self.ClusteringCostLabel.grid(column=self.Cl_OptStartCol, row=self.Cl_OptStartRow+3)
-            self.ClusterCostOpt.grid(column=self.Cl_OptStartCol+1, row=self.Cl_OptStartRow+3)
+            self.ClusteringCostLabel.grid(column=self.cl_opt_start_col, row=self.cl_opt_start_row+3)
+            self.ClusterCostOpt.grid(column=self.cl_opt_start_col+1, row=self.cl_opt_start_row+3)
         else:
             self.ClusteringIterLabel.grid_forget()
             self.ClusteringIterations.grid_forget()
@@ -892,7 +880,7 @@ class ConfigAppp(Tkinter.Tk):
         self.MappingCostOpt.grid_forget()
 
 
-    def MappingAlgCont(self, Mapping):
+    def MappingAlgCont(self, mapping):
         if self.Mapping.get() in ['SimulatedAnnealing','LocalSearch','IterativeLocalSearch']:
             self.MappingCostLabel.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+2)
             self.MappingCostOpt.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+2)
@@ -923,7 +911,7 @@ class ConfigAppp(Tkinter.Tk):
         else:
             self.Clear_SA_Mapping()
 
-        if self.Mapping.get() in ['LocalSearch','IterativeLocalSearch']:
+        if self.Mapping.get() in ['LocalSearch', 'IterativeLocalSearch']:
             self.LS_Iter.delete(0, 'end')
             self.LS_Iter.insert(0, '100')
             self.LS_Iter_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+3)
@@ -942,7 +930,7 @@ class ConfigAppp(Tkinter.Tk):
             self.ILS_Iter_Label.grid_forget()
             self.ILS_Iter.grid_forget()
 
-    def Annealing_Termination(self, Annealing):
+    def Annealing_Termination(self, annealing):
         if self.Mapping.get() == 'SimulatedAnnealing':
             if self.Annealing.get()=='Linear' or self.Termination.get()=='IterationNum':
                 self.SA_StopTemp.grid_forget()
@@ -1095,7 +1083,6 @@ class ConfigAppp(Tkinter.Tk):
             self.RunTime_Label.grid_forget()
             self.RunTime.grid_forget()
 
-
     def CheckForErrors(self):
         if self.Mapping.get() == 'Please Select...':
             self.ErrorMessage.config(text="Please Select Mapping Algorithm!")
@@ -1116,7 +1103,7 @@ class ConfigAppp(Tkinter.Tk):
             if self.RoutingBrowse.get() == 'Routing File Path...':
                 self.ErrorMessage.config(text="Please Select Routing File!")
                 return False
-        elif int(self.NetworkSize_Z.get()) <2 and '3D' in self.Topology.get():
+        elif int(self.network_size_z.get()) < 2 and '3D' in self.Topology.get():
             if self.VLPlacementEnable.get():
                 self.ErrorMessage.config(text="Can not optimize VL placement for 1 layer NoC")
                 return False
@@ -1132,7 +1119,7 @@ class ConfigAppp(Tkinter.Tk):
                               "(https://creativecommons.org/licenses/by-sa/2.0/)")
 
     def AnimationConfig(self):
-        if self.AnimEnable.get() == True:
+        if self.AnimEnable.get() is True:
             self.FrameRezLabel.grid(column=self.Anim_StartingCol, row=self.Anim_StartingRow+2)
             self.FrameRez.grid(column=self.Anim_StartingCol+1, row=self.Anim_StartingRow+2)
         else:
@@ -1153,9 +1140,9 @@ class ConfigAppp(Tkinter.Tk):
 
             # Topology Config
             Config.NetworkTopology = self.Topology.get()
-            Config.Network_X_Size = int(self.NetworkSize_X.get())
-            Config.Network_Y_Size = int(self.NetworkSize_Y.get())
-            Config.Network_Z_Size = int(self.NetworkSize_Z.get())
+            Config.Network_X_Size = int(self.network_size_x.get())
+            Config.Network_Y_Size = int(self.network_size_y.get())
+            Config.Network_Z_Size = int(self.network_size_z.get())
 
             # Clustering Config
             Config.ClusteringIteration = int(self.ClusteringIterations.get())
