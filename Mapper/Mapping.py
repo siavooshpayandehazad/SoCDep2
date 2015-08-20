@@ -97,7 +97,7 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                                                                                         NonCriticalRG, SHM,
                                                                                         Config.LocalSearchIteration,
                                                                                         Config.DebugInfo,
-                                                                                        Config.DebugDetails,logging,
+                                                                                        Config.DebugDetails, logging,
                                                                                         "LocalSearchMappingCost",
                                                                                         "MappingProcess")
                     TG = copy.deepcopy(BestTG)
@@ -120,7 +120,6 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 elif Config.Mapping_Function == 'SimulatedAnnealing':
                     (BestTG, BestCTG, BestAG) = SimulatedAnnealing.OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG,
                                                                                       NonCriticalRG, SHM,
-                                                                                      Config.SimulatedAnnealingIteration,
                                                                                       'SA_MappingCost', logging)
                     Mapping_Reports.VizMappingOpt('SA_MappingCost')
                     if Config.SA_AnnealingSchedule == 'Adaptive':

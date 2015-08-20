@@ -15,7 +15,7 @@ from scipy import stats
 import statistics
 
 def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG,
-                       SHM, IterationNum, CostDataFile, logging):
+                       SHM, CostDataFile, logging):
 
     print ("===========================================")
     print ("STARTING MAPPING OPTIMIZATION...USING SIMULATED ANNEALING...")
@@ -71,7 +71,7 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG,
     Huang_Counter1 = 0
     Huang_Counter2 = 0
     Huang_Steady_Counter = 0
-
+    IterationNum = Config.SimulatedAnnealingIteration
     #for i in range(0,IterationNum):
         # move to another solution
     i = 0

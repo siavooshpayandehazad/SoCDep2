@@ -124,7 +124,7 @@ def OptimizeMappingIterativeLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriti
     MappingProcessFile = open('Generated_Files/Internal/MappingProcess.txt', 'w')
     MappingProcessFile.close()
     for Iteration in range(0, IterationNum):
-        if DetailedReport:print ("\tITERATION:", Iteration)
+        logging.info("        ITERATION:"+str(Iteration))
         (CurrentTG,CurrentCTG,CurrentAG) = OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG,
                                                                       SHM, SubIteration, False, DetailedReport,
                                                                       logging, "LocalSearchMappingCost",
