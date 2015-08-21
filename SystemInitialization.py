@@ -60,28 +60,9 @@ def InitializeSystem(logging):
     if Config.RG_Draw:
         RoutingGraph_Reports.DrawRG(NoCRG)
     ####################################################################
-    # PMC-Graph
-    # at this point we assume that the system health map knows about the initial faults from
-    # the diagnosis process
-    if Config.GeneratePMCG:
-        PMCGStartTime = time.time()
-        if Config.OneStepDiagnosable:
-            PMCG = TestSchedulingUnit.GenerateOneStepDiagnosablePMCG(AG,SHM)
-        else:
-            PMCG = TestSchedulingUnit.GenerateSequentiallyDiagnosablePMCG(AG,SHM)
-        TTG = TestSchedulingUnit.GenerateTestTGFromPMCG(PMCG)
-        print ("\033[92mTIME::\033[0m PMCG AND TTG GENERATION TOOK: "
-               + str(round(time.time()-PMCGStartTime)) + " SECONDS")
-        if Config.PMCG_Drawing:
-            TestSchedulingUnit.DrawPMCG(PMCG)
-        if Config.TTG_Drawing:
-            TestSchedulingUnit.DrawTTG(TTG)
-    else:
-        PMCG = None
-    ####################################################################
     # in case of partitioning, we have to route based on different Route-graphs
     if Config.EnablePartitioning:
-        CriticalRG, NonCriticalRG = Calculate_Reachability.CalculateReachabilityWithRegions(AG,SHM)
+        CriticalRG, NonCriticalRG = Calculate_Reachability.CalculateReachabilityWithRegions(AG, SHM)
         ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(AG)
     else:
         if Config.TestMode:
@@ -103,6 +84,29 @@ def InitializeSystem(logging):
         Mapping_Reports.DrawMappingDistribution(AG, SHM)
     if Config.Mapping_Drawing:
         Mapping_Reports.DrawMapping(TG, AG, SHM)
+
+    ####################################################################
+    # PMC-Graph
+    # at this point we assume that the system health map knows about the initial faults from
+    # the diagnosis process
+    if Config.GeneratePMCG:
+        PMCGStartTime = time.time()
+        if Config.OneStepDiagnosable:
+            PMCG = TestSchedulingUnit.GenerateOneStepDiagnosablePMCG(AG, SHM)
+        else:
+            PMCG = TestSchedulingUnit.GenerateSequentiallyDiagnosablePMCG(AG, SHM)
+        TTG = TestSchedulingUnit.GenerateTestTGFromPMCG(PMCG)
+        print ("\033[92mTIME::\033[0m PMCG AND TTG GENERATION TOOK: "
+               + str(round(time.time()-PMCGStartTime)) + " SECONDS")
+        if Config.PMCG_Drawing:
+            TestSchedulingUnit.DrawPMCG(PMCG)
+        if Config.TTG_Drawing:
+            TestSchedulingUnit.DrawTTG(TTG)
+        TestSchedulingUnit.InsertTestTasksinTG(PMCG,TG)
+        Task_Graph_Reports.DrawTaskGraph(TG, TTG=TTG)
+    else:
+        PMCG = None
+
     print ("===========================================")
     print ("SYSTEM IS UP...")
     Scheduling_Reports.GenerateGanttCharts(TG, AG)

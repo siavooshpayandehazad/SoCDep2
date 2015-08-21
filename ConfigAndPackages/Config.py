@@ -17,7 +17,7 @@ EventDrivenFaultInjection = False
 TG_Type = 'RandomDependent'
 # For Random TG_Type:
 NumberOfTasks = 35
-NumberOfCriticalTasks = 5
+NumberOfCriticalTasks = 0
 NumberOfEdges = 20
 WCET_Range = 15
 EdgeWeightRange = 7
@@ -39,10 +39,10 @@ AG_Type = 'Generic'
 VirtualChannelNum = 0
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
-NetworkTopology = '3DMesh'
+NetworkTopology = '2DMesh'
 Network_X_Size = 4
 Network_Y_Size = 4
-Network_Z_Size = 4
+Network_Z_Size = 1
 
 # Number of Vertical Links
 FindOptimumAG = False
@@ -68,7 +68,7 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 # Available Turn Models :
 #         2D Turn Models: XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel
 #         3D Turn Models: XYZ_TurnModel, NegativeFirst3D_TurnModel
-UsedTurnModel = PackageFile.NegativeFirst3D_TurnModel
+UsedTurnModel = PackageFile.NegativeFirst2D_TurnModel
 # Available choices: 'MinimalPath', 'NonMinimalPath'
 RotingType = 'MinimalPath'
 RoutingFilePath = "User_Inputs/RoutingFile.txt"
@@ -125,7 +125,7 @@ ListOfAgedPEs = {3: 0.3, 2: 0.1}
 ################################################
 #          Clustering Function  Config
 ################################################
-Clustering_Optimization = True     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
+Clustering_Optimization = False     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
 ClusteringIteration = 10000
 Clustering_Report = False
 Clustering_DetailedReport = False
@@ -138,7 +138,7 @@ Clustering_CostFunctionType = 'SD+MAX'
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'IterativeLocalSearch'
+Mapping_Function = 'LocalSearch'
 LocalSearchIteration = 100
 IterativeLocalSearchIterations = 20
 #######################

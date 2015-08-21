@@ -27,7 +27,7 @@ def ReportTaskGraph(TG,logging):
         print (massage)
     return None
 
-def DrawTaskGraph(TG):
+def DrawTaskGraph(TG, TTG=None):
     print ("DRAWING TASK GRAPH...")
     fig = plt.figure()
     NodeColors=[]
@@ -63,25 +63,36 @@ def DrawTaskGraph(TG):
         for CurrentDistance in range(0, MaxDistance+1):
             NumTasksWithSameDistance = 0
             for node in TG.nodes():
-                Distance=TG.node[node]['Distance']
-                if CurrentDistance == Distance:
-                    NumTasksWithSameDistance+=1
+                if TG.node[node]['Type'] == 'App':
+                    Distance=TG.node[node]['Distance']
+                    if CurrentDistance == Distance:
+                        NumTasksWithSameDistance+=1
 
             Counter = 0
             for node in TG.nodes():
-                Distance=TG.node[node]['Distance']
-                if CurrentDistance == Distance:
-                    Counter+=1
-                    pos[node] = (Counter*(width/NumTasksWithSameDistance), (MaxDistance-CurrentDistance)*height/MaxDistance)
+                if TG.node[node]['Type'] == 'App':
+                    Distance=TG.node[node]['Distance']
+                    if CurrentDistance == Distance:
+                        Counter+=1
+                        pos[node] = (Counter*(width/NumTasksWithSameDistance)+width,
+                                     (MaxDistance-CurrentDistance)*height/MaxDistance)
+        if TTG is not None:
+            TempPos=networkx.shell_layout(TTG)
+            for TestNode in TG.nodes():
+                if TG.node[TestNode]['Type'] == 'Test':
+                    pos[TestNode] = [TempPos[TestNode][0]*(width/2)+width/2,
+                                       TempPos[TestNode][1]*(height/2)+height/2]
 
-    networkx.draw_networkx_nodes(TG, pos, with_labels=True, node_color=NodeColors, node_size= 200, font_size=10)
-
+    networkx.draw_networkx_nodes(TG, pos, with_labels=True, node_color=NodeColors, node_size= 50)
     networkx.draw_networkx_edges(TG, pos, edge_color=TG_Edge_Weight, edge_cmap=plt.cm.Reds, width=3, arrows= False)
-    networkx.draw_networkx_edges(TG, pos,  arrows= False, width = 0.5)
-    networkx.draw_networkx_labels(TG, pos)
+    networkx.draw_networkx_edges(TG, pos,  arrows= False, width=0.5)
+    networkx.draw_networkx_labels(TG, pos, font_size=4)
     #networkx.draw_networkx_edge_labels(TG, pos, edge_labels=dict(zip(TG_Edge_List, TG_Edge_Weight)), font_size=10, label_pos=0.7)
 
-    plt.savefig("GraphDrawings/TG.png", dpi=150)
+    if TTG is None:
+        plt.savefig("GraphDrawings/TG.png", dpi=200)
+    else:
+        plt.savefig("GraphDrawings/TG_And_TTG.png", dpi=200)
     plt.clf()
     print ("\033[35m* VIZ::\033[0mTASK GRAPH DRAWINGS CREATED AT: GraphDrawings/TG.png")
     return None

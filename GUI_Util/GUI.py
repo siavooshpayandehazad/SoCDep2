@@ -200,11 +200,11 @@ class ConfigAppp(Tkinter.Tk):
         # ---------------------------------------------
 
         self.SA_Label = Tkinter.Label(self, text="Annealing Schedule:")
-        AvailableAnnealing = ['Linear', 'Exponential', 'Adaptive', 'Markov', 'Logarithmic', 'Aart', 'Huang']
+        available_annealing = ['Linear', 'Exponential', 'Adaptive', 'Markov', 'Logarithmic', 'Aart', 'Huang']
         self.Annealing = Tkinter.StringVar()
         self.Annealing.set('Linear')
         self.AnnealingOption = Tkinter.OptionMenu(self, self.Annealing,
-                                                  *AvailableAnnealing, command=self.Annealing_Termination)
+                                                  *available_annealing, command=self.Annealing_Termination)
         self.AnnealingOption.config(width=self.OptionMenuWidth)
 
         self.SA_Term_Label = Tkinter.Label(self, text="Termination Criteria:")
@@ -524,7 +524,7 @@ class ConfigAppp(Tkinter.Tk):
                                                                                    row=self.Viz_StartingRow,
                                                                                    columnspan=2)
 
-        self.AllVizEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+1, columnspan=1, sticky='w' )
+        self.AllVizEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+1, columnspan=1, sticky='w')
 
         self.SHM_DrawEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+2, sticky='W')
         self.RG_DrawEnable.grid(column=self.Viz_StartingCol, row=self.Viz_StartingRow+3, sticky='W')
@@ -881,7 +881,7 @@ class ConfigAppp(Tkinter.Tk):
 
 
     def MappingAlgCont(self, mapping):
-        if self.Mapping.get() in ['SimulatedAnnealing','LocalSearch','IterativeLocalSearch']:
+        if self.Mapping.get() in ['SimulatedAnnealing', 'LocalSearch', 'IterativeLocalSearch']:
             self.MappingCostLabel.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+2)
             self.MappingCostOpt.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+2)
         else:
@@ -907,7 +907,6 @@ class ConfigAppp(Tkinter.Tk):
             self.SA_Iterations.insert(0, '100000')
             self.SA_IterLabel.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+6)
             self.SA_Iterations.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+6)
-
         else:
             self.Clear_SA_Mapping()
 
@@ -920,12 +919,11 @@ class ConfigAppp(Tkinter.Tk):
             self.LS_Iter_Label.grid_forget()
             self.LS_Iter.grid_forget()
 
-        if self.Mapping.get()=='IterativeLocalSearch':
+        if self.Mapping.get() == 'IterativeLocalSearch':
             self.ILS_Iter.delete(0, 'end')
             self.ILS_Iter.insert(0, '10')
             self.ILS_Iter_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+4)
             self.ILS_Iter.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+4)
-
         else:
             self.ILS_Iter_Label.grid_forget()
             self.ILS_Iter.grid_forget()

@@ -99,10 +99,30 @@ def GenerateTestTGFromPMCG(PMCG):
     """
     TTG = networkx.DiGraph()
     for edge in PMCG.edges():
-        TTG.add_node("S"+str(edge[0])+str(edge[1]), TET=Config.NodeTestExeTime, Node=edge[0])
-        TTG.add_node("R"+str(edge[0])+str(edge[1]), TET=1, Node=edge[1])
-        TTG.add_edge("S"+str(edge[0])+str(edge[1]), "R"+str(edge[0])+str(edge[1]), Weight=Config.NodeTestComWeight)
+        TTG.add_node("S"+str(edge[0])+str(edge[1]), Criticality='L', WCET=Config.NodeTestExeTime, Node=edge[0],
+                     Cluster=None, Priority=None, Distance=None , Release=0, Type= 'Test')
+        TTG.add_node("R"+str(edge[0])+str(edge[1]), Criticality='L', WCET=1, Node=edge[1], Cluster=None,
+                     Priority=None, Distance=None , Release=0, Type= 'Test')
+        TTG.add_edge("S"+str(edge[0])+str(edge[1]), "R"+str(edge[0])+str(edge[1]), ComWeight=Config.NodeTestComWeight,
+                     Criticality='L', Link=[])
     return TTG
+
+def InsertTestTasksinTG(PMCG, TG):
+    """
+    Generates a test task graph to be scheduled in between the Tasks from TG on the
+    Network to support PMCG. each edge in PMCG turns into a pair of tasks for a specific
+    functional test to be mapped on the network.
+    :param PMCG: PMC Graph
+    :return: Test Task Graph
+    """
+    for edge in PMCG.edges():
+        TG.add_node("S"+str(edge[0])+str(edge[1]), Criticality='L', WCET=Config.NodeTestExeTime, Node=edge[0],
+                     Cluster=None, Priority=None, Distance=None , Release=0, Type= 'Test')
+        TG.add_node("R"+str(edge[0])+str(edge[1]), Criticality='L', WCET=1, Node=edge[1], Cluster=None,
+                     Priority=None, Distance=None , Release=0, Type= 'Test')
+        TG.add_edge("S"+str(edge[0])+str(edge[1]), "R"+str(edge[0])+str(edge[1]), ComWeight=Config.NodeTestComWeight,
+                     Criticality='L', Link=[])
+    return TG
 
 
 def DrawPMCG(PMCG):

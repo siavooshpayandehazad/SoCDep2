@@ -11,7 +11,7 @@ def GenerateManualTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List
     # IF both sender and receiver are critical then that transaction is critical
     for i in range(0,len(Task_List)):
         TG.add_node(Task_List[i], WCET=Task_WCET_List[i], Criticality=Task_Criticality_List[i],
-                    Cluster=None, Node=None, Priority=None, Distance=None , Release=0)
+                    Cluster=None, Node=None, Priority=None, Distance=None , Release=0, Type= 'App')
 
     print ("\tCALCULATING THE CRITICALITY OF LINKS...")
     GateWayEdges = []
@@ -23,7 +23,7 @@ def GenerateManualTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List
             # gateway to Low
             GatewayNumber = len(Task_List)+GatewayCounter
             TG.add_node(GatewayNumber, WCET=1, Criticality= 'GNH',
-                    Cluster=None, Node=None, Priority=None, Distance=None , Release=0)
+                    Cluster=None, Node=None, Priority=None, Distance=None , Release=0, Type= 'App')
             TG.add_edge(edge[0],GatewayNumber, Criticality='H', Link=[], ComWeight=TG_Edge_Weight[TG_Edge_List.index(edge)])
             TG.add_edge(GatewayNumber, edge[1], Criticality='L', Link=[], ComWeight=TG_Edge_Weight[TG_Edge_List.index(edge)])
             GateWayEdges.append(edge)
@@ -33,7 +33,7 @@ def GenerateManualTG(Task_List,TG_Edge_List,Task_Criticality_List,Task_WCET_List
             # gateway to high
             GatewayNumber = len(Task_List)+GatewayCounter
             TG.add_node(GatewayNumber, WCET=1, Criticality= 'GH',
-                    Cluster=None, Node=None, Priority=None, Distance=None , Release=0)
+                    Cluster=None, Node=None, Priority=None, Distance=None , Release=0, Type= 'App')
             TG.add_edge(edge[0],GatewayNumber, Criticality = 'L', Link=[], ComWeight = TG_Edge_Weight[TG_Edge_List.index(edge)])
             TG.add_edge(GatewayNumber,edge[1], Criticality = 'H', Link=[], ComWeight = TG_Edge_Weight[TG_Edge_List.index(edge)])
             GateWayEdges.append(edge)
@@ -87,7 +87,7 @@ def GenerateRandomTG(NumberOfTasks,NumberOfCriticalTasks,NumberOfEdges,WCET_Rang
 
     for i in range(0,len(Task_List)):
         TG.add_node(Task_List[i], WCET = Task_WCET_List[i], Criticality = Task_Criticality_List[i],
-                    Cluster = None, Node = None, Priority = None, Distance=None ,Release = 0)
+                    Cluster = None, Node = None, Priority = None, Distance=None ,Release = 0, Type= 'App')
 
     print ("\tCALCULATING THE CRITICALITY OF LINKS...")
     GateWayEdges = []
@@ -100,7 +100,7 @@ def GenerateRandomTG(NumberOfTasks,NumberOfCriticalTasks,NumberOfEdges,WCET_Rang
             # gateway to Low
             GatewayNumber = len(Task_List)+GatewayCounter
             TG.add_node(GatewayNumber, WCET=1, Criticality= 'GNH',
-                    Cluster=None, Node=None, Priority=None, Distance=None , Release=0)
+                    Cluster=None, Node=None, Priority=None, Distance=None , Release=0, Type= 'App')
             if not networkx.has_path(TG,GatewayNumber,edge[0]):
                 TG.add_edge(edge[0],GatewayNumber,Criticality = 'H', Link=[], ComWeight = TG_Edge_Weight[TG_Edge_List.index(edge)])
             if not networkx.has_path(TG,edge[1],GatewayNumber):
@@ -111,7 +111,7 @@ def GenerateRandomTG(NumberOfTasks,NumberOfCriticalTasks,NumberOfEdges,WCET_Rang
             # gateway to high
             GatewayNumber = len(Task_List)+GatewayCounter
             TG.add_node(GatewayNumber, WCET=1, Criticality= 'GH',
-                    Cluster=None, Node=None, Priority=None, Distance=None , Release=0)
+                    Cluster=None, Node=None, Priority=None, Distance=None , Release=0, Type= 'App')
             if not networkx.has_path(TG,GatewayNumber,edge[0]):
                 TG.add_edge(edge[0],GatewayNumber, Criticality = 'L', Link=[], ComWeight = TG_Edge_Weight[TG_Edge_List.index(edge)])
             if not networkx.has_path(TG,edge[1],GatewayNumber):
@@ -155,7 +155,7 @@ def GenerateRandomIndependentTG(NumberOfTasks,WCET_Range,Release_Range):
         TG_Release_List.append(random.randrange(0,Release_Range))
     for i in range(0,len(Task_List)):
         TG.add_node(Task_List[i], WCET=Task_WCET_List[i], Criticality=Task_Criticality_List[i],
-                    Cluster=None, Node=None, Priority=None, Distance=None, Release=TG_Release_List[i])
+                    Cluster=None, Node=None, Priority=None, Distance=None, Release=TG_Release_List[i], Type= 'App')
 
     print("RANDOM TASK GRAPH (TG) WITH INDEPENDENT TASKS IS READY...")
     return TG

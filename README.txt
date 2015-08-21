@@ -119,8 +119,9 @@ ToDo:
     - I want to run a reliability Analysis of the system... so we can have
       a sense about the system state...
 
-    - We need to implement some test routine where we can schedule Test-Tasks where
-      one PE tests another. we can use TTG made based on PMC model for this.
+    - We need to implement some test routine where we can schedule
+      Test-Tasks where one PE tests another. we can use TTG made based
+      on PMC model for this.
 
     - can we generate some file based on scheduling to feed in Noxim?
 
@@ -157,18 +158,21 @@ ToDo:
 
     - we need to have a deadline for the whole task graph
 
-    - Can we implement something like Core-Cannibalization method for Router's control unit etc.?
+    - Can we implement something like Core-Cannibalization method for
+      Router's control unit etc.?
 
     - Can we have some sort of local repair?
 
-    - for later time we need to schedule flits in the critical domain with a model of the router with
-      latency etc considered (low priority- thesis of Mihkel Tagel)
+    - for later time we need to schedule flits in the critical domain
+      with a model of the router with latency etc considered (low
+      priority- thesis of Mihkel Tagel)
 
-    - we need to add 0 weight communication between the tasks just to stablish
-      precedence without data dependence. (we can have this in the data dependence assumptions)
+    - we need to add 0 weight communication between the tasks just to
+      establish precedence without data dependence. (we can have this
+      in the data dependence assumptions)
 
-    - can we identify two cores that we can just swap their mapped tasks and it doesnt change any
-      other traffic on the network?
+    - can we identify two cores that we can just swap their mapped
+      tasks and it doesnt change any other traffic on the network?
     --------------------------------------------------
     List of functions without DocString:
 
@@ -182,5 +186,6 @@ ToDo:
 
     --------------------------------------------------
     To be Read:
-    - GigaNoC architecture (Self-optimization of MPSoCs Targeting Resource Efficiency and Fault Tolerance-2009)
+    - GigaNoC architecture (Self-optimization of MPSoCs Targeting
+      Resource Efficiency and Fault Tolerance-2009)
     - Core Salvaging
