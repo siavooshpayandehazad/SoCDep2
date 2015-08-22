@@ -9,6 +9,7 @@ import networkx
 from fractions import gcd
 import matplotlib.pyplot as plt
 from ConfigAndPackages import Config
+from Mapper import Mapping_Functions
 import random, copy
 
 def GenerateOneStepDiagnosablePMCG(AG,SHM):
@@ -100,30 +101,43 @@ def GenerateTestTGFromPMCG(PMCG):
     TTG = networkx.DiGraph()
     for edge in PMCG.edges():
         TTG.add_node("S"+str(edge[0])+str(edge[1]), Criticality='L', WCET=Config.NodeTestExeTime, Node=edge[0],
-                     Cluster=None, Priority=None, Distance=None , Release=0, Type= 'Test')
+                     Cluster=None, Priority=None, Distance=0 , Release=0, Type= 'Test')
         TTG.add_node("R"+str(edge[0])+str(edge[1]), Criticality='L', WCET=1, Node=edge[1], Cluster=None,
-                     Priority=None, Distance=None , Release=0, Type= 'Test')
+                     Priority=None, Distance=1 , Release=0, Type= 'Test')
         TTG.add_edge("S"+str(edge[0])+str(edge[1]), "R"+str(edge[0])+str(edge[1]), ComWeight=Config.NodeTestComWeight,
                      Criticality='L', Link=[])
     return TTG
 
-def InsertTestTasksinTG(PMCG, TG):
-    """
-    Generates a test task graph to be scheduled in between the Tasks from TG on the
-    Network to support PMCG. each edge in PMCG turns into a pair of tasks for a specific
-    functional test to be mapped on the network.
-    :param PMCG: PMC Graph
-    :return: Test Task Graph
-    """
+
+def InsertTestTasksInTG(PMCG, TG):
+    # I dont know how we can use this at the moment!
+    print ("===========================================")
+    print ("INSERTING PMC TASKS FROM TG...")
     for edge in PMCG.edges():
         TG.add_node("S"+str(edge[0])+str(edge[1]), Criticality='L', WCET=Config.NodeTestExeTime, Node=edge[0],
-                     Cluster=None, Priority=None, Distance=None , Release=0, Type= 'Test')
+                    Cluster=None, Priority=None, Distance=0 , Release=0, Type= 'Test')
         TG.add_node("R"+str(edge[0])+str(edge[1]), Criticality='L', WCET=1, Node=edge[1], Cluster=None,
-                     Priority=None, Distance=None , Release=0, Type= 'Test')
+                    Priority=None, Distance=1 , Release=0, Type= 'Test')
         TG.add_edge("S"+str(edge[0])+str(edge[1]), "R"+str(edge[0])+str(edge[1]), ComWeight=Config.NodeTestComWeight,
-                     Criticality='L', Link=[])
+                    Criticality='L', Link=[])
     return TG
 
+
+def RemoveTestTasksFromTG(TG):
+    # I dont know how we can use this at the moment!
+    print ("===========================================")
+    print ("REMOVING PMC TASKS FROM TG...")
+    for Task in TG.nodes():
+        if TG.node[Task]['Type'] == 'Test':
+            TG.remove_node(Task)
+    return TG
+
+def MapTestTasks(TG, AG, SHM, NoCRG, logging):
+    for Task in TG.nodes():
+        if TG.node[Task]['Type'] == 'Test':
+            Node = TG.node[Task]['Node']
+            Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, None, None, Task, Node, logging)
+    pass
 
 def DrawPMCG(PMCG):
     print ("===========================================")

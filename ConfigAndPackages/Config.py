@@ -40,8 +40,8 @@ VirtualChannelNum = 0
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
 NetworkTopology = '2DMesh'
-Network_X_Size = 4
-Network_Y_Size = 4
+Network_X_Size = 3
+Network_Y_Size = 3
 Network_Z_Size = 1
 
 # Number of Vertical Links
@@ -109,7 +109,7 @@ ListOfBrokenLinks = []
 # ListOfBrokenLinks = [(0, 1), (22, 21)]
 # ==========================
 # List of broken PE
-ListOfBrokenPEs = [1]
+ListOfBrokenPEs = []
 # ListOfBrokenPEs = []
 # ==========================
 # List of broken Turns
@@ -121,7 +121,8 @@ ListOfBrokenTurns = {}
 # For aging, we need to give the tool a dictionary of nodes and their speed down...
 # so {1: 0.3} means that node 1's speed has decreased by 30% from its current state.
 # I know its a dictionary too
-ListOfAgedPEs = {3: 0.3, 2: 0.1}
+# ListOfAgedPEs = {3: 0.3, 2: 0.1}
+ListOfAgedPEs = {}
 ################################################
 #          Clustering Function  Config
 ################################################
@@ -139,7 +140,7 @@ Clustering_CostFunctionType = 'SD+MAX'
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
 Mapping_Function = 'LocalSearch'
-LocalSearchIteration = 100
+LocalSearchIteration = 10
 IterativeLocalSearchIterations = 20
 #######################
 SimulatedAnnealingIteration = 50000
@@ -255,7 +256,7 @@ RG_Draw = True
 PMCG_Drawing = True
 TTG_Drawing = True
 Mapping_Dstr_Drawing = True
-Mapping_Drawing = True
+Mapping_Drawing = False
 SHM_Drawing = True          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks

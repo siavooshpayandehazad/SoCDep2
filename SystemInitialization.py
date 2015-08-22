@@ -102,8 +102,13 @@ def InitializeSystem(logging):
             TestSchedulingUnit.DrawPMCG(PMCG)
         if Config.TTG_Drawing:
             TestSchedulingUnit.DrawTTG(TTG)
-        TestSchedulingUnit.InsertTestTasksinTG(PMCG,TG)
+        TestSchedulingUnit.InsertTestTasksInTG(PMCG, TG)
         Task_Graph_Reports.DrawTaskGraph(TG, TTG=TTG)
+        TestSchedulingUnit.MapTestTasks(TG, AG, SHM, NoCRG, logging)
+        Scheduler.ScheduleTestInTG(TG, AG, SHM, False, False, logging)
+        Scheduling_Reports.ReportMappedTasks(AG, logging)
+        # TestSchedulingUnit.RemoveTestTasksFromTG(TTG, TG)
+        # Task_Graph_Reports.DrawTaskGraph(TG, TTG=TTG)
     else:
         PMCG = None
 

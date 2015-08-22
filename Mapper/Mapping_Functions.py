@@ -74,7 +74,9 @@ def MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, log
                                 else:
                                     AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge] = [(Counter,
                                                                                        Probability)]
-                                if Link not in TG.edge[Edge[0]][Edge[1]]['Link']:
+
+                                EdgeListOfLinks = list(batch[1] for batch in TG.edge[Edge[0]][Edge[1]]['Link'])
+                                if Link not in EdgeListOfLinks:
                                     TG.edge[Edge[0]][Edge[1]]['Link'].append((Counter, Link, Probability))
                             Counter += 1
 
@@ -171,7 +173,8 @@ def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster
                                     else:
                                         AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge] =[(Counter,
                                                                                           Probability)]
-                                    if Link not in TG.edge[Edge[0]][Edge[1]]['Link']:
+                                    EdgeListOfLinks = list(batch[1] for batch in TG.edge[Edge[0]][Edge[1]]['Link'])
+                                    if Link not in EdgeListOfLinks:
                                         TG.edge[Edge[0]][Edge[1]]['Link'].append((Counter, Link, Probability))
                             Counter += 1
                     else:

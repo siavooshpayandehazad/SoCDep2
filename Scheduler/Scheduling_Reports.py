@@ -119,7 +119,13 @@ def GenerateGanttCharts(TG,AG):
                             elif TG.node[Task]['Criticality'] == 'GNH':
                                 TaskColor = '#928AFF'
                             else:
-                                TaskColor = '#CFECFF'
+                                if TG.node[Task]['Type']=='Test':
+                                    if 'S' in Task:
+                                        TaskColor = '#FFDA3D'
+                                    else:
+                                        TaskColor = '#FFEAA7'
+                                else:
+                                    TaskColor = '#CFECFF'
                     PE_T.append(Max_Time)
                     PE_P.append(0)
                     ax1.fill_between(PE_T, PE_P, 0, facecolor=TaskColor, edgecolor='k')
@@ -278,8 +284,10 @@ def GenerateGanttCharts(TG,AG):
                 PE_P.append(0.1)
                 PE_T.append(Max_Time)
                 PE_P.append(0)
-
-                ax1.fill_between(PE_T, PE_P, 0, color=EdgeColor, edgecolor=EdgeColor, zorder= Zorder)
+                if TG.node[Task[0]]['Type'] == 'Test' or TG.node[Task[1]]['Type'] == 'Test':
+                    ax1.fill_between(PE_T, PE_P, 0, color=EdgeColor, edgecolor='k', zorder= Zorder, hatch='\\')
+                else:
+                    ax1.fill_between(PE_T, PE_P, 0, color=EdgeColor, edgecolor=EdgeColor, zorder= Zorder)
                 if Config.SlackCount > 0:
                     ax1.fill_between(Slack_T, Slack_P, 0 , color='#808080', edgecolor='#808080')
 
