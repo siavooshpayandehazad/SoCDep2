@@ -3,9 +3,6 @@
 from math import ceil
 from ConfigAndPackages import Config
 
-
-# Todo: need to be able to schedule something if there is less than 100% probability...
-
 def FindScheduleMakeSpan(AG):
     MakeSpan = 0
     for Node in AG.nodes():
@@ -13,6 +10,7 @@ def FindScheduleMakeSpan(AG):
             if AG.node[Node]['Scheduling'][Task][1] > MakeSpan:
                 MakeSpan = AG.node[Node]['Scheduling'][Task][1]
     return MakeSpan
+
 
 ################################################################
 def ClearScheduling(AG, TG):
@@ -22,19 +20,19 @@ def ClearScheduling(AG, TG):
         AG.edge[Link[0]][Link[1]]['Scheduling'] = {}
     return None
 
+
 ##########################################################################
 #
 #                       ADDING TASK AND EDGE TO
 #                               RESOURCES
 #
 ##########################################################################
-
 def Add_TG_TaskToNode(TG, AG, SHM, Task, Node, Report):
     if Report: print ("\t\tADDING TASK:", Task, " TO NODE:", Node)
     CriticalityLevel = TG.node[Task]['Criticality']
     StartTime = max(FindLastAllocatedTimeOnNode(TG, AG, Node, Report),
-                  FindTaskPredecessorsFinishTime(TG, AG, Task, CriticalityLevel),
-                  TG.node[Task]['Release'])
+                    FindTaskPredecessorsFinishTime(TG, AG, Task, CriticalityLevel),
+                    TG.node[Task]['Release'])
     # This includes the aging and lower frequency of the nodes of graph...
     # however, we do not include fractions of a cycle so we take ceiling of the execution time
     NodeSpeedDown = 1+((100.0-SHM.SHM.node[Node]['NodeSpeed'])/100)
@@ -45,7 +43,7 @@ def Add_TG_TaskToNode(TG, AG, SHM, Task, Node, Report):
         AG.node[Node]['Scheduling'][Task] = [StartTime, EndTime+Config.SlackCount*TaskExecutionOnNode]
     else:
         AG.node[Node]['Scheduling'][Task] = [StartTime, EndTime]
-    TG.node[Task]['Node']=Node
+    TG.node[Task]['Node'] = Node
     return True
 ################################################################
 
@@ -69,8 +67,8 @@ def Add_TG_EdgeTo_link(TG, AG, Edge, Link, batch, Prob, Report, logging):
             AG.edge[Link[0]][Link[1]]['Scheduling'][Edge].append([StartTime, EndTime, batch, Prob])
         else:
             AG.edge[Link[0]][Link[1]]['Scheduling'][Edge] = [[StartTime, EndTime, batch, Prob]]
-
     return True
+
 
 ##########################################################################
 #
@@ -102,6 +100,7 @@ def FindTaskPredecessorsFinishTime(TG, AG, Task, CriticalityLevel):
     return FinishTime
 ################################################################
 
+
 def FindEdgePredecessorsFinishTime(TG, AG, Edge, batch, CurrentLink):
     FinishTime = 0
     Node = TG.node[Edge[0]]['Node']
@@ -130,10 +129,10 @@ def FindEdgePredecessorsFinishTime(TG, AG, Edge, batch, CurrentLink):
 def FindLastAllocatedTimeOnLink(TG, AG, Link, Report):
     if Report:print ("\t\tFINDING LAST ALLOCATED TIME ON LINK", Link)
     LastAllocatedTime = 0
-    if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
+    if len(AG.edge[Link[0]][Link[1]]['MappedTasks']) > 0:
         for Task in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
             if Task in AG.edge[Link[0]][Link[1]]['Scheduling']:
-                for ScheduleAndBatch in  AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
+                for ScheduleAndBatch in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
                     StartTime = ScheduleAndBatch[0]
                     EndTime = ScheduleAndBatch[1]
                     if StartTime is not None and EndTime is not None:
@@ -144,12 +143,14 @@ def FindLastAllocatedTimeOnLink(TG, AG, Link, Report):
         return 0
     if Report:print ("\t\t\tLAST ALLOCATED TIME:", LastAllocatedTime)
     return LastAllocatedTime
+
+
 ################################################################
 def FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Prob, Report, logging):
     logging.info("\t-------------------------")
     logging.info("\tFINDING LAST ALLOCATED TIME ON LINK "+str(Link)+"\tFOR EDGE: "+str(Edge)+" WITH PROB: "+str(Prob))
     LastAllocatedTime = 0
-    if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
+    if len(AG.edge[Link[0]][Link[1]]['MappedTasks']) > 0:
         for Task in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
             if Task in AG.edge[Link[0]][Link[1]]['Scheduling']:
                 for ScheduleAndBatch in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
@@ -167,7 +168,7 @@ def FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Prob, Report, logging
                                 for Schedule in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
                                     if OtherTask != Edge:
                                         # logging.info("Picked other task: "+str(OtherTask)+" With Schedule: "+str(Schedule))
-                                        if Schedule[0]<EndTime<=Schedule[1]:
+                                        if Schedule[0] < EndTime <= Schedule[1]:
                                             SumOfProb += Schedule[3]
                                             logging.info("\t\t\t"+str(Schedule[0])+"   "+str(Schedule[1])+"   "
                                                          +str(Schedule[3])+"   "+str(SumOfProb))
@@ -183,6 +184,7 @@ def FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Prob, Report, logging
         return 0
     logging.info("\tLAST ALLOCATED TIME:"+str(LastAllocatedTime))
     return LastAllocatedTime
+
 
 def FindLastAllocatedTimeOnNode(TG, AG, Node, Report):
     if Report:print ("\t\tFINDING LAST ALLOCATED TIME ON NODE", Node)
@@ -204,3 +206,18 @@ def FindLastAllocatedTimeOnNode(TG, AG, Node, Report):
     return LastAllocatedTime
 
 
+def FindFirstEmptySlotForTaskOnNode(TG, AG, Node, Task):
+    '''
+    Should be used for Test Tasks
+    :param TG:
+    :param AG:
+    :param Node:
+    :param Task:
+    :return:
+    '''
+    FirstPossibleMappingTime = None
+    WCET = TG.node[Task]['WCET']
+    ReleaseTime = TG.node[Task]['Release']
+    # ToDo
+
+    return FirstPossibleMappingTime

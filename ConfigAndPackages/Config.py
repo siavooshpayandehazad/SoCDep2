@@ -40,9 +40,9 @@ VirtualChannelNum = 0
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
 NetworkTopology = '3DMesh'
-Network_X_Size = 2
-Network_Y_Size = 2
-Network_Z_Size = 2
+Network_X_Size = 3
+Network_Y_Size = 3
+Network_Z_Size = 3
 
 # Number of Vertical Links
 FindOptimumAG = False
