@@ -5,13 +5,13 @@ import TG_Functions
 
 def GenerateTGFromXML(FilePath):
     TG = networkx.DiGraph()
-    print("PREPARING RANDOM TASK GRAPH (TG) FROM XML FILE...")
+    print("PREPARING TASK GRAPH (TG) FROM XML FILE...")
     # Todo...
     return TG
 
 def GenerateTGFromDOT(FilePath):
     TG = networkx.DiGraph()
-    print("PREPARING RANDOM TASK GRAPH (TG) FROM DOT FILE...")
+    print("PREPARING TASK GRAPH (TG) FROM DOT FILE...")
 
     try:
         TG_DOT_File = open(FilePath, 'r')
@@ -34,4 +34,5 @@ def GenerateTGFromDOT(FilePath):
     except IOError:
         print ('CAN NOT OPEN', FilePath)
     TG_Functions.AssignDistance(TG)
+    print("TASK GRAPH (TG) IS READY...")
     return TG
