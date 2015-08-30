@@ -102,7 +102,7 @@ class ConfigAppp(Tkinter.Tk):
         #                   TG
         # ---------------------------------------------
         self.TG_Label = Tkinter.Label(self, text="Task Graph Type:")
-        self.AvailableTGs = ['RandomDependent', 'RandomIndependent', 'Manual']
+        self.AvailableTGs = ['RandomDependent', 'RandomIndependent', 'Manual', 'FromDOTFile']
         self.TGType = Tkinter.StringVar(self)
         self.TGType.set('RandomDependent')
         self.TGTypeOption = Tkinter.OptionMenu(self, self.TGType, *self.AvailableTGs, command=self.TGTypeCont)
@@ -722,6 +722,37 @@ class ConfigAppp(Tkinter.Tk):
             self.MappingOption.config(width=self.OptionMenuWidth)
             self.ClearMapping()
 
+            self.TGBrowse.grid_forget()
+            self.TGBrowseButton.grid_forget()
+
+            self.NumOfTasks_Label.grid_forget()
+            self.NumOfTasks.grid_forget()
+
+            self.NumOfCritTasks_Label.grid_forget()
+            self.NumOfCritTasks.grid_forget()
+
+            self.NumOfEdge_Label.grid_forget()
+            self.NumOfEdge.grid_forget()
+
+            self.WCET_Range_Label.grid_forget()
+            self.WCET_Range.grid_forget()
+
+            self.Release_Range_Label.grid_forget()
+            self.Release_Range.grid_forget()
+
+            self.EdgeWeight_Range.grid_forget()
+            self.EdgeWeight_Range_Label.grid_forget()
+
+        elif TGType == 'FromDOTFile':
+            self.MappingOption.grid_forget()
+            del self.MappingOption
+            self.Mapping.set('Please Select...')
+            self.MappingOption = Tkinter.OptionMenu(self, self.Mapping, *self.MappingDict['Manual'],
+                                                    command=self.MappingAlgCont)
+            self.MappingOption.grid(column=self.Mapping_OptStartCol+1, row=self.Mapping_OptStartRow+1)
+            self.MappingOption.config(width=self.OptionMenuWidth)
+            self.ClearMapping()
+
             self.TGBrowse.grid(column=self.TG_StartingCol, row=self.TG_StartingRow+2, sticky='e')
             self.TGBrowseButton.grid(column=self.TG_StartingCol+1, row=self.TG_StartingRow+2)
 
@@ -1135,7 +1166,8 @@ class ConfigAppp(Tkinter.Tk):
             Config.WCET_Range = int(self.WCET_Range.get())
             Config.EdgeWeightRange = int(self.EdgeWeight_Range.get())
             Config.Release_Range = int(self.Release_Range.get())
-
+            if self.TGType.get() == 'FromDOTFile':
+                Config.TG_DOT_Path = self.TGBrowse.get()
             # Topology Config
             Config.NetworkTopology = self.Topology.get()
             Config.Network_X_Size = int(self.network_size_x.get())

@@ -175,7 +175,7 @@ def GenerateAG(logging):
         raise ValueError('AG TYPE DOESNT EXIST...!!!')
 
 
-def UpdateAGRegions (AG):
+def UpdateAGRegions(AG):
     print ("===========================================")
     print ("UPDATING ARCHITECTURE GRAPH (AG) REGIONS...")
     for Node in AG.nodes():

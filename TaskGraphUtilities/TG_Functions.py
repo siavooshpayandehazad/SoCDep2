@@ -3,6 +3,7 @@
 import networkx
 import random
 from ConfigAndPackages import Config
+import TG_File_Parser
 
 def GenerateManualTG(Task_List, TG_Edge_List, Task_Criticality_List, Task_WCET_List, TG_Edge_Weight):
     print("PREPARING TASK GRAPH (TG)...")
@@ -186,12 +187,12 @@ def FindSourceNodes(TG):
 
 def AssignDistance(TG):
     print("ASSIGNING PRIORITIES TO TASK GRAPH (TG)...")
-    SourceNodes=FindSourceNodes(TG)
+    SourceNodes = FindSourceNodes(TG)
     for Task in SourceNodes:
         TG.node[Task]['Distance'] = 0
 
     for Task in TG.nodes():
-        distance=[]
+        distance = []
         if Task not in SourceNodes:
             for Source in SourceNodes:
                 if networkx.has_path(TG, Source, Task):
@@ -209,15 +210,17 @@ def GenerateTG():
                                 Config.WCET_Range, Config.WCET_Range)
     elif Config.TG_Type == 'RandomIndependent':
         return GenerateRandomIndependentTG(Config.NumberOfTasks, Config.WCET_Range, Config.Release_Range)
-    elif Config.TG_Type=='Manual':
+    elif Config.TG_Type == 'Manual':
         return GenerateManualTG(Config.Task_List,Config.TG_Edge_List,
                                 Config.Task_Criticality_List, Config.Task_WCET_List, Config.TG_Edge_Weight)
+    elif Config.TG_Type == 'FromDOTFile':
+        return TG_File_Parser.GenerateTGFromDOT(Config.TG_DOT_Path)
     else:
         raise ValueError('TG TYPE DOESNT EXIST...!!!')
 
 
-########################################################
 
+########################################################
 def CalculateMaxDistance(TG):
     MaxDistance = 0
     for Task in TG:
@@ -226,9 +229,9 @@ def CalculateMaxDistance(TG):
     return MaxDistance
 
 
+########################################################
 def TasksCommunicationWeight(TG):
     """
-
     :param TG: Task graph
     :return: Returns a dictionary with task numbers as keys and total communication relevant to that task as value
     """
@@ -239,5 +242,4 @@ def TasksCommunicationWeight(TG):
             if task in links:
                 TaskCom += TG.edge[links[0]][links[1]]["ComWeight"]
         TasksCom[task] = TaskCom
-
     return TasksCom

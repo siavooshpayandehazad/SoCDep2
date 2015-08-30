@@ -98,11 +98,9 @@ ScheduleAndDepend
  |------TaskGraphUtilities
  |          |
  |          |----- Task_Graph_Reports
+ |          |----- Task_File_Parser
  |          |----- TG_Functions
- |
- |------UserInputs
- |          |
- |          |----- RoutingFile
+ |          |----- TG_Test
  |
  |------Utilities
  |          |

@@ -41,7 +41,7 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
         return NMap.NMap(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging)
 
     elif Config.Mapping_Function in ['LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing']:
-        if Config.TG_Type == 'RandomDependent' or Config.TG_Type == 'Manual':
+        if Config.TG_Type in ['RandomDependent', 'Manual', 'FromDOTFile']:
             pass
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomDependent')

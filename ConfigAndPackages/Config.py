@@ -13,7 +13,7 @@ EventDrivenFaultInjection = False
 ################################################
 #          TG  Config
 ################################################
-# TG_Type can be: 'RandomDependent','RandomIndependent','Manual'
+# TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile'
 TG_Type = 'RandomDependent'
 # For Random TG_Type:
 NumberOfTasks = 35
@@ -30,6 +30,11 @@ Task_WCET_List = [30, 30, 20, 40, 10, 5, 15, 20]
 Task_Criticality_List = ['H', 'L', 'H', 'L', 'L', 'H', 'L', 'L']
 TG_Edge_List = [(1, 2), (1, 3), (2, 5), (0, 5), (4, 7), (4, 3), (1, 6), (0, 6)]
 TG_Edge_Weight = [5, 9, 4, 7, 5, 3, 5, 1]
+
+# TG DOT FILE PATH
+# you can use this one: http://express.ece.ucsb.edu/benchmark/jpeg/h2v2_smooth_downsample.html
+# as example...
+TG_DOT_Path = 'h2v2_smooth_downsample_dfg__6.dot'
 ################################################
 #          AG  Config
 ################################################
@@ -140,7 +145,7 @@ Clustering_CostFunctionType = 'SD+MAX'
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
 Mapping_Function = 'LocalSearch'
-LocalSearchIteration = 10
+LocalSearchIteration = 100
 IterativeLocalSearchIterations = 20
 #######################
 SimulatedAnnealingIteration = 50000
@@ -243,7 +248,7 @@ else:
 ###############################################
 #           PMCG Config
 ###############################################
-GeneratePMCG = True
+GeneratePMCG = False
 OneStepDiagnosable = False     # set to False if you need Sequentially diagnosable PMCG
 TFaultDiagnosable = None        # one-step t-fault diagnosable system, if set to none, default value would be
 #                                 (n-1)/2
@@ -256,7 +261,7 @@ RG_Draw = True
 PMCG_Drawing = True
 TTG_Drawing = True
 Mapping_Dstr_Drawing = True
-Mapping_Drawing = False
+Mapping_Drawing = True
 SHM_Drawing = True          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks
