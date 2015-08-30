@@ -100,9 +100,9 @@ def GenerateTestTGFromPMCG(PMCG):
     """
     TTG = networkx.DiGraph()
     for edge in PMCG.edges():
-        TTG.add_node("S"+str(edge[0])+str(edge[1]), Criticality='L', WCET=Config.NodeTestExeTime, Node=edge[0],
+        TTG.add_node("S"+str(edge[0])+str(edge[1]), Criticality='L', WCET=Config.NodeTestExeTime, Node=edge[1],
                      Cluster=None, Priority=None, Distance=0 , Release=0, Type= 'Test')
-        TTG.add_node("R"+str(edge[0])+str(edge[1]), Criticality='L', WCET=1, Node=edge[1], Cluster=None,
+        TTG.add_node("R"+str(edge[0])+str(edge[1]), Criticality='L', WCET=1, Node=edge[0], Cluster=None,
                      Priority=None, Distance=1 , Release=0, Type= 'Test')
         TTG.add_edge("S"+str(edge[0])+str(edge[1]), "R"+str(edge[0])+str(edge[1]), ComWeight=Config.NodeTestComWeight,
                      Criticality='L', Link=[])
@@ -114,9 +114,9 @@ def InsertTestTasksInTG(PMCG, TG):
     print ("===========================================")
     print ("INSERTING PMC TASKS FROM TG...")
     for edge in PMCG.edges():
-        TG.add_node("S"+str(edge[0])+str(edge[1]), Criticality='L', WCET=Config.NodeTestExeTime, Node=edge[0],
+        TG.add_node("S"+str(edge[0])+str(edge[1]), Criticality='L', WCET=Config.NodeTestExeTime, Node=edge[1],
                     Cluster=None, Priority=None, Distance=0 , Release=0, Type= 'Test')
-        TG.add_node("R"+str(edge[0])+str(edge[1]), Criticality='L', WCET=1, Node=edge[1], Cluster=None,
+        TG.add_node("R"+str(edge[0])+str(edge[1]), Criticality='L', WCET=1, Node=edge[0], Cluster=None,
                     Priority=None, Distance=1 , Release=0, Type= 'Test')
         TG.add_edge("S"+str(edge[0])+str(edge[1]), "R"+str(edge[0])+str(edge[1]), ComWeight=Config.NodeTestComWeight,
                     Criticality='L', Link=[])
