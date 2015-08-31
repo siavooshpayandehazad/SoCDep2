@@ -82,22 +82,26 @@ SetRoutingFromFile = False
 #          SHM  Config
 ################################################
 # Do not change if you have conventional 2D NoC
-if '2D' in NetworkTopology:
-    TurnsHealth = PackageFile.TurnsHealth_2DNetwork
-    if not SetRoutingFromFile:
-        for Turn in PackageFile.FULL_TurnModel_2D:
-            if Turn not in UsedTurnModel:
-                if Turn in TurnsHealth.keys():
-                    TurnsHealth[Turn] = False
+def SetUpTrunsHealth():
+    global TurnsHealth
+    if '2D' in NetworkTopology:
+        TurnsHealth = PackageFile.TurnsHealth_2DNetwork
+        if not SetRoutingFromFile:
+            for Turn in PackageFile.FULL_TurnModel_2D:
+                if Turn not in UsedTurnModel:
+                    if Turn in TurnsHealth.keys():
+                        TurnsHealth[Turn] = False
+    elif '3D' in NetworkTopology:
+        TurnsHealth = PackageFile.TurnsHealth_3DNetwork
+        if not SetRoutingFromFile:
+            for Turn in PackageFile.FULL_TurnModel_3D:
+                if Turn not in UsedTurnModel:
+                    if Turn in TurnsHealth.keys():
+                        TurnsHealth[Turn] = False
+    return None
 
-elif '3D' in NetworkTopology:
-    TurnsHealth = PackageFile.TurnsHealth_3DNetwork
-    if not SetRoutingFromFile:
-        for Turn in PackageFile.FULL_TurnModel_3D:
-            if Turn not in UsedTurnModel:
-                if Turn in TurnsHealth.keys():
-                    TurnsHealth[Turn] = False
-
+TurnsHealth = {}
+SetUpTrunsHealth()
 # ==========================
 # Number of Unreachable-Rectangles
 NumberOfRects = 5

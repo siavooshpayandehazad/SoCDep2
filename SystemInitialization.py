@@ -29,6 +29,7 @@ def InitializeSystem(logging):
     else:
         Arch_Graph_Reports.DrawArchGraph(AG, "AG")
     ####################################################################
+    Config.SetUpTrunsHealth()
     if Config.TestMode:
         SHM_Test.TestSHM(AG)
     SHM = SystemHealthMonitor.SystemHealthMonitor()
