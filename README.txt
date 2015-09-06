@@ -171,6 +171,8 @@ ToDo:
 
     - can we identify two cores that we can just swap their mapped
       tasks and it doesnt change any other traffic on the network?
+
+    - Take mobility into account for scheduling
     --------------------------------------------------
     List of functions without DocString:
 

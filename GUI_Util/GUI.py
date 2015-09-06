@@ -611,7 +611,17 @@ class ConfigAppp(Tkinter.Tk):
             self.network_size_z.delete(0, 'end')
             self.network_size_z.insert(0, 2)
         else:
+            self.VLPlacementEnableBox.deselect()
             self.VLPlacementEnableBox.config(state='disable')
+            self.VLP_Alg_Label.grid_forget()
+            self.VLP_AlgOption.grid_forget()
+            self.NumOfVLs_Label.grid_forget()
+            self.NumOfVLs.grid_forget()
+            self.VLP_IterationsLS_Label.grid_forget()
+            self.VLP_IterationsLS.grid_forget()
+            self.VLP_IterationsILS_Label.grid_forget()
+            self.VLP_IterationsILS.grid_forget()
+
             self.RoutingAlgOption.grid_forget()
             del self.RoutingAlgOption
             self.RoutingAlg.set('Please Select...')
@@ -1244,6 +1254,7 @@ class ConfigAppp(Tkinter.Tk):
                     Config.RotingType = self.RoutingType.get()
 
             # VL Placement
+            # todo: There is something with update from 3D to 2D system.
             Config.FindOptimumAG = self.VLPlacementEnable.get()
             if self.VLPlacementEnable.get():
                 Config.VL_OptAlg = self.VLP_Alg.get()
