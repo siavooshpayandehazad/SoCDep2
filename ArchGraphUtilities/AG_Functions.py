@@ -6,16 +6,23 @@ import operator
 
 
 def GenerateManualAG(PE_List, AG_Edge_List, AG_Edge_Port_List):
-    print ("===========================================")
-    print ("PREPARING AN ARCHITECTURE GRAPH (AG)...")
+    """
+    Generates an architecture graph from manually defined AG in  Config file
+    :param PE_List:  List of Processing Elements
+    :param AG_Edge_List: List of Edges between PEs
+    :param AG_Edge_Port_List:  Port connection for each of the links between PEs
+    :return:
+    """
+    print("===========================================")
+    print("PREPARING AN ARCHITECTURE GRAPH (AG)...")
     AG = networkx.DiGraph()
     for PE in PE_List:
-        AG.add_node(PE, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region = 'L')
+        AG.add_node(PE, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region='L')
     for i in range(0, len(AG_Edge_List)):
         EDGE = AG_Edge_List[i]
         AG.add_edge(EDGE[0], EDGE[1], Port=AG_Edge_Port_List[i], MappedTasks={}, Scheduling={})
-    print ("\tNODES: "+str(AG.nodes(data=False)))
-    print ("\tEDGES: "+str(AG.edges(data=False)))
+    print("\tNODES: "+str(AG.nodes(data=False)))
+    print("\tEDGES: "+str(AG.edges(data=False)))
     print("ARCHITECTURE GRAPH (AG) IS READY...")
     return AG
 
@@ -30,7 +37,7 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
     :logging: logging file
     :return: AG
     """
-    SupportedTopologies = ['2DSpidergon', '2DTorus', '2DMesh', '2DRing', '2DLine', '3DMesh']
+    SupportedTopologies = ['2DTorus', '2DMesh', '2DRing', '2DLine', '3DMesh']
     print ("===========================================")
     print ("PREPARING AN ARCHITECTURE GRAPH (AG)...")
     print ("TOPOLOGY: "+Topology)
@@ -50,7 +57,7 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
             pass
     if Topology == '2DTorus':
         for i in range(0, SizeX*SizeY):
-            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region = 'N')
+            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region='N')
         for i in range(0, SizeX):
             CurrentNode = ReturnNodeNumber(i, 0, 0)
             NextNode = ReturnNodeNumber(i, SizeY-1, 0)
@@ -83,7 +90,7 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
     ##############################################################
     if Topology == '2DMesh':
         for i in range(0, SizeX*SizeY):
-            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region = 'N')
+            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region='N')
         for j in range(0, SizeY):
             for i in range(0, SizeX-1):
                 CurrentNode = ReturnNodeNumber(i, j, 0)
@@ -103,8 +110,8 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
     ##############################################################
     if Topology == '3DMesh':
         for i in range(0, SizeX*SizeY*SizeZ):
-            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region = 'N')
-        for z in range(0,SizeZ):
+            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region='N')
+        for z in range(0, SizeZ):
             # connect the connections in each layer
             for y in range(0, SizeY):
                 for x in range(0, SizeX-1):
@@ -118,7 +125,7 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
                     NextNode = ReturnNodeNumber(x, y+1, z)
                     AG.add_edge(CurrentNode, NextNode, Port=('N', 'S'), MappedTasks={}, Scheduling={})
                     AG.add_edge(NextNode, CurrentNode, Port=('S', 'N'), MappedTasks={}, Scheduling={})
-        for z in  range(0, SizeZ-1):
+        for z in range(0, SizeZ-1):
             # connect routers between layers.
             for y in range(0, SizeY):
                 for x in range(0, SizeX):
@@ -176,6 +183,11 @@ def GenerateAG(logging):
 
 
 def UpdateAGRegions(AG):
+    """
+    Takes an architecture graph and updates the node's Regions according to config file
+    :param AG: Architecture graph
+    :return: None
+    """
     print ("===========================================")
     print ("UPDATING ARCHITECTURE GRAPH (AG) REGIONS...")
     for Node in AG.nodes():
@@ -206,12 +218,25 @@ def ReturnNodeLocation(NodeNumber):
     NodeZ = NodeNumber / (Config.Network_Y_Size * Config.Network_X_Size)
     return NodeX, NodeY, NodeZ
 
+
 def ReturnNodeNumber(NodeX, NodeY, NodeZ):
-    NodeNumber = NodeZ*Config.Network_X_Size*Config.Network_Y_Size + NodeY*Config.Network_X_Size + NodeX
+    """
+    Takes cartesian location of a node and returns node id
+    :param NodeX: Location of the node on X axis
+    :param NodeY:  Location of the node on Y axis
+    :param NodeZ: Location of the node on Z axis
+    :return: ID of the node as an integer
+    """
+    NodeNumber = NodeZ * Config.Network_X_Size * Config.Network_Y_Size + NodeY * Config.Network_X_Size + NodeX
     return NodeNumber
 
 
 def NodeNeighbors(AG, SHM):
+    """
+    :param AG: Architecture graph (directed graph)
+    :param SHM: system health monitoring
+    :return: A dictionary with node number as the key and the number of neighbors as values
+    """
     NodeNeighbor = {}
     for Node in AG.nodes():
         NumberOfNeighbours = 0
@@ -224,6 +249,11 @@ def NodeNeighbors(AG, SHM):
 
 
 def MaxNodeNeighbors(NodeNeighbors, SortedNodeNeighbors):
+    """
+    :param NodeNeighbors: dictionary with nodes as keys and number of neighbors as values
+    :param SortedNodeNeighbors: sorted list of nodes by number of neighbors
+    :return: returns a list of nodes with maximum number of neighbors
+    """
     MaxNeighbourNum = 0
     for node in SortedNodeNeighbors:
         if NodeNeighbors[node] > MaxNeighbourNum:
@@ -235,8 +265,14 @@ def MaxNodeNeighbors(NodeNeighbors, SortedNodeNeighbors):
     return MaxNeighbourNodes
 
 
-def ManhattanDistance(Node1,Node2):
-    x1,y1,z1 = ReturnNodeLocation(Node1)
-    x2,y2,z2 = ReturnNodeLocation(Node2)
+def ManhattanDistance(Node1, Node2):
+    """
+    Takes the node id of two nodes and returns the manhattan distance of those nodes
+    :param Node1: Node id of 1st node
+    :param Node2: Node id of 2nd node
+    :return: returns manhattan distance between two nodes
+    """
+    x1, y1, z1 = ReturnNodeLocation(Node1)
+    x2, y2, z2 = ReturnNodeLocation(Node2)
 
     return abs(x2-x1)+abs(y2-y1)+abs(z2-z1)

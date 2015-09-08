@@ -176,9 +176,6 @@ ToDo:
     --------------------------------------------------
     List of functions without DocString:
 
-    ArchGraphUtilities/AG_Functions: GenerateManualAG
-    ArchGraphUtilities/AG_Functions: UpdateAGRegions
-    ArchGraphUtilities/AG_Functions: ReturnNodeNumber
     Clusterer/Clustering_Functions: RemoveTaskFromCTG
 
     --------------------------------------------------
