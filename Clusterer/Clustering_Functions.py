@@ -5,7 +5,15 @@ import statistics
 import ClusteringReports
 from ConfigAndPackages import Config
 
-def RemoveTaskFromCTG(TG,CTG,Task):
+
+def RemoveTaskFromCTG(TG, CTG, Task):
+    """
+    Removes a Task from TG from Clustred Task graph
+    :param TG: Task graph
+    :param CTG: Clustred Task Graph
+    :param Task: Task ID
+    :return: None
+    """
     TaskCluster = TG.node[Task]['Cluster']
     #print ("\tREMOVING TASK:", Task, " FROM CLUSTER:", TaskCluster)
     for edge in TG.edges():
@@ -35,6 +43,7 @@ def RemoveTaskFromCTG(TG,CTG,Task):
         CTG.node[TaskCluster]['Criticality'] = 'L'
     CTG.node[TaskCluster]['Utilization'] -= TG.node[Task]['WCET']
     return None
+
 
 def AddTaskToCTG(TG,CTG,Task,Cluster):
     """
@@ -77,6 +86,7 @@ def AddTaskToCTG(TG,CTG,Task,Cluster):
                         CTG.add_edge(SrcCluster, DstCluster, Weight=WeightToAdd)
     return True
 
+
 def CostFunction(CTG):
     """
     This Function is calculating the cost of a solution for clustering optimization algorithm.
@@ -110,6 +120,7 @@ def CostFunction(CTG):
         raise ValueError("Clustering_CostFunctionType is not valid")
     return Cost
 
+
 def ClearClustering(TG, CTG):
     """
     Clears a clustering that has been done. by removing the tasks in task-list of clusters,
@@ -130,6 +141,11 @@ def ClearClustering(TG, CTG):
 
 
 def DeleteEmptyClusters(CTG):
+    """
+    Takes a CTG and deletes the empty clusters
+    :param CTG: Clustered Task Graph
+    :return: None
+    """
     for Cluster in CTG.nodes():
         if len(CTG.node[Cluster]['TaskList']) == 0:
             CTG.remove_node(Cluster)

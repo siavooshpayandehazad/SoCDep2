@@ -80,7 +80,6 @@ def MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, log
                                     TG.edge[Edge[0]][Edge[1]]['Link'].append((Counter, Link, Probability))
                             Counter += 1
 
-
                     else:
                         RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging)
                         logging.warning("\tNO PATH FOUND FROM ", SourceNode, " TO ", DestNode, "...")
@@ -380,6 +379,11 @@ def FindFastestNodes(AG, SHM, TaskToBeMapped):
 
 
 def MappingIntoString(TG):
+    """
+    Takes a Mapped Task Graph and returns a string which contains the mapping information
+    :param TG: Task Graph
+    :return: A string containing mapping information
+    """
     MappingString = ""
     for Task in TG.nodes():
         MappingString += str(TG.node[Task]['Node']) + " "
