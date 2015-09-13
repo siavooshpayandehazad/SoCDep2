@@ -10,15 +10,15 @@ from Scheduling_Functions import Add_TG_EdgeTo_link
 def ScheduleAll(TG, AG, SHM, Report, DetailedReport, logging):
     logging.info("===========================================")
     logging.info("STARTING SCHEDULING PROCESS...")
-    ASAP_Scheduling(TG, AG, SHM, Report, DetailedReport, logging)
+    ASAP_Scheduling(TG, AG, SHM, Report, logging)
     Makespan = FindScheduleMakeSpan(AG)
     logging.info("SCHEDULING MAKESPAN:"+str(Makespan))
-    ALAP_Scheduling(TG, AG, SHM, Makespan, Report, DetailedReport, logging)
+    ALAP_Scheduling(TG, AG, SHM, Makespan, Report, logging)
     logging.info("DONE SCHEDULING...")
     return None
 
 
-def ASAP_Scheduling(TG, AG, SHM, Report, DetailedReport, logging):
+def ASAP_Scheduling(TG, AG, SHM, Report, logging):
     logging.info("STARTING ASAP SCHEDULING ...")
     MaxDistance = TG_Functions.CalculateMaxDistance(TG) + 1
     for Distance in range(0, MaxDistance):
@@ -28,7 +28,7 @@ def ASAP_Scheduling(TG, AG, SHM, Report, DetailedReport, logging):
                     Node = TG.node[Task]['Node']
                     logging.info("\tSCHEDULING TASK "+str(Task)+ " ON NODE:"+str(Node))
                     (StartTime, EndTime) = FindTask_ASAP_Scheduling(TG, AG, SHM, Task, Node, Report)
-                    Add_TG_TaskToNode(TG, AG, SHM, Task, Node, StartTime, EndTime, Report)
+                    Add_TG_TaskToNode(TG, AG, Task, Node, StartTime, EndTime, logging)
                     for Edge in TG.edges():
                         if Edge[0] == Task:
                             if len(TG.edge[Edge[0]][Edge[1]]['Link'])>0:
@@ -41,17 +41,17 @@ def ASAP_Scheduling(TG, AG, SHM, Report, DetailedReport, logging):
                                     (StartTime, EndTime) = FindEdge_ASAP_Scheduling(TG, AG, Edge, Link, Batch,
                                                                                     Probability, Report, logging)
                                     Add_TG_EdgeTo_link(TG, AG, Edge, Link, Batch, Probability, StartTime, EndTime,
-                                                       Report, logging)
+                                                       logging)
     logging.info("DONE ASAP SCHEDULING...")
     return None
 
 
-def ALAP_Scheduling(TG, AG, SHM, Makespan, Report, DetailedReport, logging):
+def ALAP_Scheduling(TG, AG, SHM, Makespan, Report, logging):
 
     return None
 
 
-def ScheduleTestInTG(TG, AG, SHM, Report, DetailedReport, logging):
+def ScheduleTestInTG(TG, AG, SHM, Report, logging):
     logging.info("===========================================")
     logging.info("STARTING SCHEDULING TEST TASKS IN TG...")
     for Distance in range(0, 2):
@@ -61,7 +61,7 @@ def ScheduleTestInTG(TG, AG, SHM, Report, DetailedReport, logging):
                     Node = TG.node[Task]['Node']
                     logging.info("\tSCHEDULING TASK "+str(Task)+ " ON NODE:"+str(Node))
                     (StartTime, EndTime) = FindTask_ASAP_Scheduling(TG, AG, SHM, Task, Node, Report)
-                    Add_TG_TaskToNode(TG, AG, SHM, Task, Node, StartTime, EndTime, Report)
+                    Add_TG_TaskToNode(TG, AG, Task, Node, StartTime, EndTime, logging)
                     for Edge in TG.edges():
                         if Edge[0] == Task:
                             if len(TG.edge[Edge[0]][Edge[1]]['Link'])>0:
@@ -74,6 +74,6 @@ def ScheduleTestInTG(TG, AG, SHM, Report, DetailedReport, logging):
                                     (StartTime, EndTime) = FindEdge_ASAP_Scheduling(TG, AG, Edge, Link, Batch,
                                                                                   Probability, Report, logging)
                                     Add_TG_EdgeTo_link(TG, AG, Edge, Link, Batch, Probability, StartTime, EndTime,
-                                                       Report, logging)
+                                                       logging)
     logging.info("DONE SCHEDULING...")
     return None

@@ -29,7 +29,7 @@ def InitializeSystem(logging):
     else:
         Arch_Graph_Reports.DrawArchGraph(AG, "AG")
     ####################################################################
-    Config.SetUpTrunsHealth()
+    Config.SetUpTurnsHealth()
     if Config.TestMode:
         SHM_Test.TestSHM(AG)
     SHM = SystemHealthMonitor.SystemHealthMonitor()
@@ -106,7 +106,7 @@ def InitializeSystem(logging):
         TestSchedulingUnit.InsertTestTasksInTG(PMCG, TG)
         Task_Graph_Reports.DrawTaskGraph(TG, TTG=TTG)
         TestSchedulingUnit.MapTestTasks(TG, AG, SHM, NoCRG, logging)
-        Scheduler.ScheduleTestInTG(TG, AG, SHM, False, False, logging)
+        Scheduler.ScheduleTestInTG(TG, AG, SHM, False, logging)
         Scheduling_Reports.ReportMappedTasks(AG, logging)
         # TestSchedulingUnit.RemoveTestTasksFromTG(TTG, TG)
         # Task_Graph_Reports.DrawTaskGraph(TG, TTG=TTG)

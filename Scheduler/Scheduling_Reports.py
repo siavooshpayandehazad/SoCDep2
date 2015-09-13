@@ -82,7 +82,7 @@ def GenerateGanttCharts(TG,AG):
                         if TG.node[Task]['Criticality']=='H':
                             StartTime = AG.node[Node]['Scheduling'][Task][0]
                             TaskLength = AG.node[Node]['Scheduling'][Task][1]-AG.node[Node]['Scheduling'][Task][0]
-                            EndTime = StartTime + (TaskLength/(Config.SlackCount+1))
+                            EndTime = StartTime + (TaskLength/(Config.Task_SlackCount+1))
                             PE_T.append(StartTime)
                             PE_P.append(0)
                             PE_T.append(StartTime)
@@ -92,9 +92,9 @@ def GenerateGanttCharts(TG,AG):
                             PE_T.append(EndTime)
                             PE_P.append(0)
                             TaskColor = '#FF878B'
-                            if Config.SlackCount > 0:
+                            if Config.Task_SlackCount > 0:
                                 StartTime =EndTime
-                                EndTime = StartTime + (TaskLength / (Config.SlackCount+1)) * Config.SlackCount
+                                EndTime = StartTime + (TaskLength / (Config.Task_SlackCount+1)) * Config.Task_SlackCount
                                 Slack_T.append(StartTime)
                                 Slack_P.append(0)
                                 Slack_T.append(StartTime)
@@ -129,7 +129,7 @@ def GenerateGanttCharts(TG,AG):
                     PE_T.append(Max_Time)
                     PE_P.append(0)
                     ax1.fill_between(PE_T, PE_P, 0, facecolor=TaskColor, edgecolor='k')
-                    if Config.SlackCount > 0:
+                    if Config.Task_SlackCount > 0:
                         ax1.fill_between(Slack_T, Slack_P, 0, facecolor='#808080', edgecolor='k')
             plt.setp(ax1.get_yticklabels(), visible=False)
             if Count < EdgeCounter + NodeCounter:
@@ -142,7 +142,7 @@ def GenerateGanttCharts(TG,AG):
                             TaskLength=(AG.node[Node]['Scheduling'][Task][1] - AG.node[Node]['Scheduling'][Task][0])/(Config.SlackCount+1)
                             ax1.text(StartTime+(TaskLength)/2 - len(str(Task))/2, 0.01, str(Task), fontsize=10)
                             EndTime=AG.node[Node]['Scheduling'][Task][1]
-                            if Config.SlackCount > 0:
+                            if Config.Task_SlackCoun > 0:
                                 ax1.text((StartTime+TaskLength+EndTime)/2 - len(str(Task)+'S')/2, 0.01, str(Task)+'S', fontsize=5)
                         else:
                             EndTime=AG.node[Node]['Scheduling'][Task][1]
@@ -173,7 +173,7 @@ def GenerateGanttCharts(TG,AG):
                             StartTime = BatchAndSchedule[0]
                             BatchNum = BatchAndSchedule[2]
                             TaskLength = BatchAndSchedule[1] - StartTime
-                            EndTime = StartTime + (TaskLength / (Config.SlackCount+1))
+                            EndTime = StartTime + (TaskLength / (Config.Communication_SlackCount+1))
                             PE_T.append(StartTime)
                             PE_P.append(0)
                             PE_T.append(StartTime)
@@ -183,9 +183,9 @@ def GenerateGanttCharts(TG,AG):
                             PE_T.append(EndTime)
                             PE_P.append(0)
                             EdgeColor = '#FF878B'
-                            if Config.SlackCount > 0:
+                            if Config.Communication_SlackCount > 0:
                                 StartTime =EndTime
-                                EndTime = StartTime + (TaskLength / (Config.SlackCount+1)) * Config.SlackCount
+                                EndTime = StartTime + (TaskLength / (Config.Communication_SlackCount+1)) * Config.Communication_SlackCount
                                 Slack_T.append(StartTime)
                                 Slack_P.append(0)
                                 Slack_T.append(StartTime)
@@ -288,7 +288,7 @@ def GenerateGanttCharts(TG,AG):
                     ax1.fill_between(PE_T, PE_P, 0, color=EdgeColor, edgecolor='k', zorder= Zorder, hatch='\\')
                 else:
                     ax1.fill_between(PE_T, PE_P, 0, color=EdgeColor, edgecolor=EdgeColor, zorder= Zorder)
-                if Config.SlackCount > 0:
+                if Config.Communication_SlackCount > 0:
                     ax1.fill_between(Slack_T, Slack_P, 0 , color='#808080', edgecolor='#808080')
 
 
@@ -296,26 +296,6 @@ def GenerateGanttCharts(TG,AG):
             if Count < EdgeCounter+NodeCounter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
 
-            '''
-
-            for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
-                if Task in AG.edge[Link[0]][Link[1]]['Scheduling']:
-                    for ScheduleAndBatch in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
-                        StartTime=ScheduleAndBatch[0]
-                        if TG.edge[Task[0]][Task[1]]['Criticality']=='H':
-                                TaskLength = (ScheduleAndBatch[1]-StartTime)/(Config.SlackCount+1)
-                                stringToDisplay = str(Task[0])+"/"+str(Task[1])
-                                ax1.text(StartTime + TaskLength/2 - len(str(stringToDisplay))/4, 0.01, stringToDisplay, fontsize=5)
-                                EndTime = ScheduleAndBatch[1]
-                                stringToDisplay= str(Task[0])+"/"+str(Task[1])+'S'
-                                if Config.SlackCount > 0:
-                                    ax1.text((EndTime + StartTime + TaskLength)/2 - len(str(stringToDisplay))/4, 0.01, stringToDisplay, fontsize=5)
-                        else:
-
-                                EndTime = ScheduleAndBatch[1]
-                                stringToDisplay= str(Task[0])+"/"+str(Task[1])
-                                ax1.text((StartTime+EndTime)/2 - len(str(stringToDisplay))/4, 0.01, stringToDisplay, fontsize=5)
-            '''
             ax1.set_ylabel(r'L'+str(Link), size=14, rotation=0)
             Count += 1
     if EdgeCounter+EdgeCounter > 0:

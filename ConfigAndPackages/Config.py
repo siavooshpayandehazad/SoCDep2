@@ -34,7 +34,7 @@ TG_Edge_Weight = [5, 9, 4, 7, 5, 3, 5, 1]
 # TG DOT FILE PATH
 # you can use this one: http://express.ece.ucsb.edu/benchmark/jpeg/h2v2_smooth_downsample.html
 # as example...
-TG_DOT_Path = 'h2v2_smooth_downsample_dfg__6.dot'
+TG_DOT_Path = 'Something.dot'
 ################################################
 #          AG  Config
 ################################################
@@ -82,7 +82,7 @@ SetRoutingFromFile = False
 #          SHM  Config
 ################################################
 # Do not change if you have conventional 2D NoC
-def SetUpTrunsHealth():
+def SetUpTurnsHealth():
     global TurnsHealth
     if '2D' in NetworkTopology:
         TurnsHealth = PackageFile.TurnsHealth_2DNetwork
@@ -101,7 +101,7 @@ def SetUpTrunsHealth():
     return None
 
 TurnsHealth = {}
-SetUpTrunsHealth()
+SetUpTurnsHealth()
 # ==========================
 # Number of Unreachable-Rectangles
 NumberOfRects = 5
@@ -214,7 +214,8 @@ DistanceBetweenMapping = False
 ################################################
 #          Scheduling  Config
 ################################################
-SlackCount = 1      # this is used for number of repetitions of the critical tasks
+Communication_SlackCount = 1      # this is used for number of repetitions of the critical packets
+Task_SlackCount = 1      # this is used for number of repetitions of the critical tasks
 ################################################
 #          System's Fault  Config
 ################################################
@@ -252,7 +253,7 @@ else:
 ###############################################
 #           PMCG Config
 ###############################################
-GeneratePMCG = False
+GeneratePMCG = True
 OneStepDiagnosable = False     # set to False if you need Sequentially diagnosable PMCG
 TFaultDiagnosable = None        # one-step t-fault diagnosable system, if set to none, default value would be
 #                                 (n-1)/2

@@ -1,1 +1,1 @@
-__author__ = 'siavoosh'
+# Copyright (C) 2015 Siavoosh Payandeh Azad

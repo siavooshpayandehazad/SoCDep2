@@ -32,7 +32,7 @@ def GenerateTGFromDOT(FilePath):
             if line == '':
                 break
     except IOError:
-        print ('CAN NOT OPEN', FilePath)
+        raise ValueError('CAN NOT OPEN', FilePath)
     TG_Functions.AssignDistance(TG)
     print("TASK GRAPH (TG) IS READY...")
     return TG

@@ -26,16 +26,28 @@ def ClearScheduling(AG, TG):
 #                               RESOURCES
 #
 ##########################################################################
-def Add_TG_TaskToNode(TG, AG, SHM, Task, Node, StartTime, EndTime, Report):
-    if Report:print ("\t\tADDING TASK: "+str(Task)+" TO NODE: "+str(Node))
-    if Report:print ("\t\tSTARTING TIME: "+str(StartTime)+" ENDING TIME:"+str(EndTime))
+def Add_TG_TaskToNode(TG, AG, Task, Node, StartTime, EndTime, logging):
+    """
+    Adds a Task from Task Graph with specific Start time and end time to mapped node in architecture graph
+    :param TG: Task Graph
+    :param AG: Architecture Graph
+    :param Task: Task ID
+    :param Node: Node ID
+    :param StartTime: Scheduling time for Task
+    :param EndTime: Task duration for scheduling
+    :param logging: logging file
+    :return: True
+    """
+    logging.info ("\t\tADDING TASK: "+str(Task)+" TO NODE: "+str(Node))
+    logging.info ("\t\tSTARTING TIME: "+str(StartTime)+" ENDING TIME:"+str(EndTime))
     AG.node[Node]['Scheduling'][Task] = [StartTime, EndTime]
     TG.node[Task]['Node'] = Node
     return True
 
-def Add_TG_EdgeTo_link(TG, AG, Edge, Link, batch, Prob, StartTime, EndTime, Report, logging):
-    if Report:print ("\t\tADDING EDGE: "+str(Edge)+" FROM BATCH: "+str(batch)+" TO LINK: "+str(Link))
-    if Report:print ("\t\tSTARTING TIME: "+str(StartTime)+" ENDING TIME: "+str(EndTime))
+
+def Add_TG_EdgeTo_link(TG, AG, Edge, Link, batch, Prob, StartTime, EndTime, logging):
+    logging.info ("\t\tADDING EDGE: "+str(Edge)+" FROM BATCH: "+str(batch)+" TO LINK: "+str(Link))
+    logging.info ("\t\tSTARTING TIME: "+str(StartTime)+" ENDING TIME: "+str(EndTime))
     if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:
         AG.edge[Link[0]][Link[1]]['Scheduling'][Edge].append([StartTime, EndTime, batch, Prob])
     else:
@@ -60,7 +72,7 @@ def FindTask_ASAP_Scheduling(TG, AG, SHM, Task, Node, Report):
     NodeSpeedDown = 1+((100.0-SHM.SHM.node[Node]['NodeSpeed'])/100)
     TaskExecutionOnNode = ceil(TG.node[Task]['WCET']*NodeSpeedDown)
     if TG.node[Task]['Criticality'] == 'H':
-        EndTime = StartTime+TaskExecutionOnNode + Config.SlackCount*TaskExecutionOnNode
+        EndTime = StartTime+TaskExecutionOnNode + Config.Task_SlackCount*TaskExecutionOnNode
     else:
         EndTime = StartTime+TaskExecutionOnNode
     return StartTime, EndTime
@@ -72,19 +84,19 @@ def FindEdge_ASAP_Scheduling(TG, AG, Edge, Link, batch, Prob, Report, logging):
                     FindEdgePredecessorsFinishTime(TG, AG, Edge, batch, Link))
     EdgeExecutionOnLink = TG.edge[Edge[0]][Edge[1]]['ComWeight']
     if TG.edge[Edge[0]][Edge[1]]['Criticality'] == 'H':
-        EndTime = StartTime+EdgeExecutionOnLink+Config.SlackCount*EdgeExecutionOnLink
+        EndTime = StartTime+EdgeExecutionOnLink+Config.Communication_SlackCount*EdgeExecutionOnLink
     else:
         EndTime = StartTime+EdgeExecutionOnLink
     return StartTime, EndTime
 
 
-def FindTask_ALAP_Scheduling(TG, AG, SHM, Task, Node, Report):
-    # todo...
+def FindTask_ALAP_Scheduling(TG, AG, Task, Node, Report):
+    # todo: Implement ALAP
     return None
 
 
 def FindEdge_ALAP_Scheduling(TG, AG, Edge, Link, batch, Prob, Report, logging):
-    # todo...
+    # todo: Implement ALAP
     return None
 
 
