@@ -7,8 +7,7 @@ def FindScheduleMakeSpan(AG):
     MakeSpan = 0
     for Node in AG.nodes():
         for Task in AG.node[Node]['MappedTasks']:
-            if AG.node[Node]['Scheduling'][Task][1] > MakeSpan:
-                MakeSpan = AG.node[Node]['Scheduling'][Task][1]
+            MakeSpan = max(AG.node[Node]['Scheduling'][Task][1], MakeSpan)
     return MakeSpan
 
 
@@ -27,8 +26,31 @@ def ClearScheduling(AG, TG):
 #                               RESOURCES
 #
 ##########################################################################
-def Add_TG_TaskToNode(TG, AG, SHM, Task, Node, Report):
-    if Report: print ("\t\tADDING TASK:", Task, " TO NODE:", Node)
+def Add_TG_TaskToNode(TG, AG, SHM, Task, Node, StartTime, EndTime, Report):
+    if Report:print ("\t\tADDING TASK: "+str(Task)+" TO NODE: "+str(Node))
+    if Report:print ("\t\tSTARTING TIME: "+str(StartTime)+" ENDING TIME:"+str(EndTime))
+    AG.node[Node]['Scheduling'][Task] = [StartTime, EndTime]
+    TG.node[Task]['Node'] = Node
+    return True
+
+def Add_TG_EdgeTo_link(TG, AG, Edge, Link, batch, Prob, StartTime, EndTime, Report, logging):
+    if Report:print ("\t\tADDING EDGE: "+str(Edge)+" FROM BATCH: "+str(batch)+" TO LINK: "+str(Link))
+    if Report:print ("\t\tSTARTING TIME: "+str(StartTime)+" ENDING TIME: "+str(EndTime))
+    if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:
+        AG.edge[Link[0]][Link[1]]['Scheduling'][Edge].append([StartTime, EndTime, batch, Prob])
+    else:
+        AG.edge[Link[0]][Link[1]]['Scheduling'][Edge] = [[StartTime, EndTime, batch, Prob]]
+    return True
+
+##########################################################################
+#
+#                   CALCULATING SCHEDULING STARTING TIME
+#
+#
+##########################################################################
+
+
+def FindTask_ASAP_Scheduling(TG, AG, SHM, Task, Node, Report):
     CriticalityLevel = TG.node[Task]['Criticality']
     StartTime = max(FindLastAllocatedTimeOnNode(TG, AG, Node, Report),
                     FindTaskPredecessorsFinishTime(TG, AG, Task, CriticalityLevel),
@@ -37,37 +59,33 @@ def Add_TG_TaskToNode(TG, AG, SHM, Task, Node, Report):
     # however, we do not include fractions of a cycle so we take ceiling of the execution time
     NodeSpeedDown = 1+((100.0-SHM.SHM.node[Node]['NodeSpeed'])/100)
     TaskExecutionOnNode = ceil(TG.node[Task]['WCET']*NodeSpeedDown)
-    EndTime = StartTime+TaskExecutionOnNode
-    if Report:print ("\t\tSTARTING TIME:", StartTime, "ENDING TIME:", EndTime)
     if TG.node[Task]['Criticality'] == 'H':
-        AG.node[Node]['Scheduling'][Task] = [StartTime, EndTime+Config.SlackCount*TaskExecutionOnNode]
+        EndTime = StartTime+TaskExecutionOnNode + Config.SlackCount*TaskExecutionOnNode
     else:
-        AG.node[Node]['Scheduling'][Task] = [StartTime, EndTime]
-    TG.node[Task]['Node'] = Node
-    return True
+        EndTime = StartTime+TaskExecutionOnNode
+    return StartTime, EndTime
 ################################################################
 
-def Add_TG_EdgeTo_link(TG, AG, Edge, Link, batch, Prob, Report, logging):
-    if Report:print ("\t\tADDING EDGE:"+str(Edge)+"FROM BATCH:"+str(batch)+" TO LINK:"+str(Link))
+
+def FindEdge_ASAP_Scheduling(TG, AG, Edge, Link, batch, Prob, Report, logging):
     StartTime = max(FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Prob, Report, logging),
                     FindEdgePredecessorsFinishTime(TG, AG, Edge, batch, Link))
-    EndTime = StartTime+TG.edge[Edge[0]][Edge[1]]['ComWeight']
-    if Report:print ("\t\tSTARTING TIME:",StartTime,"ENDING TIME:", EndTime)
+    EdgeExecutionOnLink = TG.edge[Edge[0]][Edge[1]]['ComWeight']
     if TG.edge[Edge[0]][Edge[1]]['Criticality'] == 'H':
-        if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:
-            AG.edge[Link[0]][Link[1]]['Scheduling'][Edge].append([StartTime,
-                                                             EndTime+Config.SlackCount*TG.edge[Edge[0]][Edge[1]]['ComWeight']
-                                                             , batch, Prob])
-        else:
-            AG.edge[Link[0]][Link[1]]['Scheduling'][Edge] = [[StartTime,
-                                                             EndTime+Config.SlackCount*TG.edge[Edge[0]][Edge[1]]['ComWeight']
-                                                             , batch, Prob]]
+        EndTime = StartTime+EdgeExecutionOnLink+Config.SlackCount*EdgeExecutionOnLink
     else:
-        if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:
-            AG.edge[Link[0]][Link[1]]['Scheduling'][Edge].append([StartTime, EndTime, batch, Prob])
-        else:
-            AG.edge[Link[0]][Link[1]]['Scheduling'][Edge] = [[StartTime, EndTime, batch, Prob]]
-    return True
+        EndTime = StartTime+EdgeExecutionOnLink
+    return StartTime, EndTime
+
+
+def FindTask_ALAP_Scheduling(TG, AG, SHM, Task, Node, Report):
+    # todo...
+    return None
+
+
+def FindEdge_ALAP_Scheduling(TG, AG, Edge, Link, batch, Prob, Report, logging):
+    # todo...
+    return None
 
 
 ##########################################################################
