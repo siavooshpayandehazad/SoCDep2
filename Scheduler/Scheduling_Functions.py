@@ -62,9 +62,9 @@ def Add_TG_EdgeTo_link(TG, AG, Edge, Link, batch, Prob, StartTime, EndTime, logg
 ##########################################################################
 
 
-def FindTask_ASAP_Scheduling(TG, AG, SHM, Task, Node, Report):
+def FindTask_ASAP_Scheduling(TG, AG, SHM, Task, Node, logging):
     CriticalityLevel = TG.node[Task]['Criticality']
-    StartTime = max(FindLastAllocatedTimeOnNode(TG, AG, Node, Report),
+    StartTime = max(FindLastAllocatedTimeOnNode(TG, AG, Node, logging),
                     FindTaskPredecessorsFinishTime(TG, AG, Task, CriticalityLevel),
                     TG.node[Task]['Release'])
     # This includes the aging and lower frequency of the nodes of graph...
@@ -80,7 +80,7 @@ def FindTask_ASAP_Scheduling(TG, AG, SHM, Task, Node, Report):
 
 
 def FindEdge_ASAP_Scheduling(TG, AG, Edge, Link, batch, Prob, Report, logging):
-    StartTime = max(FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Prob, Report, logging),
+    StartTime = max(FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Prob, logging),
                     FindEdgePredecessorsFinishTime(TG, AG, Edge, batch, Link))
     EdgeExecutionOnLink = TG.edge[Edge[0]][Edge[1]]['ComWeight']
     if TG.edge[Edge[0]][Edge[1]]['Criticality'] == 'H':
@@ -156,8 +156,9 @@ def FindEdgePredecessorsFinishTime(TG, AG, Edge, batch, CurrentLink):
 #                           FOR RESOURCES
 #
 ##########################################################################
-def FindLastAllocatedTimeOnLink(TG, AG, Link, Report):
-    if Report:print ("\t\tFINDING LAST ALLOCATED TIME ON LINK", Link)
+def FindLastAllocatedTimeOnLink(TG, AG, Link, logging=None):
+    if logging is not None:
+        logging.info("\t\tFINDING LAST ALLOCATED TIME ON LINK "+str(Link))
     LastAllocatedTime = 0
     if len(AG.edge[Link[0]][Link[1]]['MappedTasks']) > 0:
         for Task in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
@@ -166,17 +167,20 @@ def FindLastAllocatedTimeOnLink(TG, AG, Link, Report):
                     StartTime = ScheduleAndBatch[0]
                     EndTime = ScheduleAndBatch[1]
                     if StartTime is not None and EndTime is not None:
-                        if Report:print ("\t\t\tTASK STARTS AT:", StartTime, "AND ENDS AT:", EndTime)
+                        if logging is not None:
+                            logging.info ("\t\t\tTASK STARTS AT: "+str(StartTime)+" AND ENDS AT: "+str(EndTime))
                         LastAllocatedTime = max(LastAllocatedTime, EndTime)
     else:
-        if Report:print ("\t\t\tNO SCHEDULED TASK FOUND")
+        if logging is not None:
+            logging.info("\t\t\tNO SCHEDULED TASK FOUND")
         return 0
-    if Report:print ("\t\t\tLAST ALLOCATED TIME:", LastAllocatedTime)
+    if logging is not None:
+        logging.info ("\t\t\tLAST ALLOCATED TIME:"+str(LastAllocatedTime))
     return LastAllocatedTime
 
 
 ################################################################
-def FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Prob, Report, logging):
+def FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Prob, logging):
     logging.info("\t-------------------------")
     logging.info("\tFINDING LAST ALLOCATED TIME ON LINK "+str(Link)+"\tFOR EDGE: "+str(Edge)+" WITH PROB: "+str(Prob))
     LastAllocatedTime = 0
@@ -216,23 +220,28 @@ def FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Prob, Report, logging
     return LastAllocatedTime
 
 
-def FindLastAllocatedTimeOnNode(TG, AG, Node, Report):
-    if Report:print ("\t\tFINDING LAST ALLOCATED TIME ON NODE", Node)
+def FindLastAllocatedTimeOnNode(TG, AG, Node, logging=None):
+    if logging is not None:
+        logging.info ("\t\tFINDING LAST ALLOCATED TIME ON NODE "+str(Node))
     LastAllocatedTime = 0
     if len(AG.node[Node]['MappedTasks']) > 0:
-        if Report:print ("\t\t\tMAPPED TASKS ON THE NODE:", AG.node[Node]['MappedTasks'])
+        if logging is not None:
+            logging.info ("\t\t\tMAPPED TASKS ON THE NODE: "+str(AG.node[Node]['MappedTasks']))
         for Task in AG.node[Node]['MappedTasks']:
             if Task in AG.node[Node]['Scheduling']:
                 StartTime = AG.node[Node]['Scheduling'][Task][0]
                 EndTime = AG.node[Node]['Scheduling'][Task][1]
                 if StartTime is not None and EndTime is not None:
-                    if Report:print ("\t\t\tTASK STARTS AT:", StartTime, "AND ENDS AT:", EndTime)
+                    if logging is not None:
+                        logging.info ("\t\t\tTASK STARTS AT: "+str(StartTime)+" AND ENDS AT: "+str(EndTime))
                     if EndTime > LastAllocatedTime:
                         LastAllocatedTime = EndTime
     else:
-        if Report:print ("\t\t\tNO SCHEDULED TASK FOUND")
+        if logging is not None:
+            logging.info("\t\t\tNO SCHEDULED TASK FOUND")
         return 0
-    if Report:print ("\t\t\tLAST ALLOCATED TIME:", LastAllocatedTime)
+    if logging is not None:
+        logging.info("\t\t\tLAST ALLOCATED TIME: "+str(LastAllocatedTime))
     return LastAllocatedTime
 
 

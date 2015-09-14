@@ -246,10 +246,10 @@ def CostFunction(TG, AG, SHM, Report, InitialMappingString = None):
     LinkMakeSpanList = []
     for Node in AG.nodes():
         if SHM.SHM.node[Node]['NodeHealth']:
-            NodeMakeSpanList.append(Scheduling_Functions.FindLastAllocatedTimeOnNode(TG, AG, Node, False))
+            NodeMakeSpanList.append(Scheduling_Functions.FindLastAllocatedTimeOnNode(TG, AG, Node, logging=None))
     for link in AG.edges():
         if SHM.SHM.edge[link[0]][link[1]]['LinkHealth']:
-            LinkMakeSpanList.append(Scheduling_Functions.FindLastAllocatedTimeOnLink(TG, AG, link, False))
+            LinkMakeSpanList.append(Scheduling_Functions.FindLastAllocatedTimeOnLink(TG, AG, link, logging=None))
     NodeMakeSpan_Stdev = statistics.stdev(NodeMakeSpanList)
     NodeMakeSpan_Max = max(NodeMakeSpanList)
     LinkMakeSpan_Stdev = statistics.stdev(LinkMakeSpanList)

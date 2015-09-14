@@ -38,9 +38,9 @@ def GenerateGanttCharts(TG,AG):
     NodeMakeSpanList=[]
     LinkMakeSpanList=[]
     for Node in AG.nodes():
-        NodeMakeSpanList.append(FindLastAllocatedTimeOnNode(TG, AG, Node, False))
+        NodeMakeSpanList.append(FindLastAllocatedTimeOnNode(TG, AG, Node, logging=None))
     for link in AG.edges():
-        LinkMakeSpanList.append(FindLastAllocatedTimeOnLink(TG, AG, link, False))
+        LinkMakeSpanList.append(FindLastAllocatedTimeOnLink(TG, AG, link, logging=None))
     if len(LinkMakeSpanList) > 0:
         MAX_Time_Link = max(LinkMakeSpanList)
     else:

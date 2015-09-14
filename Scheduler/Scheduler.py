@@ -27,7 +27,7 @@ def ASAP_Scheduling(TG, AG, SHM, Report, logging):
                 if TG.node[Task]['Distance'] == Distance:
                     Node = TG.node[Task]['Node']
                     logging.info("\tSCHEDULING TASK "+str(Task)+ " ON NODE:"+str(Node))
-                    (StartTime, EndTime) = FindTask_ASAP_Scheduling(TG, AG, SHM, Task, Node, Report)
+                    (StartTime, EndTime) = FindTask_ASAP_Scheduling(TG, AG, SHM, Task, Node, logging)
                     Add_TG_TaskToNode(TG, AG, Task, Node, StartTime, EndTime, logging)
                     for Edge in TG.edges():
                         if Edge[0] == Task:
@@ -60,7 +60,7 @@ def ScheduleTestInTG(TG, AG, SHM, Report, logging):
                 if TG.node[Task]['Distance'] == Distance:
                     Node = TG.node[Task]['Node']
                     logging.info("\tSCHEDULING TASK "+str(Task)+ " ON NODE:"+str(Node))
-                    (StartTime, EndTime) = FindTask_ASAP_Scheduling(TG, AG, SHM, Task, Node, Report)
+                    (StartTime, EndTime) = FindTask_ASAP_Scheduling(TG, AG, SHM, Task, Node, logging)
                     Add_TG_TaskToNode(TG, AG, Task, Node, StartTime, EndTime, logging)
                     for Edge in TG.edges():
                         if Edge[0] == Task:
