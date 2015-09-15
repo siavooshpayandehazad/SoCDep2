@@ -11,12 +11,13 @@ import SystemInitialization
 from GUI_Util import GUI
 
 
+misc.CheckForDependencies()
 Start_Program = True
-# Im still working on GUI....
 if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("Usage:    python Main.py [option1]")
     print("Options and arguments:")
     print("-GUI\t:Graphical User Interface for Configuration")
+    print("-UTEST\t:Runs Unit Tests")
     print("")
     sys.exit()
 elif '-GUI' in sys.argv[1:]:
@@ -25,6 +26,10 @@ elif '-GUI' in sys.argv[1:]:
     app.mainloop()
     if not app.Apply_Button:
         sys.exit()
+elif '-UTEST' in sys.argv[1:]:
+    os.system('python UnitTest/UnitTests.py')
+    sys.exit()
+
 
 ProgramStartTime = time.time()
 ##############################

@@ -53,3 +53,14 @@ def GenerateFileDirectories():
     for file in filelist:
         os.remove(InternalFilesDirectory +'/'+file)
     return None
+
+
+def CheckForDependencies():
+    Modules = ['Tkinter', 'ttk', 'networkx', 'matplotlib', 'scipy', 'PIL']
+    for module in Modules:
+        try:
+            __import__(module)
+        except ImportError:
+            raise ImportError("MODULE "+str(module)+"DOES NOT EXIST...")
+    print "ALL REQUIRED MODULES AVAILABLE..."
+    return True
