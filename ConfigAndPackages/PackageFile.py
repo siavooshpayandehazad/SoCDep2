@@ -34,4 +34,7 @@ TurnsHealth_3DNetwork = {"N2W": True, "N2E": True, "S2W": True, "S2E": True,
                          "W2U": True, "W2D": True, "E2U": True, "E2D": True,
                          "U2W": True, "U2E": True, "U2N": True, "U2S": True,
                          "D2W": True, "D2E": True, "D2N": True, "D2S": True}
-
+################################################
+#          System Package info
+################################################
+ImportModules = ['Tkinter', 'ttk', 'networkx', 'matplotlib', 'scipy', 'PIL']

@@ -1,8 +1,8 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
-from ConfigAndPackages import Config
+from ConfigAndPackages import Config, PackageFile
 import os
 
-def DrawLogo ():
+def DrawLogo():
     print ("===================================================================================================================")
     print ("  _________      .__               .___    .__             ____    ________                                   .___")
     print (" /   _____/ ____ |  |__   ____   __| _/_ __|  |   ____    /  _ \   \______ \   ____ ______   ____   ____    __| _/")
@@ -21,6 +21,7 @@ def DrawLogo ():
     print ("===========================================")
     return None
 
+
 def GenerateFileDirectories():
     GraphDirectory = "GraphDrawings"
     if not os.path.isdir(GraphDirectory):
@@ -28,7 +29,7 @@ def GenerateFileDirectories():
 
     filelist = [file for file in os.listdir(GraphDirectory) if file.endswith(".png")]
     for file in filelist:
-        os.remove(GraphDirectory +'/'+file)
+        os.remove(GraphDirectory+'/'+file)
 
     AnimationDirectory = "GraphDrawings/Mapping_Animation_Material"
     if not os.path.isdir(AnimationDirectory):
@@ -36,7 +37,7 @@ def GenerateFileDirectories():
 
     filelist = [file for file in os.listdir(AnimationDirectory) if file.endswith(".png")]
     for file in filelist:
-        os.remove(AnimationDirectory +'/'+file)
+        os.remove(AnimationDirectory+'/'+file)
 
     GeneratedFilesDirectory = "Generated_Files"
     if not os.path.isdir(GeneratedFilesDirectory):
@@ -44,20 +45,19 @@ def GenerateFileDirectories():
 
     filelist = [file for file in os.listdir(GeneratedFilesDirectory) if file.endswith(".txt")]
     for file in filelist:
-        os.remove(GeneratedFilesDirectory +'/'+file)
+        os.remove(GeneratedFilesDirectory+'/'+file)
 
     InternalFilesDirectory = "Generated_Files/Internal"
     if not os.path.isdir(InternalFilesDirectory):
         os.makedirs(InternalFilesDirectory)
     filelist = [file for file in os.listdir(InternalFilesDirectory) if file.endswith(".txt")]
     for file in filelist:
-        os.remove(InternalFilesDirectory +'/'+file)
+        os.remove(InternalFilesDirectory+'/'+file)
     return None
 
 
 def CheckForDependencies():
-    Modules = ['Tkinter', 'ttk', 'networkx', 'matplotlib', 'scipy', 'PIL']
-    for module in Modules:
+    for module in PackageFile.ImportModules:
         try:
             __import__(module)
         except ImportError:
