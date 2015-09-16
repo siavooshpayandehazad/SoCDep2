@@ -45,9 +45,9 @@ VirtualChannelNum = 0
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
 NetworkTopology = '3DMesh'
-Network_X_Size = 3
-Network_Y_Size = 3
-Network_Z_Size = 3
+Network_X_Size = 5
+Network_Y_Size = 5
+Network_Z_Size = 5
 
 # Number of Vertical Links
 FindOptimumAG = False
@@ -253,7 +253,7 @@ else:
 ###############################################
 #           PMCG Config
 ###############################################
-GeneratePMCG = True
+GeneratePMCG = False
 OneStepDiagnosable = False     # set to False if you need Sequentially diagnosable PMCG
 TFaultDiagnosable = None        # one-step t-fault diagnosable system, if set to none, default value would be
 #                                 (n-1)/2

@@ -9,8 +9,9 @@ from Utilities import misc, Logger
 from SystemHealthMonitoring import SHM_Functions
 import SystemInitialization
 from GUI_Util import GUI
+from pympler import tracker
 
-
+tr = tracker.SummaryTracker()
 misc.CheckForDependencies()
 Start_Program = True
 if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
@@ -90,3 +91,7 @@ if Config.EventDrivenFaultInjection:
     timer.join()
 
 logging.info('Logging finished...')
+
+print "\n-----------------Memory Track Report------------------------"
+tr.print_diff()
+print "------------------------------------------------------------"
