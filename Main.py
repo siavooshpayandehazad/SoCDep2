@@ -92,6 +92,8 @@ if Config.EventDrivenFaultInjection:
 
 logging.info('Logging finished...')
 
-print "\n-----------------Memory Track Report------------------------"
+print("===========================================")
+print("         Reporting Memory Usage")
+print("===========================================")
 tr.print_diff()
-print "------------------------------------------------------------"
+print("===========================================")
