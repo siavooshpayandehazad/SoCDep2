@@ -1,18 +1,21 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
+from Utilities import misc
+misc.CheckForDependencies()
+
 
 import threading
 import sys, os, time
 import numpy
 import logging
 from ConfigAndPackages import Config
-from Utilities import misc, Logger
+from Utilities import Logger
 from SystemHealthMonitoring import SHM_Functions
 import SystemInitialization
 from GUI_Util import GUI
 from pympler import tracker
 
 tr = tracker.SummaryTracker()
-misc.CheckForDependencies()
+
 Start_Program = True
 if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("Usage:    python Main.py [option1]")
