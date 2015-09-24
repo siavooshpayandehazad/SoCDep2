@@ -8,7 +8,7 @@ import sys, os, time
 import numpy
 import logging
 from ConfigAndPackages import Config
-from Utilities import Logger
+from Utilities import Logger, Benchmark_Alg_Downloader
 from SystemHealthMonitoring import SHM_Functions
 import SystemInitialization
 from GUI_Util import GUI
@@ -33,6 +33,12 @@ elif '-GUI' in sys.argv[1:]:
 elif '-UTEST' in sys.argv[1:]:
     os.system('python UnitTest/UnitTests.py')
     sys.exit()
+elif '-BENCHMARK' in sys.argv[1:]:
+    Benchmark = sys.argv[sys.argv.index('-BENCHMARK') + 1]
+    if Benchmark_Alg_Downloader.Download_Benchmark_Algorithms(str(Benchmark)):
+        pass
+    else:
+        sys.exit()
 
 
 ProgramStartTime = time.time()
