@@ -7,13 +7,16 @@ from ConfigAndPackages import Config
 def Download_Benchmark_Algorithms(Benchmark):
     testfile = urllib.FancyURLopener()
 
-    if Benchmark == 'idct': # Inverse Discrete Cosine Transform
+    if Benchmark == 'idct':     # Inverse Discrete Cosine Transform
         url = "http://express.ece.ucsb.edu/benchmark/jpeg/jpeg_idct_ifast_dfg__6.dot"
         DestinationFile = 'Benchmarks/idct.dot'
 
-    elif Benchmark == 'fdct': # Forward Discrete Cosine Transform
+    elif Benchmark == 'fdct':   # Forward Discrete Cosine Transform
         url = "http://express.ece.ucsb.edu/benchmark/jpeg/jpeg_fdct_islow_dfg__6.dot"
         DestinationFile = 'Benchmarks/fdct.dot'
+    elif Benchmark == 'mi':     # Matrix Inverse
+        url = "http://express.ece.ucsb.edu/benchmark/mesa/invert_matrix_general_dfg__3.dot"
+        DestinationFile = 'Benchmarks/mi.dot'
     else:
         print "THIS BENCHMARK IS NOT SUPPORTED..."
         return False

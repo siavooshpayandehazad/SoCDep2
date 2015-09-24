@@ -16,7 +16,6 @@ from pympler import tracker
 
 tr = tracker.SummaryTracker()
 
-Start_Program = True
 if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("Usage:    python Main.py [option1]")
     print("Options and arguments:")
