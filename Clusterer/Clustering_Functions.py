@@ -153,6 +153,13 @@ def ClearClustering(TG, CTG):
 
 
 def CTG_OptimizationMove(TG, CTG, logging):
+    """
+    Controls the Optimization moves for CTG optimization
+    :param TG: Task Graph
+    :param CTG: Clustered Task Graph
+    :param logging: logging file
+    :return: None
+    """
     if Config.ClusteringOptMove == 'RandomTaskMove':
         RandomTaskMove(TG, CTG, logging)
     elif Config.ClusteringOptMove == 'Swap':
@@ -162,6 +169,13 @@ def CTG_OptimizationMove(TG, CTG, logging):
     return None
 
 def RandomTaskMove(TG, CTG, logging):
+    """
+    Randomly chooses one task from CTG and moves it from its cluster to another random cluster
+    :param TG: Task Graph
+    :param CTG: Clustered Task Graph
+    :param logging: logging file
+    :return: None
+    """
     RandomTask = random.choice(TG.nodes())
     RandomTaskCluster = TG.node[RandomTask]['Cluster']
     # remove it and all its connections from CTG
@@ -184,6 +198,13 @@ def RandomTaskMove(TG, CTG, logging):
 
 
 def TaskSwap(TG, CTG, logging):
+    """
+    randomly chooses 2 tasks in CTG and swaps them.
+    :param TG: Task Graph
+    :param CTG: Clustered Task Graph
+    :param logging: logging file
+    :return: None
+    """
     RandomCluster1 = None
     RandomCluster2 = None
 
