@@ -163,7 +163,7 @@ class ConfigAppp(Tkinter.Tk):
         self.ClusteringIterations = Tkinter.Entry(self, width=self.EntryWidth)
 
         self.ClusteringCostLabel = Tkinter.Label(self, text="Cost Function Type:")
-        available_costs = ['SD', 'SD+MAX', 'MAX']
+        available_costs = ['SD', 'SD+MAX', 'MAX', 'SUMCOM', 'AVGUTIL', 'MAXCOM']
         self.ClusterCost = Tkinter.StringVar(self)
         self.ClusterCost.set('SD+MAX')
         self.ClusterCostOpt = Tkinter.OptionMenu(self, self.ClusterCost, *available_costs)

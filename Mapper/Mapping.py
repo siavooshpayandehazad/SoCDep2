@@ -52,7 +52,8 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
             # Clustered Task Graph Optimization
             if Config.Clustering_Optimization:
                 (BestClustering, BestTaskGraph) = Clustering.ClusteringOptimization_LocalSearch(TG, CTG,
-                                                                                                Config.ClusteringIteration)
+                                                                                                Config.ClusteringIteration,
+                                                                                                logging)
                 TG = copy.deepcopy(BestTaskGraph)
                 CTG = copy.deepcopy(BestClustering)
                 del BestClustering, BestTaskGraph

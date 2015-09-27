@@ -136,14 +136,24 @@ ListOfAgedPEs = {}
 #          Clustering Function  Config
 ################################################
 Clustering_Optimization = True     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
-ClusteringIteration = 1000
+ClusteringIteration = 2000
 Clustering_Report = False
 Clustering_DetailedReport = False
 # here you can change the type of cost function used for Clustering the available cost functions are:
 # 'SD' = Com_Weight_SD + Node_Util_SD
 # 'SD+MAX' = Com_Weight_SD + MaxComWeight + Node_Util_SD + MaxNodeUtil
 # 'MAX' = MaxComWeight + MaxNodeUtil
-Clustering_CostFunctionType = 'MAX'
+# 'MAXCOM' = MaxComWeight
+# 'AVGUTIL' = sum(ClusterUtilization)/len(ClusterUtilization)
+# 'SUMCOM' = sum(CommunicationWeight)   This one is really funny. one thinks it would converge to a point that
+# it puts every task in one cluster. however, it usually gets into local minima. and the result is really interesting
+Clustering_CostFunctionType = 'SD+MAX'
+
+# RandomTaskMove: randomly chooses a task from a cluster and moves it to another random cluster
+# Swap: randomly chooses a 2 tasks from 2 clusters and Swaps them
+# Circulate: randomly chooses a N tasks from N clusters and Circulates them (is not implemented yet)
+ClusteringOptMove = 'Swap'
+CTG_CirculationLength = 3
 ################################################
 #          Mapping Function  Config
 ################################################
@@ -269,6 +279,6 @@ PMCG_Drawing = True
 TTG_Drawing = True
 Mapping_Dstr_Drawing = True
 Mapping_Drawing = True
-SHM_Drawing = True          # if True generates SHM Drawing
+SHM_Drawing = False          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks

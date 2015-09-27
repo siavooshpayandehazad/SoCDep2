@@ -5,8 +5,9 @@ import copy
 from ConfigAndPackages import Config
 import networkx
 
+
 from Clustering_Functions import AddTaskToCTG, RemoveTaskFromCTG, ClearClustering, \
-    CostFunction,DeleteEmptyClusters
+    CostFunction,DeleteEmptyClusters, CTG_OptimizationMove
 from Clustering_Test import DoubleCheckCTG
 from ClusteringReports import ReportCTG
 
@@ -51,7 +52,7 @@ def InitialClustering(TG, CTG):
     ReportCTG(CTG,"CTG_Initial.png")
     return True
 
-def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter):
+def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter, logging):
     """
     Local Search optimization for reducing the cost of a clustering solution
     :param TG: Task Graph
@@ -72,28 +73,10 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter):
     for i in range(0,NumberOfIter):
 
         # print ("\tITERATION:",i)
-        # DoubleCheckCTG(TG,CTG)
-        RandomTask = random.choice(TG.nodes())
-        RandomTaskCluster = TG.node[RandomTask]['Cluster']
-        # remove it and all its connections from CTG
-        RemoveTaskFromCTG(TG,CTG,RandomTask)
-        # randomly choose another cluster
-        # move the task to the cluster and add the connections
-        RandomCluster = random.choice(CTG.nodes())
-        while not AddTaskToCTG(TG,CTG,RandomTask,RandomCluster):
-            # RemoveTaskFromCTG(TG,CTG,RandomTask)
-            AddTaskToCTG(TG,CTG,RandomTask,RandomTaskCluster)
-            # DoubleCheckCTG(TG,CTG)
-            RandomTask = random.choice(TG.nodes())
-            RandomTaskCluster = TG.node[RandomTask]['Cluster']
-
-            RemoveTaskFromCTG(TG,CTG,RandomTask)
-            RandomCluster = random.choice(CTG.nodes())
-
-        if Config.Clustering_Report:
-            print ("TASK"+str(RandomTask)+"MOVED TO CLUSTER"+str(RandomCluster)+"RESULTS IN UTILIZATION:"+
-                   str(CTG.node[RandomCluster]['Utilization']+TG.node[RandomTask]['WCET']))
-
+        if Config.TestMode:
+            DoubleCheckCTG(TG,CTG)
+        # Make a move!
+        CTG_OptimizationMove(TG, CTG, logging)
         NewCost = CostFunction(CTG)
         ClusteringCostFile.write(str(NewCost)+"\n")
         if NewCost <= Cost:
