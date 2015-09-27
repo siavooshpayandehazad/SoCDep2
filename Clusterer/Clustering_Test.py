@@ -19,7 +19,7 @@ def DoubleCheckCTG(TG, CTG):
                 ClusteringReports.ReportCTG(CTG, "CTG_DoubleCheckError.png")
                 return False
             else:
-                print "DOUBLE CHECKING CTG with TG: OK!"
+                # print "DOUBLE CHECKING CTG with TG: OK!"
                 pass
         else:
             print ("DOUBLE CHECKING CTG with TG: \t\033[31mFAILED\033[0m")

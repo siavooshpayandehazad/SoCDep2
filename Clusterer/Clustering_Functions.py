@@ -210,27 +210,29 @@ def TaskSwap(TG, CTG, logging):
 
     while RandomCluster1 == RandomCluster2:
         RandomCluster1 = random.choice(CTG.nodes())
-        while len(CTG.node[RandomCluster1]['TaskList'])==0:
+        while len(CTG.node[RandomCluster1]['TaskList']) == 0:
             RandomCluster1 = random.choice(CTG.nodes())
         RandomCluster2 = random.choice(CTG.nodes())
-        while len(CTG.node[RandomCluster2]['TaskList'])==0:
+        while len(CTG.node[RandomCluster2]['TaskList']) == 0:
             RandomCluster2 = random.choice(CTG.nodes())
-
 
     RandomTask1 = random.choice(CTG.node[RandomCluster1]['TaskList'])
     RandomTask2 = random.choice(CTG.node[RandomCluster2]['TaskList'])
 
-    RemoveTaskFromCTG(TG,CTG,RandomTask1)
-    RemoveTaskFromCTG(TG,CTG,RandomTask2)
+    RemoveTaskFromCTG(TG, CTG, RandomTask1)
+    RemoveTaskFromCTG(TG, CTG, RandomTask2)
 
-    Task1Clustering = AddTaskToCTG(TG,CTG,RandomTask1,RandomCluster2)
-    Task2Clustering = AddTaskToCTG(TG,CTG,RandomTask2,RandomCluster1)
+    Task1Clustering = AddTaskToCTG(TG, CTG, RandomTask1, RandomCluster2)
+    Task2Clustering = AddTaskToCTG(TG, CTG, RandomTask2, RandomCluster1)
 
     while not (Task1Clustering and Task2Clustering):
-        if not Task1Clustering:
-            AddTaskToCTG(TG,CTG,RandomTask1,RandomCluster1)
-        if not Task2Clustering:
-            AddTaskToCTG(TG,CTG,RandomTask2,RandomCluster2)
+        if Task1Clustering:
+            RemoveTaskFromCTG(TG, CTG, RandomTask1)
+        if Task2Clustering:
+            RemoveTaskFromCTG(TG, CTG, RandomTask2)
+
+        AddTaskToCTG(TG, CTG, RandomTask1, RandomCluster1)
+        AddTaskToCTG(TG, CTG, RandomTask2, RandomCluster2)
 
         # here we are back to normal...
         RandomCluster1 = None
@@ -238,20 +240,20 @@ def TaskSwap(TG, CTG, logging):
 
         while RandomCluster1 == RandomCluster2:
             RandomCluster1 = random.choice(CTG.nodes())
-            while len(CTG.node[RandomCluster1]['TaskList'])==0:
+            while len(CTG.node[RandomCluster1]['TaskList']) == 0:
                 RandomCluster1 = random.choice(CTG.nodes())
             RandomCluster2 = random.choice(CTG.nodes())
-            while len(CTG.node[RandomCluster2]['TaskList'])==0:
+            while len(CTG.node[RandomCluster2]['TaskList']) == 0:
                 RandomCluster2 = random.choice(CTG.nodes())
 
         RandomTask1 = random.choice(CTG.node[RandomCluster1]['TaskList'])
         RandomTask2 = random.choice(CTG.node[RandomCluster2]['TaskList'])
 
-        RemoveTaskFromCTG(TG,CTG,RandomTask1)
-        RemoveTaskFromCTG(TG,CTG,RandomTask2)
+        RemoveTaskFromCTG(TG, CTG, RandomTask1)
+        RemoveTaskFromCTG(TG, CTG, RandomTask2)
 
-        Task1Clustering = AddTaskToCTG(TG,CTG,RandomTask1,RandomCluster2)
-        Task2Clustering = AddTaskToCTG(TG,CTG,RandomTask2,RandomCluster1)
+        Task1Clustering = AddTaskToCTG(TG, CTG, RandomTask1, RandomCluster2)
+        Task2Clustering = AddTaskToCTG(TG, CTG, RandomTask2, RandomCluster1)
 
     logging.info("TASK "+str(RandomTask1) + " FROM CLUSTER " + str(RandomCluster1) + " SWAPPED WITH TASK " +
                  str(RandomTask2)+" FROM CLUSTER "+str(RandomCluster2))

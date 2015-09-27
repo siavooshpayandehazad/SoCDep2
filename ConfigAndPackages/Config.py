@@ -45,8 +45,8 @@ VirtualChannelNum = 0
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
 NetworkTopology = '2DMesh'
-Network_X_Size = 6
-Network_Y_Size = 6
+Network_X_Size = 3
+Network_Y_Size = 3
 Network_Z_Size = 1
 
 # Number of Vertical Links
@@ -237,7 +237,7 @@ SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal dist
 ################################################
 #           Network Partitioning
 ################################################
-EnablePartitioning = True
+EnablePartitioning = False
 
 VirtualBrokenLinksForNonCritical = []
 VirtualBrokenLinksForCritical = []
@@ -274,6 +274,6 @@ PMCG_Drawing = True
 TTG_Drawing = True
 Mapping_Dstr_Drawing = True
 Mapping_Drawing = True
-SHM_Drawing = False          # if True generates SHM Drawing
+SHM_Drawing = True          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks

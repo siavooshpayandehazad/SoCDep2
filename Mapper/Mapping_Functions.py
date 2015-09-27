@@ -25,14 +25,15 @@ def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Repor
             if Config.EnablePartitioning:
                 while(CTG.node[Cluster]['Criticality']!= AG.node[DestNode]['Region']):
                     DestNode = random.choice(AG.nodes())
-            #print (CTG.node[Cluster]['Criticality'],AG.node[DestNode]['Region'])
+            # print (CTG.node[Cluster]['Criticality'],AG.node[DestNode]['Region'])
             logging.info("\tMAPPING ATTEMPT: #"+str(Itteration+1)+"FOR CLUSTER:"+str(Cluster))
-            if Itteration == 10* len(CTG.nodes()):
+            if Itteration == 10*len(CTG.nodes()):
                 if Report: print ("\033[33mWARNING::\033[0m INITIAL MAPPING FAILED... AFTER "+str(Itteration)+" ITERATIONS")
                 logging.warning("INITIAL MAPPING FAILED...")
                 ClearMapping(TG,CTG,AG)
                 return False
-        Itteration=0
+        logging.info("MAPPED CLUSTER "+str(Cluster)+" ON NODE "+str(DestNode))
+        Itteration = 0
     if Report: print ("INITIAL MAPPING READY... ")
     return True
 
@@ -79,7 +80,6 @@ def MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, log
                                 if Link not in EdgeListOfLinks:
                                     TG.edge[Edge[0]][Edge[1]]['Link'].append((Counter, Link, Probability))
                             Counter += 1
-
                     else:
                         RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging)
                         logging.warning("\tNO PATH FOUND FROM ", SourceNode, " TO ", DestNode, "...")
