@@ -84,6 +84,12 @@ def FaultEvent():
     FaultLocation, FaultType = SHM_Functions.RandomFaultGeneration(SHM)
     # here we actually insert the fault in the system
     SHM_Functions.ApplyFaultEvent(AG, SHM, NoCRG, FaultLocation, FaultType)
+    # here we have to check what actions should we take?
+    # 1-  Should we update the NoC-Depend rectangles? these are the cases:
+    #       - permanently broken Link
+    #       - permanently broken Turn
+    # 2- Should we change the mapping?
+
 
 if Config.EventDrivenFaultInjection:
     TimeUntilNextFault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)

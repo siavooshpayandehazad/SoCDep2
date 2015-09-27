@@ -259,6 +259,8 @@ def CostFunction(TG, AG, SHM, Report, InitialMappingString = None):
         Cost = NodeMakeSpan_Stdev + LinkMakeSpan_Stdev
     elif Config.Mapping_CostFunctionType == 'SD+MAX' :
         Cost = NodeMakeSpan_Max + NodeMakeSpan_Stdev + LinkMakeSpan_Stdev + LinkMakeSpan_Max
+    elif Config.Mapping_CostFunctionType == 'MAX' :
+        Cost = NodeMakeSpan_Max + LinkMakeSpan_Max
     elif Config.Mapping_CostFunctionType == 'CONSTANT':
         Cost = 1
     else:

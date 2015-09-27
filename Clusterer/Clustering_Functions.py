@@ -115,7 +115,9 @@ def CostFunction(CTG):
     if Config.Clustering_CostFunctionType == 'SD':
         Cost = ClusterUtilSD + ComWeightSD
     elif Config.Clustering_CostFunctionType == 'SD+MAX':
-        Cost = MaxComWeight +  ComWeightSD  + MaxUtil  + ClusterUtilSD
+        Cost = MaxComWeight + ComWeightSD + MaxUtil + ClusterUtilSD
+    elif Config.Clustering_CostFunctionType == 'MAX':
+        Cost = MaxComWeight + MaxUtil
     else:
         raise ValueError("Clustering_CostFunctionType is not valid")
     return Cost

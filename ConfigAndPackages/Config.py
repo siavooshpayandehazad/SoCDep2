@@ -135,14 +135,15 @@ ListOfAgedPEs = {}
 ################################################
 #          Clustering Function  Config
 ################################################
-Clustering_Optimization = False     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
-ClusteringIteration = 10000
+Clustering_Optimization = True     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
+ClusteringIteration = 1000
 Clustering_Report = False
 Clustering_DetailedReport = False
 # here you can change the type of cost function used for Clustering the available cost functions are:
 # 'SD' = Com_Weight_SD + Node_Util_SD
 # 'SD+MAX' = Com_Weight_SD + MaxComWeight + Node_Util_SD + MaxNodeUtil
-Clustering_CostFunctionType = 'SD+MAX'
+# 'MAX' = MaxComWeight + MaxNodeUtil
+Clustering_CostFunctionType = 'MAX'
 ################################################
 #          Mapping Function  Config
 ################################################
@@ -205,17 +206,18 @@ elif Mapping_Function == 'SimulatedAnnealing':
 ######################
 # here you can change the type of cost function used for mapping the available cost functions are:
 # 'SD' = Com_MakeSpan_SD + Node_MakeSpan_SD
+# 'MAX' = MaxLinkMakeSpan + MaxNodeMakeSpan
 # 'SD+MAX' = Link_MakeSpan_SD + MaxLinkMakeSpan + Node_MakeSpan_SD + MaxNodeMakeSpan
 # 'CONSTANT' = 1   ---> can be used if user needs only distance
-Mapping_CostFunctionType = 'SD+MAX'
+Mapping_CostFunctionType = 'MAX'
 # if 'DistanceBetweenMapping' is true => Cost += Hamming distance between the current
 # solution and the neighbour solution
 DistanceBetweenMapping = False
 ################################################
 #          Scheduling  Config
 ################################################
-Communication_SlackCount = 1      # this is used for number of repetitions of the critical packets
-Task_SlackCount = 1      # this is used for number of repetitions of the critical tasks
+Communication_SlackCount = 2      # this is used for number of repetitions of the critical packets
+Task_SlackCount = 1               # this is used for number of repetitions of the critical tasks
 ################################################
 #          System's Fault  Config
 ################################################

@@ -66,17 +66,19 @@ def ApplyFaultEvent(AG, SHM, NoCRG, FaultLocation, FaultType):
                 Routing.UpdateNoCRouteGraph(NoCRG, FromPort, ToPort, 'REMOVE')
                 SHM.BreakLink(FaultLocation, True)
         elif type(FaultLocation) is dict:   # its a Turn fault
+            CurrentNode = FaultLocation.keys()[0]
+            CurrentTurn = FaultLocation[CurrentNode]
             if FaultType == 'T':    # Transient Fault
-                if SHM.SHM.node[FaultLocation.keys()[0]]['TurnsHealth'][FaultLocation[FaultLocation.keys()[0]]]:
-                    SHM.BreakTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]], True)
-                    SHM.RestoreBrokenTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]], True)
+                if SHM.SHM.node[CurrentNode]['TurnsHealth'][CurrentTurn]:   # check if the turn is actually working
+                    SHM.BreakTurn(CurrentNode, CurrentTurn, True)
+                    SHM.RestoreBrokenTurn(CurrentNode, CurrentTurn, True)
                 else:
                     print ("\033[33mSHM:: NOTE:\033[0mTURN ALREADY BROKEN")
             elif FaultType == 'P':   # Permanent Fault
-                FromPort = str(FaultLocation.keys()[0])+str(FaultLocation[FaultLocation.keys()[0]][0])+str('I')
-                ToPort = str(FaultLocation.keys()[0])+str(FaultLocation[FaultLocation.keys()[0]][2])+str('O')
+                FromPort = str(CurrentNode)+str(CurrentTurn[0])+str('I')
+                ToPort = str(CurrentNode)+str(CurrentTurn[2])+str('O')
                 Routing.UpdateNoCRouteGraph(NoCRG, FromPort, ToPort, 'REMOVE')
-                SHM.BreakTurn(FaultLocation.keys()[0], FaultLocation[FaultLocation.keys()[0]], True)
+                SHM.BreakTurn(CurrentNode, CurrentTurn, True)
         else:           # its a Node fault
             if FaultType == 'T':    # Transient Fault
                 if SHM.SHM.node[FaultLocation]['NodeHealth']:

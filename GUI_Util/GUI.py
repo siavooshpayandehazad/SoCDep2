@@ -55,7 +55,7 @@ class ConfigAppp(Tkinter.Tk):
     Dependability_StartingCol = 9
 
     # PMC Config
-    PMC_StartingRow = 11
+    PMC_StartingRow = 12
     PMC_StartingCol = 9
 
     OptionMenuWidth = 15
@@ -163,7 +163,7 @@ class ConfigAppp(Tkinter.Tk):
         self.ClusteringIterations = Tkinter.Entry(self, width=self.EntryWidth)
 
         self.ClusteringCostLabel = Tkinter.Label(self, text="Cost Function Type:")
-        available_costs = ['SD', 'SD+MAX']
+        available_costs = ['SD', 'SD+MAX', 'MAX']
         self.ClusterCost = Tkinter.StringVar(self)
         self.ClusterCost.set('SD+MAX')
         self.ClusterCostOpt = Tkinter.OptionMenu(self, self.ClusterCost, *available_costs)
@@ -179,7 +179,7 @@ class ConfigAppp(Tkinter.Tk):
         self.MappingOption.config(width=self.OptionMenuWidth)
 
         self.MappingCostLabel = Tkinter.Label(self, text="Cost Function Type:")
-        available_mapping_costs = ['SD', 'SD+MAX', 'CONSTANT']
+        available_mapping_costs = ['SD', 'SD+MAX', 'MAX', 'CONSTANT']
         self.MappingCost = Tkinter.StringVar(self)
         self.MappingCost.set('SD+MAX')
         self.MappingCostOpt = Tkinter.OptionMenu(self, self.MappingCost, *available_mapping_costs)
@@ -346,8 +346,11 @@ class ConfigAppp(Tkinter.Tk):
         # ----------------------------------------
         #           Dependability section
         # ----------------------------------------
-        self.SlackNumber_Label = Tkinter.Label(self, text="Slack Numbers:")
+        self.SlackNumber_Label = Tkinter.Label(self, text="Task Slack Count:")
         self.SlackNumber = Tkinter.Spinbox(self, from_=0, to=10, width=self.EntryWidth)
+
+        self.ComSlackNumber_Label = Tkinter.Label(self, text="Com. Slack Count:")
+        self.ComSlackNumber = Tkinter.Spinbox(self, from_=0, to=10, width=self.EntryWidth)
 
         self.NumberOfRects_Label = Tkinter.Label(self, text="NoCDepend Rectangle #:")
         self.NumberOfRects = Tkinter.Spinbox(self, from_=1, to=10, width=self.EntryWidth)
@@ -565,11 +568,14 @@ class ConfigAppp(Tkinter.Tk):
         self.SlackNumber_Label.grid(column=self.Dependability_StartingCol, row=self.Dependability_StartingRow+1)
         self.SlackNumber.grid(column=self.Dependability_StartingCol+1, row=self.Dependability_StartingRow+1)
 
-        self.NumberOfRects_Label.grid(column=self.Dependability_StartingCol, row=self.Dependability_StartingRow+2)
-        self.NumberOfRects.grid(column=self.Dependability_StartingCol+1, row=self.Dependability_StartingRow+2)
+        self.ComSlackNumber_Label.grid(column=self.Dependability_StartingCol, row=self.Dependability_StartingRow+2)
+        self.ComSlackNumber.grid(column=self.Dependability_StartingCol+1, row=self.Dependability_StartingRow+2)
+
+        self.NumberOfRects_Label.grid(column=self.Dependability_StartingCol, row=self.Dependability_StartingRow+3)
+        self.NumberOfRects.grid(column=self.Dependability_StartingCol+1, row=self.Dependability_StartingRow+3)
 
         ttk.Separator(self, orient='horizontal').grid(column=self.Dependability_StartingCol,
-                                                      row=self.Dependability_StartingRow+3, columnspan=2, sticky="ew")
+                                                      row=self.Dependability_StartingRow+4, columnspan=2, sticky="ew")
         # ----------------------------------------
         #           PMC Graph
         # ----------------------------------------
@@ -1261,7 +1267,8 @@ class ConfigAppp(Tkinter.Tk):
                 Config.VerticalLinksNum = int(self.NumOfVLs.get())
 
             # dependability Config
-            Config.SlackCount = int(self.SlackNumber.get())
+            Config.Communication_SlackCount = int(self.ComSlackNumber.get())
+            Config.Task_SlackCount = int(self.SlackNumber.get())
             Config.NumberOfRects = int(self.NumberOfRects.get())
 
             # PMC Config

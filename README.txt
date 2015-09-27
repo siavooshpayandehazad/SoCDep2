@@ -73,6 +73,7 @@ ScheduleAndDepend
  |          |----- Mapping_Reports
  |          |----- Mapping_Test
  |
+ |------NoC_Simulator
  |------RoutingAlgorithms
  |          |
  |          |----- Calculate_Reachability
