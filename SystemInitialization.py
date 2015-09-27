@@ -22,6 +22,8 @@ def InitializeSystem(logging):
     ####################################################################
     AG = copy.deepcopy(AG_Functions.GenerateAG(logging))
     AG_Functions.UpdateAGRegions(AG)
+    if Config.EnablePartitioning:
+        AG_Functions.SetupNetworkPartitioning(AG)
     if Config.TestMode:
         AG_Test.AG_Test()
     if Config.FindOptimumAG:

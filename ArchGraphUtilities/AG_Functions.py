@@ -276,3 +276,45 @@ def ManhattanDistance(Node1, Node2):
     x2, y2, z2 = ReturnNodeLocation(Node2)
 
     return abs(x2-x1)+abs(y2-y1)+abs(z2-z1)
+
+
+def SetupNetworkPartitioning(AG):
+    # Todo: This needs to be tested...
+    print ("===========================================")
+    print ("SETTING UP NETWORK PARTITIONING...")
+    NonCriticalNodes=[]
+    for node in AG.nodes():
+        if node not in Config.CriticalRegionNodes:
+            if node not in Config.GateToNonCritical:
+                if node not in Config.GateToCritical:
+                    NonCriticalNodes.append(node)
+
+    for link in AG.edges():
+        # ListOfBrokenLinks
+        if link[0] in Config.CriticalRegionNodes and link[1] in NonCriticalNodes:
+            Config.ListOfBrokenLinks.append(link)
+        if link[0] in NonCriticalNodes and link[1] in Config.CriticalRegionNodes:
+            Config.ListOfBrokenLinks.append(link)
+
+        if link[0] in Config.GateToCritical and link[1] in NonCriticalNodes:
+            Config.ListOfBrokenLinks.append(link)
+        if link[0] in NonCriticalNodes and link[1] in Config.GateToNonCritical:
+            Config.ListOfBrokenLinks.append(link)
+
+
+        # VirtualBrokenLinksForNonCritical
+        if link[0] in Config.GateToCritical and link[1] in Config.CriticalRegionNodes:
+            Config.VirtualBrokenLinksForNonCritical.append(link)
+        if link[0] in Config.GateToCritical and link[1] in Config.GateToNonCritical:
+            Config.VirtualBrokenLinksForNonCritical.append(link)
+        if link[0] in Config.GateToNonCritical and link[1] in Config.CriticalRegionNodes:
+            Config.VirtualBrokenLinksForNonCritical.append(link)
+
+        #  VirtualBrokenLinksForCritical
+        if link[0] in Config.GateToNonCritical and link[1] in NonCriticalNodes:
+            Config.VirtualBrokenLinksForCritical.append(link)
+
+    print "ListOfBrokenLinks:", Config.ListOfBrokenLinks
+    print "VirtualBrokenLinksForNonCritical:", Config.VirtualBrokenLinksForNonCritical
+    print "VirtualBrokenLinksForCritical:", Config.VirtualBrokenLinksForCritical
+    return None
