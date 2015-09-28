@@ -143,7 +143,7 @@ def DrawPMCG(PMCG):
     print ("===========================================")
     print ("PREPARING PMC GRAPH (PMCG) DRAWINGS...")
     pos = networkx.circular_layout(PMCG)
-    networkx.draw_networkx_nodes(PMCG, pos, node_size=500, color='b')
+    networkx.draw_networkx_nodes(PMCG, pos, node_size=300, color='b')
     networkx.draw_networkx_edges(PMCG, pos)
     networkx.draw_networkx_labels(PMCG, pos)
     plt.savefig("GraphDrawings/PMCG")
@@ -154,15 +154,12 @@ def DrawPMCG(PMCG):
 def DrawTTG(TTG):
     print ("===========================================")
     print ("PREPARING TEST TASK GRAPH (TTG) DRAWINGS...")
-    pos = networkx.circular_layout(TTG)
-    networkx.draw_networkx_nodes(TTG, pos, node_size=500, color='b')
+
+    pos = networkx.circular_layout(TTG, scale=6)
+    networkx.draw_networkx_nodes(TTG, pos, node_size=200, color='b')
     networkx.draw_networkx_edges(TTG, pos)
-    networkx.draw_networkx_labels(TTG, pos)
+    networkx.draw_networkx_labels(TTG, pos, font_size=8)
     plt.savefig("GraphDrawings/TTG")
     plt.clf()
     print ("\033[35m* VIZ::\033[0m TEST TASK GRAPH (TTG) DRAWING CREATED AT: GraphDrawings/TTG.png")
     return None
-
-# TODO: Schedule TTG
-# we probably need to add a type as attribute to the tasks, which shows if
-# they belong to testing or normal operation...

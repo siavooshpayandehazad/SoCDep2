@@ -286,10 +286,9 @@ def FindFirstEmptySlotForTaskOnNode(TG, AG, SHM, Node, Task, PredecessorEndTime,
         if EndTimeList[i]>= PredecessorEndTime:
             Slot = StartTimeList[i+1]-EndTimeList[i]
             if Slot >= TaskExecutionOnNode:
-                FirstPossibleMappingTime = max(FirstPossibleMappingTime, EndTimeList[i])
+                FirstPossibleMappingTime = EndTimeList[i]
                 Found = True
                 break
-
     if Found == False:
         FirstPossibleMappingTime = max(FirstPossibleMappingTime, FindTask_ASAP_Scheduling(TG, AG, SHM, Task, Node, logging)[0])
     return FirstPossibleMappingTime
