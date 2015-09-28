@@ -61,6 +61,6 @@ def CheckForDependencies():
         try:
             __import__(module)
         except ImportError:
-            raise ImportError("MODULE "+str(module)+"DOES NOT EXIST...")
+            raise ImportError("MODULE "+str(module)+" DOES NOT EXIST...")
     print "ALL REQUIRED MODULES AVAILABLE..."
     return True

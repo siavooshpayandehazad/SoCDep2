@@ -87,7 +87,7 @@ def InitializeSystem(logging):
         Mapping_Reports.DrawMappingDistribution(AG, SHM)
     if Config.Mapping_Drawing:
         Mapping_Reports.DrawMapping(TG, AG, SHM)
-
+    Scheduling_Reports.GenerateGanttCharts(TG, AG, "SchedulingTG")
     ####################################################################
     # PMC-Graph
     # at this point we assume that the system health map knows about the initial faults from
@@ -112,12 +112,13 @@ def InitializeSystem(logging):
         Scheduling_Reports.ReportMappedTasks(AG, logging)
         # TestSchedulingUnit.RemoveTestTasksFromTG(TTG, TG)
         # Task_Graph_Reports.DrawTaskGraph(TG, TTG=TTG)
+        Scheduling_Reports.GenerateGanttCharts(TG, AG, "SchedulingWithTTG")
     else:
         PMCG = None
 
     print ("===========================================")
     print ("SYSTEM IS UP...")
-    Scheduling_Reports.GenerateGanttCharts(TG, AG)
+
     TrafficTableGenerator.GenerateNoximTrafficTable()
     TrafficTableGenerator.GenerateGSNoCTrafficTable(AG, TG)
     if Config.GenMappingFrames:

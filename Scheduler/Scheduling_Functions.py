@@ -76,6 +76,19 @@ def FindTask_ASAP_Scheduling(TG, AG, SHM, Task, Node, logging):
     else:
         EndTime = StartTime+TaskExecutionOnNode
     return StartTime, EndTime
+
+def FindTestTask_ASAP_Scheduling(TG, AG, SHM, Task, Node, logging):
+    CriticalityLevel = TG.node[Task]['Criticality']
+
+    StartTime = FindFirstEmptySlotForTaskOnNode(TG, AG, SHM, Node, Task,
+                                                FindTaskPredecessorsFinishTime(TG, AG, Task, CriticalityLevel), logging)
+
+    # This includes the aging and lower frequency of the nodes of graph...
+    # however, we do not include fractions of a cycle so we take ceiling of the execution time
+    NodeSpeedDown = 1+((100.0-SHM.SHM.node[Node]['NodeSpeed'])/100)
+    TaskExecutionOnNode = ceil(TG.node[Task]['WCET']*NodeSpeedDown)
+    EndTime = StartTime+TaskExecutionOnNode
+    return StartTime, EndTime
 ################################################################
 
 
@@ -87,6 +100,15 @@ def FindEdge_ASAP_Scheduling(TG, AG, Edge, Link, batch, Prob, Report, logging):
         EndTime = StartTime+EdgeExecutionOnLink+Config.Communication_SlackCount*EdgeExecutionOnLink
     else:
         EndTime = StartTime+EdgeExecutionOnLink
+    return StartTime, EndTime
+
+
+def FindTestEdge_ASAP_Scheduling(TG, AG, Edge, Link, batch, Prob, Report, logging):
+    StartTime = max(FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Prob, logging),
+                    FindEdgePredecessorsFinishTime(TG, AG, Edge, batch, Link))
+    EdgeExecutionOnLink = TG.edge[Edge[0]][Edge[1]]['ComWeight']
+    EndTime = StartTime+EdgeExecutionOnLink
+
     return StartTime, EndTime
 
 
@@ -245,18 +267,29 @@ def FindLastAllocatedTimeOnNode(TG, AG, Node, logging=None):
     return LastAllocatedTime
 
 
-def FindFirstEmptySlotForTaskOnNode(TG, AG, Node, Task):
-    '''
-    Should be used for Test Tasks
-    :param TG:
-    :param AG:
-    :param Node:
-    :param Task:
-    :return:
-    '''
-    FirstPossibleMappingTime = None
-    WCET = TG.node[Task]['WCET']
-    ReleaseTime = TG.node[Task]['Release']
-    # ToDo
+def FindFirstEmptySlotForTaskOnNode(TG, AG, SHM, Node, Task, PredecessorEndTime, logging):
 
+    FirstPossibleMappingTime = PredecessorEndTime
+
+    NodeSpeedDown = 1+((100.0-SHM.SHM.node[Node]['NodeSpeed'])/100)
+    TaskExecutionOnNode = ceil(TG.node[Task]['WCET']*NodeSpeedDown)
+
+    StartTimeList = []
+    EndTimeList = []
+    for Task in AG.node[Node]['Scheduling'].keys():
+        StartTimeList.append(AG.node[Node]['Scheduling'][Task][0])
+        EndTimeList.append(AG.node[Node]['Scheduling'][Task][1])
+    StartTimeList.sort()
+    EndTimeList.sort()
+    Found = False
+    for i in range(0, len(StartTimeList)-1):
+        if EndTimeList[i]>= PredecessorEndTime:
+            Slot = StartTimeList[i+1]-EndTimeList[i]
+            if Slot >= TaskExecutionOnNode:
+                FirstPossibleMappingTime = max(FirstPossibleMappingTime, EndTimeList[i])
+                Found = True
+                break
+
+    if Found == False:
+        FirstPossibleMappingTime = max(FirstPossibleMappingTime, FindTask_ASAP_Scheduling(TG, AG, SHM, Task, Node, logging)[0])
     return FirstPossibleMappingTime

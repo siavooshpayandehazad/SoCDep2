@@ -287,6 +287,16 @@ def CostFunction(TG, AG, SHM, Report, InitialMappingString = None):
     return Cost
 
 
+def CalculateReliabilityCost(TG, NoCRG, logging):
+    # todo...
+    Cost = 0
+    for edge in TG.edges():
+        Node1 = TG.node[edge[0]]['Node']
+        Node2 = TG.node[edge[1]]['Node']
+        logging.info("PACKET FROM NODE "+str(Node1)+"TO NODE "+str(Node2))
+
+    return Cost
+
 def FindUnMappedTaskWithSmallestWCET(TG, logging):
     ShortestTasks = []
     SmallestWCET = Config.WCET_Range

@@ -32,7 +32,7 @@ def ReportMappedTasks(AG, logging):
 #                   Generating Gantt Charts
 #
 ##########################################################################
-def GenerateGanttCharts(TG, AG):
+def GenerateGanttCharts(TG, AG, FileName):
     print ("===========================================")
     print ("GENERATING SCHEDULING GANTT CHARTS...")
     NodeMakeSpanList = []
@@ -290,7 +290,7 @@ def GenerateGanttCharts(TG, AG):
             Count += 1
     if EdgeCounter+EdgeCounter > 0:
         ax1.xaxis.set_ticks_position('bottom')
-    plt.savefig("GraphDrawings/Scheduling.png", dpi=200)
+    plt.savefig("GraphDrawings/"+FileName+".png", dpi=200)
     plt.clf()
     plt.close(fig)
     print ("\033[35m* VIZ::\033[0mSCHEDULING GANTT CHARTS CREATED AT: GraphDrawings/Scheduling.png")

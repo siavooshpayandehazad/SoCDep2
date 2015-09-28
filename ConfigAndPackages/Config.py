@@ -260,8 +260,8 @@ GateToCritical = [20]
 ###############################################
 #           PMCG Config
 ###############################################
-GeneratePMCG = False
-OneStepDiagnosable = False     # set to False if you need Sequentially diagnosable PMCG
+GeneratePMCG = True
+OneStepDiagnosable = True     # set to False if you need Sequentially diagnosable PMCG
 TFaultDiagnosable = None        # one-step t-fault diagnosable system, if set to none, default value would be
 #                                 (n-1)/2
 NodeTestExeTime = 2
@@ -269,11 +269,11 @@ NodeTestComWeight = 2
 ###############################################
 #           VISUALIZATION Config
 ###############################################
-RG_Draw = True
+RG_Draw = False
 PMCG_Drawing = True
 TTG_Drawing = True
 Mapping_Dstr_Drawing = True
 Mapping_Drawing = True
-SHM_Drawing = True          # if True generates SHM Drawing
+SHM_Drawing = False          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks

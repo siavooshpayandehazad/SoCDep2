@@ -4,6 +4,7 @@ from TaskGraphUtilities import TG_Functions
 from Scheduling_Functions import Add_TG_TaskToNode
 from Scheduling_Functions import FindScheduleMakeSpan
 from Scheduling_Functions import FindEdge_ASAP_Scheduling, FindTask_ASAP_Scheduling
+from Scheduling_Functions import FindTestTask_ASAP_Scheduling, FindTestEdge_ASAP_Scheduling
 from Scheduling_Functions import Add_TG_EdgeTo_link
 
 
@@ -60,7 +61,7 @@ def ScheduleTestInTG(TG, AG, SHM, Report, logging):
                 if TG.node[Task]['Distance'] == Distance:
                     Node = TG.node[Task]['Node']
                     logging.info("\tSCHEDULING TASK "+str(Task)+ " ON NODE:"+str(Node))
-                    (StartTime, EndTime) = FindTask_ASAP_Scheduling(TG, AG, SHM, Task, Node, logging)
+                    (StartTime, EndTime) = FindTestTask_ASAP_Scheduling(TG, AG, SHM, Task, Node, logging)
                     Add_TG_TaskToNode(TG, AG, Task, Node, StartTime, EndTime, logging)
                     for Edge in TG.edges():
                         if Edge[0] == Task:
@@ -71,7 +72,7 @@ def ScheduleTestInTG(TG, AG, SHM, Report, logging):
                                     Probability = BatchAndLink[2]
                                     logging.info("\tSCHEDULING EDGE "+str(Edge)+" ON LINK: "+str(Link)+
                                                  " FROM BATCH: "+str(Batch))
-                                    (StartTime, EndTime) = FindEdge_ASAP_Scheduling(TG, AG, Edge, Link, Batch,
+                                    (StartTime, EndTime) = FindTestEdge_ASAP_Scheduling(TG, AG, Edge, Link, Batch,
                                                                                   Probability, Report, logging)
                                     Add_TG_EdgeTo_link(TG, AG, Edge, Link, Batch, Probability, StartTime, EndTime,
                                                        logging)
