@@ -1,8 +1,6 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad 
 
 
-# Acknowledgement This mapping is based on "Bandwidth-Constrained Mapping of Cores onto NoC Architectures"
-# paper by Srinivasan Murali and Giovanni De Micheli.
 
 import copy
 from Mapper import Mapping_Functions

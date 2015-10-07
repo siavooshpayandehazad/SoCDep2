@@ -1,4 +1,8 @@
-# Copyright (C) 2015 Siavoosh Payandeh Azad 
+# Copyright (C) 2015 Siavoosh Payandeh Azad
+
+# Acknowledgement This mapping is based on "Bandwidth-Constrained Mapping of Cores onto NoC Architectures"
+# paper by Srinivasan Murali and Giovanni De Micheli.
+
 import copy, random
 from TaskGraphUtilities import TG_Functions
 from ArchGraphUtilities import AG_Functions

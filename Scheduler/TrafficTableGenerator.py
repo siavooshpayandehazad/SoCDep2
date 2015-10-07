@@ -1,17 +1,24 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
+from ConfigAndPackages import Config
 
-def GenerateNoximTrafficTable ():
+
+def GenerateNoximTrafficTable (AG, TG):
     # here we should generate a traffic Table for Noxim Simulator to double
     # check our experiments with it.
 
     # Note that the node numbering in Noxim is as follows:
+    #      X ---------->
     #   Y
     #
     #   |   ? ? ?
     #   |
     #   |
-    #       ---------- X
+    #   V
+    #
+    #  For Noxim the coordinates of the nodes in AG would be different, the following conversion formula can be used
+    #  to transform from GSNoC to Noxim :
+    #  GSNoC: (x,y) -----> Noxim: (x, |y - dim_y - 1|) (using absolute function)
     #
     # ---------------------------------------------------
     # The file format is:
@@ -19,14 +26,25 @@ def GenerateNoximTrafficTable ():
     # where:
     #   src:		ID of the source node (PE)
     #   dst:		ID of the destination node (PE)
-    #   t pir:	Packet Injection Rate for the link
-    #   t por:    Probability Of Retransmission for the link
+    #   pir:	Packet Injection Rate for the link
+    #   por:    Probability Of Retransmission for the link
     #   t_on:		Time (in cycles) at which activity begins
     #   t_off:    Time (in cycles) at which activity ends
     #   t_period:	Period after which activity starts again
     # ---------------------------------------------------
     TrafficTableFile = open('Generated_Files/NoximTrafficTable.txt','w')
-    TrafficTableFile.write("")
+    for Node in AG.nodes():
+        if len(AG.node[Node]['MappedTasks'])>0:
+            for Task in AG.node[Node]['MappedTasks']:
+                for Edge in TG.edges():
+                    if Edge[0] == Task :
+                        StringToWrite  = str(TG.node[Edge[0]]['Node']) + " " + str(TG.node[Edge[1]]['Node'])
+                        StringToWrite += " " + str(TG.edge[Edge[0]][Edge[1]]['ComWeight'])
+                        StringToWrite += " " + str(TG.edge[Edge[0]][Edge[1]]['ComWeight'])
+                        StringToWrite += " " + str(AG.node[Node]['Scheduling'][Task][0])
+                        StringToWrite += " " + str(AG.node[Node]['Scheduling'][Task][0] + AG.node[Node]['Scheduling'][Task][1])
+                        TrafficTableFile.write(StringToWrite+"\n")
+    TrafficTableFile.close()
     return None
 
 

@@ -119,7 +119,7 @@ def InitializeSystem(logging):
     print ("===========================================")
     print ("SYSTEM IS UP...")
 
-    TrafficTableGenerator.GenerateNoximTrafficTable()
+    TrafficTableGenerator.GenerateNoximTrafficTable(AG, TG)
     TrafficTableGenerator.GenerateGSNoCTrafficTable(AG, TG)
     if Config.GenMappingFrames:
         Mapping_Animation.GenerateFrames(TG, AG, SHM)
