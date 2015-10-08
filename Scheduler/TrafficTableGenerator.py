@@ -1,5 +1,5 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
-
+from ArchGraphUtilities import AG_Functions
 from ConfigAndPackages import Config
 
 
@@ -38,14 +38,22 @@ def GenerateNoximTrafficTable (AG, TG):
             for Task in AG.node[Node]['MappedTasks']:
                 for Edge in TG.edges():
                     if Edge[0] == Task :
-                        StringToWrite  = str(TG.node[Edge[0]]['Node']) + " " + str(TG.node[Edge[1]]['Node'])
+                        SourceNodeNoxim = TranslateNodeNumberToNoximSystem(TG.node[Edge[0]]['Node'])
+                        DestinationNodeNoxim = TranslateNodeNumberToNoximSystem(TG.node[Edge[1]]['Node'])
+                        StringToWrite  = str(SourceNodeNoxim) + " " + str(DestinationNodeNoxim)
                         StringToWrite += " " + str(TG.edge[Edge[0]][Edge[1]]['ComWeight'])
                         StringToWrite += " " + str(TG.edge[Edge[0]][Edge[1]]['ComWeight'])
-                        StringToWrite += " " + str(AG.node[Node]['Scheduling'][Task][0])
-                        StringToWrite += " " + str(AG.node[Node]['Scheduling'][Task][0] + AG.node[Node]['Scheduling'][Task][1])
+                        StringToWrite += " " + str(int(AG.node[Node]['Scheduling'][Task][0]))
+                        StringToWrite += " " + str(int(AG.node[Node]['Scheduling'][Task][1]))
                         TrafficTableFile.write(StringToWrite+"\n")
     TrafficTableFile.close()
     return None
+
+def TranslateNodeNumberToNoximSystem(Node):
+    X,Y,Z = AG_Functions.ReturnNodeLocation(Node)
+    Z = Config.Network_Z_Size - Z -1
+    Y = Config.Network_Y_Size - Y -1
+    return AG_Functions.ReturnNodeNumber(X,Y,Z)
 
 
 def GenerateGSNoCTrafficTable (AG, TG):

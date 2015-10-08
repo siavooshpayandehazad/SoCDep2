@@ -174,6 +174,8 @@ ToDo:
       tasks and it doesnt change any other traffic on the network?
 
     - Take mobility into account for scheduling
+
+    - We have to add some constraints on Test scheduling regarding peak power etc. 
     --------------------------------------------------
     List of functions without DocString:
 
