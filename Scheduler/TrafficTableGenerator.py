@@ -18,7 +18,7 @@ def GenerateNoximTrafficTable (AG, TG):
     #
     #  For Noxim the coordinates of the nodes in AG would be different, the following conversion formula can be used
     #  to transform from GSNoC to Noxim :
-    #  GSNoC: (x,y) -----> Noxim: (x, |y - dim_y - 1|) (using absolute function)
+    #  GSNoC: (x,y,z) -----> Noxim: (x, |y - dim_y - 1|, |z - dim_z - 1|) (using absolute function)
     #
     # ---------------------------------------------------
     # The file format is:
@@ -37,12 +37,12 @@ def GenerateNoximTrafficTable (AG, TG):
         if len(AG.node[Node]['MappedTasks'])>0:
             for Task in AG.node[Node]['MappedTasks']:
                 for Edge in TG.edges():
-                    if Edge[0] == Task :
+                    if Edge[0] == Task and (TranslateNodeNumberToNoximSystem(TG.node[Edge[0]]['Node']) != TranslateNodeNumberToNoximSystem(TG.node[Edge[1]]['Node'])):
                         SourceNodeNoxim = TranslateNodeNumberToNoximSystem(TG.node[Edge[0]]['Node'])
                         DestinationNodeNoxim = TranslateNodeNumberToNoximSystem(TG.node[Edge[1]]['Node'])
                         StringToWrite  = str(SourceNodeNoxim) + " " + str(DestinationNodeNoxim)
-                        StringToWrite += " " + str(TG.edge[Edge[0]][Edge[1]]['ComWeight'])
-                        StringToWrite += " " + str(TG.edge[Edge[0]][Edge[1]]['ComWeight'])
+                        StringToWrite += " 0.01"
+                        StringToWrite += " 0.01"
                         StringToWrite += " " + str(int(AG.node[Node]['Scheduling'][Task][0]))
                         StringToWrite += " " + str(int(AG.node[Node]['Scheduling'][Task][1]))
                         TrafficTableFile.write(StringToWrite+"\n")
