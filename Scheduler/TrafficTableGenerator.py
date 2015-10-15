@@ -38,13 +38,16 @@ def GenerateNoximTrafficTable (AG, TG):
             for Task in AG.node[Node]['MappedTasks']:
                 for Edge in TG.edges():
                     if Edge[0] == Task and (TranslateNodeNumberToNoximSystem(TG.node[Edge[0]]['Node']) != TranslateNodeNumberToNoximSystem(TG.node[Edge[1]]['Node'])):
+                        # in Noxim's traffic table, since each router has only one IP core connected to it, Node(i) cannot send data to Node(i)
                         SourceNodeNoxim = TranslateNodeNumberToNoximSystem(TG.node[Edge[0]]['Node'])
                         DestinationNodeNoxim = TranslateNodeNumberToNoximSystem(TG.node[Edge[1]]['Node'])
-                        StringToWrite  = str(SourceNodeNoxim) + " " + str(DestinationNodeNoxim)
-                        StringToWrite += " 0.01"
-                        StringToWrite += " 0.01"
-                        StringToWrite += " " + str(int(AG.node[Node]['Scheduling'][Task][0]))
-                        StringToWrite += " " + str(int(AG.node[Node]['Scheduling'][Task][1]))
+                        StringToWrite  = str(SourceNodeNoxim) + " " + str(DestinationNodeNoxim)  # source + destination
+#                       StringToWrite += " 0" # Region ID (used for bLBDR/Virtualization)
+                        StringToWrite += " 0.01"  # pir (packet injection rate)
+                        StringToWrite += " 0.01"  # por (probability of retransmission)
+                        StringToWrite += " " + str(int(AG.node[Node]['Scheduling'][Task][0]))   # t_on
+                        StringToWrite += " " + str(int(AG.node[Node]['Scheduling'][Task][1]))   # t_off
+                        StringToWrite += " " + str(int(AG.node[Node]['Scheduling'][Task][1]) + 1)   # t_period
                         TrafficTableFile.write(StringToWrite+"\n")
     TrafficTableFile.close()
     return None
