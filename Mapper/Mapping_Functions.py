@@ -82,7 +82,7 @@ def MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, log
                             Counter += 1
                     else:
                         RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging)
-                        logging.warning("\tNO PATH FOUND FROM ", SourceNode, " TO ", DestNode, "...")
+                        logging.warning("\tNO PATH FOUND FROM "+str(SourceNode)+" TO "+str(DestNode)+"...")
                         print ("NO PATH FOUND FROM "+str(SourceNode)+" TO "+str(DestNode)+" ...")
                         return False
     return True

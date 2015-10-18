@@ -44,10 +44,10 @@ AG_Type = 'Generic'
 VirtualChannelNum = 0
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
-NetworkTopology = '2DMesh'
+NetworkTopology = '3DMesh'
 Network_X_Size = 3
 Network_Y_Size = 3
-Network_Z_Size = 1
+Network_Z_Size = 3
 
 # Number of Vertical Links
 FindOptimumAG = False
@@ -73,7 +73,7 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 # Available Turn Models :
 #         2D Turn Models: XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel
 #         3D Turn Models: XYZ_TurnModel, NegativeFirst3D_TurnModel
-UsedTurnModel = PackageFile.NegativeFirst2D_TurnModel
+UsedTurnModel = PackageFile.NegativeFirst3D_TurnModel
 # Available choices: 'MinimalPath', 'NonMinimalPath'
 RotingType = 'MinimalPath'
 RoutingFilePath = "User_Inputs/RoutingFile.txt"
@@ -238,14 +238,19 @@ SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal dist
 #           Network Partitioning
 ################################################
 EnablePartitioning = False
-
 VirtualBrokenLinksForNonCritical = []
 VirtualBrokenLinksForCritical = []
 # Critical Region Nodes:
 # for 6X6 network example no 2 of ReCoSoc Paper
-CriticalRegionNodes = [16, 17, 21, 22, 23, 28, 29]
-GateToNonCritical = [15, 27]
-GateToCritical = [20]
+if EnablePartitioning:
+    CriticalRegionNodes = [16, 17, 21, 22, 23, 28, 29]
+    GateToNonCritical = [15, 27]
+    GateToCritical = [20]
+else:
+    CriticalRegionNodes = []
+    GateToNonCritical = []
+    GateToCritical = []
+    GateToCritical = []
 # For 6X6 network: (This is the Example scenario no. 2 in ReCoSoC paper)
 # ListOfBrokenLinks += [(35, 29), (29, 35), (34, 28), (28, 34), (33, 27), (11, 17), (17, 11), (10, 16), (16, 10),
 #                      (9, 15), (14, 15), (20, 26), (20, 19), (20, 14), (26, 27)]
@@ -269,11 +274,11 @@ NodeTestComWeight = 2
 ###############################################
 #           VISUALIZATION Config
 ###############################################
-RG_Draw = False
+RG_Draw = True
 PMCG_Drawing = True
 TTG_Drawing = True
 Mapping_Dstr_Drawing = True
 Mapping_Drawing = True
-SHM_Drawing = False          # if True generates SHM Drawing
+SHM_Drawing = True          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks
