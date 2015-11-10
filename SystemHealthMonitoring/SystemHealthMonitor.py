@@ -18,7 +18,8 @@ class SystemHealthMonitor:
         print ("PREPARING SYSTEM HEALTH MAP...")
         if not Config.SetRoutingFromFile:
             for node in ArchGraph.nodes():
-                self.SHM.add_node(node, TurnsHealth=copy.deepcopy(TurnsHealth), NodeHealth=True, NodeSpeed=100)
+                self.SHM.add_node(node, TurnsHealth=copy.deepcopy(TurnsHealth), NodeHealth=True, NodeSpeed=100,
+                                  NodeTemp=0)
         else:
             try:
                 RoutingFile = open(Config.RoutingFilePath, 'r')
@@ -39,12 +40,14 @@ class SystemHealthMonitor:
                     for turn in NodeTurnsHealth.keys():
                         if turn not in TurnsList:
                             NodeTurnsHealth[turn] = False
-                    self.SHM.add_node(NodeID, TurnsHealth=copy.deepcopy(NodeTurnsHealth), NodeHealth=True, NodeSpeed=100)
+                    self.SHM.add_node(NodeID, TurnsHealth=copy.deepcopy(NodeTurnsHealth), NodeHealth=True,
+                                      NodeSpeed=100, NodeTemp=0)
                 if line == '':
                     break
             for node in ArchGraph.nodes():
                 if node not in self.SHM.nodes():
-                    self.SHM.add_node(node, TurnsHealth=copy.deepcopy(TurnsHealth), NodeHealth=True, NodeSpeed=100)
+                    self.SHM.add_node(node, TurnsHealth=copy.deepcopy(TurnsHealth), NodeHealth=True,
+                                      NodeSpeed=100, NodeTemp=0)
         for link in ArchGraph.edges():
             self.SHM.add_edge(link[0], link[1], LinkHealth=True)
         print ("SYSTEM HEALTH MAP CREATED...")
@@ -120,6 +123,19 @@ class SystemHealthMonitor:
     def CleanMPM(self):
         self.MPM={}
         return None
+
+    def UpdateNodeTemp(self, Node, Temp):
+        """
+        Will update a Node's temperature.
+        :param Node: Node ID Number
+        :param Temp: Temperature in centigrade
+        :return: True if Node is healthy and temp update is successful and False if Not!
+        """
+        if self.SHM.node[Node]['NodeHealth']:
+            self.SHM.node[Node]['NodeTemp'] = Temp
+            return True
+        else:
+            return False
 
     ##################################################
 
