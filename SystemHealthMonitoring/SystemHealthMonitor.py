@@ -6,6 +6,7 @@ import copy, re
 from Mapper import Mapping_Functions
 import SHM_Reports,SHM_Functions
 from ConfigAndPackages import Config
+import random
 
 class SystemHealthMonitor:
     def __init__(self):
@@ -19,7 +20,7 @@ class SystemHealthMonitor:
         if not Config.SetRoutingFromFile:
             for node in ArchGraph.nodes():
                 self.SHM.add_node(node, TurnsHealth=copy.deepcopy(TurnsHealth), NodeHealth=True, NodeSpeed=100,
-                                  NodeTemp=0)
+                                  NodeTemp=random.randint(0,Config.MaxTemp))
         else:
             try:
                 RoutingFile = open(Config.RoutingFilePath, 'r')

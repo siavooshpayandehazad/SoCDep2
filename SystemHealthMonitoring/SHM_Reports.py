@@ -48,6 +48,38 @@ def ReportMPM(SHM):
             print ("KEY:", item, "\t\tMAPPING:", SHM.MPM[item])
         return None
 
+def DrawTempDistribution(SHM):
+    print ("===========================================")
+    print ("GENERATING TEMPERATURE DISTRIBUTIONS VISUALIZATION...")
+    fig_Util = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
+    MaxTemp = 0
+    for node in  SHM.SHM.nodes():
+        MaxTemp = max(SHM.SHM.node[node]['NodeTemp'], MaxTemp)
+
+    for node in SHM.SHM.nodes():
+        Location = AG_Functions.ReturnNodeLocation(node)
+        XSize = float(Config.Network_X_Size)
+        YSize = float(Config.Network_Y_Size)
+        ZSize = float(Config.Network_Y_Size)
+        Temp = 255*(float(SHM.SHM.node[node]['NodeTemp'])/Config.MaxTemp)
+
+        if SHM.SHM.node[node]['NodeHealth']:
+            color = '#%02X%02X%02X' % (Temp, 0, 255-Temp)
+        else:   # node is broken
+            color = '#7B747B'
+        fig_Util.gca().add_patch(patches.Rectangle((Location[0]/XSize+Location[2]/(ZSize*XSize**2),
+                                                    Location[1]/YSize+Location[2]/(ZSize*YSize**2)),
+                                                    width=0.15, height=0.15, facecolor=color,
+                                                    edgecolor="black", linewidth=3, zorder=ZSize-Location[2]))
+
+    fig_Util.text(0.25, 0.03, 'Distribution of temperature of network nodes', fontsize=15)
+    fig_Util.savefig("GraphDrawings/Temp_Distribute.png", dpi=100)
+    fig_Util.clf()
+    plt.close(fig_Util)
+    print ("\033[35m* VIZ::\033[0mMAPPING UTILIZATION DISTRIBUTION DRAWING CREATED AT: GraphDrawings/Temp_Distribute.png")
+
+    return None
+
 
 def DrawSHM(SHM):
     print ("===========================================")

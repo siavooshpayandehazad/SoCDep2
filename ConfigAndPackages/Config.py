@@ -132,6 +132,8 @@ ListOfBrokenTurns = {}
 # I know its a dictionary too
 # ListOfAgedPEs = {3: 0.3, 2: 0.1}
 ListOfAgedPEs = {}
+# ==========================
+MaxTemp = 100
 ################################################
 #          Clustering Function  Config
 ################################################

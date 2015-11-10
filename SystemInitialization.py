@@ -45,6 +45,7 @@ def InitializeSystem(logging):
     SHM_Functions.ApplyInitialFaults(SHM)
     if Config.SHM_Drawing:
         SHM_Reports.DrawSHM(SHM)
+        SHM_Reports.DrawTempDistribution(SHM)
     # SHM_Reports.Report_NoC_SystemHealthMap()
     ####################################################################
     RoutingGraphStartTime = time.time()
