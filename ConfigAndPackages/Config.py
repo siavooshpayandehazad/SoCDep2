@@ -9,7 +9,7 @@ DebugInfo = True
 DebugDetails = False
 LoGDirectory = "LOGS"
 TestMode = False
-EventDrivenFaultInjection = False
+EventDrivenFaultInjection = True
 ################################################
 #          TG  Config
 ################################################
@@ -137,7 +137,7 @@ MaxTemp = 100
 ################################################
 #          Clustering Function  Config
 ################################################
-Clustering_Optimization = True     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
+Clustering_Optimization = False     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
 ClusteringIteration = 2000
 Clustering_Report = False
 Clustering_DetailedReport = False
@@ -268,7 +268,7 @@ else:
 #           PMCG Config
 ###############################################
 GeneratePMCG = True
-OneStepDiagnosable = True     # set to False if you need Sequentially diagnosable PMCG
+OneStepDiagnosable = False     # set to False if you need Sequentially diagnosable PMCG
 TFaultDiagnosable = None        # one-step t-fault diagnosable system, if set to none, default value would be
 #                                 (n-1)/2
 NodeTestExeTime = 2
@@ -276,11 +276,11 @@ NodeTestComWeight = 2
 ###############################################
 #           VISUALIZATION Config
 ###############################################
-RG_Draw = True
-PMCG_Drawing = True
-TTG_Drawing = True
-Mapping_Dstr_Drawing = True
-Mapping_Drawing = True
-SHM_Drawing = True          # if True generates SHM Drawing
+RG_Draw = False
+PMCG_Drawing = False
+TTG_Drawing = False
+Mapping_Dstr_Drawing = False
+Mapping_Drawing = False
+SHM_Drawing = False          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks
