@@ -61,15 +61,29 @@ def DrawTempDistribution(SHM):
         XSize = float(Config.Network_X_Size)
         YSize = float(Config.Network_Y_Size)
         ZSize = float(Config.Network_Y_Size)
+
+        X_Offset = Location[2]/(ZSize*XSize)
+        Y_Offset = Location[2]/(ZSize*YSize)
+
+        Temp = 255*(float(SHM.SHM.node[node]['RouterTemp'])/Config.MaxTemp)
+        if SHM.SHM.node[node]['NodeHealth']:
+            color = '#%02X%02X%02X' % (Temp, 0, 255-Temp)
+        else:   # node is broken
+            color = '#7B747B'
+        fig_Util.gca().add_patch(patches.Rectangle((Location[0]/XSize+X_Offset,
+                                                    Location[1]/YSize+Y_Offset),
+                                                    width=0.08, height=0.08, facecolor=color,
+                                                    edgecolor="black", linewidth=3, zorder=ZSize-Location[2]))
+
         Temp = 255*(float(SHM.SHM.node[node]['NodeTemp'])/Config.MaxTemp)
 
         if SHM.SHM.node[node]['NodeHealth']:
             color = '#%02X%02X%02X' % (Temp, 0, 255-Temp)
         else:   # node is broken
             color = '#7B747B'
-        fig_Util.gca().add_patch(patches.Rectangle((Location[0]/XSize+Location[2]/(ZSize*XSize**2),
-                                                    Location[1]/YSize+Location[2]/(ZSize*YSize**2)),
-                                                    width=0.15, height=0.15, facecolor=color,
+        fig_Util.gca().add_patch(patches.Rectangle((Location[0]/XSize+X_Offset+0.05,
+                                                    Location[1]/YSize+Y_Offset),
+                                                    width=0.03, height=0.03, facecolor=color,
                                                     edgecolor="black", linewidth=3, zorder=ZSize-Location[2]))
 
     fig_Util.text(0.25, 0.03, 'Distribution of temperature of network nodes', fontsize=15)

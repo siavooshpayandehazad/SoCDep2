@@ -20,7 +20,7 @@ class SystemHealthMonitor:
         if not Config.SetRoutingFromFile:
             for node in ArchGraph.nodes():
                 self.SHM.add_node(node, TurnsHealth=copy.deepcopy(TurnsHealth), NodeHealth=True, NodeSpeed=100,
-                                  NodeTemp=random.randint(0,Config.MaxTemp))
+                                  RouterTemp=10,NodeTemp=random.randint(0,Config.MaxTemp))
         else:
             try:
                 RoutingFile = open(Config.RoutingFilePath, 'r')
@@ -42,13 +42,13 @@ class SystemHealthMonitor:
                         if turn not in TurnsList:
                             NodeTurnsHealth[turn] = False
                     self.SHM.add_node(NodeID, TurnsHealth=copy.deepcopy(NodeTurnsHealth), NodeHealth=True,
-                                      NodeSpeed=100, NodeTemp=0)
+                                      NodeSpeed=100, RouterTemp=0, NodeTemp=0)
                 if line == '':
                     break
             for node in ArchGraph.nodes():
                 if node not in self.SHM.nodes():
                     self.SHM.add_node(node, TurnsHealth=copy.deepcopy(TurnsHealth), NodeHealth=True,
-                                      NodeSpeed=100, NodeTemp=0)
+                                      NodeSpeed=100, RouterTemp=0, NodeTemp=0)
         for link in ArchGraph.edges():
             self.SHM.add_edge(link[0], link[1], LinkHealth=True)
         print ("SYSTEM HEALTH MAP CREATED...")
@@ -137,6 +137,16 @@ class SystemHealthMonitor:
             return True
         else:
             return False
+
+    def UpdateRouterTemp(self, Node, Temp):
+        """
+        Will update a Router's temperature.
+        :param Node: Node ID Number
+        :param Temp: Temperature in centigrade
+        :return: None
+        """
+        self.SHM.node[Node]['RouterTemp'] = Temp
+        return None
 
     ##################################################
 
