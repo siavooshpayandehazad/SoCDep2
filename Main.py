@@ -13,6 +13,7 @@ from pympler import tracker
 from Simulator import Simulator, FaultInjector
 
 
+
 tr = tracker.SummaryTracker()
 
 if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
@@ -54,7 +55,8 @@ misc.DrawLogo()
 ####################################################################
 # Initialization of the system
 TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, PMCG = SystemInitialization.InitializeSystem(logging)
-
+Simulator.RunSimualtor(100, AG)
+sys.exit()
 # just to have a sense of how much time we are spending in each section
 print ("===========================================")
 SystemStartingTime = time.time()
