@@ -43,6 +43,8 @@ def Link(env, Link, Schedule):
 
 
 def RunSimualtor(Runtime, AG):
+    print "==========================================="
+    print "STARTING SIMULATION..."
     env = simpy.Environment()
     for node in AG.nodes():
         # print node, AG.node[node]["Scheduling"]
@@ -51,3 +53,4 @@ def RunSimualtor(Runtime, AG):
         # print link, AG.edge[link[0]][link[1]]["Scheduling"]
         env.process(Link(env, link, AG.edge[link[0]][link[1]]["Scheduling"]))
     env.run(until=10*Runtime)
+    print "SIMULATION FINISHED..."
