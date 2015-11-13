@@ -14,14 +14,15 @@ def Processor(env, Node, Schedule):
     while True:
         for key in Schedule.keys():
             if env.now == Schedule[key][0]:
-                print "NODE:: Found Task", key, " to run at time:", env.now
+                print float("{0:.1f}".format(env.now)), "\tNODE:: Found Task", key, " to run on Node:", Node
                 length = Schedule[key][1]-Schedule[key][0]
                 Found = True
                 TaskNum = key
                 break
         if Found:
+            print float("{0:.1f}".format(env.now)), "\tNODE:: Starting Task", TaskNum, "on Link:", Node
             yield env.timeout(length)
-            print "NODE:: Ran Task", TaskNum, "on Node:", Node
+            print float("{0:.1f}".format(env.now)), "\tNODE:: Task", TaskNum, "execution finished on Node", Node
             Found = False
         else:
             yield env.timeout(1)
@@ -34,13 +35,14 @@ def Link(env, Link, Schedule):
     while True:
         for key in Schedule.keys():
             if env.now == Schedule[key][0][0]:
-                print "LINK:: Found Task", key, " to run at time:", env.now
+                print float("{0:.1f}".format(env.now)), "\tLINK:: Found Task", key, " to run on Link:", Link
                 length = Schedule[key][0][1]-Schedule[key][0][0]
                 Found = True
                 TaskNum = key
         if Found:
+            print float("{0:.1f}".format(env.now)), "\tLINK:: Starting Task", TaskNum, "on Link:", Link
             yield env.timeout(length)
-            print "LINK:: Ran Task", TaskNum, "on Link:", Link, "Current time on link:", env.now
+            print float("{0:.1f}".format(env.now)), "\tLINK:: Task", TaskNum, "execution finished on Link", Link
             Found = False
         else:
             yield env.timeout(1)
