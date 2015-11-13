@@ -1,8 +1,12 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
 # starting to write the simulator with SimPy...
-
 import simpy
+import numpy
+
+from SystemHealthMonitoring import SHM_Functions
+from ConfigAndPackages import Config
+# from FaultInjector import FaultEvent
 
 def Processor(env, Node, Schedule):
     Found = False
@@ -23,6 +27,7 @@ def Processor(env, Node, Schedule):
         else:
             yield env.timeout(1)
 
+
 def Link(env, Link, Schedule):
     Found = False
     TaskNum = None
@@ -41,8 +46,27 @@ def Link(env, Link, Schedule):
         else:
             yield env.timeout(1)
 
+def FaultEvent(env, AG, SHM, NoCRG, FaultTimeList):
+    Fault = False
+    while True:
+        for FaultTime in FaultTimeList:
+            #print env.now, FaultTime
+            if float("{0:.1f}".format(env.now)) == FaultTime:
+                Fault = True
+                # print "Fault Location:", FaultLocation, "Type:", FaultType
+                pass
+            else:
+                # print env.now, FaultTime
+                pass
 
-def RunSimualtor(Runtime, AG):
+        if Fault:
+            FaultLocation, FaultType = SHM_Functions.RandomFaultGeneration(SHM)
+            SHM_Functions.ApplyFaultEvent(AG, SHM, NoCRG, FaultLocation, FaultType)
+            Fault = False
+        yield env.timeout(0.1)
+        pass
+
+def RunSimualtor(Runtime, AG, SHM, NoCRG):
     print "==========================================="
     print "STARTING SIMULATION..."
     env = simpy.Environment()
@@ -52,5 +76,18 @@ def RunSimualtor(Runtime, AG):
     for link in AG.edges():
         # print link, AG.edge[link[0]][link[1]]["Scheduling"]
         env.process(Link(env, link, AG.edge[link[0]][link[1]]["Scheduling"]))
-    env.run(until=10*Runtime)
+
+    FaultTimeList = []
+    FaultTime = 0
+    if Config.EventDrivenFaultInjection:
+        TimeUntilNextFault = numpy.random.normal(Config.MTBF,Config.SD4MTBF)
+        FaultTime += TimeUntilNextFault
+        while FaultTime < Runtime:
+            FaultTimeList.append(float("{0:.1f}".format(FaultTime)))
+            TimeUntilNextFault = numpy.random.normal(Config.MTBF,Config.SD4MTBF)
+            FaultTime += TimeUntilNextFault
+        print FaultTimeList
+        env.process(FaultEvent(env, AG, SHM, NoCRG, FaultTimeList))
+
+    env.run(until=Runtime)
     print "SIMULATION FINISHED..."

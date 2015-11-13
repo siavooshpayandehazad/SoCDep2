@@ -1,16 +1,17 @@
 __author__ = 'siavoosh'
 
-from ConfigAndPackages import Config
-import threading, time
-import numpy
-from SystemHealthMonitoring import SHM_Functions
 
+from SystemHealthMonitoring import SHM_Functions
 ####################################################################
 #
 #                   Fault event handler
 #
 ####################################################################
 
+
+
+
+"""
 def FaultEvent(SystemStartingTime,AG,SHM,NoCRG):
     global timer
     TimeAfterSystemStart = time.time() - SystemStartingTime
@@ -47,3 +48,4 @@ def FaultInjector(SystemStartingTime,AG,SHM,NoCRG):
 
         timer.cancel()
         timer.join()
+"""""

@@ -62,7 +62,7 @@ print ("===========================================")
 SystemStartingTime = time.time()
 print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:"+str(round(SystemStartingTime-ProgramStartTime))+
        " SECONDS AFTER PROGRAM START...")
-Simulator.RunSimualtor(100, AG)
+Simulator.RunSimualtor(100, AG, SHM, NoCRG)
 # FaultInjector.FaultInjector(SystemStartingTime, AG, SHM, NoCRG)
 logging.info('Logging finished...')
 
