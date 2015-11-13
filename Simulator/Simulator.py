@@ -8,6 +8,13 @@ from ConfigAndPackages import Config
 from FaultInjector import FaultEvent
 
 def Processor(env, Node, Schedule):
+    """
+    Runs tasks on each node
+    :param env: simulation environment
+    :param Node: Node ID number
+    :param Schedule: schedule of the tasks on the Node
+    :return: none
+    """
     Found = False
     TaskNum = None
     length = 0
@@ -29,6 +36,13 @@ def Processor(env, Node, Schedule):
 
 
 def Link(env, Link, Schedule):
+    """
+    Runs tasks on each link
+    :param env: simulation environment
+    :param Link: Link number
+    :param Schedule: schedule of the tasks on the link
+    :return: none
+    """
     Found = False
     TaskNum = None
     length = 0
