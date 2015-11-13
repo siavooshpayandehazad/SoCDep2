@@ -4,9 +4,8 @@
 import simpy
 import numpy
 
-from SystemHealthMonitoring import SHM_Functions
 from ConfigAndPackages import Config
-# from FaultInjector import FaultEvent
+from FaultInjector import FaultEvent
 
 def Processor(env, Node, Schedule):
     Found = False
@@ -46,25 +45,7 @@ def Link(env, Link, Schedule):
         else:
             yield env.timeout(1)
 
-def FaultEvent(env, AG, SHM, NoCRG, FaultTimeList):
-    Fault = False
-    while True:
-        for FaultTime in FaultTimeList:
-            #print env.now, FaultTime
-            if float("{0:.1f}".format(env.now)) == FaultTime:
-                Fault = True
-                # print "Fault Location:", FaultLocation, "Type:", FaultType
-                pass
-            else:
-                # print env.now, FaultTime
-                pass
 
-        if Fault:
-            FaultLocation, FaultType = SHM_Functions.RandomFaultGeneration(SHM)
-            SHM_Functions.ApplyFaultEvent(AG, SHM, NoCRG, FaultLocation, FaultType)
-            Fault = False
-        yield env.timeout(0.1)
-        pass
 
 def RunSimualtor(Runtime, AG, SHM, NoCRG):
     print "==========================================="
