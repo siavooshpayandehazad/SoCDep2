@@ -55,15 +55,15 @@ misc.DrawLogo()
 ####################################################################
 # Initialization of the system
 TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, PMCG = SystemInitialization.InitializeSystem(logging)
-Simulator.RunSimualtor(100, AG)
-sys.exit()
+
+
 # just to have a sense of how much time we are spending in each section
 print ("===========================================")
 SystemStartingTime = time.time()
 print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:"+str(round(SystemStartingTime-ProgramStartTime))+
        " SECONDS AFTER PROGRAM START...")
-
-FaultInjector.FaultInjector(SystemStartingTime, AG, SHM, NoCRG)
+Simulator.RunSimualtor(100, AG)
+# FaultInjector.FaultInjector(SystemStartingTime, AG, SHM, NoCRG)
 logging.info('Logging finished...')
 
 print("===========================================")
