@@ -3,6 +3,9 @@
 # Acknowledgement This mapping is based on "Bandwidth-Constrained Mapping of Cores onto NoC Architectures"
 # paper by Srinivasan Murali and Giovanni De Micheli.
 
+# On November 13th 2015, the following sections were added by Behrad Niazmand
+    # Swapping phase of NMAP algorithm
+
 import copy, random
 from TaskGraphUtilities import TG_Functions
 from ArchGraphUtilities import AG_Functions
