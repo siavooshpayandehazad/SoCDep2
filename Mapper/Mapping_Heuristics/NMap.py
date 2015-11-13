@@ -9,6 +9,8 @@ from ArchGraphUtilities import AG_Functions
 from Scheduler import Scheduler
 from Mapper import Mapping_Functions
 from RoutingAlgorithms import Calculate_Reachability
+from networkx.classes.function import edges
+
 
 def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
     print ("===========================================")
@@ -182,6 +184,24 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
             print ("\t \033[32m* NOTE::\033[0mTASK "+str(ChosenTask)+" MAPPED ON NODE "+str(ChosenNode))
         else:
             raise ValueError("Mapping task on node failed...")
+
+    # Added by Behrad (Still under development)
+    # Swapping phase
+
+    # for node_id_1 in range(0 , len(AG.nodes)-1):
+    # for node_id_2 in range(node_id_1+1 , len(AG.nodes)-1):
+            # Save current mapping in an array
+            # Also save the mapping's comm_cost in a variable
+            # Swap (node_id_1 , node_id_2)
+            # Check and calculate communication cost for all communication flows in the task graph (which is equal to the total number of edges in the application graph
+                # starting from the communication flow with the largest communication volume first
+            # If comm_cost of current mapping is the same or bigger than the previous mapping, discard mapping
+                # Revert back to previous mapping with better comm_cost
+            # Else
+                # Save new mapping as better mapping with less comm_cost
+            # Reset the comm_cost after each swapping
+
+    # End of Swapping phase
 
     Scheduler.ScheduleAll(TG, AG, SHM, True, False, logging)
     return TG, AG
