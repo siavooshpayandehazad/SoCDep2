@@ -27,7 +27,7 @@ def Processor(env, Node, Schedule):
                 TaskNum = key
                 break
         if Found:
-            print float("{0:.1f}".format(env.now)), "\tNODE:: Starting Task", TaskNum, "on Link:", Node
+            print float("{0:.1f}".format(env.now)), "\tNODE:: Starting Task", TaskNum, "on Node:", Node
             yield env.timeout(length)
             print float("{0:.1f}".format(env.now)), "\tNODE:: Task", TaskNum, "execution finished on Node", Node
             Found = False
