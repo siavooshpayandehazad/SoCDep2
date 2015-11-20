@@ -191,20 +191,52 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
     # Added by Behrad (Still under development)
     # Swapping phase
 
-    # for node_id_1 in range(0 , len(AG.nodes)-1):
-      # for node_id_2 in range(node_id_1+1 , len(AG.nodes)-1):
+    for node_id_1 in range(0 , len(AG.nodes)-1):
+        for node_id_2 in range(node_id_1+1 , len(AG.nodes)-1):
+            pass
             # Save current mapping in an array
             # Also save the mapping's csomm_cost in a variable
+            CommCost = CalculateComCost(TG)
+
             # Swap (node_id_1 , node_id_2)
+            SawpNodes(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, node_id_1, node_id_2, logging)
             # Check and calculate communication cost for all communication flows in the task graph (which is equal to the total number of edges in the application graph
                 # starting from the communication flow with the largest communication volume first
+            CommCost_new = CalculateComCost(TG)
             # If comm_cost of current mapping is the same or bigger than the previous mapping, discard mapping
                 # Revert back to previous mapping with better comm_cost
             # Else
                 # Save new mapping as better mapping with less comm_cost
+            if CommCost_new < CommCost:
+                print "Better Solution Found with Cost:", CommCost_new
+            else:
+                print "Reverting to old solution"
+                SawpNodes(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, node_id_2, node_id_1, logging)
             # Reset the comm_cost after each swapping
 
     # End of Swapping phase
 
     Scheduler.ScheduleAll(TG, AG, SHM, True, False, logging)
     return TG, AG
+
+
+def CalculateComCost(TG):
+    Cost = 0
+    for Edge in TG.edges():
+        T1 = Edge[0]
+        T2 = Edge[2]
+        Node1 = TG.node[T1]['Node']
+        Node2 = TG.node[T2]['Node']
+        ComWeight = TG.edge[Edge[0]][Edge[1]]["ComWeight"]
+        ManhatanDistance = AG_Functions.ManhattanDistance(Node1, Node2)
+        Cost += ManhatanDistance * ComWeight
+    return Cost
+
+def SawpNodes(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Node1, Node2, logging):
+    Task_1 = AG.node[Node1]['MappedTasks'][0]
+    Task_2 = AG.node[Node2]['MappedTasks'][0]
+    Mapping_Functions.RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task_1, Node1, logging)
+    Mapping_Functions.RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task_2, Node2, logging)
+    Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task_1, Node2, logging)
+    Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task_2, Node1, logging)
+    return True
