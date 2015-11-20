@@ -188,8 +188,6 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
         else:
             raise ValueError("Mapping task on node failed...")
 
-<<<<<<< Updated upstream
-=======
     # Added by Behrad (Still under development)
     # Swapping phase
 
@@ -208,6 +206,5 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
 
     # End of Swapping phase
 
->>>>>>> Stashed changes
     Scheduler.ScheduleAll(TG, AG, SHM, True, False, logging)
     return TG, AG
