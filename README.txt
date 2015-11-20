@@ -73,7 +73,11 @@ ScheduleAndDepend
  |          |----- Mapping_Reports
  |          |----- Mapping_Test
  |
- |------NoC_Simulator
+ |------Simulator
+ |          |
+ |          |-----FaultInjector
+ |          |-----Simulator
+ |
  |------RoutingAlgorithms
  |          |
  |          |----- Calculate_Reachability
