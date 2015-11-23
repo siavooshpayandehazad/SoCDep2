@@ -6,7 +6,7 @@ def ReportGSNoCFriendlyReachabilityInFile (AG):
     ReachabilityFile = open("Generated_Files/GSNoC_RectangleFile.txt",'w')
     for Node in AG.nodes():
         NodeX, NodeY, NodeZ = AG_Functions.ReturnNodeLocation(Node)
-        for Port in AG.node[Node]['Unreachable']:
+        for Port in AG.node[Node]['Router'].Unreachable:
             if Port == "S":
                 Direction = "SOUTH"
             elif Port == "N":
@@ -15,9 +15,9 @@ def ReportGSNoCFriendlyReachabilityInFile (AG):
                 Direction = "WEST"
             elif Port == "E":
                 Direction = "EAST"
-            for Entry in AG.node[Node]['Unreachable'][Port]:
+            for Entry in AG.node[Node]['Router'].Unreachable[Port]:
                 ReachabilityFile.write( "["+str(NodeX)+","+str(NodeY)+","+str(NodeZ)+"] ")
-                UnreachableArea = AG.node[Node]['Unreachable'][Port][Entry]
+                UnreachableArea = AG.node[Node]['Router'].Unreachable[Port][Entry]
                 if UnreachableArea[0] is not None:
                     UnreachableX, UnreachableY, UnreachableZ = AG_Functions.ReturnNodeLocation(UnreachableArea[0])
                     ReachabilityFile.write(str(Direction)+" NetLocCube(ll=["+str(UnreachableX)+","+str(UnreachableY)+
@@ -34,14 +34,14 @@ def ReportReachability (AG):
     print ("=====================================")
     for Node in AG.nodes():
         print ("NODE", Node, "UNREACHABLE NODES:")
-        for Port in AG.node[Node]['Unreachable']:
-            print ("Port:"+str(Port)+" ==>"+str(AG.node[Node]['Unreachable'][Port]))
+        for Port in AG.node[Node]['Router'].Unreachable:
+            print ("Port:"+str(Port)+" ==>"+str(AG.node[Node]['Router'].Unreachable[Port]))
 
 def ReportReachabilityInFile (AG, FileName):
     ReachabilityFile = open('Generated_Files/'+FileName+".txt",'w')
     for Node in AG.nodes():
         ReachabilityFile.write( "=====================================\n")
         ReachabilityFile.write( "NODE "+str(Node)+" UNREACHABLE NODES:\n")
-        for Port in AG.node[Node]['Unreachable']:
-            ReachabilityFile.write("Port: "+str(Port)+" ==> "+str(AG.node[Node]['Unreachable'][Port])+"\n")
+        for Port in AG.node[Node]['Router'].Unreachable:
+            ReachabilityFile.write("Port: "+str(Port)+" ==> "+str(AG.node[Node]['Router'].Unreachable[Port])+"\n")
     ReachabilityFile.close()

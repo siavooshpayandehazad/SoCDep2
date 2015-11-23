@@ -5,6 +5,20 @@ import operator
 # todo: add virtual channel support AG...
 
 
+class Router():
+    def __init__(self):
+        self.Unreachable = {}
+        self.MappedTasks = []
+        self.Scheduling = {}
+
+class Node():
+    def __init__(self):
+        self.Utilization = 0
+        self.MappedTasks = []
+        self.Scheduling = {}
+
+
+
 def GenerateManualAG(PE_List, AG_Edge_List, AG_Edge_Port_List):
     """
     Generates an architecture graph from manually defined AG in  Config file
@@ -17,7 +31,7 @@ def GenerateManualAG(PE_List, AG_Edge_List, AG_Edge_Port_List):
     print("PREPARING AN ARCHITECTURE GRAPH (AG)...")
     AG = networkx.DiGraph()
     for PE in PE_List:
-        AG.add_node(PE, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region='L')
+        AG.add_node(PE, MappedTasks=[], Scheduling={}, Utilization=0, Router=Router(), Region='L')
     for i in range(0, len(AG_Edge_List)):
         EDGE = AG_Edge_List[i]
         AG.add_edge(EDGE[0], EDGE[1], Port=AG_Edge_Port_List[i], MappedTasks={}, Scheduling={})
@@ -57,7 +71,7 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
             pass
     if Topology == '2DTorus':
         for i in range(0, SizeX*SizeY):
-            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region='N')
+            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Router=Router(), Region='N')
         for i in range(0, SizeX):
             CurrentNode = ReturnNodeNumber(i, 0, 0)
             NextNode = ReturnNodeNumber(i, SizeY-1, 0)
@@ -90,7 +104,7 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
     ##############################################################
     if Topology == '2DMesh':
         for i in range(0, SizeX*SizeY):
-            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region='N')
+            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Router=Router(),  Region='N')
         for j in range(0, SizeY):
             for i in range(0, SizeX-1):
                 CurrentNode = ReturnNodeNumber(i, j, 0)
@@ -110,7 +124,7 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
     ##############################################################
     if Topology == '3DMesh':
         for i in range(0, SizeX*SizeY*SizeZ):
-            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region='N')
+            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Router=Router(), Region='N')
         for z in range(0, SizeZ):
             # connect the connections in each layer
             for y in range(0, SizeY):
@@ -136,7 +150,7 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
     ##############################################################
     elif Topology == '2DRing':
         for i in range(0, SizeX*SizeY):
-            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region='N')
+            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Region='N')
         for j in range(0, SizeY):
             CurrentNode = ReturnNodeNumber(0, j, 0)
             NextNode = ReturnNodeNumber(SizeX-1, j, 0)
@@ -154,7 +168,7 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
     ##############################################################
     elif Topology == '2DLine':
         for i in range(0, SizeX*SizeY):
-            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Unreachable={}, Region='N')
+            AG.add_node(i, MappedTasks=[], Scheduling={}, Utilization=0, Router=Router(), Region='N')
         for j in range(0, SizeY):
             for i in range(0, SizeX-1):
                 CurrentNode = ReturnNodeNumber(i, j, 0)
