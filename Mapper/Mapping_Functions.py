@@ -45,8 +45,8 @@ def MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, log
         return False
     logging.info( "\tADDING TASK:"+str(Task)+"TO NODE:"+str(Node))
     TG.node[Task]['Node'] = Node
-    AG.node[Node]['MappedTasks'].append(Task)
-    AG.node[Node]['Utilization'] += TG.node[Task]['WCET']
+    AG.node[Node]['Node'].MappedTasks.append(Task)
+    AG.node[Node]['Node'].Utilization += TG.node[Task]['WCET']
     for Edge in TG.edges():
         if Task in Edge: # find all the edges that are connected to Task
             logging.info("\t\tEDGE:"+str(Edge)+"CONTAINS Task:"+str(Task))
@@ -111,8 +111,8 @@ def RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node
                     else:
                         logging.warning("\tNOTHING TO BE REMOVED...")
     TG.node[Task]['Node'] = None
-    AG.node[Node]['MappedTasks'].remove(Task)
-    AG.node[Node]['Utilization'] -= TG.node[Task]['WCET']
+    AG.node[Node]['Node'].MappedTasks.remove(Task)
+    AG.node[Node]['Node'].Utilization -= TG.node[Task]['WCET']
     return True
 
 
@@ -126,8 +126,8 @@ def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster
     CTG.node[Cluster]['Node'] = Node
     for Task in CTG.node[Cluster]['TaskList']:
         TG.node[Task]['Node'] = Node
-        AG.node[Node]['MappedTasks'].append(Task)
-    AG.node[Node]['Utilization']+=CTG.node[Cluster]['Utilization']
+        AG.node[Node]['Node'].MappedTasks.append(Task)
+    AG.node[Node]['Node'].Utilization += CTG.node[Cluster]['Utilization']
 
     for Edge in CTG.edges():
         if Cluster in Edge: # find all the edges that are connected to Cluster
@@ -219,8 +219,8 @@ def RemoveClusterFromNode(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, Cluster
     CTG.node[Cluster]['Node'] = None
     for Task in CTG.node[Cluster]['TaskList']:
         TG.node[Task]['Node'] = None
-        AG.node[Node]['MappedTasks'].remove(Task)
-    AG.node[Node]['Utilization'] -= CTG.node[Cluster]['Utilization']
+        AG.node[Node]['Node'].MappedTasks.remove(Task)
+    AG.node[Node]['Node'].Utilization -= CTG.node[Cluster]['Utilization']
     return True
 
 
@@ -232,9 +232,9 @@ def ClearMapping(TG, CTG, AG):
     for cluster in CTG.nodes():
         CTG.node[cluster]['Node'] = None
     for node in AG.nodes():
-        AG.node[node]['MappedTasks'] = []
-        AG.node[node]['Utilization'] = 0
-        AG.node[node]['Scheduling'] = {}
+        AG.node[node]['Node'].MappedTasks = []
+        AG.node[node]['Node'].Utilization = 0
+        AG.node[node]['Node'].Scheduling = {}
     for link in AG.edges():
         AG.edge[link[0]][link[1]]['MappedTasks'] = {}
         AG.edge[link[0]][link[1]]['Scheduling'] = {}

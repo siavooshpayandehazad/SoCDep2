@@ -6,15 +6,15 @@ from ConfigAndPackages import Config
 def FindScheduleMakeSpan(AG):
     MakeSpan = 0
     for Node in AG.nodes():
-        for Task in AG.node[Node]['MappedTasks']:
-            MakeSpan = max(AG.node[Node]['Scheduling'][Task][1], MakeSpan)
+        for Task in AG.node[Node]['Node'].MappedTasks:
+            MakeSpan = max(AG.node[Node]['Node'].Scheduling[Task][1], MakeSpan)
     return MakeSpan
 
 
 ################################################################
 def ClearScheduling(AG, TG):
     for Node in AG.nodes():
-        AG.node[Node]['Scheduling'] = {}
+        AG.node[Node]['Node'].Scheduling = {}
     for Link in AG.edges():
         AG.edge[Link[0]][Link[1]]['Scheduling'] = {}
     return None
@@ -40,7 +40,7 @@ def Add_TG_TaskToNode(TG, AG, Task, Node, StartTime, EndTime, logging):
     """
     logging.info ("\t\tADDING TASK: "+str(Task)+" TO NODE: "+str(Node))
     logging.info ("\t\tSTARTING TIME: "+str(StartTime)+" ENDING TIME:"+str(EndTime))
-    AG.node[Node]['Scheduling'][Task] = [StartTime, EndTime]
+    AG.node[Node]['Node'].Scheduling[Task] = [StartTime, EndTime]
     TG.node[Task]['Node'] = Node
     return True
 
@@ -135,8 +135,8 @@ def FindTaskPredecessorsFinishTime(TG, AG, Task, CriticalityLevel):
             if TG.node[Predecessor]['Node'] is not None:    # predecessor is mapped
                 # if TG.node[Predecessor]['Criticality'] == CriticalityLevel: #this is not quit right...
                     Node = TG.node[Predecessor]['Node']
-                    if Predecessor in AG.node[Node]['Scheduling']:             # if this task is scheduled
-                        FinishTime = max(AG.node[Node]['Scheduling'][Predecessor][1], FinishTime)
+                    if Predecessor in AG.node[Node]['Node'].Scheduling:             # if this task is scheduled
+                        FinishTime = max(AG.node[Node]['Node'].Scheduling[Predecessor][1], FinishTime)
     for Edge in TG.edges():
         if Edge[1] == Task:
             # if TG.edge[Edge[0]][Edge[1]]['Criticality'] == CriticalityLevel:
@@ -156,9 +156,9 @@ def FindTaskPredecessorsFinishTime(TG, AG, Task, CriticalityLevel):
 def FindEdgePredecessorsFinishTime(TG, AG, Edge, batch, CurrentLink):
     FinishTime = 0
     Node = TG.node[Edge[0]]['Node']
-    if Edge[0] in AG.node[Node]['Scheduling']:
-        if AG.node[Node]['Scheduling'][Edge[0]][1] > FinishTime:
-            FinishTime = AG.node[Node]['Scheduling'][Edge[0]][1]
+    if Edge[0] in AG.node[Node]['Node'].Scheduling:
+        if AG.node[Node]['Node'].Scheduling[Edge[0]][1] > FinishTime:
+            FinishTime = AG.node[Node]['Node'].Scheduling[Edge[0]][1]
 
     for Link in AG.edges():
         if Link[1] == CurrentLink[0]:
@@ -246,13 +246,13 @@ def FindLastAllocatedTimeOnNode(TG, AG, Node, logging=None):
     if logging is not None:
         logging.info ("\t\tFINDING LAST ALLOCATED TIME ON NODE "+str(Node))
     LastAllocatedTime = 0
-    if len(AG.node[Node]['MappedTasks']) > 0:
+    if len(AG.node[Node]['Node'].MappedTasks) > 0:
         if logging is not None:
-            logging.info ("\t\t\tMAPPED TASKS ON THE NODE: "+str(AG.node[Node]['MappedTasks']))
-        for Task in AG.node[Node]['MappedTasks']:
-            if Task in AG.node[Node]['Scheduling']:
-                StartTime = AG.node[Node]['Scheduling'][Task][0]
-                EndTime = AG.node[Node]['Scheduling'][Task][1]
+            logging.info ("\t\t\tMAPPED TASKS ON THE NODE: "+str(AG.node[Node]['Node'].MappedTasks))
+        for Task in AG.node[Node]['Node'].MappedTasks:
+            if Task in AG.node[Node]['Node'].Scheduling:
+                StartTime = AG.node[Node]['Node'].Scheduling[Task][0]
+                EndTime = AG.node[Node]['Node'].Scheduling[Task][1]
                 if StartTime is not None and EndTime is not None:
                     if logging is not None:
                         logging.info ("\t\t\tTASK STARTS AT: "+str(StartTime)+" AND ENDS AT: "+str(EndTime))
@@ -276,9 +276,9 @@ def FindFirstEmptySlotForTaskOnNode(TG, AG, SHM, Node, Task, PredecessorEndTime,
 
     StartTimeList = []
     EndTimeList = []
-    for Task in AG.node[Node]['Scheduling'].keys():
-        StartTimeList.append(AG.node[Node]['Scheduling'][Task][0])
-        EndTimeList.append(AG.node[Node]['Scheduling'][Task][1])
+    for Task in AG.node[Node]['Node'].Scheduling.keys():
+        StartTimeList.append(AG.node[Node]['Node'].Scheduling[Task][0])
+        EndTimeList.append(AG.node[Node]['Node'].Scheduling[Task][1])
     StartTimeList.sort()
     EndTimeList.sort()
     Found = False

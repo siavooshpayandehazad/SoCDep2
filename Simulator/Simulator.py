@@ -69,7 +69,7 @@ def RunSimualtor(Runtime, AG, SHM, NoCRG):
     env = simpy.Environment()
     for node in AG.nodes():
         # print node, AG.node[node]["Scheduling"]
-        env.process(Processor(env, node, AG.node[node]["Scheduling"]))
+        env.process(Processor(env, node, AG.node[node]["Node"].Scheduling))
     for link in AG.edges():
         # print link, AG.edge[link[0]][link[1]]["Scheduling"]
         env.process(Link(env, link, AG.edge[link[0]][link[1]]["Scheduling"]))
