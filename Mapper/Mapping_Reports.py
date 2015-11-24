@@ -10,9 +10,10 @@ def ReportMapping(AG, logging):
     logging.info("      REPORTING MAPPING RESULT")
     logging.info("===========================================")
     for Node in AG.nodes():
-        logging.info("NODE:"+str(Node)+"CONTAINS:"+str(AG.node[Node]['Node'].MappedTasks))
+        logging.info("NODE: "+str(Node)+" CONTAINS: "+str(AG.node[Node]['Node'].MappedTasks))
+        logging.info("NODE: "+str(Node)+"'s Router CONTAINS: "+str(AG.node[Node]['Router'].MappedTasks))
     for link in AG.edges():
-         logging.info("LINK:"+str(link)+"CONTAINS:"+str(AG.edge[link[0]][link[1]]['MappedTasks']))
+         logging.info("LINK: "+str(link)+" CONTAINS: "+str(AG.edge[link[0]][link[1]]['MappedTasks']))
     return None
 
 def DrawMappingDistribution(AG, SHM):

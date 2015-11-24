@@ -156,25 +156,34 @@ def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster
                         logging.info("\t\t\tLIST OF LINKS:"+str(ListOfLinks))
                         logging.info("\t\t\tLIST OF EDGES:"+str(ListOfEdges))
                         Counter = 0
-
                         for path in ListOfLinks:
                             for Link in path:
                                 for Edge in ListOfEdges:
-
                                     if TG.edge[Edge[0]][Edge[1]]["Criticality"] == 'H':
                                         Probability = 1         # we reserve the whole bandwidth for critical packets...
                                     else:
                                         Probability = 1.0/NumberOfPaths
 
                                     if Edge in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
-                                        AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge].append((Counter,
-                                                                                               Probability))
+                                        AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge].append((Counter, Probability))
+                                        AG.node[Link[0]]['Router'].MappedTasks[Edge].append((Counter, Probability))
+                                        logging.info("Adding Packet "+str(Edge)+" To Router:"+str(Link[0]))
                                     else:
-                                        AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge] =[(Counter,
-                                                                                          Probability)]
+                                        AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge] = [(Counter, Probability)]
+                                        AG.node[Link[0]]['Router'].MappedTasks[Edge] = [(Counter, Probability)]
+                                        logging.info("Adding Packet "+str(Edge)+" To Router:"+str(Link[0]))
                                     EdgeListOfLinks = list(batch[1] for batch in TG.edge[Edge[0]][Edge[1]]['Link'])
                                     if Link not in EdgeListOfLinks:
                                         TG.edge[Edge[0]][Edge[1]]['Link'].append((Counter, Link, Probability))
+
+                            for Edge in ListOfEdges:
+                                if TG.edge[Edge[0]][Edge[1]]["Criticality"] == 'H':
+                                    Probability = 1         # we reserve the whole bandwidth for critical packets...
+                                else:
+                                    Probability = 1.0/NumberOfPaths
+                                AG.node[path[len(path)-1][1]]['Router'].MappedTasks[Edge] = [(Counter, Probability)]
+                                logging.info("Adding Packet "+str(Edge)+" To Router:"+str(path[len(path)-1][1]))
+
                             Counter += 1
                     else:
                         logging.warning( "\tNO PATH FOUND FROM SOURCE TO DESTINATION...")
@@ -211,9 +220,14 @@ def RemoveClusterFromNode(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, Cluster
                                 for Edge in ListOfEdges:
                                     if Edge in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
                                         del AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge]
+                                        del AG.node[Link[0]]['Router'].MappedTasks[Edge]
+                                        logging.info("Removing Packet "+str(Edge)+" To Router:"+str(Link[0]))
                                         for LinkAndBatch in TG.edge[Edge[0]][Edge[1]]['Link']:
                                             if LinkAndBatch[1] == Link:
                                                 TG.edge[Edge[0]][Edge[1]]['Link'].remove(LinkAndBatch)
+                            for Edge in ListOfEdges:
+                                del AG.node[path[len(path)-1][1]]['Router'].MappedTasks[Edge]
+                                logging.info("Removing Packet "+str(Edge)+" To Router:"+str(path[len(path)-1][1]))
                     else:
                         logging.warning("\tNOTHING TO BE REMOVED...")
     CTG.node[Cluster]['Node'] = None
@@ -235,6 +249,10 @@ def ClearMapping(TG, CTG, AG):
         AG.node[node]['Node'].MappedTasks = []
         AG.node[node]['Node'].Utilization = 0
         AG.node[node]['Node'].Scheduling = {}
+
+        AG.node[node]['Router'].Scheduling = {}
+        AG.node[node]['Router'].MappedTasks = {}
+
     for link in AG.edges():
         AG.edge[link[0]][link[1]]['MappedTasks'] = {}
         AG.edge[link[0]][link[1]]['Scheduling'] = {}

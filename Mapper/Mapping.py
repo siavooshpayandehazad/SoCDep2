@@ -134,6 +134,7 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 print ("\033[92mTIME::\033[0m MAPPING AND OPTIMIZATION TOOK: "
                        +str(round(time.time()-MappingStartTime))+" SECONDS")
 
+                Mapping_Reports.ReportMapping(AG, logging)
                 Scheduling_Functions.ClearScheduling(AG, TG)
                 Scheduler.ScheduleAll(TG, AG, SHM, False, False, logging)
                 Scheduling_Reports.ReportMappedTasks(AG, logging)

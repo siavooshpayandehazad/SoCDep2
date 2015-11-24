@@ -8,7 +8,7 @@ import operator
 class Router():
     def __init__(self):
         self.Unreachable = {}
-        self.MappedTasks = []
+        self.MappedTasks = {}
         self.Scheduling = {}
 
 class Node():
