@@ -18,7 +18,7 @@ TG_Type = 'RandomDependent'
 # For Random TG_Type:
 NumberOfTasks = 9
 NumberOfCriticalTasks = 0
-NumberOfEdges = 5
+NumberOfEdges = 15
 WCET_Range = 15
 EdgeWeightRange = 7
 Release_Range = 5      # task release time range
@@ -161,7 +161,7 @@ CTG_CirculationLength = 3
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'NMap'
+Mapping_Function = 'LocalSearch'
 LocalSearchIteration = 100
 IterativeLocalSearchIterations = 20
 #######################

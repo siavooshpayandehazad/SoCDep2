@@ -69,7 +69,7 @@ def RunSimualtor(Runtime, AG, SHM, NoCRG):
     env = simpy.Environment()
     for node in AG.nodes():
         # print node, AG.node[node]["Scheduling"]
-        env.process(Processor(env, node, AG.node[node]["Node"].Scheduling))
+        env.process(Processor(env, node, AG.node[node]['PE'].Scheduling))
     for link in AG.edges():
         # print link, AG.edge[link[0]][link[1]]["Scheduling"]
         env.process(Link(env, link, AG.edge[link[0]][link[1]]["Scheduling"]))
@@ -77,11 +77,11 @@ def RunSimualtor(Runtime, AG, SHM, NoCRG):
     FaultTimeList = []
     FaultTime = 0
     if Config.EventDrivenFaultInjection:
-        TimeUntilNextFault = numpy.random.normal(Config.MTBF,Config.SD4MTBF)
+        TimeUntilNextFault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
         FaultTime += TimeUntilNextFault
         while FaultTime < Runtime:
             FaultTimeList.append(float("{0:.1f}".format(FaultTime)))
-            TimeUntilNextFault = numpy.random.normal(Config.MTBF,Config.SD4MTBF)
+            TimeUntilNextFault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
             FaultTime += TimeUntilNextFault
         print FaultTimeList
         env.process(FaultEvent(env, AG, SHM, NoCRG, FaultTimeList))

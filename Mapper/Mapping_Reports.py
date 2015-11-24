@@ -10,7 +10,7 @@ def ReportMapping(AG, logging):
     logging.info("      REPORTING MAPPING RESULT")
     logging.info("===========================================")
     for Node in AG.nodes():
-        logging.info("NODE: "+str(Node)+" CONTAINS: "+str(AG.node[Node]['Node'].MappedTasks))
+        logging.info("NODE: "+str(Node)+" CONTAINS: "+str(AG.node[Node]['PE'].MappedTasks))
         logging.info("NODE: "+str(Node)+"'s Router CONTAINS: "+str(AG.node[Node]['Router'].MappedTasks))
     for link in AG.edges():
          logging.info("LINK: "+str(link)+" CONTAINS: "+str(AG.edge[link[0]][link[1]]['MappedTasks']))
@@ -24,7 +24,7 @@ def DrawMappingDistribution(AG, SHM):
     MaxNumberOfTasks = 0
     MaxUtilization = 0
     for node in AG.nodes():
-        MaxNumberOfTasks = max(len(AG.node[node]['Node'].MappedTasks), MaxNumberOfTasks)
+        MaxNumberOfTasks = max(len(AG.node[node]['PE'].MappedTasks), MaxNumberOfTasks)
         MaxUtilization = max(AG.node[node]["Node"].Utilization, MaxUtilization)
 
     for node in AG.nodes():
@@ -32,8 +32,8 @@ def DrawMappingDistribution(AG, SHM):
         XSize = float(Config.Network_X_Size)
         YSize = float(Config.Network_Y_Size)
         ZSize = float(Config.Network_Y_Size)
-        Num = 255*len(AG.node[node]['Node'].MappedTasks)/float(MaxNumberOfTasks)
-        Util = 255*AG.node[node]['Node'].Utilization/float(MaxUtilization)
+        Num = 255*len(AG.node[node]['PE'].MappedTasks)/float(MaxNumberOfTasks)
+        Util = 255*AG.node[node]['PE'].Utilization/float(MaxUtilization)
         if SHM.SHM.node[node]['NodeHealth']:
             color = '#%02X%02X%02X' % (255, 255-Num, 255-Num)
         else:   # node is broken
@@ -124,7 +124,7 @@ def DrawMapping(TG, AG, SHM):
         OffsetX = -(NodeSize/(2*NumberOfTaskInRow))
         OffsetY = NodeSize / (NumberOfTaskInRow+1)
         TaskCount = 0
-        for task in AG.node[node]['Node'].MappedTasks:
+        for task in AG.node[node]['PE'].MappedTasks:
             OffsetX += NodeSize / NumberOfTaskInRow
             if TaskCount == NumberOfTaskInRow:
                 TaskCount = 0

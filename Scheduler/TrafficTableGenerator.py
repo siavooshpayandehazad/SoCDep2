@@ -34,8 +34,8 @@ def GenerateNoximTrafficTable (AG, TG):
     # ---------------------------------------------------
     TrafficTableFile = open('Generated_Files/NoximTrafficTable.txt','w')
     for Node in AG.nodes():
-        if len(AG.node[Node]['Node'].MappedTasks)>0:
-            for Task in AG.node[Node]['Node'].MappedTasks:
+        if len(AG.node[Node]['PE'].MappedTasks)>0:
+            for Task in AG.node[Node]['PE'].MappedTasks:
                 for Edge in TG.edges():
                     if Edge[0] == Task and (TranslateNodeNumberToNoximSystem(TG.node[Edge[0]]['Node']) != TranslateNodeNumberToNoximSystem(TG.node[Edge[1]]['Node'])):
                         # in Noxim's traffic table, since each router has only one IP core connected to it, Node(i) cannot send data to Node(i)
@@ -45,9 +45,9 @@ def GenerateNoximTrafficTable (AG, TG):
 #                       StringToWrite += " 0" # Region ID (used for bLBDR/Virtualization)
                         StringToWrite += " 0.01"  # pir (packet injection rate)
                         StringToWrite += " 0.01"  # por (probability of retransmission)
-                        StringToWrite += " " + str(int(AG.node[Node]['Node'].Scheduling[Task][0]))   # t_on
-                        StringToWrite += " " + str(int(AG.node[Node]['Node'].Scheduling[Task][1]))   # t_off
-                        StringToWrite += " " + str(int(AG.node[Node]['Node'].Scheduling[Task][1]) + 1)   # t_period
+                        StringToWrite += " " + str(int(AG.node[Node]['PE'].Scheduling[Task][0]))   # t_on
+                        StringToWrite += " " + str(int(AG.node[Node]['PE'].Scheduling[Task][1]))   # t_off
+                        StringToWrite += " " + str(int(AG.node[Node]['PE'].Scheduling[Task][1]) + 1)   # t_period
                         TrafficTableFile.write(StringToWrite+"\n")
     TrafficTableFile.close()
     return None
@@ -87,8 +87,8 @@ def GenerateGSNoCTrafficTable (AG, TG):
 
     TrafficTableFile = open('Generated_Files/GSNoCTrafficTable.txt','w')
     for Node in AG.nodes():
-        if len(AG.node[Node]['Node'].MappedTasks)>0:
-            for Task in AG.node[Node]['Node'].MappedTasks:
+        if len(AG.node[Node]['PE'].MappedTasks)>0:
+            for Task in AG.node[Node]['PE'].MappedTasks:
                 for Edge in TG.edges():
                     if Edge[0] == Task or Edge[1] == Task:
                         StringToWrite = str(Node)+ "\t" + str(Task) + "\t"+str(TG.node[Task]['WCET']) + "\t"

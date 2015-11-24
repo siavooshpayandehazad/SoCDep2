@@ -190,7 +190,8 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
 
     # Added by Behrad (Still under development)
     # Swapping phase
-
+    print "-----------------------"
+    print "PHASE ONE IS DONE... STARTING SWAP PROCESS..."
     for node_id_1 in range(0 , len(AG.nodes())-1):
         for node_id_2 in range(node_id_1+1 , len(AG.nodes())-1):
             pass
@@ -208,14 +209,15 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
             # Else
                 # Save new mapping as better mapping with less comm_cost
             if CommCost_new < CommCost:
-                print "Better Solution Found with Cost:", CommCost_new
+                print "\033[32m* NOTE::\033[0m BETTER SOLUTION FOUND WITH COST:", CommCost_new
             else:
-                print "Reverting to old solution"
+                pass
+                #print "Reverting to old solution"
                 SawpNodes(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, node_id_2, node_id_1, logging)
             # Reset the comm_cost after each swapping
 
     # End of Swapping phase
-
+    print "SWAP PROCESS FINISHED..."
     Scheduler.ScheduleAll(TG, AG, SHM, True, False, logging)
     return TG, AG
 
@@ -233,8 +235,8 @@ def CalculateComCost(TG):
     return Cost
 
 def SawpNodes(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Node1, Node2, logging):
-    Task_1 = AG.node[Node1]['Node'].MappedTasks[0]
-    Task_2 = AG.node[Node2]['Node'].MappedTasks[0]
+    Task_1 = AG.node[Node1]['PE'].MappedTasks[0]
+    Task_2 = AG.node[Node2]['PE'].MappedTasks[0]
     Mapping_Functions.RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task_1, Node1, logging)
     Mapping_Functions.RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task_2, Node2, logging)
     Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task_1, Node2, logging)
