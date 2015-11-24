@@ -16,9 +16,9 @@ EventDrivenFaultInjection = True
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile'
 TG_Type = 'RandomDependent'
 # For Random TG_Type:
-NumberOfTasks = 35
+NumberOfTasks = 9
 NumberOfCriticalTasks = 0
-NumberOfEdges = 20
+NumberOfEdges = 5
 WCET_Range = 15
 EdgeWeightRange = 7
 Release_Range = 5      # task release time range
@@ -161,7 +161,7 @@ CTG_CirculationLength = 3
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'LocalSearch'
+Mapping_Function = 'NMap'
 LocalSearchIteration = 100
 IterativeLocalSearchIterations = 20
 #######################

@@ -191,8 +191,8 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
     # Added by Behrad (Still under development)
     # Swapping phase
 
-    for node_id_1 in range(0 , len(AG.nodes)-1):
-        for node_id_2 in range(node_id_1+1 , len(AG.nodes)-1):
+    for node_id_1 in range(0 , len(AG.nodes())-1):
+        for node_id_2 in range(node_id_1+1 , len(AG.nodes())-1):
             pass
             # Save current mapping in an array
             # Also save the mapping's csomm_cost in a variable
@@ -224,7 +224,7 @@ def CalculateComCost(TG):
     Cost = 0
     for Edge in TG.edges():
         T1 = Edge[0]
-        T2 = Edge[2]
+        T2 = Edge[1]
         Node1 = TG.node[T1]['Node']
         Node2 = TG.node[T2]['Node']
         ComWeight = TG.edge[Edge[0]][Edge[1]]["ComWeight"]
@@ -233,8 +233,8 @@ def CalculateComCost(TG):
     return Cost
 
 def SawpNodes(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Node1, Node2, logging):
-    Task_1 = AG.node[Node1]['MappedTasks'][0]
-    Task_2 = AG.node[Node2]['MappedTasks'][0]
+    Task_1 = AG.node[Node1]['Node'].MappedTasks[0]
+    Task_2 = AG.node[Node2]['Node'].MappedTasks[0]
     Mapping_Functions.RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task_1, Node1, logging)
     Mapping_Functions.RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task_2, Node2, logging)
     Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task_1, Node2, logging)
