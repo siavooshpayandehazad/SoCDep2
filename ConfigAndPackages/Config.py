@@ -9,6 +9,7 @@ DebugInfo = True
 DebugDetails = False
 LoGDirectory = "LOGS"
 TestMode = False
+MemoryProfiler = False
 EventDrivenFaultInjection = True
 ################################################
 #          TG  Config

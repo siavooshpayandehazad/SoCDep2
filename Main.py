@@ -13,8 +13,8 @@ from pympler import tracker
 from Simulator import Simulator, FaultInjector
 
 
-
-tr = tracker.SummaryTracker()
+if Config.MemoryProfiler:
+    tr = tracker.SummaryTracker()
 
 if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("Usage:    python Main.py [option1]")
@@ -66,8 +66,9 @@ Simulator.RunSimualtor(100, AG, SHM, NoCRG)
 # FaultInjector.FaultInjector(SystemStartingTime, AG, SHM, NoCRG)
 logging.info('Logging finished...')
 
-print("===========================================")
-print("         Reporting Memory Usage")
-print("===========================================")
-tr.print_diff()
-print("===========================================")
+if Config.MemoryProfiler:
+    print("===========================================")
+    print("         Reporting Memory Usage")
+    print("===========================================")
+    tr.print_diff()
+    print("===========================================")
