@@ -19,9 +19,12 @@ if Config.MemoryProfiler:
 if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("Usage:    python Main.py [option1]")
     print("Options and arguments:")
-    print("-GUI\t:Graphical User Interface for Configuration")
-#    print("-UTEST\t:Runs Unit Tests")
-    print("-BENCHMARK\t: Runs Benchmark Algorithms")
+    print("-GUI\t\t:Graphical User Interface for Configuration")
+    print("-UTEST\t\t:Runs Unit Tests")
+    print("-BENCHMARK\t: Runs Benchmark Algorithms:")
+    print("\t\t\t * idct: Inverse Discrete Cosine Transform")
+    print("\t\t\t * fdct: Forward Discrete Cosine Transform")
+    print("\t\t\t * mi: Matrix Inverse")
     print("")
     sys.exit()
 elif '-GUI' in sys.argv[1:]:
@@ -30,11 +33,12 @@ elif '-GUI' in sys.argv[1:]:
     app.mainloop()
     if not app.Apply_Button:
         sys.exit()
-# elif '-UTEST' in sys.argv[1:]:
-#     os.system('python UnitTest/UnitTests.py')
-#     sys.exit()
+elif '-UTEST' in sys.argv[1:]:
+     os.system('python ../../unittest/Python/Unit_tests.py')
+     sys.exit()
 elif '-BENCHMARK' in sys.argv[1:]:
     Benchmark = sys.argv[sys.argv.index('-BENCHMARK') + 1]
+    print Benchmark
     if Benchmark_Alg_Downloader.Download_Benchmark_Algorithms(str(Benchmark)):
         pass
     else:
