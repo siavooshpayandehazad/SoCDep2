@@ -5,3 +5,6 @@
 *.log
 *.txt
 *.dot
+*.iml
+.idea
+out
