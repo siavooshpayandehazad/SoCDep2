@@ -155,12 +155,12 @@ def ClearReachabilityCalculations(AG):
     return None
 
 
-def CalculateReachabilityWithRegions(AG, SHM):
+def CalculateReachabilityWithRegions(AG, SHMU):
     # first Add the VirtualBrokenLinksForNonCritical
     AlreadyBrokenLinks= []
     for VirtualBrokenLink in Config.VirtualBrokenLinksForNonCritical:
-        if SHM.SHM.edge[VirtualBrokenLink[0]][VirtualBrokenLink[1]]['LinkHealth']:
-            SHM.BreakLink(VirtualBrokenLink,True)
+        if SHMU.SHM.edge[VirtualBrokenLink[0]][VirtualBrokenLink[1]]['LinkHealth']:
+            SHMU.BreakLink(VirtualBrokenLink,True)
         else:
             AlreadyBrokenLinks.append(VirtualBrokenLink)
     # Construct The RoutingGraph
@@ -178,18 +178,18 @@ def CalculateReachabilityWithRegions(AG, SHM):
     # Restore the VirtualBrokenLinksForNonCritical
     for VirtualBrokenLink in Config.VirtualBrokenLinksForNonCritical:
         if VirtualBrokenLink not in AlreadyBrokenLinks:
-            SHM.RestoreBrokenLink(VirtualBrokenLink,True)
+            SHMU.RestoreBrokenLink(VirtualBrokenLink,True)
 
     AlreadyBrokenLinks = []
     # Add VirtualBrokenLinksForCritical
     for VirtualBrokenLink in Config.VirtualBrokenLinksForCritical:
-        if SHM.SHM.edge[VirtualBrokenLink[0]][VirtualBrokenLink[1]]['LinkHealth']:
-            SHM.BreakLink(VirtualBrokenLink, True)
+        if SHMU.SHM.edge[VirtualBrokenLink[0]][VirtualBrokenLink[1]]['LinkHealth']:
+            SHMU.BreakLink(VirtualBrokenLink, True)
         else:
             AlreadyBrokenLinks.append(VirtualBrokenLink)
     ClearReachabilityCalculations(AG)
     # Construct The RoutingGraph
-    CriticalRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, False, False))
+    CriticalRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHMU, Config.UsedTurnModel, False, False))
     # calculate the rectangles for Critical
     CalculateReachability(AG, CriticalRG)
     # save Critical rectangles somewhere
@@ -201,7 +201,7 @@ def CalculateReachabilityWithRegions(AG, SHM):
     # Restore the VirtualBrokenLinksForNonCritical
     for VirtualBrokenLink in Config.VirtualBrokenLinksForCritical:
         if VirtualBrokenLink not in AlreadyBrokenLinks:
-            SHM.RestoreBrokenLink(VirtualBrokenLink, True)
+            SHMU.RestoreBrokenLink(VirtualBrokenLink, True)
 
     # Combine Lists
     for Node in AG.nodes():

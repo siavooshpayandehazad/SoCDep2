@@ -8,7 +8,7 @@ import SHM_Reports,SHM_Functions
 from ConfigAndPackages import Config
 import random
 
-class SystemHealthMonitor:
+class SystemHealthMonitoringUnit:
     def __init__(self):
         self.SHM = networkx.DiGraph()   # System Health Map
         self.SnapShot = None

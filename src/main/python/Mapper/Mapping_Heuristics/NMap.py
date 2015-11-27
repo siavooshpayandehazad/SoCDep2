@@ -29,7 +29,7 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
 
     # remove all broken nodes from UnAllocatedNodes list
     for node in UnAllocatedNodes:
-        if not SHM.SHM.node[node]['NodeHealth']:
+        if not SHM.node[node]['NodeHealth']:
             UnAllocatedNodes.remove(node)
             print ("REMOVED BROKEN NODE "+str(node)+" FROM UN-ALLOCATED NODES")
 
@@ -235,10 +235,23 @@ def CalculateComCost(TG):
     return Cost
 
 def SawpNodes(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Node1, Node2, logging):
+    """
+
+    :param TG:
+    :param AG:
+    :param SHM: System Health Map
+    :param NoCRG:
+    :param CriticalRG:
+    :param NonCriticalRG:
+    :param Node1:
+    :param Node2:
+    :param logging:
+    :return:
+    """
     Task_1 = AG.node[Node1]['PE'].MappedTasks[0]
     Task_2 = AG.node[Node2]['PE'].MappedTasks[0]
-    Mapping_Functions.RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task_1, Node1, logging)
-    Mapping_Functions.RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task_2, Node2, logging)
+    Mapping_Functions.RemoveTaskFromNode(TG, AG, NoCRG, CriticalRG, NonCriticalRG, Task_1, Node1, logging)
+    Mapping_Functions.RemoveTaskFromNode(TG, AG, NoCRG, CriticalRG, NonCriticalRG, Task_2, Node2, logging)
     Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task_1, Node2, logging)
     Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task_2, Node1, logging)
     return True

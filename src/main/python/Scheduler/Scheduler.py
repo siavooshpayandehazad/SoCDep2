@@ -9,6 +9,16 @@ from Scheduling_Functions import Add_TG_EdgeTo_link
 
 
 def ScheduleAll(TG, AG, SHM, Report, DetailedReport, logging):
+    """
+
+    :param TG:
+    :param AG:
+    :param SHM: System Health Map
+    :param Report:
+    :param DetailedReport:
+    :param logging:
+    :return:
+    """
     logging.info("===========================================")
     logging.info("STARTING SCHEDULING PROCESS...")
     ASAP_Scheduling(TG, AG, SHM, Report, logging)
@@ -20,6 +30,15 @@ def ScheduleAll(TG, AG, SHM, Report, DetailedReport, logging):
 
 
 def ASAP_Scheduling(TG, AG, SHM, Report, logging):
+    """
+
+    :param TG:
+    :param AG:
+    :param SHM: System Health Map
+    :param Report:
+    :param logging:
+    :return:
+    """
     logging.info("STARTING ASAP SCHEDULING ...")
     MaxDistance = TG_Functions.CalculateMaxDistance(TG) + 1
     for Distance in range(0, MaxDistance):
@@ -53,6 +72,15 @@ def ALAP_Scheduling(TG, AG, SHM, Makespan, Report, logging):
 
 
 def ScheduleTestInTG(TG, AG, SHM, Report, logging):
+    """
+
+    :param TG:
+    :param AG:
+    :param SHM: System Health Map
+    :param Report:
+    :param logging:
+    :return:
+    """
     logging.info("===========================================")
     logging.info("STARTING SCHEDULING TEST TASKS IN TG...")
     for Distance in range(0, 2):

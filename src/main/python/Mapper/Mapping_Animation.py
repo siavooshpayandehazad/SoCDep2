@@ -10,7 +10,7 @@ from ArchGraphUtilities import AG_Functions
 import random
 
 
-def GenerateFrames(TG, AG, SHM):
+def GenerateFrames(TG, AG, SHMU):
     print ("===========================================")
     print ("GENERATING MAPPING ANIMATION FRAMES...")
     MappingProcessFile = open("Generated_Files/Internal/MappingProcess.txt", 'r')
@@ -27,7 +27,7 @@ def GenerateFrames(TG, AG, SHM):
         for node in AG.nodes():
             Location = AG_Functions.ReturnNodeLocation(node)
             # print (node, Location)
-            if SHM.SHM.node[node]['NodeHealth']:
+            if SHMU.SHM.node[node]['NodeHealth']:
                 if Config.EnablePartitioning:
                     if node in Config.CriticalRegionNodes:
                         color = '#FF878B'

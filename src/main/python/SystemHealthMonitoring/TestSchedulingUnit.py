@@ -13,11 +13,17 @@ from Mapper import Mapping_Functions
 import random, copy
 
 def GenerateOneStepDiagnosablePMCG(AG,SHM):
+    """
+
+    :param AG: Architecture Unit
+    :param SHM: System Health Map
+    :return:
+    """
     print ("===========================================")
     print ("PREPARING ONE STEP DIAGNOSABLE PMC GRAPH (PMCG)...")
     PMCG = networkx.DiGraph()
     for PE in AG.nodes():
-        if SHM.SHM.node[PE]['NodeHealth']:
+        if SHM.node[PE]['NodeHealth']:
             PMCG.add_node(PE)
 
     # we would like to have one-step t-fault diagnosable system
@@ -62,7 +68,7 @@ def GenerateSequentiallyDiagnosablePMCG(AG,SHM):
     print ("PREPARING SEQUENTIALLY DIAGNOSABLE PMC GRAPH (PMCG)...")
     PMCG = networkx.DiGraph()
     for PE in AG.nodes():
-        if SHM.SHM.node[PE]['NodeHealth']:
+        if SHM.node[PE]['NodeHealth']:
             PMCG.add_node(PE)
 
     n = len(PMCG.nodes())     # number of processors in the system
@@ -133,6 +139,15 @@ def RemoveTestTasksFromTG(TG):
     return TG
 
 def MapTestTasks(TG, AG, SHM, NoCRG, logging):
+    """
+
+    :param TG:
+    :param AG:
+    :param SHM: System Health Map
+    :param NoCRG:
+    :param logging:
+    :return:
+    """
     for Task in TG.nodes():
         if TG.node[Task]['Type'] == 'Test':
             Node = TG.node[Task]['Node']

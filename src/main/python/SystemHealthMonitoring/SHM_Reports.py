@@ -8,18 +8,18 @@ from ArchGraphUtilities import AG_Functions
 
 
 
-def Report_NoC_SystemHealthMap(SHM):
+def Report_NoC_SystemHealthMap(SHMU):
         print ("===========================================")
         print ("      REPORTING SYSTEM HEALTH MAP")
         print ("===========================================")
-        for Node in SHM.SHM.nodes():
+        for Node in SHMU.SHM.nodes():
             print ("\tNODE:", Node)
-            print ("\t\tNODE HEALTH:", SHM.SHM.node[Node]['NodeHealth'])
-            print ("\t\tNODE SPEED:", SHM.SHM.node[Node]['NodeSpeed'])
-            print ("\t\tTURNS:", SHM.SHM.node[Node]['TurnsHealth'])
+            print ("\t\tNODE HEALTH:", SHMU.SHM.node[Node]['NodeHealth'])
+            print ("\t\tNODE SPEED:", SHMU.SHM.node[Node]['NodeSpeed'])
+            print ("\t\tTURNS:", SHMU.SHM.node[Node]['TurnsHealth'])
             print ("\t==============")
-        for Edge in SHM.SHM.edges():
-            print ("\tLINK:", Edge, "\t", SHM.SHM.edge[Edge[0]][Edge[1]]['LinkHealth'])
+        for Edge in SHMU.SHM.edges():
+            print ("\tLINK:", Edge, "\t", SHMU.SHM.edge[Edge[0]][Edge[1]]['LinkHealth'])
 
 
 def ReportTheEvent(FaultLocation, FaultType):
@@ -40,23 +40,33 @@ def ReportTheEvent(FaultLocation, FaultType):
     return None
 
 
-def ReportMPM(SHM):
-        print ("===========================================")
-        print ("      REPORTING MOST PROBABLE MAPPING ")
-        print ("===========================================")
-        for item in SHM.MPM:
-            print ("KEY:", item, "\t\tMAPPING:", SHM.MPM[item])
-        return None
+def ReportMPM(SHMU):
+    """
+
+    :param SHMU: System Health Monitoring Unit
+    :return:
+    """
+    print ("===========================================")
+    print ("      REPORTING MOST PROBABLE MAPPING ")
+    print ("===========================================")
+    for item in SHMU.MPM:
+        print ("KEY:", item, "\t\tMAPPING:", SHMU.MPM[item])
+    return None
 
 def DrawTempDistribution(SHM):
+    """
+
+    :param SHM: System Health Map
+    :return:
+    """
     print ("===========================================")
     print ("GENERATING TEMPERATURE DISTRIBUTIONS VISUALIZATION...")
     fig_Util = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
     MaxTemp = 0
-    for node in  SHM.SHM.nodes():
-        MaxTemp = max(SHM.SHM.node[node]['NodeTemp'], MaxTemp)
+    for node in SHM.nodes():
+        MaxTemp = max(SHM.node[node]['NodeTemp'], MaxTemp)
 
-    for node in SHM.SHM.nodes():
+    for node in SHM.nodes():
         Location = AG_Functions.ReturnNodeLocation(node)
         XSize = float(Config.Network_X_Size)
         YSize = float(Config.Network_Y_Size)
@@ -65,8 +75,8 @@ def DrawTempDistribution(SHM):
         X_Offset = Location[2]/(ZSize*XSize)
         Y_Offset = Location[2]/(ZSize*YSize)
 
-        Temp = 255*(float(SHM.SHM.node[node]['RouterTemp'])/Config.MaxTemp)
-        if SHM.SHM.node[node]['NodeHealth']:
+        Temp = 255*(float(SHM.node[node]['RouterTemp'])/Config.MaxTemp)
+        if SHM.node[node]['NodeHealth']:
             color = '#%02X%02X%02X' % (Temp, 0, 255-Temp)
         else:   # node is broken
             color = '#7B747B'
@@ -75,9 +85,9 @@ def DrawTempDistribution(SHM):
                                                     width=0.08, height=0.08, facecolor=color,
                                                     edgecolor="black", linewidth=3, zorder=ZSize-Location[2]))
 
-        Temp = 255*(float(SHM.SHM.node[node]['NodeTemp'])/Config.MaxTemp)
+        Temp = 255*(float(SHM.node[node]['NodeTemp'])/Config.MaxTemp)
 
-        if SHM.SHM.node[node]['NodeHealth']:
+        if SHM.node[node]['NodeHealth']:
             color = '#%02X%02X%02X' % (Temp, 0, 255-Temp)
         else:   # node is broken
             color = '#7B747B'
@@ -96,6 +106,11 @@ def DrawTempDistribution(SHM):
 
 
 def DrawSHM(SHM):
+    """
+
+    :param SHM: System Health Map
+    :return:
+    """
     print ("===========================================")
     print ("GENERATING SYSTEM HEALTH MAP DRAWING...")
 
@@ -111,7 +126,7 @@ def DrawSHM(SHM):
         plt.ylim([0, ZSize])
         plt.xlim([0, ZSize])
 
-    for node in SHM.SHM.nodes():
+    for node in SHM.nodes():
         Location = AG_Functions.ReturnNodeLocation(node)
         X = (Location[0]/XSize)*ZSize
         Y = (Location[1]/YSize)*ZSize
@@ -123,15 +138,15 @@ def DrawSHM(SHM):
         plt.text(X+0.155+X_offset, Y+0.055+Y_offset, str(node), fontsize=fontsize)
         CircleRouter = plt.Circle((X+0.1+X_offset, Y+0.1+Y_offset), 0.05, facecolor='w')
         plt.gca().add_patch(CircleRouter)
-        if SHM.SHM.node[node]['NodeHealth']:
+        if SHM.node[node]['NodeHealth']:
             color = 'w'
         else:
             color = 'r'
         CircleNode = plt.Circle((X+0.14+X_offset, Y+0.06 +Y_offset), 0.01, facecolor=color)
         plt.gca().add_patch(CircleNode)
 
-        for turn in SHM.SHM.node[node]['TurnsHealth']:
-            if SHM.SHM.node[node]['TurnsHealth'][turn]:
+        for turn in SHM.node[node]['TurnsHealth']:
+            if SHM.node[node]['TurnsHealth'][turn]:
                 color = 'black'
             else:
                 color = 'r'
@@ -153,7 +168,7 @@ def DrawSHM(SHM):
             elif turn == 'S2W':
                 plt.gca().add_patch(patches.Arrow(X + 0.080+X_offset, Y + 0.065+Y_offset, -0.015, 0.015, width=0.01, color=color))
 
-            if SHM.SHM.node[node]['TurnsHealth'][turn]:
+            if SHM.node[node]['TurnsHealth'][turn]:
                 color = 'black'
             else:
                 color = 'r'
@@ -249,8 +264,8 @@ def DrawSHM(SHM):
                 plt.gca().add_patch(patches.Arrow(X + 0.12+X_offset, Y + 0.104+Y_offset, 0.01, 0, width=0.01, color=color))
 
 
-    for link in SHM.SHM.edges():
-        if SHM.SHM.edge[link[0]][link[1]]['LinkHealth']:
+    for link in SHM.edges():
+        if SHM.edge[link[0]][link[1]]['LinkHealth']:
             color = 'black'
         else:
             color = 'r'

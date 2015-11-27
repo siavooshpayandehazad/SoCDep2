@@ -16,7 +16,7 @@ def ReportMapping(AG, logging):
          logging.info("LINK: "+str(link)+" CONTAINS: "+str(AG.edge[link[0]][link[1]]['MappedTasks']))
     return None
 
-def DrawMappingDistribution(AG, SHM):
+def DrawMappingDistribution(AG, SHMU):
     print ("===========================================")
     print ("GENERATING MAPPING DISTRIBUTIONS VISUALIZATION...")
     fig_Num = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
@@ -25,7 +25,7 @@ def DrawMappingDistribution(AG, SHM):
     MaxUtilization = 0
     for node in AG.nodes():
         MaxNumberOfTasks = max(len(AG.node[node]['PE'].MappedTasks), MaxNumberOfTasks)
-        MaxUtilization = max(AG.node[node]["Node"].Utilization, MaxUtilization)
+        MaxUtilization = max(AG.node[node]['PE'].Utilization, MaxUtilization)
 
     for node in AG.nodes():
         Location = AG_Functions.ReturnNodeLocation(node)
@@ -34,7 +34,7 @@ def DrawMappingDistribution(AG, SHM):
         ZSize = float(Config.Network_Y_Size)
         Num = 255*len(AG.node[node]['PE'].MappedTasks)/float(MaxNumberOfTasks)
         Util = 255*AG.node[node]['PE'].Utilization/float(MaxUtilization)
-        if SHM.SHM.node[node]['NodeHealth']:
+        if SHMU.SHM.node[node]['NodeHealth']:
             color = '#%02X%02X%02X' % (255, 255-Num, 255-Num)
         else:   # node is broken
             color = '#7B747B'
@@ -42,7 +42,7 @@ def DrawMappingDistribution(AG, SHM):
                                                    Location[1]/YSize+Location[2]/(ZSize*YSize**2)),
                                                    width=0.15, height=0.15, facecolor=color,
                                                    edgecolor="black", linewidth=3, zorder=ZSize-Location[2]))
-        if SHM.SHM.node[node]['NodeHealth']:
+        if SHMU.SHM.node[node]['NodeHealth']:
             color = '#%02X%02X%02X' % (255, 255-Util, 255-Util)
         else:   # node is broken
             color = '#7B747B'
@@ -65,13 +65,13 @@ def DrawMappingDistribution(AG, SHM):
     return None
 
 
-def DrawMapping(TG, AG, SHM):
+def DrawMapping(TG, AG, SHMU):
     """
     This function draws the tasks on tiles of network. this would be very useful to check how our
     mapping optimization is acting...
     :param TG: Task Graph
     :param AG: Architecture Graph
-    :param SHM: System Health Management
+    :param SHMU: System Health Management Unit
     :return: None
     """
     print ("===========================================")
@@ -87,18 +87,21 @@ def DrawMapping(TG, AG, SHM):
     distance = StepSize * ZSize * 1.2
     for node in AG.nodes():
         Location = AG_Functions.ReturnNodeLocation(node)
-        if SHM.SHM.node[node]['NodeHealth']:
-            if Config.EnablePartitioning:
-                if node in Config.CriticalRegionNodes:
-                    color = '#FF878B'
-                elif node in Config.GateToNonCritical:
-                    color = '#928AFF'
-                elif node in Config.GateToCritical:
-                    color = '#FFC29C'
+        if SHMU.SHM.node[node]['NodeHealth']:
+            if not AG.node[node]['PE'].Dark:
+                if Config.EnablePartitioning:
+                    if node in Config.CriticalRegionNodes:
+                        color = '#FF878B'
+                    elif node in Config.GateToNonCritical:
+                        color = '#928AFF'
+                    elif node in Config.GateToCritical:
+                        color = '#FFC29C'
+                    else:
+                        color = 'white'
                 else:
                     color = 'white'
             else:
-                color = 'white'
+                color = 'gray'
         else:   # node is broken
             color = '#7B747B'
 

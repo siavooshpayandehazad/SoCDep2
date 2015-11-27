@@ -1,6 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 import networkx
 from ConfigAndPackages import Config
+import random
 import operator
 # todo: add virtual channel support AG...
 
@@ -14,9 +15,9 @@ class Router():
 class PE():     # PROCESSING ELEMENT
     def __init__(self):
         self.Utilization = 0
+        self.Dark = False
         self.MappedTasks = []
         self.Scheduling = {}
-
 
 
 def GenerateManualAG(PE_List, AG_Edge_List, AG_Edge_Port_List):
@@ -248,7 +249,7 @@ def ReturnNodeNumber(NodeX, NodeY, NodeZ):
 def NodeNeighbors(AG, SHM):
     """
     :param AG: Architecture graph (directed graph)
-    :param SHM: system health monitoring
+    :param SHM: System Health Map
     :return: A dictionary with node number as the key and the number of neighbors as values
     """
     NodeNeighbor = {}
@@ -256,7 +257,7 @@ def NodeNeighbors(AG, SHM):
         NumberOfNeighbours = 0
         for Link in AG.edges():
             if Node in Link:
-                if SHM.SHM.edge[Link[0]][Link[1]]['LinkHealth']:
+                if SHM.edge[Link[0]][Link[1]]['LinkHealth']:
                     NumberOfNeighbours += 1
         NodeNeighbor[Node] = NumberOfNeighbours
     return NodeNeighbor
@@ -332,3 +333,49 @@ def SetupNetworkPartitioning(AG):
     print "VirtualBrokenLinksForNonCritical:", Config.VirtualBrokenLinksForNonCritical
     print "VirtualBrokenLinksForCritical:", Config.VirtualBrokenLinksForCritical
     return None
+
+def RandomDarkness(AG):
+    for i in range(0,3):
+        Node = random.choice(AG.nodes())
+        AG.node[Node]['PE'].Dark=True
+    return None
+
+def ReturnActiveNodes(AG):
+    """
+    Returns Nodes in AG which are active (Not falling in dark areas)
+    :param AG: Architecture Graph
+    :return: list of active nodes.
+    """
+    ActiveNodes=[]
+    for Node in AG.nodes():
+        if not AG.node[Node]['PE'].Dark:
+            ActiveNodes.append(Node)
+    return ActiveNodes
+
+def ReturnHealthyNodes(AG, SHM):
+    """
+    Returns Nodes in AG which are tagged Healthy in SHM
+    :param AG: Architecture Graph
+    :param SHM: System Health Map
+    :return: List of healthy Nodes in AG
+    """
+    HealthyNodes=[]
+    for Node in AG.nodes():
+        if SHM.node[Node]['NodeHealth']:
+            HealthyNodes.append(Node)
+    return HealthyNodes
+
+
+def ReturnHealthyActiveNodes(AG,SHM):
+    """
+    Returns Nodes in AG which are tagged Healthy in SHM and are active
+    :param AG: Architecture Graph
+    :param SHM: System Health Map
+    :return: list of Healthy Active nodes
+    """
+    HealthyActiveNodes=[]
+    for Node in AG.nodes():
+        if SHM.node[Node]['NodeHealth']:
+            if not AG.node[Node]['PE'].Dark:
+                HealthyActiveNodes.append(Node)
+    return HealthyActiveNodes

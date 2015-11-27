@@ -118,7 +118,7 @@ def RemoveAll_VL(SHM, AG):
     return None
 
 
-def FindFeasibleAG_VL(AG, SHM):
+def FindFeasibleAG_VL(AG, SHMU):
     NewVL_Lists = []
     for i in range(0, Config.VerticalLinksNum):
         SourceX = random.randint(0, Config.Network_X_Size-1)
@@ -131,7 +131,7 @@ def FindFeasibleAG_VL(AG, SHM):
         if 0 <= SourceZ-1:
             PossibleZ.append(SourceZ-1)
         DestinationNode = ReturnNodeNumber(SourceX, SourceY, random.choice(PossibleZ))
-        while SHM.SHM.edge[SourceNode][DestinationNode]['LinkHealth']:
+        while SHMU.SHM.edge[SourceNode][DestinationNode]['LinkHealth']:
             SourceX = random.randint(0, Config.Network_X_Size-1)
             SourceY = random.randint(0, Config.Network_Y_Size-1)
             SourceZ = random.randint(0, Config.Network_Z_Size-1)
@@ -144,7 +144,7 @@ def FindFeasibleAG_VL(AG, SHM):
             DestinationNode = ReturnNodeNumber(SourceX, SourceY, random.choice(PossibleZ))
 
         # here we have a candidate to restore
-        SHM.RestoreBrokenLink((SourceNode, DestinationNode), False)
+        SHMU.RestoreBrokenLink((SourceNode, DestinationNode), False)
         NewVL_Lists.append((SourceNode, DestinationNode))
     return NewVL_Lists
 
@@ -156,11 +156,11 @@ def ReturnToSolution(AG, SHM, VL_List):
     return None
 
 
-def MoveToNewVLConfig(AG, SHM, VL_Lists):
+def MoveToNewVLConfig(AG, SHMU, VL_Lists):
     NewVL_Lists = copy.deepcopy(VL_Lists)
     ChosenLinkToFix = random.choice(NewVL_Lists)
     NewVL_Lists.remove(ChosenLinkToFix)
-    SHM.BreakLink(ChosenLinkToFix, False)
+    SHMU.BreakLink(ChosenLinkToFix, False)
 
     SourceX = random.randint(0, Config.Network_X_Size-1)
     SourceY = random.randint(0, Config.Network_Y_Size-1)
@@ -173,7 +173,7 @@ def MoveToNewVLConfig(AG, SHM, VL_Lists):
         PossibleZ.append(SourceZ - 1)
     DestinationNode = ReturnNodeNumber(SourceX,SourceY,random.choice(PossibleZ))
 
-    while SourceNode == DestinationNode or SHM.SHM.edge[SourceNode][DestinationNode]['LinkHealth']:
+    while SourceNode == DestinationNode or SHMU.SHM.edge[SourceNode][DestinationNode]['LinkHealth']:
         SourceX = random.randint(0, Config.Network_X_Size-1)
         SourceY = random.randint(0, Config.Network_Y_Size-1)
         SourceZ = random.randint(0, Config.Network_Z_Size-1)
@@ -185,13 +185,13 @@ def MoveToNewVLConfig(AG, SHM, VL_Lists):
             PossibleZ.append(SourceZ-1)
         DestinationNode =  ReturnNodeNumber(SourceX, SourceY, random.choice(PossibleZ))
     # here we have a candidate to restore
-    SHM.RestoreBrokenLink((SourceNode, DestinationNode), False)
+    SHMU.RestoreBrokenLink((SourceNode, DestinationNode), False)
     NewVL_Lists.append((SourceNode, DestinationNode))
     return NewVL_Lists
 
 
-def CleanUpAG(AG, SHM):
-    for link in SHM.SHM.edges():
-        if not SHM.SHM.edge[link[0]][link[1]]['LinkHealth']:
+def CleanUpAG(AG, SHMU):
+    for link in SHMU.SHM.edges():
+        if not SHMU.SHM.edge[link[0]][link[1]]['LinkHealth']:
             AG.remove_edge(link[0], link[1])
     return None

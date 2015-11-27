@@ -6,6 +6,15 @@ import copy
 import random
 
 def Min_Min_Mapping (TG, AG, NoCRG, SHM, logging):
+    """
+
+    :param TG:
+    :param AG:
+    :param NoCRG:
+    :param SHM: System Health Map
+    :param logging:
+    :return:
+    """
     # this function finds the task with the smallest WCET and
     # maps it on the machine that can offer smallest completion time...
     # this means that the mapping algorithm has to take into account the mapping
@@ -28,7 +37,13 @@ def Min_Min_Mapping (TG, AG, NoCRG, SHM, logging):
             TG.node[TaskToBeMapped]['Node'] = ChosenNode
             AG.node[ChosenNode]['PE'].MappedTasks.append(TaskToBeMapped)
             AG.node[ChosenNode]['PE'].Utilization += TG.node[TaskToBeMapped]['WCET']
-            Scheduling_Functions.Add_TG_TaskToNode(TG, AG, SHM, TaskToBeMapped, ChosenNode, False)
+
+            NodeSpeedDown = 1+((100.0-SHM.node[ChosenNode]['NodeSpeed'])/100)
+            TaskExecutionOnNode = TG.node[TaskToBeMapped]['WCET']*NodeSpeedDown
+            CompletionOnNode = TG.node[TaskToBeMapped]['Release'] + TaskExecutionOnNode
+
+            Scheduling_Functions.Add_TG_TaskToNode(TG, AG, TaskToBeMapped, ChosenNode,
+                                                   TG.node[TaskToBeMapped]['Release'], CompletionOnNode, logging)
         if len(ShortestTasks) == 0:
             ShortestTasks = Mapping_Functions.FindUnMappedTaskWithSmallestWCET(TG, logging)
     print ("MIN-MIN MAPPING FINISHED...")
@@ -37,6 +52,15 @@ def Min_Min_Mapping (TG, AG, NoCRG, SHM, logging):
 
 
 def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
+    """
+
+    :param TG:
+    :param AG:
+    :param NoCRG:
+    :param SHM: System Health Map
+    :param logging:
+    :return:
+    """
     # this function finds the task with the biggest WCET and
     # maps it on the machine that can offer smallest completion time...
     # this means that the mapping algorithm has to take into account the mapping
@@ -63,7 +87,14 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
             TG.node[TaskToBeMapped]['Node'] = ChosenNode
             AG.node[ChosenNode]['PE'].MappedTasks.append(TaskToBeMapped)
             AG.node[ChosenNode]['PE'].Utilization += TG.node[TaskToBeMapped]['WCET']
-            Scheduling_Functions.Add_TG_TaskToNode(TG, AG, SHM, TaskToBeMapped, ChosenNode, False)
+
+            NodeSpeedDown = 1+((100.0-SHM.node[ChosenNode]['NodeSpeed'])/100)
+            TaskExecutionOnNode = TG.node[TaskToBeMapped]['WCET']*NodeSpeedDown
+            CompletionOnNode = TG.node[TaskToBeMapped]['Release'] + TaskExecutionOnNode
+
+            Scheduling_Functions.Add_TG_TaskToNode(TG, AG, TaskToBeMapped, ChosenNode,
+                                                   TG.node[TaskToBeMapped]['Release'], CompletionOnNode, logging)
+
         if len(LongestTasks) == 0:
             LongestTasks = Mapping_Functions.FindUnMappedTaskWithBiggestWCET(TG, logging)
     print ("MIN-MAX MAPPING FINISHED...")
@@ -71,6 +102,14 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
     return TG, AG
 
 def MinExecutionTime(TG, AG, SHM, logging):
+    """
+
+    :param TG:
+    :param AG:
+    :param SHM: System Health Map
+    :param logging:
+    :return:
+    """
     # this sounds a little stupid because there are no job specific machines...
     # we can Add Specific Accelerators or define different run time on different
     # PEs so this becomes more interesting...
@@ -81,7 +120,14 @@ def MinExecutionTime(TG, AG, SHM, logging):
         TG.node[TaskToBeMapped]['Node'] = ChosenNode
         AG.node[ChosenNode]['PE'].MappedTasks.append(TaskToBeMapped)
         AG.node[ChosenNode]['PE'].Utilization += TG.node[TaskToBeMapped]['WCET']
-        Scheduling_Functions.Add_TG_TaskToNode(TG, AG, SHM, TaskToBeMapped, ChosenNode, False)
+
+        NodeSpeedDown = 1+((100.0-SHM.node[ChosenNode]['NodeSpeed'])/100)
+        TaskExecutionOnNode = TG.node[TaskToBeMapped]['WCET']*NodeSpeedDown
+        CompletionOnNode = TG.node[TaskToBeMapped]['Release'] + TaskExecutionOnNode
+
+        Scheduling_Functions.Add_TG_TaskToNode(TG, AG, TaskToBeMapped, ChosenNode,
+                                               TG.node[TaskToBeMapped]['Release'], CompletionOnNode, logging)
+
         print ("\tTASK "+str(TaskToBeMapped)+" MAPPED ON NODE: "+str(ChosenNode))
     print ("MIN EXECUTION TIME MAPPING FINISHED...")
     Scheduling_Reports.ReportMappedTasks(AG, logging)
@@ -98,7 +144,14 @@ def MinimumCompletionTime(TG, AG, SHM, logging):
         TG.node[TaskToBeMapped]['Node'] = ChosenNode
         AG.node[ChosenNode]['PE'].MappedTasks.append(TaskToBeMapped)
         AG.node[ChosenNode]['PE'].Utilization += TG.node[TaskToBeMapped]['WCET']
-        Scheduling_Functions.Add_TG_TaskToNode(TG, AG, SHM, TaskToBeMapped, ChosenNode, False)
+
+        NodeSpeedDown = 1+((100.0-SHM.node[ChosenNode]['NodeSpeed'])/100)
+        TaskExecutionOnNode = TG.node[TaskToBeMapped]['WCET']*NodeSpeedDown
+        CompletionOnNode = TG.node[TaskToBeMapped]['Release'] + TaskExecutionOnNode
+
+        Scheduling_Functions.Add_TG_TaskToNode(TG, AG, TaskToBeMapped, ChosenNode,
+                                               TG.node[TaskToBeMapped]['Release'], CompletionOnNode, logging)
+
         print ("\tTASK "+str(TaskToBeMapped)+" MAPPED ON NODE: "+str(ChosenNode))
     print ("MIN COMPLETION TIME MAPPING FINISHED...")
     Scheduling_Reports.ReportMappedTasks(AG, logging)

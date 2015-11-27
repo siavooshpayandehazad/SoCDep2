@@ -9,7 +9,7 @@ from SystemHealthMonitoring import SHM_Functions
 #
 ####################################################################
 
-def FaultEvent(env, AG, SHM, NoCRG, FaultTimeList):
+def FaultEvent(env, AG, SHMU, NoCRG, FaultTimeList):
     Fault = False
     while True:
         for FaultTime in FaultTimeList:
@@ -23,8 +23,8 @@ def FaultEvent(env, AG, SHM, NoCRG, FaultTimeList):
                 pass
 
         if Fault:
-            FaultLocation, FaultType = SHM_Functions.RandomFaultGeneration(SHM)
-            SHM_Functions.ApplyFaultEvent(AG, SHM, NoCRG, FaultLocation, FaultType)
+            FaultLocation, FaultType = SHM_Functions.RandomFaultGeneration(SHMU.SHM)
+            SHM_Functions.ApplyFaultEvent(AG, SHMU, NoCRG, FaultLocation, FaultType)
             Fault = False
         yield env.timeout(0.1)
         pass

@@ -10,6 +10,19 @@ from math import ceil
 
 
 def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Report, logging):
+    """
+
+    :param TG:
+    :param CTG:
+    :param AG:
+    :param SHM:     System Health Map
+    :param NoCRG:
+    :param CriticalRG:
+    :param NonCriticalRG:
+    :param Report:
+    :param logging:
+    :return:
+    """
     if Report: print ("===========================================")
     if Report: print ("STARTING INITIAL MAPPING...")
     Itteration=0
@@ -40,9 +53,26 @@ def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Repor
 
 
 def MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging):
-    if not SHM.SHM.node[Node]['NodeHealth']:
+    """
+
+    :param TG:
+    :param AG:
+    :param SHM: System Health Map
+    :param NoCRG:
+    :param CriticalRG:
+    :param NonCriticalRG:
+    :param Task:
+    :param Node:
+    :param logging:
+    :return:
+    """
+    if not SHM.node[Node]['NodeHealth']:
         logging.info("CAN NOT MAP ON BROKEN NODE: "+str(Node))
         return False
+    elif AG.node[Node]['PE'].Dark:
+        logging.info("CAN NOT MAP ON DARK NODE: "+str(Node))
+        return False
+
     logging.info( "\tADDING TASK:"+str(Task)+"TO NODE:"+str(Node))
     TG.node[Task]['Node'] = Node
     AG.node[Node]['PE'].MappedTasks.append(Task)
@@ -87,14 +117,26 @@ def MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, log
 
                             Counter += 1
                     else:
-                        RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging)
+                        RemoveTaskFromNode(TG, AG, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging)
                         logging.warning("\tNO PATH FOUND FROM "+str(SourceNode)+" TO "+str(DestNode)+"...")
                         print ("NO PATH FOUND FROM "+str(SourceNode)+" TO "+str(DestNode)+" ...")
                         return False
     return True
 
 
-def RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging):
+def RemoveTaskFromNode(TG, AG, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging):
+    """
+
+    :param TG:
+    :param AG:
+    :param NoCRG:
+    :param CriticalRG:
+    :param NonCriticalRG:
+    :param Task:
+    :param Node:
+    :param logging:
+    :return:
+    """
     logging.info("\tREMOVING TASK:"+str(Task)+"FROM NODE:"+str(Node))
     for Edge in TG.edges():
         if Task in Edge:
@@ -127,8 +169,25 @@ def RemoveTaskFromNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node
 
 
 def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster, Node, logging):
-    if not SHM.SHM.node[Node]['NodeHealth']:
+    """
+
+    :param TG:  Task Graph
+    :param CTG: Clustered Task Graph
+    :param AG:
+    :param SHM: System Health Map
+    :param NoCRG:
+    :param CriticalRG:
+    :param NonCriticalRG:
+    :param Cluster:
+    :param Node:
+    :param logging:
+    :return:
+    """
+    if not SHM.node[Node]['NodeHealth']:
         logging.info("CAN NOT MAP ON BROKEN NODE: "+str(Node))
+        return False
+    elif AG.node[Node]['PE'].Dark:
+        logging.info("CAN NOT MAP ON DARK NODE: "+str(Node))
         return False
 
     # Adding The cluster to Node...
@@ -270,13 +329,22 @@ def ClearMapping(TG, CTG, AG):
 
 
 def CostFunction(TG, AG, SHM, Report, InitialMappingString = None):
+    """
+
+    :param TG:
+    :param AG:
+    :param SHM: System Health Map
+    :param Report:
+    :param InitialMappingString:
+    :return:
+    """
     NodeMakeSpanList = []
     LinkMakeSpanList = []
     for Node in AG.nodes():
-        if SHM.SHM.node[Node]['NodeHealth']:
+        if SHM.node[Node]['NodeHealth'] and (not AG.node[Node]['PE'].Dark):
             NodeMakeSpanList.append(Scheduling_Functions.FindLastAllocatedTimeOnNode(TG, AG, Node, logging=None))
     for link in AG.edges():
-        if SHM.SHM.edge[link[0]][link[1]]['LinkHealth']:
+        if SHM.edge[link[0]][link[1]]['LinkHealth']:
             LinkMakeSpanList.append(Scheduling_Functions.FindLastAllocatedTimeOnLink(TG, AG, link, logging=None))
     NodeMakeSpan_Stdev = statistics.stdev(NodeMakeSpanList)
     NodeMakeSpan_Max = max(NodeMakeSpanList)
@@ -362,26 +430,26 @@ def FindNodeWithSmallestCompletionTime(AG, TG, SHM, Task):
     THIS FUNCTION CAN BE STRICTLY USED FOR INDEPENDENT TGs
     :param AG: Arch Graph
     :param TG: Task Graph
-    :param SHM: System Health Monitor
+    :param SHM: System Health Map
     :param Task: Task number
     :return: list of nodes with smallest completion time for Task
     """
     NodesWithSmallestCT = []
     RandomNode = random.choice(AG.nodes())
-    while not SHM.SHM.node[RandomNode]['NodeHealth']:
+    while (not SHM.node[RandomNode]['NodeHealth']) or AG.node[RandomNode]['PE'].Dark :
         RandomNode = random.choice(AG.nodes())
-    NodeSpeedDown = 1+((100.0-SHM.SHM.node[RandomNode]['NodeSpeed'])/100)
+    NodeSpeedDown = 1+((100.0-SHM.node[RandomNode]['NodeSpeed'])/100)
     TaskExecutionOnNode = TG.node[Task]['WCET']*NodeSpeedDown
-    LastAllocatedTimeOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG, AG, RandomNode, False)
+    LastAllocatedTimeOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG, AG, RandomNode, None)
     if LastAllocatedTimeOnNode < TG.node[Task]['Release']:
         SmallestCompletionTime = TG.node[Task]['Release'] + TaskExecutionOnNode
     else:
         SmallestCompletionTime = LastAllocatedTimeOnNode + TaskExecutionOnNode
     for Node in AG.nodes():
-        if SHM.SHM.node[Node]['NodeHealth']:
-            NodeSpeedDown = 1+((100.0-SHM.SHM.node[Node]['NodeSpeed'])/100)
+        if SHM.node[Node]['NodeHealth'] and (not AG.node[RandomNode]['PE'].Dark):
+            NodeSpeedDown = 1+((100.0-SHM.node[Node]['NodeSpeed'])/100)
             TaskExecutionOnNode = TG.node[Task]['WCET']*NodeSpeedDown
-            LastAllocatedTimeOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG, AG, Node, False)
+            LastAllocatedTimeOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG, AG, Node, None)
             if LastAllocatedTimeOnNode < TG.node[Task]['Release']:
                 CompletionOnNode = TG.node[Task]['Release'] + TaskExecutionOnNode
             else:
@@ -390,9 +458,9 @@ def FindNodeWithSmallestCompletionTime(AG, TG, SHM, Task):
             if ceil(CompletionOnNode) < SmallestCompletionTime:
                 SmallestCompletionTime = CompletionOnNode
     for Node in AG.nodes():
-        if SHM.SHM.node[Node]['NodeHealth']:
-            NodeSpeedDown = 1+((100.0-SHM.SHM.node[Node]['NodeSpeed'])/100)
-            LastAllocatedTimeOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG, AG, Node, False)
+        if SHM.node[Node]['NodeHealth'] and (not AG.node[RandomNode]['PE'].Dark):
+            NodeSpeedDown = 1+((100.0-SHM.node[Node]['NodeSpeed'])/100)
+            LastAllocatedTimeOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG, AG, Node, None)
             TaskExecutionOnNode = TG.node[Task]['WCET']*NodeSpeedDown
             CompletionOnNode = 0
             if LastAllocatedTimeOnNode < TG.node[Task]['Release']:
@@ -405,16 +473,25 @@ def FindNodeWithSmallestCompletionTime(AG, TG, SHM, Task):
 
 
 def FindFastestNodes(AG, SHM, TaskToBeMapped):
+    """
+
+    :param AG:
+    :param SHM: System Health Map
+    :param TaskToBeMapped:
+    :return:
+    """
     # todo: we need to add some accelerator nodes which have some specific purpose and
     # enable different tasks to behave differently on them.
     FastestNodes = []
     MaxSpeedup = 0
     for Node in AG.nodes():
-        if SHM.SHM.node[Node]['NodeSpeed'] > MaxSpeedup:
-            MaxSpeedup = SHM.SHM.node[Node]['NodeSpeed']
+        if not AG.node[Node]['PE'].Dark:
+            if SHM.node[Node]['NodeSpeed'] > MaxSpeedup:
+                MaxSpeedup = SHM.node[Node]['NodeSpeed']
     for Node in AG.nodes():
-        if SHM.SHM.node[Node]['NodeSpeed'] == MaxSpeedup:
-            FastestNodes.append(Node)
+        if not AG.node[Node]['PE'].Dark:
+            if SHM.node[Node]['NodeSpeed'] == MaxSpeedup:
+                FastestNodes.append(Node)
     return FastestNodes
 
 
