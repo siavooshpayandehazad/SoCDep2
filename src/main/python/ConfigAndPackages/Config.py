@@ -46,8 +46,8 @@ VirtualChannelNum = 0
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
 NetworkTopology = '2DMesh'
-Network_X_Size = 3
-Network_Y_Size = 3
+Network_X_Size = 5
+Network_Y_Size = 5
 Network_Z_Size = 1
 
 # Number of Vertical Links
@@ -79,6 +79,11 @@ UsedTurnModel = PackageFile.XY_TurnModel
 RotingType = 'MinimalPath'
 RoutingFilePath = "User_Inputs/RoutingFile.txt"
 SetRoutingFromFile = False
+
+################################################
+#          Dark Silicon  Config
+################################################
+DarkSiliconPercentage=0.3
 ################################################
 #          SHM  Config
 ################################################
@@ -119,7 +124,7 @@ ListOfBrokenLinks = []
 # ListOfBrokenLinks = [(0, 1), (22, 21)]
 # ==========================
 # List of broken PE
-ListOfBrokenPEs = []
+ListOfBrokenPEs = [2]
 # ListOfBrokenPEs = []
 # ==========================
 # List of broken Turns
@@ -130,9 +135,9 @@ ListOfBrokenTurns = {}
 # ==========================
 # For aging, we need to give the tool a dictionary of nodes and their speed down...
 # so {1: 0.3} means that node 1's speed has decreased by 30% from its current state.
-# I know its a dictionary too
-# ListOfAgedPEs = {3: 0.3, 2: 0.1}
-ListOfAgedPEs = {}
+# I know its a dictionary
+ListOfAgedPEs = {3: 0.3, 2: 0.1}
+# ListOfAgedPEs = {}
 # ==========================
 MaxTemp = 100
 ################################################

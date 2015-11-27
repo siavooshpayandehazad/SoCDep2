@@ -2,6 +2,7 @@
 import networkx
 from ConfigAndPackages import Config
 import random
+from math import ceil
 import operator
 # todo: add virtual channel support AG...
 
@@ -12,12 +13,14 @@ class Router():
         self.MappedTasks = {}
         self.Scheduling = {}
 
+
 class PE():     # PROCESSING ELEMENT
     def __init__(self):
         self.Utilization = 0
         self.Dark = False
         self.MappedTasks = []
         self.Scheduling = {}
+        self.Type = 'Processor'       # Can be accelerator or something else
 
 
 def GenerateManualAG(PE_List, AG_Edge_List, AG_Edge_Port_List):
@@ -335,7 +338,8 @@ def SetupNetworkPartitioning(AG):
     return None
 
 def RandomDarkness(AG):
-    for i in range(0,3):
+    NumberOfDarkNodes = int(ceil(len(AG.nodes())*Config.DarkSiliconPercentage))
+    for i in range(0,NumberOfDarkNodes):
         Node = random.choice(AG.nodes())
         AG.node[Node]['PE'].Dark=True
     return None

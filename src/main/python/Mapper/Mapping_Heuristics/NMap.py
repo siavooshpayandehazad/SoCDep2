@@ -16,6 +16,17 @@ from networkx.classes.function import edges
 
 
 def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
+    """
+
+    :param TG: Task Graph
+    :param AG: Architecture Graph
+    :param NoCRG: NoC Routing Graph
+    :param CriticalRG: NoC Routing Graph for Critical Region
+    :param NonCriticalRG: NoC Routing Graph for Non-Critical Region
+    :param SHM: System Health Map
+    :param logging: logging File
+    :return: TG and AG
+    """
     print ("===========================================")
     print ("STARTING N-MAP MAPPING...\n")
 
@@ -252,6 +263,8 @@ def SawpNodes(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Node1, Node2, loggi
     Task_2 = AG.node[Node2]['PE'].MappedTasks[0]
     Mapping_Functions.RemoveTaskFromNode(TG, AG, NoCRG, CriticalRG, NonCriticalRG, Task_1, Node1, logging)
     Mapping_Functions.RemoveTaskFromNode(TG, AG, NoCRG, CriticalRG, NonCriticalRG, Task_2, Node2, logging)
-    Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task_1, Node2, logging)
-    Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task_2, Node1, logging)
+    if not Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task_1, Node2, logging):
+        raise ValueError("SawpNodes FAILED WHILE TYING TO MAP FIRST CHOSEN TASK ON SECOND NODE ")
+    if not Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task_2, Node1, logging):
+        raise ValueError("SawpNodes FAILED WHILE TYING TO MAP SECOND CHOSEN TASK ON FIRST NODE ")
     return True

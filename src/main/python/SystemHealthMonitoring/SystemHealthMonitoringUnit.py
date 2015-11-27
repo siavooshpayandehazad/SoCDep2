@@ -4,7 +4,7 @@ import networkx
 import hashlib
 import copy, re
 from Mapper import Mapping_Functions
-import SHM_Reports,SHM_Functions
+import SHMU_Reports,SHMU_Functions
 from ConfigAndPackages import Config
 import random
 
@@ -117,7 +117,7 @@ class SystemHealthMonitoringUnit:
         :return: None
         """
         MappingString = Mapping_Functions.MappingIntoString(TG)
-        self.MPM[hashlib.md5(SHM_Functions.GenerateFaultConfig(self)).hexdigest()] = MappingString
+        self.MPM[hashlib.md5(SHMU_Functions.GenerateFaultConfig(self)).hexdigest()] = MappingString
         return None
 
     ##################################################

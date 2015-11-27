@@ -5,7 +5,7 @@ import copy, time
 from ConfigAndPackages import Config
 from Mapper import Mapping, Mapping_Reports, Mapping_Animation
 from Scheduler import Scheduling_Reports
-from SystemHealthMonitoring import SystemHealthMonitoringUnit, SHM_Reports, SHM_Functions, TestSchedulingUnit, SHMU_Test
+from SystemHealthMonitoring import SystemHealthMonitoringUnit, SHMU_Reports, SHMU_Functions, TestSchedulingUnit, SHMU_Test
 from TaskGraphUtilities import Task_Graph_Reports, TG_Functions, TG_Test
 from RoutingAlgorithms import Routing, Calculate_Reachability, ReachabilityReports, RoutingGraph_Reports, Reachability_Test
 from ArchGraphUtilities import Arch_Graph_Reports, AG_Functions, AG_Test, Optimize_3D_AG
@@ -43,10 +43,10 @@ def InitializeSystem(logging):
         Optimize_3D_AG.OptimizeAG_VL(AG, SHMU, logging)
         Optimize_3D_AG.CleanUpAG(AG, SHMU)
         Arch_Graph_Reports.DrawArchGraph(AG, "AG_VLOpt")
-    SHM_Functions.ApplyInitialFaults(SHMU)
+    SHMU_Functions.ApplyInitialFaults(SHMU)
     if Config.SHM_Drawing:
-        SHM_Reports.DrawSHM(SHMU.SHM)
-        SHM_Reports.DrawTempDistribution(SHMU.SHM)
+        SHMU_Reports.DrawSHM(SHMU.SHM)
+        SHMU_Reports.DrawTempDistribution(SHMU.SHM)
     # SHM_Reports.Report_NoC_SystemHealthMap()
     ####################################################################
     RoutingGraphStartTime = time.time()

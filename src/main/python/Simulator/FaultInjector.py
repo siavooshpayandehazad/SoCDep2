@@ -1,7 +1,7 @@
 __author__ = 'siavoosh'
 
 
-from SystemHealthMonitoring import SHM_Functions
+from SystemHealthMonitoring import SHMU_Functions
 
 ####################################################################
 #
@@ -23,8 +23,8 @@ def FaultEvent(env, AG, SHMU, NoCRG, FaultTimeList):
                 pass
 
         if Fault:
-            FaultLocation, FaultType = SHM_Functions.RandomFaultGeneration(SHMU.SHM)
-            SHM_Functions.ApplyFaultEvent(AG, SHMU, NoCRG, FaultLocation, FaultType)
+            FaultLocation, FaultType = SHMU_Functions.RandomFaultGeneration(SHMU.SHM)
+            SHMU_Functions.ApplyFaultEvent(AG, SHMU, NoCRG, FaultLocation, FaultType)
             Fault = False
         yield env.timeout(0.1)
         pass

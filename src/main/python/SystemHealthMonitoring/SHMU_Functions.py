@@ -1,7 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 from ConfigAndPackages import Config
 import random
-import SHM_Reports
+import SHMU_Reports
 from RoutingAlgorithms import Routing
 
 def ApplyInitialFaults(SHM):
@@ -56,7 +56,7 @@ def GenerateFaultConfig (SHMU):
     return FaultConfig
 
 def ApplyFaultEvent(AG, SHMU, NoCRG, FaultLocation, FaultType):
-        SHM_Reports.ReportTheEvent(FaultLocation, FaultType)
+        SHMU_Reports.ReportTheEvent(FaultLocation, FaultType)
         if type(FaultLocation) is tuple:      # its a Link fault
             if FaultType == 'T':    # Transient Fault
                 if SHMU.SHM.edge[FaultLocation[0]][FaultLocation[1]]['LinkHealth']:

@@ -12,15 +12,15 @@ from math import ceil
 def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Report, logging):
     """
 
-    :param TG:
-    :param CTG:
-    :param AG:
+    :param TG:  Task Graph
+    :param CTG: Clustered Task Graph
+    :param AG:  Architecture Graph
     :param SHM:     System Health Map
-    :param NoCRG:
-    :param CriticalRG:
-    :param NonCriticalRG:
+    :param NoCRG:   NoC Routing Graph
+    :param CriticalRG:  Critical Region Routing Graph
+    :param NonCriticalRG: Non-Critical Region Routing Graph
     :param Report:
-    :param logging:
+    :param logging: Logging File
     :return:
     """
     if Report: print ("===========================================")

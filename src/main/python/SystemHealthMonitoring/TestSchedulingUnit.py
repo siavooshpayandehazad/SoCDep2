@@ -141,18 +141,19 @@ def RemoveTestTasksFromTG(TG):
 def MapTestTasks(TG, AG, SHM, NoCRG, logging):
     """
 
-    :param TG:
-    :param AG:
+    :param TG: Task Graph
+    :param AG: Architecture Graph
     :param SHM: System Health Map
-    :param NoCRG:
-    :param logging:
-    :return:
+    :param NoCRG: NoC Routing GRaph
+    :param logging: logging file
+    :return: None
     """
     for Task in TG.nodes():
         if TG.node[Task]['Type'] == 'Test':
             Node = TG.node[Task]['Node']
-            Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, None, None, Task, Node, logging)
-    pass
+            if not Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, None, None, Task, Node, logging):
+                raise ValueError(" MAPPING TEST TASK FAILED WHILE TYING TO MAP ",Task,"ON NODE", Node)
+    return None
 
 def DrawPMCG(PMCG):
     print ("===========================================")

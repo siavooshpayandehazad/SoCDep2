@@ -35,7 +35,10 @@ def DrawMappingDistribution(AG, SHMU):
         Num = 255*len(AG.node[node]['PE'].MappedTasks)/float(MaxNumberOfTasks)
         Util = 255*AG.node[node]['PE'].Utilization/float(MaxUtilization)
         if SHMU.SHM.node[node]['NodeHealth']:
-            color = '#%02X%02X%02X' % (255, 255-Num, 255-Num)
+            if not AG.node[node]['PE'].Dark:
+                color = '#%02X%02X%02X' % (255, 255-Num, 255-Num)
+            else:
+                color = 'gray'
         else:   # node is broken
             color = '#7B747B'
         fig_Num.gca().add_patch(patches.Rectangle((Location[0]/XSize+Location[2]/(ZSize*XSize**2),
@@ -43,7 +46,10 @@ def DrawMappingDistribution(AG, SHMU):
                                                    width=0.15, height=0.15, facecolor=color,
                                                    edgecolor="black", linewidth=3, zorder=ZSize-Location[2]))
         if SHMU.SHM.node[node]['NodeHealth']:
-            color = '#%02X%02X%02X' % (255, 255-Util, 255-Util)
+            if not AG.node[node]['PE'].Dark:
+                color = '#%02X%02X%02X' % (255, 255-Util, 255-Util)
+            else:
+                color = 'gray'
         else:   # node is broken
             color = '#7B747B'
         fig_Util.gca().add_patch(patches.Rectangle((Location[0]/XSize+Location[2]/(ZSize*XSize**2),
