@@ -33,87 +33,72 @@ Copyright (C) 2015 Siavoosh Payandeh Azad
 ===============================================================================
 Project Directory Map:
 
-ScheduleAndDepend
- |
- |------ArchGraphUtilities
- |          |
- |          |------- AG_Functions
- |          |------- Arch_Graph_Reports
- |          |------- AG_Test
- |          |------- Optimize_3D_AG
- |
- |------Clusterer
- |          |
- |          |------- Clustering
- |          |------- Clustering_Functions
- |          |------- Clustering_Test
- |
- |------ConfigAndPackages
- |          |
- |          |------- Config
- |          |------- PackageFile
- |
- |------GUI_Util
- |          |
- |          |------- GUI
- |
- |------Generated_Files
- |------GraphDrawings
- |------LOGS
- |------Mapper
- |          |
- |          |------------------- Mapping_Heuristics
- |          |                           |
- |          |                           |------- GeneticsAlgorithm
- |          |                           |------- Local_Search
- |          |                           |------- NMAP
- |          |----- Mapping              |------- SimpleGreedy
- |          |----- Mapping_Animation    |------- SimulatedAnnealing
- |          |----- Mapping_Functions
- |          |----- Mapping_Reports
- |          |----- Mapping_Test
- |
- |------Simulator
- |          |
- |          |-----FaultInjector
- |          |-----Simulator
- |
- |------RoutingAlgorithms
- |          |
- |          |----- Calculate_Reachability
- |          |----- ReachabilityReports
- |          |----- Routing
- |          |----- Reachability_Test
- |
- |------Scheduler
- |          |
- |          |----- Scheduler
- |          |----- Scheduling_Functions
- |          |----- Scheduling_Reports
- |          |----- TrafficTableGenerator
- |
- |------SystemHealthMonitoring
- |          |
- |          |----- SystemHealthMonitor
- |          |----- SHM_Reports
- |          |----- SHM_Test
- |          |----- SHM_Functions
- |          |----- TestSchedulingUnit
- |
- |------TaskGraphUtilities
- |          |
- |          |----- Task_Graph_Reports
- |          |----- Task_File_Parser
- |          |----- TG_Functions
- |          |----- TG_Test
- |
- |------Utilities
- |          |
- |          |----- Logger
- |          |----- misc
- |
- |-- Main
- |-- SystemInitialization
+src
+ ├- main
+ |    └- python
+ |          ├------ArchGraphUtilities
+ |          |          ├------- AG_Functions
+ |          |          ├------- AG_Test
+ |          |          ├------- Arch_Graph_Reports
+ |          |          └──----- Optimize_3D_AG
+ |          ├------Benchmarks
+ |          ├------Clusterer
+ |          |          ├------- Clustering
+ |          |          ├------- Clustering_Functions
+ |          |          └------- Clustering_Test
+ |          |          └------- ClusteringReports
+ |          ├------ConfigAndPackages
+ |          |          ├------- Config
+ |          |          └------- PackageFile
+ |          ├------GUI_Util
+ |          |          └------- GUI
+ |          ├------Generated_Files
+ |          |          └-------Internal
+ |          ├------GraphDrawings
+ |          ├------LOGS
+ |          ├------Mapper
+ |          |          ├------------------- Mapping_Heuristics
+ |          |          |                          ├------- GeneticsAlgorithm
+ |          |          |                          ├------- Local_Search
+ |          |          |                          ├------- NMAP
+ |          |          ├----- Mapping             ├------- SimpleGreedy
+ |          |          ├----- Mapping_Animation   └------- SimulatedAnnealing
+ |          |          ├----- Mapping_Functions
+ |          |          ├----- Mapping_Reports
+ |          |          └----- Mapping_Test
+ |          ├------RoutingAlgorithms
+ |          |          ├----- Calculate_Reachability
+ |          |          ├----- Reachability_Test
+ |          |          ├----- Routing
+ |          |          └----- ReachabilityReports
+ |          |          └----- RoutingGraph_Reports
+ |          ├------Scheduler
+ |          |          ├----- Scheduler
+ |          |          ├----- Scheduling_Functions
+ |          |          ├----- Scheduling_Reports
+ |          |          └----- TrafficTableGenerator
+ |          ├------Simulator
+ |          |          ├-----FaultInjector
+ |          |          └-----Simulator
+ |          ├------SystemHealthMonitoringUnit
+ |          |          ├----- SHMU_Functions
+ |          |          ├----- SHMU_Reports
+ |          |          ├----- SHMU_Test
+ |          |          ├----- SystemHealthMonitoringUnit
+ |          |          └----- TestSchedulingUnit
+ |          ├------TaskGraphUtilities
+ |          |          |
+ |          |          ├----- Task_Graph_Reports
+ |          |          ├----- Task_File_Parser
+ |          |          ├----- TG_Functions
+ |          |          └----- TG_Test
+ |          ├------Utilities
+ |          |          ├----- Benchmark_Alg_Downloader
+ |          |          ├----- Logger
+ |          |          └----- misc
+ |          ├-- Main
+ |          └-- SystemInitialization
+ └- unitest
 
 ===============================================================================
 
