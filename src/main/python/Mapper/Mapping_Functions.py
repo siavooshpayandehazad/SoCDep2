@@ -178,13 +178,13 @@ def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster
     :param CTG: Clustered Task Graph
     :param AG:  Architecture Graph
     :param SHM: System Health Map
-    :param NoCRG:
-    :param CriticalRG:
-    :param NonCriticalRG:
-    :param Cluster:
-    :param Node:
-    :param logging:
-    :return:
+    :param NoCRG: NoC Routing Graph
+    :param CriticalRG: NoC Routing Graph for Critical region
+    :param NonCriticalRG: NoC routing Graph for Non-Critical Region
+    :param Cluster: ID Cluster to be mapped
+    :param Node: ID of the Node for mapping cluster on
+    :param logging: logging file
+    :return: True if maps the cluster successfully otherwise False
     """
     if not SHM.node[Node]['NodeHealth']:
         logging.info("CAN NOT MAP ON BROKEN NODE: "+str(Node))
@@ -266,6 +266,19 @@ def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster
 
 
 def RemoveClusterFromNode(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, Cluster, Node, logging):
+    """
+
+    :param TG: Task Graph
+    :param CTG: Clustered task Graph
+    :param AG:  Architecture Graph
+    :param NoCRG: NoC Routing Graph
+    :param CriticalRG: NoC routing Graph of critical Region
+    :param NonCriticalRG: NoC Routing Graph of non-Critical Region
+    :param Cluster: ID of The cluster to be mapped
+    :param Node: ID of the node for mapping the cluster on
+    :param logging: logging file
+    :return: True if can successfully remove cluster from Node
+    """
     logging.info("\tREMOVING CLUSTER:"+str(Cluster)+"FROM NODE:"+str(Node))
     for Edge in CTG.edges():
         if Cluster in Edge: # find all the edges that are connected to Cluster
@@ -312,6 +325,13 @@ def RemoveClusterFromNode(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, Cluster
 
 
 def ClearMapping(TG, CTG, AG):
+    """
+    Removes the mapping and clears TG, AG and CTG mapping related attributes
+    :param TG: Task Graph
+    :param CTG: Clustered Task Graph
+    :param AG: Architecture Graph
+    :return: True
+    """
     for node in TG.nodes():
         TG.node[node]['Node'] = None
     for Edge in TG.edges():
@@ -335,12 +355,12 @@ def ClearMapping(TG, CTG, AG):
 def CostFunction(TG, AG, SHM, Report, InitialMappingString = None):
     """
 
-    :param TG:
-    :param AG:
+    :param TG: Task Graph
+    :param AG: Architecture Graph
     :param SHM: System Health Map
-    :param Report:
-    :param InitialMappingString:
-    :return:
+    :param Report: If true prints cost function report to Command-line
+    :param InitialMappingString: Initial mapping string used for calculating distance from the current mapping
+    :return: Cost of the mapping
     """
     NodeMakeSpanList = []
     LinkMakeSpanList = []
@@ -397,7 +417,14 @@ def CalculateReliabilityCost(TG, NoCRG, logging):
 
     return Cost
 
+
 def FindUnMappedTaskWithSmallestWCET(TG, logging):
+    """
+
+    :param TG: Task Graph
+    :param logging: logging File
+    :return: list of shortest un-mapped Tasks
+    """
     ShortestTasks = []
     SmallestWCET = Config.WCET_Range
     for Node in TG.nodes():
@@ -414,6 +441,12 @@ def FindUnMappedTaskWithSmallestWCET(TG, logging):
 
 
 def FindUnMappedTaskWithBiggestWCET(TG, logging):
+    """
+
+    :param TG: Task Graph
+    :param logging: logging File
+    :return: list of longest unmapped tasks
+    """
     LongestTasks = []
     BiggestWCET = 0
     for Node in TG.nodes():
@@ -479,7 +512,7 @@ def FindNodeWithSmallestCompletionTime(AG, TG, SHM, Task):
 def FindFastestNodes(AG, SHM, TaskToBeMapped):
     """
 
-    :param AG:
+    :param AG:  Architecture Graph
     :param SHM: System Health Map
     :param TaskToBeMapped:
     :return:
@@ -512,6 +545,12 @@ def MappingIntoString(TG):
 
 
 def HammingDistanceOfMapping(MappingString1, MappingString2):
+    """
+    Calculate the hamming distance between two mappings
+    :param MappingString1: First mapping String
+    :param MappingString2: 2nd Mapping string
+    :return: hamming distance between two mappings
+    """
     if type(MappingString1) is str and type(MappingString2) is str:
         Str1_List = MappingString1.split()
         Str2_List = MappingString2.split()

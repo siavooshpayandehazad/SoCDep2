@@ -6,6 +6,12 @@ from ArchGraphUtilities import AG_Functions
 import random, networkx
 
 def ReportMapping(AG, logging):
+    """
+    Reports mapping into log file
+    :param AG: Architecture Graph
+    :param logging: logging file
+    :return: None
+    """
     logging.info("===========================================")
     logging.info("      REPORTING MAPPING RESULT")
     logging.info("===========================================")
@@ -16,7 +22,14 @@ def ReportMapping(AG, logging):
          logging.info("LINK: "+str(link)+" CONTAINS: "+str(AG.edge[link[0]][link[1]]['MappedTasks']))
     return None
 
+
 def DrawMappingDistribution(AG, SHMU):
+    """
+    Draws mapping Task Number and Utilization Distribution
+    :param AG: Architecture Graph
+    :param SHMU: System health Monitoring Unit
+    :return: None
+    """
     print ("===========================================")
     print ("GENERATING MAPPING DISTRIBUTIONS VISUALIZATION...")
     fig_Num = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
@@ -170,6 +183,7 @@ def DrawMapping(TG, AG, SHMU):
 def VizMappingOpt(CostFileName):
     """
     Visualizes the cost of solutions during local search mapping optimization process
+    :param CostFileName: Name of the Cost File (Holds values of cost function for different mapping steps)
     :return: None
     """
     print ("===========================================")
@@ -234,7 +248,10 @@ def VizMappingOpt(CostFileName):
 
 
 def VizCostSlope():
-
+    """
+    Visualises the mapping Cost slope for Simulated Annealing. This is like derivative of the cost graph.
+    :return: None
+    """
     print ("===========================================")
     print ("GENERATING MAPPING OPTIMIZATION COST SLOPE VISUALIZATION...")
 

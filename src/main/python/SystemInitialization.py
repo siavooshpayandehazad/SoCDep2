@@ -124,5 +124,5 @@ def InitializeSystem(logging):
     TrafficTableGenerator.GenerateNoximTrafficTable(AG, TG)
     TrafficTableGenerator.GenerateGSNoCTrafficTable(AG, TG)
     if Config.GenMappingFrames:
-        Mapping_Animation.GenerateFrames(TG, AG, SHMU)
+        Mapping_Animation.GenerateFrames(TG, AG, SHMU.SHM)
     return TG, AG, SHMU, NoCRG, CriticalRG, NonCriticalRG, PMCG
