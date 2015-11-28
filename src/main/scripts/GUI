@@ -1,2 +1,4 @@
+#!/usr/bin/env python
+
 cd ../python
 python Main.py -GUI

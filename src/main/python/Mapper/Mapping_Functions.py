@@ -21,7 +21,7 @@ def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Repor
     :param NonCriticalRG: Non-Critical Region Routing Graph
     :param Report:
     :param logging: Logging File
-    :return:
+    :return: True if mapping pass with success False if mapping fails
     """
     if Report: print ("===========================================")
     if Report: print ("STARTING INITIAL MAPPING...")
@@ -55,16 +55,16 @@ def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Repor
 def MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging):
     """
 
-    :param TG:
-    :param AG:
+    :param TG:  Task Graph
+    :param AG: Architecture Graph
     :param SHM: System Health Map
-    :param NoCRG:
-    :param CriticalRG:
-    :param NonCriticalRG:
-    :param Task:
-    :param Node:
-    :param logging:
-    :return:
+    :param NoCRG: NoC Routing Graph
+    :param CriticalRG: NoC Routing Graph for the Cirtical Section
+    :param NonCriticalRG: NoC Routing graph for non-critical section
+    :param Task:    Task to be Mapped
+    :param Node:    Chosen Node for mapping
+    :param logging: logging file
+    :return: true if can successfully map task to node else returns fails
     """
     if not SHM.node[Node]['NodeHealth']:
         logging.info("CAN NOT MAP ON BROKEN NODE: "+str(Node))
@@ -127,16 +127,19 @@ def MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, log
 def RemoveTaskFromNode(TG, AG, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging):
     """
 
-    :param TG:
-    :param AG:
-    :param NoCRG:
-    :param CriticalRG:
-    :param NonCriticalRG:
-    :param Task:
-    :param Node:
+    :param TG:  Task Graph
+    :param AG:  Architecture Graph
+    :param NoCRG:   NoC routing graph
+    :param CriticalRG:  NoC routing Graph for Critical Section
+    :param NonCriticalRG:   NoC routing graph for non-Critical Section
+    :param Task:    Task ID to be removed from Node
+    :param Node:    Node with Task Mapped on it
     :param logging:
     :return:
     """
+    if Task not in AG.node[Node]['PE'].MappedTasks:
+        raise ValueError("Trying removing Task from Node which is not the host")
+
     logging.info("\tREMOVING TASK:"+str(Task)+"FROM NODE:"+str(Node))
     for Edge in TG.edges():
         if Task in Edge:

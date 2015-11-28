@@ -17,8 +17,8 @@ EventDrivenFaultInjection = True
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile'
 TG_Type = 'RandomDependent'
 # For Random TG_Type:
-NumberOfTasks = 10
-NumberOfCriticalTasks = 5
+NumberOfTasks = 9
+NumberOfCriticalTasks = 0
 NumberOfEdges = 15
 WCET_Range = 15
 EdgeWeightRange = 7
@@ -83,7 +83,7 @@ SetRoutingFromFile = False
 ################################################
 #          Dark Silicon  Config
 ################################################
-DarkSiliconPercentage=0.3
+DarkSiliconPercentage=0
 ################################################
 #          SHM  Config
 ################################################
@@ -124,7 +124,7 @@ ListOfBrokenLinks = []
 # ListOfBrokenLinks = [(0, 1), (22, 21)]
 # ==========================
 # List of broken PE
-ListOfBrokenPEs = [2]
+ListOfBrokenPEs = []
 # ListOfBrokenPEs = []
 # ==========================
 # List of broken Turns
@@ -167,7 +167,7 @@ CTG_CirculationLength = 3
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'LocalSearch'
+Mapping_Function = 'NMap'
 LocalSearchIteration = 100
 IterativeLocalSearchIterations = 20
 #######################

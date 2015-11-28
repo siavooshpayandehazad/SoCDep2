@@ -248,17 +248,20 @@ def CalculateComCost(TG):
 def SawpNodes(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Node1, Node2, logging):
     """
 
-    :param TG:
-    :param AG:
+    :param TG:  Task Graph
+    :param AG:  Architecture Graph
     :param SHM: System Health Map
-    :param NoCRG:
-    :param CriticalRG:
-    :param NonCriticalRG:
-    :param Node1:
-    :param Node2:
-    :param logging:
-    :return:
+    :param NoCRG: NoC Routing Graph
+    :param CriticalRG: NoC Routing Graph of Critical Region
+    :param NonCriticalRG: NoC routing Graph of NonCritical Region
+    :param Node1: first chosen node for swapping
+    :param Node2:   2nd Chosen node for swapping
+    :param logging: logging file
+    :return: True if it successfully swaps two nodes tasks
     """
+    if len(AG.node[Node1]['PE'].MappedTasks) == 0 or len(AG.node[Node2]['PE'].MappedTasks) == 0:
+        raise ValueError("at least one of selected nodes for swapping doesnt have any tasks on it. ")
+
     Task_1 = AG.node[Node1]['PE'].MappedTasks[0]
     Task_2 = AG.node[Node2]['PE'].MappedTasks[0]
     Mapping_Functions.RemoveTaskFromNode(TG, AG, NoCRG, CriticalRG, NonCriticalRG, Task_1, Node1, logging)
