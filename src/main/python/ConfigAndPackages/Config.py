@@ -17,8 +17,8 @@ EventDrivenFaultInjection = True
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile'
 TG_Type = 'RandomDependent'
 # For Random TG_Type:
-NumberOfTasks = 9
-NumberOfCriticalTasks = 0
+NumberOfTasks = 10
+NumberOfCriticalTasks = 5
 NumberOfEdges = 15
 WCET_Range = 15
 EdgeWeightRange = 7
@@ -46,8 +46,8 @@ VirtualChannelNum = 0
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
 NetworkTopology = '2DMesh'
-Network_X_Size = 5
-Network_Y_Size = 5
+Network_X_Size = 3
+Network_Y_Size = 3
 Network_Z_Size = 1
 
 # Number of Vertical Links
@@ -287,6 +287,6 @@ PMCG_Drawing = False
 TTG_Drawing = False
 Mapping_Dstr_Drawing = True
 Mapping_Drawing = True
-SHM_Drawing = True          # if True generates SHM Drawing
+SHM_Drawing = False          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks

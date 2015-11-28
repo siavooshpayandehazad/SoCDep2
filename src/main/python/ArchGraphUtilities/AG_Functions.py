@@ -255,15 +255,15 @@ def NodeNeighbors(AG, SHM):
     :param SHM: System Health Map
     :return: A dictionary with node number as the key and the number of neighbors as values
     """
-    NodeNeighbor = {}
+    node_neighbor = {}
     for Node in AG.nodes():
         NumberOfNeighbours = 0
         for Link in AG.edges():
             if Node in Link:
                 if SHM.edge[Link[0]][Link[1]]['LinkHealth']:
                     NumberOfNeighbours += 1
-        NodeNeighbor[Node] = NumberOfNeighbours
-    return NodeNeighbor
+        node_neighbor[Node] = NumberOfNeighbours
+    return node_neighbor
 
 
 def MaxNodeNeighbors(NodeNeighbors, SortedNodeNeighbors):
@@ -300,7 +300,7 @@ def SetupNetworkPartitioning(AG):
     # Todo: This needs to be tested...
     print ("===========================================")
     print ("SETTING UP NETWORK PARTITIONING...")
-    NonCriticalNodes=[]
+    NonCriticalNodes = []
     for node in AG.nodes():
         if node not in Config.CriticalRegionNodes:
             if node not in Config.GateToNonCritical:
@@ -341,7 +341,7 @@ def RandomDarkness(AG):
     NumberOfDarkNodes = int(ceil(len(AG.nodes())*Config.DarkSiliconPercentage))
     for i in range(0,NumberOfDarkNodes):
         Node = random.choice(AG.nodes())
-        AG.node[Node]['PE'].Dark=True
+        AG.node[Node]['PE'].Dark = True
     return None
 
 def ReturnActiveNodes(AG):
@@ -350,7 +350,7 @@ def ReturnActiveNodes(AG):
     :param AG: Architecture Graph
     :return: list of active nodes.
     """
-    ActiveNodes=[]
+    ActiveNodes = []
     for Node in AG.nodes():
         if not AG.node[Node]['PE'].Dark:
             ActiveNodes.append(Node)
@@ -363,7 +363,7 @@ def ReturnHealthyNodes(AG, SHM):
     :param SHM: System Health Map
     :return: List of healthy Nodes in AG
     """
-    HealthyNodes=[]
+    HealthyNodes = []
     for Node in AG.nodes():
         if SHM.node[Node]['NodeHealth']:
             HealthyNodes.append(Node)
@@ -377,7 +377,7 @@ def ReturnHealthyActiveNodes(AG,SHM):
     :param SHM: System Health Map
     :return: list of Healthy Active nodes
     """
-    HealthyActiveNodes=[]
+    HealthyActiveNodes = []
     for Node in AG.nodes():
         if SHM.node[Node]['NodeHealth']:
             if not AG.node[Node]['PE'].Dark:
