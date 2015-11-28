@@ -17,7 +17,7 @@ from networkx.classes.function import edges
 
 def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
     """
-
+    Performs NMap Mapping algorithm
     :param TG: Task Graph
     :param AG: Architecture Graph
     :param NoCRG: NoC Routing Graph
@@ -234,6 +234,11 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
 
 
 def CalculateComCost(TG):
+    """
+    Calculates the cost of the current mapping
+    :param TG: Task Graph
+    :return:  cost of the mapping
+    """
     Cost = 0
     for Edge in TG.edges():
         T1 = Edge[0]
@@ -247,7 +252,7 @@ def CalculateComCost(TG):
 
 def SawpNodes(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Node1, Node2, logging):
     """
-
+    Swaps tasks of two nodes with each other!
     :param TG:  Task Graph
     :param AG:  Architecture Graph
     :param SHM: System Health Map

@@ -134,8 +134,8 @@ def RemoveTaskFromNode(TG, AG, NoCRG, CriticalRG, NonCriticalRG, Task, Node, log
     :param NonCriticalRG:   NoC routing graph for non-Critical Section
     :param Task:    Task ID to be removed from Node
     :param Node:    Node with Task Mapped on it
-    :param logging:
-    :return:
+    :param logging: logging File
+    :return:    True if it removes task with sucess
     """
     if Task not in AG.node[Node]['PE'].MappedTasks:
         raise ValueError("Trying removing Task from Node which is not the host")
@@ -176,7 +176,7 @@ def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster
 
     :param TG:  Task Graph
     :param CTG: Clustered Task Graph
-    :param AG:
+    :param AG:  Architecture Graph
     :param SHM: System Health Map
     :param NoCRG:
     :param CriticalRG:

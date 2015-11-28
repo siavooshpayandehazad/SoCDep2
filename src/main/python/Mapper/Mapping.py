@@ -11,6 +11,18 @@ from Scheduler import Scheduler,Scheduling_Reports, Scheduling_Functions
 
 
 def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
+    """
+    Calculate different mapping algorithms
+    Returns TG And AG after Mapping in case of success
+    :param TG: Task Graph
+    :param AG: Architecture Graph
+    :param NoCRG: NoC Routing Graph
+    :param CriticalRG: NoC Routing Graph for Critical Region
+    :param NonCriticalRG: NoC Routing Graph for non-Critical Region
+    :param SHM: System Health Map! (Please note that mapper should not even have access to ful SHMU info)
+    :param logging: logging file
+    :return: (TG, AG) in case of failing returns (None, None)
+    """
     # to run the following heuristics (Min_Min,Max_Min), one needs to use independent
     # tasks... Please use: GenerateRandomIndependentTG
     if Config.Mapping_Function == 'MinMin':
