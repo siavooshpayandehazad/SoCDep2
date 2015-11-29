@@ -1,2 +1,0 @@
-grep -r -A 1 "def " ../python > result.txt
-

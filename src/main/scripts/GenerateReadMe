@@ -1,0 +1,21 @@
+READMEFILE="../../../README.txt"
+
+echo ==============================================================================		> $READMEFILE
+echo ==============================================================================		>> $READMEFILE
+echo AUTHORS:  																			>> $READMEFILE
+echo ' \t '		SIAVOOSH PAYANDEH AZAD													>> $READMEFILE
+echo DATE:    MAY 2015																	>> $READMEFILE
+echo LICENSE: GNU GENERAL PUBLIC LICENSE Version 2										>> $READMEFILE
+echo PYTHON VER: 2.7.6																	>> $READMEFILE
+echo THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME DEPENDABILITY 		>> $READMEFILE
+echo MECHANISMS ON DIFFERENT ARCHITECTURES....											>> $READMEFILE
+echo Copyright \(C\) 2015 Siavoosh Payandeh Azad										>> $READMEFILE
+echo ===============================================================================	>> $READMEFILE
+echo ' \t ' 	IN CASE YOU WANT SOMETHING TO BE IMPLEMENTED,							>> $READMEFILE
+echo ' \t '		PLEASE CONTACT: siavoosh[AT]ati[DOT]ttu[DOT]ee							>> $READMEFILE
+echo ===============================================================================	>> $READMEFILE
+echo ' \t '		FOR DOCUMENTATIONS PLEASE REFER TO WIKI!								>> $READMEFILE
+echo ===============================================================================	>> $READMEFILE
+echo Project Directory Map: '\n'														>> $READMEFILE
+tree -a ../../../src -I "*.log|*.png|*.pyc|.DS_Store|__init__.py" 						>> $READMEFILE
+echo ===============================================================================	>> $READMEFILE

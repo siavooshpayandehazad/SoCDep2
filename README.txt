@@ -1,209 +1,105 @@
-============================================================================
-	  _________      .__               .___    .__
-	 /   _____/ ____ |  |__   ____   __| _/_ __|  |   ____
-	 \_____  \_/ ___\|  |  \_/ __ \ / __ |  |  \  | _/ __ \
-	 /        \  \___|   Y  \  ___// /_/ |  |  /  |_\  ___/
-	/_______  /\___  >___|  /\___  >____ |____/|____/\___  >
-	        \/     \/     \/     \/     \/               \/
-	                   .___
-	_____    ____    __| _/
-	\__  \  /    \  / __ |
-	 / __ \|   |  \/ /_/ |
-	(____  /___|  /\____ |
-	     \/     \/      \/
-	________                                   .___
-	\______ \   ____ ______   ____   ____    __| _/
-	 |    |  \_/ __ \\____ \_/ __ \ /    \  / __ | 
-	 |    `   \  ___/|  |_> >  ___/|   |  \/ /_/ | 
-	/_______  /\___  >   __/ \___  >___|  /\____ | 
-	        \/     \/|__|        \/     \/      \/  
 ==============================================================================
-AUTHOR:  SIAVOOSH PAYANDEH AZAD
-DATE:    MAY 2015
+==============================================================================
+AUTHORS:
+ 	  SIAVOOSH PAYANDEH AZAD
+DATE: MAY 2015
 LICENSE: GNU GENERAL PUBLIC LICENSE Version 2
 PYTHON VER: 2.7.6
-THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME DEPENDABILITY 
+THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME DEPENDABILITY
 MECHANISMS ON DIFFERENT ARCHITECTURES....
 Copyright (C) 2015 Siavoosh Payandeh Azad
 ===============================================================================
-               IN CASE YOU WANT SOMETHING TO BE IMPLEMENTED,
-              PLEASE CONTACT: siavoosh[AT]ati[DOT]ttu[DOT]ee
+ 	  IN CASE YOU WANT SOMETHING TO BE IMPLEMENTED,
+ 	  PLEASE CONTACT: siavoosh[AT]ati[DOT]ttu[DOT]ee
 ===============================================================================
-                FOR DOCUMENTATIONS PLEASE REFER TO WIKI!
+ 	  FOR DOCUMENTATIONS PLEASE REFER TO WIKI!
 ===============================================================================
-Project Directory Map:
+Project Directory Map: 
 
-src
- ├- main
- |    └- python
- |          ├------ArchGraphUtilities
- |          |          ├------- AG_Functions
- |          |          ├------- AG_Test
- |          |          ├------- Arch_Graph_Reports
- |          |          └──----- Optimize_3D_AG
- |          ├------Benchmarks
- |          ├------Clusterer
- |          |          ├------- Clustering
- |          |          ├------- Clustering_Functions
- |          |          └------- Clustering_Test
- |          |          └------- Clustering_Reports
- |          ├------ConfigAndPackages
- |          |          ├------- Config
- |          |          └------- PackageFile
- |          ├------GUI_Util
- |          |          └------- GUI
- |          ├------Generated_Files
- |          |          └-------Internal
- |          ├------GraphDrawings
- |          ├------LOGS
- |          ├------Mapper
- |          |          ├------------------- Mapping_Heuristics
- |          |          |                          ├------- GeneticsAlgorithm
- |          |          |                          ├------- Local_Search
- |          |          |                          ├------- NMAP
- |          |          ├----- Mapping             ├------- SimpleGreedy
- |          |          ├----- Mapping_Animation   └------- SimulatedAnnealing
- |          |          ├----- Mapping_Functions
- |          |          ├----- Mapping_Reports
- |          |          └----- Mapping_Test
- |          ├------RoutingAlgorithms
- |          |          ├----- Calculate_Reachability
- |          |          ├----- Reachability_Test
- |          |          ├----- Routing
- |          |          └----- ReachabilityReports
- |          |          └----- RoutingGraph_Reports
- |          ├------Scheduler
- |          |          ├----- Scheduler
- |          |          ├----- Scheduling_Functions
- |          |          ├----- Scheduling_Reports
- |          |          └----- TrafficTableGenerator
- |          ├------Simulator
- |          |          ├-----FaultInjector
- |          |          └-----Simulator
- |          ├------SystemHealthMonitoringUnit
- |          |          ├----- SHMU_Functions
- |          |          ├----- SHMU_Reports
- |          |          ├----- SHMU_Test
- |          |          ├----- SystemHealthMonitoringUnit
- |          |          └----- TestSchedulingUnit
- |          ├------TaskGraphUtilities
- |          |          |
- |          |          ├----- Task_Graph_Reports
- |          |          ├----- Task_File_Parser
- |          |          ├----- TG_Functions
- |          |          └----- TG_Test
- |          ├------Utilities
- |          |          ├----- Benchmark_Alg_Downloader
- |          |          ├----- Logger
- |          |          └----- misc
- |          ├-- Main
- |          └-- SystemInitialization
- └- unitest
+../../../src
+├── main
+│   ├── python
+│   │   ├── ArchGraphUtilities
+│   │   │   ├── AG_Functions.py
+│   │   │   ├── AG_Test.py
+│   │   │   ├── Arch_Graph_Reports.py
+│   │   │   └── Optimize_3D_AG.py
+│   │   ├── Benchmarks
+│   │   ├── Clusterer
+│   │   │   ├── Clustering.py
+│   │   │   ├── Clustering_Functions.py
+│   │   │   ├── Clustering_Reports.py
+│   │   │   └── Clustering_Test.py
+│   │   ├── ConfigAndPackages
+│   │   │   ├── Config.py
+│   │   │   └── PackageFile.py
+│   │   ├── GUI_Util
+│   │   │   ├── Disclaimer
+│   │   │   └── GUI.py
+│   │   ├── Generated_Files
+│   │   │   ├── GSNoCTrafficTable.txt
+│   │   │   ├── GSNoC_RectangleFile.txt
+│   │   │   ├── Internal
+│   │   │   │   ├── ClusteringCost.txt
+│   │   │   │   ├── LocalSearchMappingCost.txt
+│   │   │   │   └── MappingProcess.txt
+│   │   │   ├── NoximTrafficTable.txt
+│   │   │   └── ReachAbilityNodeReport.txt
+│   │   ├── GraphDrawings
+│   │   │   └── Mapping_Animation_Material
+│   │   ├── LOGS
+│   │   ├── Main.py
+│   │   ├── Mapper
+│   │   │   ├── Mapping.py
+│   │   │   ├── Mapping_Animation.py
+│   │   │   ├── Mapping_Functions.py
+│   │   │   ├── Mapping_Heuristics
+│   │   │   │   ├── GeneticsAlgorithm.py
+│   │   │   │   ├── Local_Search.py
+│   │   │   │   ├── NMap.py
+│   │   │   │   ├── SimpleGreedy.py
+│   │   │   │   └── SimulatedAnnealing.py
+│   │   │   ├── Mapping_Reports.py
+│   │   │   └── Mapping_Test.py
+│   │   ├── RoutingAlgorithms
+│   │   │   ├── Calculate_Reachability.py
+│   │   │   ├── ReachabilityReports.py
+│   │   │   ├── Reachability_Test.py
+│   │   │   ├── Routing.py
+│   │   │   └── RoutingGraph_Reports.py
+│   │   ├── Scheduler
+│   │   │   ├── Scheduler.py
+│   │   │   ├── Scheduling_Functions.py
+│   │   │   ├── Scheduling_Reports.py
+│   │   │   └── TrafficTableGenerator.py
+│   │   ├── Simulator
+│   │   │   ├── FaultInjector.py
+│   │   │   └── Simulator.py
+│   │   ├── SystemHealthMonitoring
+│   │   │   ├── SHMU_Functions.py
+│   │   │   ├── SHMU_Reports.py
+│   │   │   ├── SHMU_Test.py
+│   │   │   ├── SystemHealthMonitoringUnit.py
+│   │   │   └── TestSchedulingUnit.py
+│   │   ├── SystemInitialization.py
+│   │   ├── TaskGraphUtilities
+│   │   │   ├── TG_File_Parser.py
+│   │   │   ├── TG_Functions.py
+│   │   │   ├── TG_Test.py
+│   │   │   └── Task_Graph_Reports.py
+│   │   └── Utilities
+│   │       ├── Benchmark_Alg_Downloader.py
+│   │       ├── Logger.py
+│   │       └── misc.py
+│   └── scripts
+│       ├── GUI
+│       ├── GenerateReadMe
+│       ├── README.txt
+│       ├── READMEFILE
+│       └── result.txt
+└── unittest
+    └── Python
+        └── Unit_tests.py
 
+23 directories, 60 files
 ===============================================================================
-
-ToDo:
-
-    - I want to run a reliability Analysis of the system... so we can have
-      a sense about the system state...
-
-    - We need to implement some test routine where we can schedule
-      Test-Tasks where one PE tests another. we can use TTG made based
-      on PMC model for this.
-
-    - can we generate some file based on scheduling to feed in Noxim?
-
-    - can we get TG specifications automatically from some benchmark alg??
-
-    - Generate multiple levels of priority levels for Non/Mid-critical tasks
-
-    - Genetics Algorithm for Mapping
-
-    - Add Boltzmann cooling for SA
-
-    - Support for virtual channels!
-
-    - Some 8-bit background music during execution of the program would be
-      really cool. Something like this maybe:
-      https://soundcloud.com/eric-skiff/hhavok-intro
-
-    - Implement Memory Usage Profiler (want to make sure if we have
-      memory leak)
-
-    - Can we exploit the idea of repetition in TG during scheduling?
-
-    - Checking if a re-mapping/scheduling is necessary considering the
-      fault that has occurred... (with Karl)
-
-    - Adding color bar for mapping graphs
-
-    - Visualizing transient faults in scheduling gantt charts
-
-    - Adding support for preemption: if we have T1 and T2 then with preemption
-      T2 can interrupt T1 and execution would maybe T11->T2->T12
-        - we need to write a function that breaks tasks into parts...
-        - we would not have preemption in communication tasks
-
-    - we need to have a deadline for the whole task graph
-
-    - Can we implement something like Core-Cannibalization method for
-      Router's control unit etc.?
-
-    - Can we have some sort of local repair?
-
-    - for later time we need to schedule flits in the critical domain
-      with a model of the router with latency etc considered (low
-      priority- thesis of Mihkel Tagel)
-
-    - we need to add 0 weight communication between the tasks just to
-      establish precedence without data dependence. (we can have this
-      in the data dependence assumptions)
-
-    - can we identify two cores that we can just swap their mapped
-      tasks and it doesnt change any other traffic on the network?
-
-    - Take mobility into account for scheduling
-
-    - We have to add some constraints on Test scheduling regarding peak power etc. 
-    --------------------------------------------------
-    List of functions without DocString:
-    #todo: I have to make generation of this list automatic with some sort of scripting... (This is not healthy)
-        * ArchGraphUtilities/AG_Tests:
-                                        * AG_Test
-        * ArchGraphUtilities/Optimize_3D_AG:
-                                        * OptimizeAG_VL
-                                        * OptimizeAG_VL_IterativeLocalSearch
-                                        * OptimizeAG_VL_LocalSearch
-                                        * FindAll_VL
-                                        * RemoveAll_VL
-                                        * FindFeasibleAG_VL
-                                        * ReturnToSolution
-                                        * MoveToNewVLConfig
-                                        * CleanUpAG
-        * Clusterer/Clustering_Function:
-                                        * TaskCirculation
-        * Clusterer/Clustering_Reports:
-                                        * ReportCTG
-        * Mapper/Mapping_Functions:
-                                        * CalculateReliabilityCost
-
-        * Mapper/Mapping_Heuristics/Local_Search:
-                                        * OptimizeMappingLocalSearch
-                                        * OptimizeMappingIterativeLocalSearch
-        * Mapper/Mapping_Heuristics/Local_Search:
-                                        * FirstFree
-        * Mapper/Mapping_Heuristics/SimulatedAnnealing:
-                                        * OptimizeMapping_SA
-                                        * NextTemp
-                                        * CalculateSlopeOfCost
-                                        * Metropolis
-                                        * MoveToAnotherSolution
-
-    --------------------------------------------------
-    List of functions without Test:
-
-    --------------------------------------------------
-    To be Read:
-    - GigaNoC architecture (Self-optimization of MPSoCs Targeting
-      Resource Efficiency and Fault Tolerance-2009)
-    - Core Salvaging
