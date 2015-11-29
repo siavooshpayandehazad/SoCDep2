@@ -1,6 +1,24 @@
 READMEFILE="../../../README.txt"
 
 echo ==============================================================================		> $READMEFILE
+echo "	  _________      .__               .___    .__" >> $READMEFILE 		
+echo "	 /   _____/ ____ |  |__   ____   __| _/_ __|  |   ____" >> $READMEFILE
+echo "	 \_____  \_/ ___\|  |  \_/ __ \ / __ |  |  \  | _/ __ \ " >> $READMEFILE
+echo "	 /        \  \___|   Y  \  ___// /_/ |  |  /  |_\  ___/" >> $READMEFILE
+echo "	/_______  /\___  >___|  /\___  >____ |____/|____/\___  >" >> $READMEFILE
+echo "	        \/     \/     \/     \/     \/               \/	" >> $READMEFILE
+echo "	                   .___" >> $READMEFILE
+echo "	_____    ____    __| _/" >> $READMEFILE
+echo "	\__  \  /    \  / __ |" >> $READMEFILE
+echo "	 / __ \|   |  \/ /_/ |" >> $READMEFILE
+echo "	(____  /___|  /\____ |" >> $READMEFILE
+echo "	     \/     \/      \/" >> $READMEFILE
+echo "	________                                   .___" >> $READMEFILE
+echo "	\______ \   ____ ______   ____   ____    __| _/" >> $READMEFILE
+echo "	 |    |  \_/ __ \\____ \_/ __ \ /    \  / __ | " >> $READMEFILE
+echo "	 |    \`   \  ___/|  |_> >  ___/|   |  \/ /_/ | " >> $READMEFILE
+echo "	/_______  /\___  >   __/ \___  >___|  /\____ | " >> $READMEFILE
+echo "	        \/     \/|__|        \/     \/      \/  " >> $READMEFILE
 echo ==============================================================================		>> $READMEFILE
 echo AUTHORS:  																			>> $READMEFILE
 echo ' \t '		SIAVOOSH PAYANDEH AZAD													>> $READMEFILE
