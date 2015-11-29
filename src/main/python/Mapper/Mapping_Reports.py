@@ -279,7 +279,10 @@ def VizCostSlope():
 
 
 def VizHuangRace():
-
+    """
+    Visualizes The progress of Huang's cooling scheduling counters progress
+    :return:    None
+    """
     print ("===========================================")
     print ("GENERATING HUANG COUNTERS STATES VISUALIZATION...")
     fig, ax1 = plt.subplots()

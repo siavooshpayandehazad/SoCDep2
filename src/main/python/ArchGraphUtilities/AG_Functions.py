@@ -297,6 +297,12 @@ def ManhattanDistance(Node1, Node2):
 
 
 def SetupNetworkPartitioning(AG):
+    """
+    Takes Architecture Graph as parameter and different regions from
+    Config File and Sets up the partitioning for different regions
+    :param AG: Architecture Graph
+    :return: None
+    """
     # Todo: This needs to be tested...
     print ("===========================================")
     print ("SETTING UP NETWORK PARTITIONING...")
@@ -338,6 +344,11 @@ def SetupNetworkPartitioning(AG):
     return None
 
 def RandomDarkness(AG):
+    """
+    Takes the percentage of Dark Nodes form the Config File and turns of some Nodes.
+    :param AG: Architecture Graph
+    :return: None
+    """
     NumberOfDarkNodes = int(ceil(len(AG.nodes())*Config.DarkSiliconPercentage))
     for i in range(0,NumberOfDarkNodes):
         Node = random.choice(AG.nodes())

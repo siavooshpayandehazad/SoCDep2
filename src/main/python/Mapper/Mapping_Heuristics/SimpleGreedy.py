@@ -7,13 +7,12 @@ import random
 
 def Min_Min_Mapping (TG, AG, NoCRG, SHM, logging):
     """
-
-    :param TG:
-    :param AG:
-    :param NoCRG:
+    :param TG: Task Graph
+    :param AG: Architecture Graph
+    :param NoCRG: NoC Routing Graph
     :param SHM: System Health Map
-    :param logging:
-    :return:
+    :param logging: logging file
+    :return: (TG, AG)
     """
     # this function finds the task with the smallest WCET and
     # maps it on the machine that can offer smallest completion time...
@@ -54,12 +53,12 @@ def Min_Min_Mapping (TG, AG, NoCRG, SHM, logging):
 def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
     """
 
-    :param TG:
-    :param AG:
-    :param NoCRG:
+    :param TG: Task Graph
+    :param AG: Architecture Graph
+    :param NoCRG: NoC Routing Graph
     :param SHM: System Health Map
-    :param logging:
-    :return:
+    :param logging: logging file
+    :return: (TG, AG)
     """
     # this function finds the task with the biggest WCET and
     # maps it on the machine that can offer smallest completion time...
@@ -103,12 +102,11 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
 
 def MinExecutionTime(TG, AG, SHM, logging):
     """
-
-    :param TG:
-    :param AG:
+    :param TG: Task Graph
+    :param AG: Architecture Graph
     :param SHM: System Health Map
-    :param logging:
-    :return:
+    :param logging: logging file
+    :return: (TG, AG)
     """
     # this sounds a little stupid because there are no job specific machines...
     # we can Add Specific Accelerators or define different run time on different
@@ -134,6 +132,13 @@ def MinExecutionTime(TG, AG, SHM, logging):
     return TG, AG
 
 def MinimumCompletionTime(TG, AG, SHM, logging):
+    """
+    :param TG: Task Graph
+    :param AG: Architecture Graph
+    :param SHM: System Health Map
+    :param logging: logging File
+    :return: (TG, AG)
+    """
     # The difference with Min Min or Max Min is that we don't add priorities to
     # tasks based on their WCET but we randomly choose a task and schedule it...
     # Note :: This heuristic is not taking task ciriticality into account...

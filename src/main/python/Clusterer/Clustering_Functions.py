@@ -2,7 +2,7 @@
 
 
 import statistics
-import ClusteringReports
+import Clustering_Reports
 from ConfigAndPackages import Config
 import random
 
@@ -28,7 +28,7 @@ def RemoveTaskFromCTG(TG, CTG, Task):
                     #    SourceCluster, "--->", DestCluster)
                     if (SourceCluster,DestCluster) not in CTG.edges():
                         print ("\t\033[31mERROR\033[0m:: EDGE ",SourceCluster, "--->", DestCluster,"DOESNT EXIST")
-                        ClusteringReports.ReportCTG(CTG,"CTG_Error.png")
+                        Clustering_Reports.ReportCTG(CTG,"CTG_Error.png")
                         raise ValueError("RemoveTaskFromCTG::EDGE DOESNT EXIST")
                     else:
                         if CTG.edge[SourceCluster][DestCluster]['Weight'] - WeightToRemove >= 0:

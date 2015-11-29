@@ -167,8 +167,37 @@ ToDo:
     - We have to add some constraints on Test scheduling regarding peak power etc. 
     --------------------------------------------------
     List of functions without DocString:
+    #todo: I have to make generation of this list automatic with some sort of scripting... (This is not healthy)
+        * ArchGraphUtilities/AG_Tests:
+                                        * AG_Test
+        * ArchGraphUtilities/Optimize_3D_AG:
+                                        * OptimizeAG_VL
+                                        * OptimizeAG_VL_IterativeLocalSearch
+                                        * OptimizeAG_VL_LocalSearch
+                                        * FindAll_VL
+                                        * RemoveAll_VL
+                                        * FindFeasibleAG_VL
+                                        * ReturnToSolution
+                                        * MoveToNewVLConfig
+                                        * CleanUpAG
+        * Clusterer/Clustering_Function:
+                                        * TaskCirculation
+        * Clusterer/ClusteringReports:
+                                        * ReportCTG
+        * Mapper/Mapping_Functions:
+                                        * CalculateReliabilityCost
 
-    Clusterer/Clustering_Functions: RemoveTaskFromCTG
+        * Mapper/Mapping_Heuristics/Local_Search:
+                                        * OptimizeMappingLocalSearch
+                                        * OptimizeMappingIterativeLocalSearch
+        * Mapper/Mapping_Heuristics/Local_Search:
+                                        * FirstFree
+        * Mapper/Mapping_Heuristics/SimulatedAnnealing:
+                                        * OptimizeMapping_SA
+                                        * NextTemp
+                                        * CalculateSlopeOfCost
+                                        * Metropolis
+                                        * MoveToAnotherSolution
 
     --------------------------------------------------
     List of functions without Test:

@@ -6,6 +6,12 @@ from ConfigAndPackages import Config
 from AG_Functions import ReturnNodeLocation
 
 def DrawArchGraph(AG, FileName):
+    """
+    Generates Visualizations of the Architecture Graph and saves it in "GraphDrawings/FileName.png"
+    :param AG: Architecture Graph
+    :param FileName: Name of the file for saving the graph
+    :return: None
+    """
     POS ={}
     ColorList = []
 

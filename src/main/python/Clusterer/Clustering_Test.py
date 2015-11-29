@@ -1,6 +1,6 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
-import ClusteringReports
+import Clustering_Reports
 
 
 def DoubleCheckCTG(TG, CTG):
@@ -8,7 +8,7 @@ def DoubleCheckCTG(TG, CTG):
     Checks if the clusters info in TG matches with the information in the CTG.
     :param TG: Task Graph
     :param CTG: Clustered Task Graph
-    :return:
+    :return: True if CTG information is the same as TG, False if otherwise
     """
     for Task in TG.nodes():
         Cluster = TG.node[Task]['Cluster']
@@ -16,7 +16,7 @@ def DoubleCheckCTG(TG, CTG):
             if Task not in CTG.node[Cluster]['TaskList']:
                 print ("DOUBLE CHECKING CTG with TG: \t\033[31mFAILED\033[0m")
                 print ("TASK", Task, "DOES NOT EXIST IN CLUSTER:", Cluster)
-                ClusteringReports.ReportCTG(CTG, "CTG_DoubleCheckError.png")
+                Clustering_Reports.ReportCTG(CTG, "CTG_DoubleCheckError.png")
                 return False
             else:
                 # print "DOUBLE CHECKING CTG with TG: OK!"
@@ -24,6 +24,6 @@ def DoubleCheckCTG(TG, CTG):
         else:
             print ("DOUBLE CHECKING CTG with TG: \t\033[31mFAILED\033[0m")
             print ("CLUSTER", Cluster, " DOESNT EXIST...!!!")
-            ClusteringReports.ReportCTG(CTG, "CTG_DoubleCheckError.png")
+            Clustering_Reports.ReportCTG(CTG, "CTG_DoubleCheckError.png")
             raise ValueError("DOUBLE CHECKING CTG with TG FAILED")
     return True

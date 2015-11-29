@@ -9,7 +9,7 @@ import networkx
 from Clustering_Functions import AddTaskToCTG, RemoveTaskFromCTG, ClearClustering, \
     CostFunction,DeleteEmptyClusters, CTG_OptimizationMove
 from Clustering_Test import DoubleCheckCTG
-from ClusteringReports import ReportCTG
+from Clustering_Reports import ReportCTG
 
 def TaskClusterGeneration(NumberOfClusters):
     """

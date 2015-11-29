@@ -11,7 +11,7 @@ from math import ceil
 
 def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Report, logging):
     """
-
+    Generates Initial Mapping
     :param TG:  Task Graph
     :param CTG: Clustered Task Graph
     :param AG:  Architecture Graph
@@ -23,6 +23,7 @@ def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Repor
     :param logging: Logging File
     :return: True if mapping pass with success False if mapping fails
     """
+    #todo: It Fails if it attempts n Times and fails... its not the best way to make sure...
     if Report: print ("===========================================")
     if Report: print ("STARTING INITIAL MAPPING...")
     Itteration=0
@@ -54,7 +55,7 @@ def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Repor
 
 def MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging):
     """
-
+    Maps a task from Task Graph to a specific Node in Architecture Graph
     :param TG:  Task Graph
     :param AG: Architecture Graph
     :param SHM: System Health Map
@@ -126,7 +127,7 @@ def MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, log
 
 def RemoveTaskFromNode(TG, AG, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging):
     """
-
+    Removes a task from TG from a certain Node in AG
     :param TG:  Task Graph
     :param AG:  Architecture Graph
     :param NoCRG:   NoC routing graph
@@ -173,7 +174,7 @@ def RemoveTaskFromNode(TG, AG, NoCRG, CriticalRG, NonCriticalRG, Task, Node, log
 
 def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster, Node, logging):
     """
-
+    Adds a Cluster from CTG and all its Task to a Node from Architecture Graph
     :param TG:  Task Graph
     :param CTG: Clustered Task Graph
     :param AG:  Architecture Graph
@@ -267,7 +268,7 @@ def AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster
 
 def RemoveClusterFromNode(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, Cluster, Node, logging):
     """
-
+    removes a cluster and all its tasks from a certain Node from Architecture Graph(AG)
     :param TG: Task Graph
     :param CTG: Clustered task Graph
     :param AG:  Architecture Graph
@@ -354,7 +355,7 @@ def ClearMapping(TG, CTG, AG):
 
 def CostFunction(TG, AG, SHM, Report, InitialMappingString = None):
     """
-
+    Calculates the Costs of a mapping based on the configurations of Config file
     :param TG: Task Graph
     :param AG: Architecture Graph
     :param SHM: System Health Map
@@ -420,7 +421,7 @@ def CalculateReliabilityCost(TG, NoCRG, logging):
 
 def FindUnMappedTaskWithSmallestWCET(TG, logging):
     """
-
+    Finds the list of shortest(with Smallest WCET) unmapped Tasks from TG...
     :param TG: Task Graph
     :param logging: logging File
     :return: list of shortest un-mapped Tasks
@@ -442,7 +443,7 @@ def FindUnMappedTaskWithSmallestWCET(TG, logging):
 
 def FindUnMappedTaskWithBiggestWCET(TG, logging):
     """
-
+    Finds and returns a list of longest (with the biggest WCET) unmapped tasks from TG
     :param TG: Task Graph
     :param logging: logging File
     :return: list of longest unmapped tasks
@@ -511,7 +512,7 @@ def FindNodeWithSmallestCompletionTime(AG, TG, SHM, Task):
 
 def FindFastestNodes(AG, SHM, TaskToBeMapped):
     """
-
+    Finds the fastest Nodes in AG
     :param AG:  Architecture Graph
     :param SHM: System Health Map
     :param TaskToBeMapped:
