@@ -5,7 +5,7 @@ import copy, time
 from ConfigAndPackages import Config
 import Scheduler
 import Mapping_Functions, Mapping_Reports, Mapping_Animation
-from Clusterer import Clustering, ClusteringReports, Clustering_Functions
+from Clusterer import Clustering, Clustering_Reports, Clustering_Functions
 from Mapping_Heuristics import SimpleGreedy,Local_Search,SimulatedAnnealing,NMap
 from Scheduler import Scheduler,Scheduling_Reports, Scheduling_Functions
 
@@ -70,13 +70,13 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 CTG = copy.deepcopy(BestClustering)
                 del BestClustering, BestTaskGraph
                 # Clustering_Test.DoubleCheckCTG(TG, CTG)
-                ClusteringReports.ReportCTG(CTG, "CTG_PostOpt.png")
-                ClusteringReports.VizClusteringOpt()
+                Clustering_Reports.ReportCTG(CTG, "CTG_PostOpt.png")
+                Clustering_Reports.VizClusteringOpt()
             else:
                 print ("CLUSTERING OPTIMIZATION TURNED OFF...")
                 print ("REMOVING EMPTY CLUSTERS...")
                 Clustering_Functions.DeleteEmptyClusters(CTG)
-                ClusteringReports.ReportCTG(CTG, "CTG_PostCleaning.png")
+                Clustering_Reports.ReportCTG(CTG, "CTG_PostCleaning.png")
 
             print ("\033[92mTIME::\033[0m CLUSTERING AND OPTIMIZATION TOOK: "
                    +str(round(time.time()-ClusteringStartTime))+" SECONDS")

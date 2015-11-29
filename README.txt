@@ -46,7 +46,7 @@ src
  |          |          ├------- Clustering
  |          |          ├------- Clustering_Functions
  |          |          └------- Clustering_Test
- |          |          └------- ClusteringReports
+ |          |          └------- Clustering_Reports
  |          ├------ConfigAndPackages
  |          |          ├------- Config
  |          |          └------- PackageFile
@@ -182,7 +182,7 @@ ToDo:
                                         * CleanUpAG
         * Clusterer/Clustering_Function:
                                         * TaskCirculation
-        * Clusterer/ClusteringReports:
+        * Clusterer/Clustering_Reports:
                                         * ReportCTG
         * Mapper/Mapping_Functions:
                                         * CalculateReliabilityCost
