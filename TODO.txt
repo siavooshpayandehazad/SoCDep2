@@ -1,0 +1,105 @@
+ToDo:
+
+    - I want to run a reliability Analysis of the system... so we can have
+      a sense about the system state...
+
+    - We need to implement some test routine where we can schedule
+      Test-Tasks where one PE tests another. we can use TTG made based
+      on PMC model for this.
+
+    - can we generate some file based on scheduling to feed in Noxim?
+
+    - can we get TG specifications automatically from some benchmark alg??
+
+    - Generate multiple levels of priority levels for Non/Mid-critical tasks
+
+    - Genetics Algorithm for Mapping
+
+    - Add Boltzmann cooling for SA
+
+    - Support for virtual channels!
+
+    - Some 8-bit background music during execution of the program would be
+      really cool. Something like this maybe:
+      https://soundcloud.com/eric-skiff/hhavok-intro
+
+    - Implement Memory Usage Profiler (want to make sure if we have
+      memory leak)
+
+    - Can we exploit the idea of repetition in TG during scheduling?
+
+    - Checking if a re-mapping/scheduling is necessary considering the
+      fault that has occurred... (with Karl)
+
+    - Adding color bar for mapping graphs
+
+    - Visualizing transient faults in scheduling gantt charts
+
+    - Adding support for preemption: if we have T1 and T2 then with preemption
+      T2 can interrupt T1 and execution would maybe T11->T2->T12
+        - we need to write a function that breaks tasks into parts...
+        - we would not have preemption in communication tasks
+
+    - we need to have a deadline for the whole task graph
+
+    - Can we implement something like Core-Cannibalization method for
+      Router's control unit etc.?
+
+    - Can we have some sort of local repair?
+
+    - for later time we need to schedule flits in the critical domain
+      with a model of the router with latency etc considered (low
+      priority- thesis of Mihkel Tagel)
+
+    - we need to add 0 weight communication between the tasks just to
+      establish precedence without data dependence. (we can have this
+      in the data dependence assumptions)
+
+    - can we identify two cores that we can just swap their mapped
+      tasks and it doesnt change any other traffic on the network?
+
+    - Take mobility into account for scheduling
+
+    - We have to add some constraints on Test scheduling regarding peak power etc. 
+    --------------------------------------------------
+    List of functions without DocString:
+    #todo: I have to make generation of this list automatic with some sort of scripting... (This is not healthy)
+        * ArchGraphUtilities/AG_Tests:
+                                        * AG_Test
+        * ArchGraphUtilities/Optimize_3D_AG:
+                                        * OptimizeAG_VL
+                                        * OptimizeAG_VL_IterativeLocalSearch
+                                        * OptimizeAG_VL_LocalSearch
+                                        * FindAll_VL
+                                        * RemoveAll_VL
+                                        * FindFeasibleAG_VL
+                                        * ReturnToSolution
+                                        * MoveToNewVLConfig
+                                        * CleanUpAG
+        * Clusterer/Clustering_Function:
+                                        * TaskCirculation
+        * Clusterer/Clustering_Reports:
+                                        * ReportCTG
+        * Mapper/Mapping_Functions:
+                                        * CalculateReliabilityCost
+
+        * Mapper/Mapping_Heuristics/Local_Search:
+                                        * OptimizeMappingLocalSearch
+                                        * OptimizeMappingIterativeLocalSearch
+        * Mapper/Mapping_Heuristics/Local_Search:
+                                        * FirstFree
+        * Mapper/Mapping_Heuristics/SimulatedAnnealing:
+                                        * OptimizeMapping_SA
+                                        * NextTemp
+                                        * CalculateSlopeOfCost
+                                        * Metropolis
+                                        * MoveToAnotherSolution
+
+    --------------------------------------------------
+    List of functions without Test:
+
+    --------------------------------------------------
+    To be Read:
+    - GigaNoC architecture (Self-optimization of MPSoCs Targeting
+      Resource Efficiency and Fault Tolerance-2009)
+    - Core Salvaging
