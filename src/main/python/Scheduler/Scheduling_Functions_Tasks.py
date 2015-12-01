@@ -69,16 +69,22 @@ def FindTaskPredecessorsFinishTime(TG, AG, Task, CriticalityLevel):
                     Node = TG.node[Predecessor]['Node']
                     if Predecessor in AG.node[Node]['PE'].Scheduling:             # if this task is scheduled
                         FinishTime = max(AG.node[Node]['PE'].Scheduling[Predecessor][1], FinishTime)
+    #for Edge in TG.edges():
+    #    if Edge[1] == Task:
+    #        # if TG.edge[Edge[0]][Edge[1]]['Criticality'] == CriticalityLevel:
+    #            if len(TG.edge[Edge[0]][Edge[1]]['Link']) > 0:    # if the edge is mapped
+    #                # TG.edge[Edge[0]][Edge[1]]['Link'] is a list of tuples of (batch, Link)
+    #                for BatchAndLink in TG.edge[Edge[0]][Edge[1]]['Link']:     # for each link that this edge goes through
+    #                    Link = BatchAndLink[1]
+    #                    if len(AG.edge[Link[0]][Link[1]]['Scheduling']) > 0:
+    #                        if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:     # if this edge is scheduled
+    #                            for ScheduleAndBatch in AG.edge[Link[0]][Link[1]]['Scheduling'][Edge]:
+    #                                EndTime = ScheduleAndBatch[1]
+    #                                FinishTime = max(EndTime, FinishTime)
+    CurrentNode = TG.node[Task]['Node']
     for Edge in TG.edges():
         if Edge[1] == Task:
-            # if TG.edge[Edge[0]][Edge[1]]['Criticality'] == CriticalityLevel:
-                if len(TG.edge[Edge[0]][Edge[1]]['Link']) > 0:    # if the edge is mapped
-                    # TG.edge[Edge[0]][Edge[1]]['Link'] is a list of tuples of (batch, Link)
-                    for BatchAndLink in TG.edge[Edge[0]][Edge[1]]['Link']:     # for each link that this edge goes through
-                        Link = BatchAndLink[1]
-                        if len(AG.edge[Link[0]][Link[1]]['Scheduling']) > 0:
-                            if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:     # if this edge is scheduled
-                                for ScheduleAndBatch in AG.edge[Link[0]][Link[1]]['Scheduling'][Edge]:
-                                    EndTime = ScheduleAndBatch[1]
-                                    FinishTime = max(EndTime, FinishTime)
+            if Edge in AG.node[CurrentNode]['Router'].Scheduling:
+                for ScheduleAndBatch in AG.node[CurrentNode]['Router'].Scheduling[Edge]:
+                    FinishTime = max(ScheduleAndBatch[1], FinishTime)
     return FinishTime

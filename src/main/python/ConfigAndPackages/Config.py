@@ -17,9 +17,9 @@ EventDrivenFaultInjection = True
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile'
 TG_Type = 'RandomDependent'
 # For Random TG_Type:
-NumberOfTasks = 9
+NumberOfTasks = 15
 NumberOfCriticalTasks = 0
-NumberOfEdges = 15
+NumberOfEdges = 25
 WCET_Range = 15
 EdgeWeightRange = 7
 Release_Range = 5      # task release time range
@@ -74,7 +74,7 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 # Available Turn Models :
 #         2D Turn Models: XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel
 #         3D Turn Models: XYZ_TurnModel, NegativeFirst3D_TurnModel
-UsedTurnModel = PackageFile.XY_TurnModel
+UsedTurnModel = PackageFile.WestFirst_TurnModel
 # Available choices: 'MinimalPath', 'NonMinimalPath'
 RotingType = 'MinimalPath'
 RoutingFilePath = "User_Inputs/RoutingFile.txt"
@@ -143,7 +143,7 @@ MaxTemp = 100
 ################################################
 #          Clustering Function  Config
 ################################################
-Clustering_Optimization = True     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
+Clustering_Optimization = False     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
 ClusteringIteration = 2000
 Clustering_Report = False
 Clustering_DetailedReport = False
@@ -168,7 +168,7 @@ CTG_CirculationLength = 3
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
 Mapping_Function = 'LocalSearch'
-LocalSearchIteration = 100
+LocalSearchIteration = 10
 IterativeLocalSearchIterations = 20
 #######################
 SimulatedAnnealingIteration = 50000
@@ -234,8 +234,8 @@ DistanceBetweenMapping = False
 ################################################
 #          Scheduling  Config
 ################################################
-Communication_SlackCount = 2      # this is used for number of repetitions of the critical packets
-Task_SlackCount = 1               # this is used for number of repetitions of the critical tasks
+Communication_SlackCount = 0      # this is used for number of repetitions of the critical packets
+Task_SlackCount = 0               # this is used for number of repetitions of the critical tasks
 ################################################
 #          System's Fault  Config
 ################################################

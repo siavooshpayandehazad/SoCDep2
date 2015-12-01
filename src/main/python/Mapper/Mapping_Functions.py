@@ -306,7 +306,8 @@ def RemoveClusterFromNode(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, Cluster
                                 for Edge in ListOfEdges:
                                     if Edge in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
                                         del AG.edge[Link[0]][Link[1]]['MappedTasks'][Edge]
-                                        del AG.node[Link[0]]['Router'].MappedTasks[Edge]
+                                        if Edge in AG.node[Link[0]]['Router'].MappedTasks.keys():
+                                            del AG.node[Link[0]]['Router'].MappedTasks[Edge]
                                         logging.info("\t\t\t\tRemoving Packet "+str(Edge)+" To Router:"+str(Link[0]))
                                         for LinkAndBatch in TG.edge[Edge[0]][Edge[1]]['Link']:
                                             if LinkAndBatch[1] == Link:

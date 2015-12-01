@@ -13,6 +13,7 @@ def FindScheduleMakeSpan(AG):
 def ClearScheduling(AG, TG):
     for Node in AG.nodes():
         AG.node[Node]['PE'].Scheduling = {}
+        AG.node[Node]['Router'].Scheduling = {}
     for Link in AG.edges():
         AG.edge[Link[0]][Link[1]]['Scheduling'] = {}
     return None
