@@ -1,12 +1,11 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
 from TaskGraphUtilities import TG_Functions
-from Scheduling_Functions import Add_TG_TaskToNode
 from Scheduling_Functions import FindScheduleMakeSpan
-from Scheduling_Functions import FindEdge_ASAP_Scheduling, FindTask_ASAP_Scheduling
-from Scheduling_Functions import FindTestTask_ASAP_Scheduling, FindTestEdge_ASAP_Scheduling
-from Scheduling_Functions import Add_TG_EdgeTo_link
-
+from Scheduling_Functions_Tasks import FindTask_ASAP_Scheduling, FindTestTask_ASAP_Scheduling
+from Scheduling_Functions_Edges import FindEdge_ASAP_Scheduling, FindTestEdge_ASAP_Scheduling
+from Scheduling_Functions_Links import Add_TG_EdgeTo_link
+from Scheduling_Functions_Nodes import Add_TG_TaskToNode
 
 def ScheduleAll(TG, AG, SHM, Report, DetailedReport, logging):
     """

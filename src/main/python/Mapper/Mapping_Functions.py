@@ -1,7 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
 from RoutingAlgorithms import Routing
-from Scheduler import Scheduling_Functions
+from Scheduler import Scheduling_Functions_Nodes, Scheduling_Functions_Links
 from ConfigAndPackages import Config
 import statistics
 import random
@@ -367,10 +367,10 @@ def CostFunction(TG, AG, SHM, Report, InitialMappingString = None):
     LinkMakeSpanList = []
     for Node in AG.nodes():
         if SHM.node[Node]['NodeHealth'] and (not AG.node[Node]['PE'].Dark):
-            NodeMakeSpanList.append(Scheduling_Functions.FindLastAllocatedTimeOnNode(TG, AG, Node, logging=None))
+            NodeMakeSpanList.append(Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(TG, AG, Node, logging=None))
     for link in AG.edges():
         if SHM.edge[link[0]][link[1]]['LinkHealth']:
-            LinkMakeSpanList.append(Scheduling_Functions.FindLastAllocatedTimeOnLink(TG, AG, link, logging=None))
+            LinkMakeSpanList.append(Scheduling_Functions_Links.FindLastAllocatedTimeOnLink(TG, AG, link, logging=None))
     NodeMakeSpan_Stdev = statistics.stdev(NodeMakeSpanList)
     NodeMakeSpan_Max = max(NodeMakeSpanList)
     LinkMakeSpan_Stdev = statistics.stdev(LinkMakeSpanList)

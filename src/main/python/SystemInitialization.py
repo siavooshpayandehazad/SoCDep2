@@ -4,16 +4,20 @@ import copy, time
 
 from ConfigAndPackages import Config
 from Mapper import Mapping, Mapping_Reports, Mapping_Animation
-from Scheduler import Scheduling_Reports
+from Scheduler import Scheduling_Reports, TrafficTableGenerator, Scheduler
 from SystemHealthMonitoring import SystemHealthMonitoringUnit, SHMU_Reports, SHMU_Functions, TestSchedulingUnit, SHMU_Test
 from TaskGraphUtilities import Task_Graph_Reports, TG_Functions, TG_Test
 from RoutingAlgorithms import Routing, Calculate_Reachability, ReachabilityReports, RoutingGraph_Reports, Reachability_Test
 from ArchGraphUtilities import Arch_Graph_Reports, AG_Functions, AG_Test, Optimize_3D_AG
-from Scheduler import TrafficTableGenerator, Scheduler
-
 
 
 def InitializeSystem(logging):
+    """
+    Generates the Task graoh, Architecture Graph, System Health Monitoring Unit, NoC routing graph(s) and
+    Test Task Graphs and does the mapping and scheduling and returns to the user the initial system
+    :param logging: logging file
+    :return:  TG, AG, SHMU, NoCRG, CriticalRG, NonCriticalRG, PMCG
+    """
     TG = copy.deepcopy(TG_Functions.GenerateTG())
     Task_Graph_Reports.ReportTaskGraph(TG, logging)
     Task_Graph_Reports.DrawTaskGraph(TG)
@@ -110,7 +114,7 @@ def InitializeSystem(logging):
         TestSchedulingUnit.InsertTestTasksInTG(PMCG, TG)
         Task_Graph_Reports.DrawTaskGraph(TG, TTG=TTG)
         TestSchedulingUnit.MapTestTasks(TG, AG, SHMU.SHM, NoCRG, logging)
-        Scheduler.ScheduleTestInTG(TG, AG, SHMU, False, logging)
+        Scheduler.ScheduleTestInTG(TG, AG, SHMU.SHM, False, logging)
         Scheduling_Reports.ReportMappedTasks(AG, logging)
         # TestSchedulingUnit.RemoveTestTasksFromTG(TTG, TG)
         # Task_Graph_Reports.DrawTaskGraph(TG, TTG=TTG)

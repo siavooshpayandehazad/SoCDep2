@@ -1,0 +1,7 @@
+OLDIFS=$IFS
+IFS='
+'
+
+grep -r -A 1 'def ' ../python > Results.txt
+
+IFS=$OLDIFS
