@@ -61,7 +61,7 @@ def GenerateGanttCharts(TG, AG, FileName):
 
     NodeCounter = 0
     RouterCounter = 0
-    EdgeCounter = 0
+    LinkCounter = 0
     for Node in AG.nodes():
         if len(AG.node[Node]['PE'].MappedTasks) > 0:
             NodeCounter += 1
@@ -69,13 +69,29 @@ def GenerateGanttCharts(TG, AG, FileName):
             RouterCounter += 1
     for Link in AG.edges():
         if len(AG.edge[Link[0]][Link[1]]['MappedTasks']) > 0:
-            EdgeCounter += 1
-    NumberOfPlots = NodeCounter + EdgeCounter + RouterCounter
+            LinkCounter += 1
+    NumberOfPlots = NodeCounter + LinkCounter + RouterCounter
     if NumberOfPlots < 10:
         NumberOfPlots = 10
-    Count = 1
+    count = 1
     fig = plt.figure(figsize=(Max_Time/10+1, NumberOfPlots/2))
     plt.subplots_adjust(hspace=0.1)
+    count, ax1 = Add_PEs_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, Max_Time, count)
+    count, ax1 = Add_Routers_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, Max_Time, count)
+    count, ax1 = Add_Links_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter,
+                                      RouterCounter, Max_Time, count)
+
+    if LinkCounter+NodeCounter+RouterCounter > 0:
+        ax1.xaxis.set_ticks_position('bottom')
+    plt.savefig("GraphDrawings/"+FileName+".png", dpi=200)
+    plt.clf()
+    plt.close(fig)
+    print ("\033[35m* VIZ::\033[0mSCHEDULING GANTT CHARTS CREATED AT: GraphDrawings/Scheduling.png")
+    return None
+
+
+def Add_PEs_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, Max_Time, Count):
+    ax1 = None
     for Node in AG.nodes():
         if len(AG.node[Node]['PE'].MappedTasks) > 0:
             ax1 = fig.add_subplot(NumberOfPlots, 1, Count)
@@ -143,14 +159,15 @@ def GenerateGanttCharts(TG, AG, FileName):
                     if Config.Task_SlackCount > 0:
                         ax1.fill_between(Slack_T, Slack_P, 0, facecolor='#808080', edgecolor='k')
             plt.setp(ax1.get_yticklabels(), visible=False)
-            if Count < EdgeCounter + NodeCounter:
+            if Count < LinkCounter + NodeCounter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
 
             for Task in AG.node[Node]['PE'].MappedTasks:
                 if Task in AG.node[Node]['PE'].Scheduling:
                     StartTime = AG.node[Node]['PE'].Scheduling[Task][0]
                     if TG.node[Task]['Criticality'] == 'H':
-                        TaskLength = (AG.node[Node]['PE'].Scheduling[Task][1] - AG.node[Node]['PE'].Scheduling[Task][0])/(Config.Task_SlackCount+1)
+                        TaskLength = (AG.node[Node]['PE'].Scheduling[Task][1] -
+                                      AG.node[Node]['PE'].Scheduling[Task][0])/(Config.Task_SlackCount+1)
                         ax1.text(StartTime+(TaskLength)/2 - len(str(Task))/2, 0.01, str(Task), fontsize=10)
                         EndTime = AG.node[Node]['PE'].Scheduling[Task][1]
                         if Config.Task_SlackCount > 0:
@@ -162,7 +179,22 @@ def GenerateGanttCharts(TG, AG, FileName):
             ax1.yaxis.set_label_coords(-0.08, 0)
             ax1.set_ylabel(r'PE'+str(Node), size=14, rotation=0)
             Count += 1
+    return Count, ax1
 
+
+def Add_Routers_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, Max_Time, Count):
+    """
+    :param TG: Task Graph
+    :param AG: Architecture Graph
+    :param NumberOfPlots: Total Number of plots (All PEs that have mapping+All routers that pass a packet+all links)
+    :param fig: a mathplotlib figure
+    :param NodeCounter: counter that shows number of active nodes
+    :param LinkCounter: counter that shows the number of active links
+    :param Max_Time: maximum execution time on the network
+    :param Count: counter of the number of plots added to this point
+    :return: Count ,ax1
+    """
+    ax1 = None
     for Node in AG.nodes():
         if len(AG.node[Node]['Router'].MappedTasks) > 0:
             ax1 = fig.add_subplot(NumberOfPlots, 1, Count)
@@ -296,13 +328,17 @@ def GenerateGanttCharts(TG, AG, FileName):
                     ax1.fill_between(Slack_T, Slack_P, 0, color='#808080', edgecolor='#808080')
 
             plt.setp(ax1.get_yticklabels(), visible=False)
-            if Count < EdgeCounter+NodeCounter:
+            if Count < LinkCounter+NodeCounter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
 
             ax1.yaxis.set_label_coords(-0.08, 0)
             ax1.set_ylabel(r'R'+str(Node), size=14, rotation=0)
             Count += 1
+    return Count, ax1
 
+
+def Add_Links_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, RouterCounter, Max_Time, Count):
+    ax1 = None
     for Link in AG.edges():
         if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
             ax1 = fig.add_subplot(NumberOfPlots, 1, Count)
@@ -436,16 +472,10 @@ def GenerateGanttCharts(TG, AG, FileName):
                     ax1.fill_between(Slack_T, Slack_P, 0, color='#808080', edgecolor='#808080')
 
             plt.setp(ax1.get_yticklabels(), visible=False)
-            if Count < EdgeCounter+NodeCounter+RouterCounter-1:
+            if Count < LinkCounter + NodeCounter + RouterCounter - 1:
                 plt.setp(ax1.get_xticklabels(), visible=False)
 
             ax1.yaxis.set_label_coords(-0.08, 0)
             ax1.set_ylabel(r'L'+str(Link), size=14, rotation=0)
             Count += 1
-    if EdgeCounter+NodeCounter+RouterCounter > 0:
-        ax1.xaxis.set_ticks_position('bottom')
-    plt.savefig("GraphDrawings/"+FileName+".png", dpi=200)
-    plt.clf()
-    plt.close(fig)
-    print ("\033[35m* VIZ::\033[0mSCHEDULING GANTT CHARTS CREATED AT: GraphDrawings/Scheduling.png")
-    return None
+    return Count, ax1

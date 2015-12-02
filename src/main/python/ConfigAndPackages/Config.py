@@ -74,7 +74,7 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 # Available Turn Models :
 #         2D Turn Models: XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel
 #         3D Turn Models: XYZ_TurnModel, NegativeFirst3D_TurnModel
-UsedTurnModel = PackageFile.WestFirst_TurnModel
+UsedTurnModel = PackageFile.XY_TurnModel
 # Available choices: 'MinimalPath', 'NonMinimalPath'
 RotingType = 'MinimalPath'
 RoutingFilePath = "User_Inputs/RoutingFile.txt"

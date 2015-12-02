@@ -49,9 +49,7 @@ def FindEdgePredecessorsFinishTime(TG, AG, Edge, batch):
     if Edge[0] in AG.node[SourceNode]['PE'].Scheduling:
         FinishTime = max (AG.node[SourceNode]['PE'].Scheduling[Edge[0]][1], FinishTime)
 
-    DestinationNode = TG.node[Edge[1]]['Node']
     for Link in AG.edges():
-    #    if Link[1] == DestinationNode:
             # if they are incoming links
             if Edge in AG.edge[Link[0]][Link[1]]['Scheduling']:
                 for ScheduleAndBatch in AG.edge[Link[0]][Link[1]]['Scheduling'][Edge]:
