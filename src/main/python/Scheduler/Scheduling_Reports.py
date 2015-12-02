@@ -76,8 +76,8 @@ def GenerateGanttCharts(TG, AG, FileName):
     count = 1
     fig = plt.figure(figsize=(Max_Time/10+1, NumberOfPlots/2))
     plt.subplots_adjust(hspace=0.1)
-    count, ax1 = Add_PEs_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, Max_Time, count)
-    count, ax1 = Add_Routers_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, Max_Time, count)
+    count, ax1 = Add_PEs_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, RouterCounter, Max_Time, count)
+    count, ax1 = Add_Routers_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter,RouterCounter, Max_Time, count)
     count, ax1 = Add_Links_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter,
                                       RouterCounter, Max_Time, count)
 
@@ -90,7 +90,7 @@ def GenerateGanttCharts(TG, AG, FileName):
     return None
 
 
-def Add_PEs_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, Max_Time, Count):
+def Add_PEs_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, RouterCounter, Max_Time, Count):
     ax1 = None
     for Node in AG.nodes():
         if len(AG.node[Node]['PE'].MappedTasks) > 0:
@@ -159,7 +159,7 @@ def Add_PEs_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, Max
                     if Config.Task_SlackCount > 0:
                         ax1.fill_between(Slack_T, Slack_P, 0, facecolor='#808080', edgecolor='k')
             plt.setp(ax1.get_yticklabels(), visible=False)
-            if Count < LinkCounter + NodeCounter:
+            if Count < LinkCounter + NodeCounter + RouterCounter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
 
             for Task in AG.node[Node]['PE'].MappedTasks:
@@ -182,7 +182,7 @@ def Add_PEs_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, Max
     return Count, ax1
 
 
-def Add_Routers_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, Max_Time, Count):
+def Add_Routers_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, RouterCounter, Max_Time, Count):
     """
     :param TG: Task Graph
     :param AG: Architecture Graph
@@ -328,7 +328,7 @@ def Add_Routers_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter,
                     ax1.fill_between(Slack_T, Slack_P, 0, color='#808080', edgecolor='#808080')
 
             plt.setp(ax1.get_yticklabels(), visible=False)
-            if Count < LinkCounter+NodeCounter:
+            if Count < LinkCounter+NodeCounter+RouterCounter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
 
             ax1.yaxis.set_label_coords(-0.08, 0)
@@ -472,7 +472,7 @@ def Add_Links_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, R
                     ax1.fill_between(Slack_T, Slack_P, 0, color='#808080', edgecolor='#808080')
 
             plt.setp(ax1.get_yticklabels(), visible=False)
-            if Count < LinkCounter + NodeCounter + RouterCounter - 1:
+            if Count < LinkCounter + NodeCounter + RouterCounter :
                 plt.setp(ax1.get_xticklabels(), visible=False)
 
             ax1.yaxis.set_label_coords(-0.08, 0)

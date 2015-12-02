@@ -273,7 +273,7 @@ else:
 ###############################################
 #           PMCG Config
 ###############################################
-GeneratePMCG = True
+GeneratePMCG = False
 OneStepDiagnosable = False     # set to False if you need Sequentially diagnosable PMCG
 TFaultDiagnosable = None        # one-step t-fault diagnosable system, if set to none, default value would be
 #                                 (n-1)/2

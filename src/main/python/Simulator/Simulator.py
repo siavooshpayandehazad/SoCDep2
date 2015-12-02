@@ -34,6 +34,28 @@ def Processor(env, Node, Schedule):
         else:
             yield env.timeout(1)
 
+def Router(env, Node, Schedule):
+    Found = False
+    TaskNum = None
+    length = 0
+    #print "HERE:",Schedule
+    while True:
+
+        for key in Schedule.keys():
+            if env.now == Schedule[key][0][0]:
+                print float("{0:.1f}".format(env.now)), "\tRouter:: Found Task", key, " to run on Router:", Node
+                length = Schedule[key][0][1]-Schedule[key][0][0]
+                Found = True
+                TaskNum = key
+                break
+        if Found:
+            print float("{0:.1f}".format(env.now)), "\tRouter:: Starting Task", TaskNum, "on Router:", Node
+            yield env.timeout(length)
+            print float("{0:.1f}".format(env.now)), "\tRouter:: Task", TaskNum, "execution finished on Router", Node
+            Found = False
+        else:
+            yield env.timeout(1)
+
 
 def Link(env, Link, Schedule):
     """
@@ -70,6 +92,7 @@ def RunSimualtor(Runtime, AG, SHM, NoCRG):
     for node in AG.nodes():
         # print node, AG.node[node]["Scheduling"]
         env.process(Processor(env, node, AG.node[node]['PE'].Scheduling))
+        env.process(Router(env, node, AG.node[node]['Router'].Scheduling))
     for link in AG.edges():
         # print link, AG.edge[link[0]][link[1]]["Scheduling"]
         env.process(Link(env, link, AG.edge[link[0]][link[1]]["Scheduling"]))
