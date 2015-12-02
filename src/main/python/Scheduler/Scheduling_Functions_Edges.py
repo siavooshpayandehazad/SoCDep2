@@ -55,12 +55,22 @@ def FindEdgePredecessorsFinishTime(TG, AG, Edge, batch):
                 for ScheduleAndBatch in AG.edge[Link[0]][Link[1]]['Scheduling'][Edge]:
                     if ScheduleAndBatch[2] == batch:
                         if ScheduleAndBatch[1] > FinishTime:
-                            FinishTime = ScheduleAndBatch[1]
+                            if Config.FlowControl == "Wormhole":
+                                FinishTime = max (ScheduleAndBatch[0]+1,FinishTime)
+                            elif Config.FlowControl == "StoreAndForward":
+                                FinishTime = max (ScheduleAndBatch[1],FinishTime)
+                            else:
+                                raise ValueError("FlowControl is not supported")
 
     for Node in AG.nodes():
         if Edge in AG.node[Node]['Router'].Scheduling:
             for ScheduleAndBatch in AG.node[Node]['Router'].Scheduling[Edge]:
                 if ScheduleAndBatch[2] == batch:
                     if ScheduleAndBatch[1] > FinishTime:
-                        FinishTime = max (ScheduleAndBatch[1],FinishTime)
+                        if Config.FlowControl == "Wormhole":
+                            FinishTime = max (ScheduleAndBatch[0]+1,FinishTime)
+                        elif Config.FlowControl == "StoreAndForward":
+                            FinishTime = max (ScheduleAndBatch[1],FinishTime)
+                        else:
+                            raise ValueError("FlowControl is not supported")
     return FinishTime

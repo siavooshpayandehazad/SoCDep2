@@ -79,7 +79,8 @@ UsedTurnModel = PackageFile.XY_TurnModel
 RotingType = 'MinimalPath'
 RoutingFilePath = "User_Inputs/RoutingFile.txt"
 SetRoutingFromFile = False
-
+# Flow control switch can be: "StoreAndForward" or "Wormhole"
+FlowControl = "Wormhole"
 ################################################
 #          Dark Silicon  Config
 ################################################
