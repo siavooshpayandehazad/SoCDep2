@@ -71,6 +71,8 @@ class ConfigAppp(Tkinter.Tk):
 
     VLP_Alg_List = ['LocalSearch', 'IterativeLocalSearch']
 
+    FlowControlList = ['Wormhole', 'StoreAndForward']
+
     def __init__(self, parent):
         Tkinter.Tk.__init__(self, parent)
         self.parent = parent
@@ -153,6 +155,12 @@ class ConfigAppp(Tkinter.Tk):
 
         self.RoutingBrowseButton = Tkinter.Button(self, text="Browse", command=self._GetRoutingFile)
 
+        self.FlowControlLabel = Tkinter.Label(self, text="Flow Control:")
+        available_FlowControls = self.FlowControlList
+        self.FlowControl = Tkinter.StringVar()
+        self.FlowControl.set(self.FlowControlList[0])
+        self.FlowControlOption = Tkinter.OptionMenu(self, self.FlowControl, *available_FlowControls,
+                                                    command=self._RoutingFunc)
         # ---------------------------------------------
         #                   Clustering
         # ---------------------------------------------
@@ -472,8 +480,11 @@ class ConfigAppp(Tkinter.Tk):
         self.RoutingTypeOption.grid(column=self.Routing_StartingCol+1, row=self.Routing_StartingRow+2)
         self.RoutingTypeOption.config(state='disable')
 
+        self.FlowControlLabel.grid(column=self.Routing_StartingCol, row=self.Routing_StartingRow+4)
+        self.FlowControlOption.grid(column=self.Routing_StartingCol+1, row=self.Routing_StartingRow+4)
+        self.FlowControlOption.config(state='normal')
         ttk.Separator(self, orient='horizontal').grid(column=self.Routing_StartingCol,
-                                                      row=self.Routing_StartingRow+4, columnspan=2, sticky="ew")
+                                                      row=self.Routing_StartingRow+5, columnspan=2, sticky="ew")
         # ----------------------------------------
         #                   CTG
         # ----------------------------------------
@@ -1234,6 +1245,8 @@ class ConfigAppp(Tkinter.Tk):
             Config.FrameResolution = int(self.FrameRez.get())
 
             # Routing
+            Config.FlowControl = self.FlowControl.get()
+
             if self.Topology.get() == 'From File':
                 Config.SetRoutingFromFile = True
                 Config.RoutingFilePath = self.RoutingBrowse.get()
