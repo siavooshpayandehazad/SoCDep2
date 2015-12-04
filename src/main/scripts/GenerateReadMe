@@ -21,13 +21,15 @@ echo "	/_______  /\___  >   __/ \___  >___|  /\____ | " >> $READMEFILE
 echo "	        \/     \/|__|        \/     \/      \/  " >> $READMEFILE
 echo ==============================================================================		>> $READMEFILE
 echo AUTHORS:  																			>> $READMEFILE
-echo ' \t '		SIAVOOSH PAYANDEH AZAD													>> $READMEFILE
+echo ' \t '		SIAVOOSH PAYANDEH AZAD		>> $READMEFILE
+echo ' \t '		BEHRAD NIAZMAND		>> $READMEFILE
+echo ' \t '		RENÉ PIHLAK		>> $READMEFILE
 echo DATE:    MAY 2015																	>> $READMEFILE
 echo LICENSE: GNU GENERAL PUBLIC LICENSE Version 2										>> $READMEFILE
 echo PYTHON VER: 2.7.6																	>> $READMEFILE
 echo THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME DEPENDABILITY 		>> $READMEFILE
 echo MECHANISMS ON DIFFERENT ARCHITECTURES....											>> $READMEFILE
-echo Copyright \(C\) 2015 Siavoosh Payandeh Azad										>> $READMEFILE
+echo Copyright \(C\) 2015 Siavoosh Payandeh Azad, Behrad Niazmand, René Pihlak	>> $READMEFILE
 echo ===============================================================================	>> $READMEFILE
 echo ' \t ' 	IN CASE YOU WANT SOMETHING TO BE IMPLEMENTED,							>> $READMEFILE
 echo ' \t '		PLEASE CONTACT: siavoosh[AT]ati[DOT]ttu[DOT]ee							>> $READMEFILE

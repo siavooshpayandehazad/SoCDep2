@@ -20,12 +20,14 @@
 ==============================================================================
 AUTHORS:
  	  SIAVOOSH PAYANDEH AZAD
+ 	  BEHRAD NIAZMAND
+ 	  RENÉ PIHLAK
 DATE: MAY 2015
 LICENSE: GNU GENERAL PUBLIC LICENSE Version 2
 PYTHON VER: 2.7.6
 THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME DEPENDABILITY
 MECHANISMS ON DIFFERENT ARCHITECTURES....
-Copyright (C) 2015 Siavoosh Payandeh Azad
+Copyright (C) 2015 Siavoosh Payandeh Azad, Behrad Niazmand, René Pihlak
 ===============================================================================
  	  IN CASE YOU WANT SOMETHING TO BE IMPLEMENTED,
  	  PLEASE CONTACT: siavoosh[AT]ati[DOT]ttu[DOT]ee
@@ -58,7 +60,6 @@ Project Directory Map:
 │   │   │   ├── GSNoCTrafficTable.txt
 │   │   │   ├── GSNoC_RectangleFile.txt
 │   │   │   ├── Internal
-│   │   │   │   ├── ClusteringCost.txt
 │   │   │   │   ├── LocalSearchMappingCost.txt
 │   │   │   │   └── MappingProcess.txt
 │   │   │   ├── NoximTrafficTable.txt
@@ -88,10 +89,16 @@ Project Directory Map:
 │   │   ├── Scheduler
 │   │   │   ├── Scheduler.py
 │   │   │   ├── Scheduling_Functions.py
+│   │   │   ├── Scheduling_Functions_Edges.py
+│   │   │   ├── Scheduling_Functions_Links.py
+│   │   │   ├── Scheduling_Functions_Nodes.py
+│   │   │   ├── Scheduling_Functions_Routers.py
+│   │   │   ├── Scheduling_Functions_Tasks.py
 │   │   │   ├── Scheduling_Reports.py
 │   │   │   └── TrafficTableGenerator.py
 │   │   ├── Simulator
 │   │   │   ├── FaultInjector.py
+│   │   │   ├── ML.py
 │   │   │   └── Simulator.py
 │   │   ├── SystemHealthMonitoring
 │   │   │   ├── SHMU_Functions.py
@@ -110,11 +117,12 @@ Project Directory Map:
 │   │       ├── Logger.py
 │   │       └── misc.py
 │   └── scripts
+│       ├── FindFuncWithoutDocString
 │       ├── GUI
 │       └── GenerateReadMe
 └── unittest
     └── Python
         └── Unit_tests.py
 
-23 directories, 57 files
+23 directories, 63 files
 ===============================================================================
