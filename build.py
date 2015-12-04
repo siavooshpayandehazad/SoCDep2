@@ -16,5 +16,5 @@ def initialize(project):
     
     project.build_depends_on('Tkinter', 'ttk', 'networkx')
     project.build_depends_on('matplotlib', 'scipy', 'PIL')
-    project.build_depends_on('pympler', 'simpy')
-
+    project.build_depends_on('pympler', 'simpy', 'sklearn')
+    project.build_depends_on('collections')
