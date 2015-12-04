@@ -166,7 +166,7 @@ classifierDTree.fit(learn_data, learn_labels)
 movis = animation.writers['avconv']
 movi = movis(fps=1, bitrate=1800)
 ani = animation.FuncAnimation(figure, updatefig, interval=500, blit=False)
-ani.save('mlmultipletest.mp4', writer=movi, fps=1, bitrate=1800)
+ani.save('../GraphDrawings/mlmultipletest.mp4', writer=movi, fps=1, bitrate=1800)
 #print("ANALYSED DATA:")
 #for index in range(0, len(data)):
 #    print("%s: %s" % (data[index], learn_labels_names[predicted[index]]))
