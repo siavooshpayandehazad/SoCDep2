@@ -1,4 +1,6 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
+# "GenerateNoximTrafficTable" and "TranslateNodeNumberToNoximSystem" Functions were written in 2015 by Behrad Niazmand
+
 from ArchGraphUtilities import AG_Functions
 from ConfigAndPackages import Config
 
@@ -53,6 +55,11 @@ def GenerateNoximTrafficTable (AG, TG):
     return None
 
 def TranslateNodeNumberToNoximSystem(Node):
+    """
+    Translates the numbering system of Schedule and Depend to Noxim system
+    :param Node: Node ID in AG
+    :return: Node coordination in Noxim System
+    """
     X,Y,Z = AG_Functions.ReturnNodeLocation(Node)
     Z = Config.Network_Z_Size - Z -1
     Y = Config.Network_Y_Size - Y -1

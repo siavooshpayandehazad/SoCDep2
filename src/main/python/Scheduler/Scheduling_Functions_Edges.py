@@ -4,6 +4,18 @@ import Scheduling_Functions_Links, Scheduling_Functions_Routers
 from ConfigAndPackages import Config
 
 def FindEdge_ASAP_Scheduling_Link(TG, AG, Edge, Link, batch, Prob, Report, logging):
+    """
+    Finds the earliest start and finish time for scheduling Edge from TG on Link from AG.
+    :param TG: Task Graph
+    :param AG: Architecture Graph
+    :param Edge: Edge ID in TG to be scheduled on Link
+    :param Link: Link ID in AG for scheduling Edge on it
+    :param batch: Edge's Batch
+    :param Prob: probability of Edge to actually going through Link
+    :param Report: Report Switch
+    :param logging: logging File
+    :return: Start Time and Stop Time
+    """
     StartTime = max(Scheduling_Functions_Links.FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge,
                                                                                   Prob, logging),
                     FindEdgePredecessorsFinishTime(TG, AG, Edge, batch))
@@ -16,6 +28,18 @@ def FindEdge_ASAP_Scheduling_Link(TG, AG, Edge, Link, batch, Prob, Report, loggi
 
 
 def FindEdge_ASAP_Scheduling_Router(TG, AG, Edge, Node, batch, Prob, Report, logging):
+    """
+    Calculates the start time and end time for ASAP scheduling of an Edge on a Router
+    :param TG: Task Graph
+    :param AG: Architecture Graph
+    :param Edge: Edge in TG to be mapped
+    :param Node: Node ID number for mapping Edge on its Router
+    :param batch: Batch of the mapped Edge
+    :param Prob: Probability of Edge actually going through router
+    :param Report: Report Switch
+    :param logging: logging File
+    :return: Start Time and End time
+    """
     StartTime = max(Scheduling_Functions_Routers.FindLastAllocatedTimeOnRouterForTask(TG, AG, Node, Edge,
                                                                                   Prob, logging),
                     FindEdgePredecessorsFinishTime(TG, AG, Edge, batch))
@@ -28,6 +52,19 @@ def FindEdge_ASAP_Scheduling_Router(TG, AG, Edge, Node, batch, Prob, Report, log
 
 
 def FindTestEdge_ASAP_Scheduling(TG, AG, Edge, Link, batch, Prob, Report, logging):
+    """
+    Finds the start and end time for ASAP scheduling of a Test Edge on a link.
+    Important note is that the Edge should be coming from "Test" type in TG.
+    :param TG: Task Graph
+    :param AG: Architecture Graph
+    :param Edge: Test Edge to be mapped
+    :param Link: Link ID for Scheduling the TestEdge
+    :param batch: Batch of the mapped Edge
+    :param Prob: probability of Edge actually passing through Link
+    :param Report: Report Switch
+    :param logging: logging File
+    :return: Start Time and End Time
+    """
     StartTime = max(Scheduling_Functions_Links.FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge,
                                                                                   Prob, logging),
                     FindEdgePredecessorsFinishTime(TG, AG, Edge, batch))
@@ -44,6 +81,14 @@ def FindEdge_ALAP_Scheduling(TG, AG, Edge, Link, batch, Prob, Report, logging):
 
 
 def FindEdgePredecessorsFinishTime(TG, AG, Edge, batch):
+    """
+    Finds and returns the maximum of predecessors of Edge's scheduled finish time
+    :param TG: Task Graph
+    :param AG: Architecture Graph
+    :param Edge: Edge ID of task to be scheduled
+    :param batch: Edge's Batch
+    :return: Finish Time
+    """
     FinishTime = 0
     SourceNode = TG.node[Edge[0]]['Node']
     if Edge[0] in AG.node[SourceNode]['PE'].Scheduling:

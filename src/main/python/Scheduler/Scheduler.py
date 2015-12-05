@@ -11,13 +11,13 @@ from Scheduling_Functions_Routers import Add_TG_EdgeTo_Router
 def ScheduleAll(TG, AG, SHM, Report, DetailedReport, logging):
     """
 
-    :param TG:
-    :param AG:
+    :param TG: Task Graph
+    :param AG: Architecture Graph
     :param SHM: System Health Map
-    :param Report:
-    :param DetailedReport:
-    :param logging:
-    :return:
+    :param Report: Report Switch
+    :param DetailedReport: Detailed Report Switch
+    :param logging: Logging file
+    :return: None
     """
     logging.info("===========================================")
     logging.info("STARTING SCHEDULING PROCESS...")
@@ -32,12 +32,12 @@ def ScheduleAll(TG, AG, SHM, Report, DetailedReport, logging):
 def ASAP_Scheduling(TG, AG, SHM, Report, logging):
     """
 
-    :param TG:
-    :param AG:
+    :param TG:  Task Graph
+    :param AG: Architecture Graph
     :param SHM: System Health Map
-    :param Report:
-    :param logging:
-    :return:
+    :param Report: Report Switch
+    :param logging: logging file
+    :return: None
     """
     logging.info("STARTING ASAP SCHEDULING ...")
     MaxDistance = TG_Functions.CalculateMaxDistance(TG) + 1
@@ -83,19 +83,31 @@ def ASAP_Scheduling(TG, AG, SHM, Report, logging):
 
 
 def ALAP_Scheduling(TG, AG, SHM, Makespan, Report, logging):
+    """
 
+    :param TG:  Task Graph
+    :param AG: Architecture Graph
+    :param SHM: System Health Map
+    :param Makespan: Make span of Scheduling
+    :param Report: Report switch
+    :param logging: logging File
+    :return: None
+    """
+    logging.info("STARTING ALAP SCHEDULING ...")
+
+    logging.info("DONE ALAP SCHEDULING...")
     return None
 
 
 def ScheduleTestInTG(TG, AG, SHM, Report, logging):
     """
 
-    :param TG:
-    :param AG:
+    :param TG: Task Graph
+    :param AG: Architecture Graph
     :param SHM: System Health Map
-    :param Report:
-    :param logging:
-    :return:
+    :param Report: Report Switch
+    :param logging: logging File
+    :return: None
     """
     logging.info("===========================================")
     logging.info("STARTING SCHEDULING TEST TASKS IN TG...")
