@@ -381,7 +381,7 @@ def ReturnHealthyNodes(AG, SHM):
     return HealthyNodes
 
 
-def ReturnHealthyActiveNodes(AG,SHM):
+def ReturnHealthyActiveNodes(AG, SHM):
     """
     Returns Nodes in AG which are tagged Healthy in SHM and are active
     :param AG: Architecture Graph
