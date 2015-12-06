@@ -59,7 +59,7 @@ def DrawTaskGraph(TG, TTG=None):
         width = 1000
         height = 10000
         pos = {}
-        MaxDistance = TG_Functions.CalculateMaxDistance(TG)
+        MaxDistance = TG_Functions.calculate_max_distance(TG)
         for CurrentDistance in range(0, MaxDistance+1):
             NumTasksWithSameDistance = 0
             for node in TG.nodes():

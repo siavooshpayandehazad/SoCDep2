@@ -24,7 +24,7 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
     :return: (TG, AG) in case of failing returns (None, None)
     """
     # to run the following heuristics (Min_Min,Max_Min), one needs to use independent
-    # tasks... Please use: GenerateRandomIndependentTG
+    # tasks... Please use: generate_random_independent_task_graph
     if Config.Mapping_Function == 'MinMin':
         if Config.TG_Type == 'RandomIndependent':
             return SimpleGreedy.Min_Min_Mapping(TG, AG, NoCRG, SHM, logging)

@@ -59,7 +59,7 @@ misc.GenerateFileDirectories()
 misc.DrawLogo()
 ####################################################################
 # Initialization of the system
-TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, PMCG = SystemInitialization.InitializeSystem(logging)
+TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, PMCG = SystemInitialization.initialize_system(logging)
 
 
 # just to have a sense of how much time we are spending in each section

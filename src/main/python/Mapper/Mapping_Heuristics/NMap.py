@@ -47,7 +47,7 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
     print ("------------------")
     print ("STEP 1:")
     # step 1: find the task with highest weighted communication volume
-    TasksComDict = TG_Functions.TasksCommunicationWeight(TG)
+    TasksComDict = TG_Functions.tasks_communication_weight(TG)
     SortedTasksCom = sorted(TasksComDict, key=TasksComDict.get, reverse=True)
     print ("\t SORTED TASKS BY COMMUNICATION WEIGHT:\n"+"\t "+str(SortedTasksCom))
     print ("\t -------------")

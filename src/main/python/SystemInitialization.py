@@ -11,14 +11,14 @@ from RoutingAlgorithms import Routing, Calculate_Reachability, ReachabilityRepor
 from ArchGraphUtilities import Arch_Graph_Reports, AG_Functions, AG_Test, Optimize_3D_AG
 
 
-def InitializeSystem(logging):
+def initialize_system(logging):
     """
     Generates the Task graoh, Architecture Graph, System Health Monitoring Unit, NoC routing graph(s) and
     Test Task Graphs and does the mapping and scheduling and returns to the user the initial system
     :param logging: logging file
     :return:  TG, AG, SHMU, NoCRG, CriticalRG, NonCriticalRG, PMCG
     """
-    TG = copy.deepcopy(TG_Functions.GenerateTG())
+    TG = copy.deepcopy(TG_Functions.generate_task_graph())
     Task_Graph_Reports.ReportTaskGraph(TG, logging)
     Task_Graph_Reports.DrawTaskGraph(TG)
     if Config.TestMode:

@@ -40,7 +40,7 @@ def ASAP_Scheduling(TG, AG, SHM, Report, logging):
     :return: None
     """
     logging.info("STARTING ASAP SCHEDULING ...")
-    MaxDistance = TG_Functions.CalculateMaxDistance(TG) + 1
+    MaxDistance = TG_Functions.calculate_max_distance(TG) + 1
     for Distance in range(0, MaxDistance):
         for Task in TG.nodes():
             if TG.node[Task]['Type'] == 'App':

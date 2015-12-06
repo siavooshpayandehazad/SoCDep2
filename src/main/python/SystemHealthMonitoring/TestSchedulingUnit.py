@@ -10,7 +10,7 @@ from fractions import gcd
 import matplotlib.pyplot as plt
 from ConfigAndPackages import Config
 from Mapper import Mapping_Functions
-import random, copy
+import random
 
 
 def GenerateOneStepDiagnosablePMCG(AG, SHM):
@@ -84,14 +84,14 @@ def GenerateSequentiallyDiagnosablePMCG(AG, SHM):
             if (TesterNode - TestedNode) % n == 1:
                 PMCG.add_edge(TesterNode, TestedNode, Weight=0)
 
-    Counter = 0
+    counter = 0
     ChosenTestedNode = PMCG.nodes()[0]
-    while Counter < 2*t-2:
+    while counter < 2*t-2:
         ChosenTester = random.choice(PMCG.nodes())
         # print (ChosenTester, Counter)
         if ChosenTester != 0 and ChosenTester != n-1 and (ChosenTester, ChosenTestedNode) not in PMCG.edges():
             PMCG.add_edge(ChosenTester, ChosenTestedNode, Weight=0)
-            Counter += 1
+            counter += 1
     return PMCG
 
 
@@ -132,9 +132,9 @@ def RemoveTestTasksFromTG(TG):
     # I dont know how we can use this at the moment!
     print ("===========================================")
     print ("REMOVING PMC TASKS FROM TG...")
-    for Task in TG.nodes():
-        if TG.node[Task]['Type'] == 'Test':
-            TG.remove_node(Task)
+    for task in TG.nodes():
+        if TG.node[task]['Type'] == 'Test':
+            TG.remove_node(task)
     return TG
 
 
@@ -148,11 +148,11 @@ def MapTestTasks(TG, AG, SHM, NoCRG, logging):
     :param logging: logging file
     :return: None
     """
-    for Task in TG.nodes():
-        if TG.node[Task]['Type'] == 'Test':
-            Node = TG.node[Task]['Node']
-            if not Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, None, None, Task, Node, logging):
-                raise ValueError(" MAPPING TEST TASK FAILED WHILE TYING TO MAP ", Task, "ON NODE", Node)
+    for task in TG.nodes():
+        if TG.node[task]['Type'] == 'Test':
+            Node = TG.node[task]['Node']
+            if not Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, None, None, task, Node, logging):
+                raise ValueError(" MAPPING TEST TASK FAILED WHILE TYING TO MAP ", task, "ON NODE", Node)
     return None
 
 
