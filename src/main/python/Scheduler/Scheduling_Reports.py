@@ -82,7 +82,8 @@ def GenerateGanttCharts(TG, AG, FileName):
                                       RouterCounter, Max_Time, count)
 
     if LinkCounter+NodeCounter+RouterCounter > 0:
-        ax1.xaxis.set_ticks_position('bottom')
+        if ax1 is not None:
+            ax1.xaxis.set_ticks_position('bottom')
     plt.savefig("GraphDrawings/"+FileName+".png", dpi=200)
     plt.clf()
     plt.close(fig)

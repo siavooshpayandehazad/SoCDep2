@@ -1,7 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad 
 
 from Mapper import Mapping_Functions
-from Scheduler import Scheduling_Functions,Scheduling_Reports
+from Scheduler import Scheduling_Functions_Nodes,Scheduling_Reports
 import copy
 import random
 
@@ -41,7 +41,7 @@ def Min_Min_Mapping (TG, AG, NoCRG, SHM, logging):
             TaskExecutionOnNode = TG.node[TaskToBeMapped]['WCET']*NodeSpeedDown
             CompletionOnNode = TG.node[TaskToBeMapped]['Release'] + TaskExecutionOnNode
 
-            Scheduling_Functions.Add_TG_TaskToNode(TG, AG, TaskToBeMapped, ChosenNode,
+            Scheduling_Functions_Nodes.Add_TG_TaskToNode(TG, AG, TaskToBeMapped, ChosenNode,
                                                    TG.node[TaskToBeMapped]['Release'], CompletionOnNode, logging)
         if len(ShortestTasks) == 0:
             ShortestTasks = Mapping_Functions.FindUnMappedTaskWithSmallestWCET(TG, logging)
@@ -91,7 +91,7 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
             TaskExecutionOnNode = TG.node[TaskToBeMapped]['WCET']*NodeSpeedDown
             CompletionOnNode = TG.node[TaskToBeMapped]['Release'] + TaskExecutionOnNode
 
-            Scheduling_Functions.Add_TG_TaskToNode(TG, AG, TaskToBeMapped, ChosenNode,
+            Scheduling_Functions_Nodes.Add_TG_TaskToNode(TG, AG, TaskToBeMapped, ChosenNode,
                                                    TG.node[TaskToBeMapped]['Release'], CompletionOnNode, logging)
 
         if len(LongestTasks) == 0:
@@ -123,7 +123,7 @@ def MinExecutionTime(TG, AG, SHM, logging):
         TaskExecutionOnNode = TG.node[TaskToBeMapped]['WCET']*NodeSpeedDown
         CompletionOnNode = TG.node[TaskToBeMapped]['Release'] + TaskExecutionOnNode
 
-        Scheduling_Functions.Add_TG_TaskToNode(TG, AG, TaskToBeMapped, ChosenNode,
+        Scheduling_Functions_Nodes.Add_TG_TaskToNode(TG, AG, TaskToBeMapped, ChosenNode,
                                                TG.node[TaskToBeMapped]['Release'], CompletionOnNode, logging)
 
         print ("\tTASK "+str(TaskToBeMapped)+" MAPPED ON NODE: "+str(ChosenNode))
@@ -154,7 +154,7 @@ def MinimumCompletionTime(TG, AG, SHM, logging):
         TaskExecutionOnNode = TG.node[TaskToBeMapped]['WCET']*NodeSpeedDown
         CompletionOnNode = TG.node[TaskToBeMapped]['Release'] + TaskExecutionOnNode
 
-        Scheduling_Functions.Add_TG_TaskToNode(TG, AG, TaskToBeMapped, ChosenNode,
+        Scheduling_Functions_Nodes.Add_TG_TaskToNode(TG, AG, TaskToBeMapped, ChosenNode,
                                                TG.node[TaskToBeMapped]['Release'], CompletionOnNode, logging)
 
         print ("\tTASK "+str(TaskToBeMapped)+" MAPPED ON NODE: "+str(ChosenNode))

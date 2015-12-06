@@ -479,7 +479,7 @@ def FindNodeWithSmallestCompletionTime(AG, TG, SHM, Task):
         RandomNode = random.choice(AG.nodes())
     NodeSpeedDown = 1+((100.0-SHM.node[RandomNode]['NodeSpeed'])/100)
     TaskExecutionOnNode = TG.node[Task]['WCET']*NodeSpeedDown
-    LastAllocatedTimeOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG, AG, RandomNode, None)
+    LastAllocatedTimeOnNode = Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(TG, AG, RandomNode, None)
     if LastAllocatedTimeOnNode < TG.node[Task]['Release']:
         SmallestCompletionTime = TG.node[Task]['Release'] + TaskExecutionOnNode
     else:
@@ -488,7 +488,7 @@ def FindNodeWithSmallestCompletionTime(AG, TG, SHM, Task):
         if SHM.node[Node]['NodeHealth'] and (not AG.node[RandomNode]['PE'].Dark):
             NodeSpeedDown = 1+((100.0-SHM.node[Node]['NodeSpeed'])/100)
             TaskExecutionOnNode = TG.node[Task]['WCET']*NodeSpeedDown
-            LastAllocatedTimeOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG, AG, Node, None)
+            LastAllocatedTimeOnNode = Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(TG, AG, Node, None)
             if LastAllocatedTimeOnNode < TG.node[Task]['Release']:
                 CompletionOnNode = TG.node[Task]['Release'] + TaskExecutionOnNode
             else:
@@ -499,7 +499,7 @@ def FindNodeWithSmallestCompletionTime(AG, TG, SHM, Task):
     for Node in AG.nodes():
         if SHM.node[Node]['NodeHealth'] and (not AG.node[RandomNode]['PE'].Dark):
             NodeSpeedDown = 1+((100.0-SHM.node[Node]['NodeSpeed'])/100)
-            LastAllocatedTimeOnNode = Scheduling_Functions.FindLastAllocatedTimeOnNode(TG, AG, Node, None)
+            LastAllocatedTimeOnNode = Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(TG, AG, Node, None)
             TaskExecutionOnNode = TG.node[Task]['WCET']*NodeSpeedDown
             CompletionOnNode = 0
             if LastAllocatedTimeOnNode < TG.node[Task]['Release']:

@@ -94,7 +94,7 @@ def RunSimulator(Runtime, AG, SHM, NoCRG, logging):
     print "==========================================="
     print "STARTING SIMULATION..."
     env = simpy.Environment()
-    counter_threshold = CounterThreshold.CounterThreshold(3)
+    counter_threshold = CounterThreshold.CounterThreshold(4)
     for node in AG.nodes():
         # print node, AG.node[node]["Scheduling"]
         env.process(Processor(env, node, AG.node[node]['PE'].Scheduling, counter_threshold, logging))

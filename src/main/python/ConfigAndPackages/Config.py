@@ -17,7 +17,7 @@ EventDrivenFaultInjection = True
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile'
 TG_Type = 'RandomDependent'
 # For Random TG_Type:
-NumberOfTasks = 15
+NumberOfTasks = 9
 NumberOfCriticalTasks = 0
 NumberOfEdges = 25
 WCET_Range = 15
