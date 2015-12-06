@@ -101,6 +101,8 @@ Project Directory Map:
 │   │   │   ├── ML.py
 │   │   │   └── Simulator.py
 │   │   ├── SystemHealthMonitoring
+│   │   │   ├── FaultClassifier
+│   │   │   │   └── CounterThreshold.py
 │   │   │   ├── SHMU_Functions.py
 │   │   │   ├── SHMU_Reports.py
 │   │   │   ├── SHMU_Test.py
@@ -124,5 +126,5 @@ Project Directory Map:
     └── Python
         └── Unit_tests.py
 
-23 directories, 63 files
+24 directories, 64 files
 ===============================================================================
