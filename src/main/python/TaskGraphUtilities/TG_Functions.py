@@ -226,7 +226,7 @@ def generate_task_graph():
         return generate_manual_task_graph(Config.Task_List, Config.TG_Edge_List,
                                           Config.Task_Criticality_List, Config.Task_WCET_List, Config.TG_Edge_Weight)
     elif Config.TG_Type == 'FromDOTFile':
-        return TG_File_Parser.GenerateTGFromDOT(Config.TG_DOT_Path)
+        return TG_File_Parser.generate_task_graph_from_dot(Config.TG_DOT_Path)
     else:
         raise ValueError('TG TYPE DOESNT EXIST...!!!')
 

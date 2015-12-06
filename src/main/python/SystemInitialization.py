@@ -16,37 +16,37 @@ def initialize_system(logging):
     Generates the Task graoh, Architecture Graph, System Health Monitoring Unit, NoC routing graph(s) and
     Test Task Graphs and does the mapping and scheduling and returns to the user the initial system
     :param logging: logging file
-    :return:  TG, AG, SHMU, NoCRG, CriticalRG, NonCriticalRG, PMCG
+    :return:  task_graph, arch_graph, SHMU, NoCRG, CriticalRG, NonCriticalRG, PMCG
     """
-    TG = copy.deepcopy(TG_Functions.generate_task_graph())
-    Task_Graph_Reports.ReportTaskGraph(TG, logging)
-    Task_Graph_Reports.DrawTaskGraph(TG)
+    task_graph = copy.deepcopy(TG_Functions.generate_task_graph())
+    Task_Graph_Reports.ReportTaskGraph(task_graph, logging)
+    Task_Graph_Reports.DrawTaskGraph(task_graph)
     if Config.TestMode:
-        TG_Test.CheckAcyclic(TG, logging)
+        TG_Test.CheckAcyclic(task_graph, logging)
     ####################################################################
-    AG = copy.deepcopy(AG_Functions.GenerateAG(logging))
-    AG_Functions.UpdateAGRegions(AG)
-    AG_Functions.RandomDarkness(AG)
+    arch_graph = copy.deepcopy(AG_Functions.GenerateAG(logging))
+    AG_Functions.UpdateAGRegions(arch_graph)
+    AG_Functions.RandomDarkness(arch_graph)
     if Config.EnablePartitioning:
-        AG_Functions.SetupNetworkPartitioning(AG)
+        AG_Functions.SetupNetworkPartitioning(arch_graph)
     if Config.TestMode:
         AG_Test.AG_Test()
     if Config.FindOptimumAG:
-        Arch_Graph_Reports.DrawArchGraph(AG, "AG_Full")
+        Arch_Graph_Reports.DrawArchGraph(arch_graph, "AG_Full")
     else:
-        Arch_Graph_Reports.DrawArchGraph(AG, "AG")
+        Arch_Graph_Reports.DrawArchGraph(arch_graph, "AG")
     ####################################################################
     Config.SetUpTurnsHealth()
     if Config.TestMode:
-        SHMU_Test.TestSHMU(AG)
+        SHMU_Test.TestSHMU(arch_graph)
     SHMU = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
-    SHMU.SetUp_NoC_SystemHealthMap(AG, Config.TurnsHealth)
+    SHMU.SetUp_NoC_SystemHealthMap(arch_graph, Config.TurnsHealth)
     # Here we are injecting initial faults of the system: we assume these fault
     # information is obtained by post manufacturing system diagnosis
     if Config.FindOptimumAG:
-        Optimize_3D_AG.OptimizeAG_VL(AG, SHMU, logging)
-        Optimize_3D_AG.CleanUpAG(AG, SHMU)
-        Arch_Graph_Reports.DrawArchGraph(AG, "AG_VLOpt")
+        Optimize_3D_AG.OptimizeAG_VL(arch_graph, SHMU, logging)
+        Optimize_3D_AG.CleanUpAG(arch_graph, SHMU)
+        Arch_Graph_Reports.DrawArchGraph(arch_graph, "AG_VLOpt")
     SHMU_Functions.ApplyInitialFaults(SHMU)
     if Config.SHM_Drawing:
         SHMU_Reports.DrawSHM(SHMU.SHM)
@@ -55,45 +55,46 @@ def initialize_system(logging):
     ####################################################################
     RoutingGraphStartTime = time.time()
     if Config.SetRoutingFromFile:
-        NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraphFromFile(AG, SHMU, Config.RoutingFilePath,
+        NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraphFromFile(arch_graph, SHMU, Config.RoutingFilePath,
                                                                     Config.DebugInfo, Config.DebugDetails))
     else:
-        NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHMU, Config.UsedTurnModel,
+        NoCRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(arch_graph, SHMU, Config.UsedTurnModel,
                                                             Config.DebugInfo, Config.DebugDetails))
     print ("\033[92mTIME::\033[0m ROUTING GRAPH GENERATION TOOK: "
            + str(round(time.time()-RoutingGraphStartTime))+" SECONDS")
     # this is for double checking...
     if Config.FindOptimumAG:
-        Calculate_Reachability.ReachabilityMetric(AG, NoCRG, True)
+        Calculate_Reachability.ReachabilityMetric(arch_graph, NoCRG, True)
     # Some visualization...
     if Config.RG_Draw:
         RoutingGraph_Reports.DrawRG(NoCRG)
     ####################################################################
     # in case of partitioning, we have to route based on different Route-graphs
     if Config.EnablePartitioning:
-        CriticalRG, NonCriticalRG = Calculate_Reachability.CalculateReachabilityWithRegions(AG, SHMU)
-        ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(AG)
+        CriticalRG, NonCriticalRG = Calculate_Reachability.CalculateReachabilityWithRegions(arch_graph, SHMU)
+        ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(arch_graph)
     else:
         if Config.TestMode:
             Reachability_Test.ReachabilityTest()
         CriticalRG, NonCriticalRG = None, None
-        Calculate_Reachability.CalculateReachability(AG, NoCRG)
-        Calculate_Reachability.OptimizeReachabilityRectangles(AG, Config.NumberOfRects)
-        # ReachabilityReports.ReportReachability(AG)
-        ReachabilityReports.ReportReachabilityInFile(AG, "ReachAbilityNodeReport")
-        ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(AG)
+        Calculate_Reachability.CalculateReachability(arch_graph, NoCRG)
+        Calculate_Reachability.OptimizeReachabilityRectangles(arch_graph, Config.NumberOfRects)
+        # ReachabilityReports.ReportReachability(arch_graph)
+        ReachabilityReports.ReportReachabilityInFile(arch_graph, "ReachAbilityNodeReport")
+        ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(arch_graph)
     ####################################################################
-    BestTG, BestAG = Mapping.Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHMU.SHM, logging)
-    if BestAG is not None and BestTG is not None:
-        TG = copy.deepcopy(BestTG)
-        AG = copy.deepcopy(BestAG)
-        del BestTG, BestAG
-        # SHM.AddCurrentMappingToMPM(TG)
+    best_task_graph, BestAG = Mapping.Mapping(task_graph, arch_graph, NoCRG, CriticalRG, NonCriticalRG,
+                                              SHMU.SHM, logging)
+    if BestAG is not None and best_task_graph is not None:
+        task_graph = copy.deepcopy(best_task_graph)
+        arch_graph = copy.deepcopy(BestAG)
+        del best_task_graph, BestAG
+        # SHM.AddCurrentMappingToMPM(task_graph)
     if Config.Mapping_Dstr_Drawing:
-        Mapping_Reports.DrawMappingDistribution(AG, SHMU)
+        Mapping_Reports.DrawMappingDistribution(arch_graph, SHMU)
     if Config.Mapping_Drawing:
-        Mapping_Reports.DrawMapping(TG, AG, SHMU)
-    Scheduling_Reports.GenerateGanttCharts(TG, AG, "SchedulingTG")
+        Mapping_Reports.DrawMapping(task_graph, arch_graph, SHMU)
+    Scheduling_Reports.GenerateGanttCharts(task_graph, arch_graph, "SchedulingTG")
     ####################################################################
     # PMC-Graph
     # at this point we assume that the system health map knows about the initial faults from
@@ -101,32 +102,32 @@ def initialize_system(logging):
     if Config.GeneratePMCG:
         PMCGStartTime = time.time()
         if Config.OneStepDiagnosable:
-            PMCG = TestSchedulingUnit.GenerateOneStepDiagnosablePMCG(AG, SHMU)
+            PMCG = TestSchedulingUnit.GenerateOneStepDiagnosablePMCG(arch_graph, SHMU)
         else:
-            PMCG = TestSchedulingUnit.GenerateSequentiallyDiagnosablePMCG(AG, SHMU.SHM)
-        TTG = TestSchedulingUnit.GenerateTestTGFromPMCG(PMCG)
+            PMCG = TestSchedulingUnit.GenerateSequentiallyDiagnosablePMCG(arch_graph, SHMU.SHM)
+        test_task_graph = TestSchedulingUnit.GenerateTestTGFromPMCG(PMCG)
         print ("\033[92mTIME::\033[0m PMCG AND TTG GENERATION TOOK: "
                + str(round(time.time()-PMCGStartTime)) + " SECONDS")
         if Config.PMCG_Drawing:
             TestSchedulingUnit.DrawPMCG(PMCG)
         if Config.TTG_Drawing:
-            TestSchedulingUnit.DrawTTG(TTG)
-        TestSchedulingUnit.InsertTestTasksInTG(PMCG, TG)
-        Task_Graph_Reports.DrawTaskGraph(TG, TTG=TTG)
-        TestSchedulingUnit.MapTestTasks(TG, AG, SHMU.SHM, NoCRG, logging)
-        Scheduler.ScheduleTestInTG(TG, AG, SHMU.SHM, False, logging)
-        Scheduling_Reports.ReportMappedTasks(AG, logging)
-        # TestSchedulingUnit.RemoveTestTasksFromTG(TTG, TG)
-        # Task_Graph_Reports.DrawTaskGraph(TG, TTG=TTG)
-        Scheduling_Reports.GenerateGanttCharts(TG, AG, "SchedulingWithTTG")
+            TestSchedulingUnit.DrawTTG(test_task_graph)
+        TestSchedulingUnit.InsertTestTasksInTG(PMCG, task_graph)
+        Task_Graph_Reports.DrawTaskGraph(task_graph, TTG=test_task_graph)
+        TestSchedulingUnit.MapTestTasks(task_graph, arch_graph, SHMU.SHM, NoCRG, logging)
+        Scheduler.ScheduleTestInTG(task_graph, arch_graph, SHMU.SHM, False, logging)
+        Scheduling_Reports.ReportMappedTasks(arch_graph, logging)
+        # TestSchedulingUnit.RemoveTestTasksFromTG(test_task_graph, task_graph)
+        # Task_Graph_Reports.DrawTaskGraph(task_graph, TTG=test_task_graph)
+        Scheduling_Reports.GenerateGanttCharts(task_graph, arch_graph, "SchedulingWithTTG")
     else:
         PMCG = None
 
     print ("===========================================")
     print ("SYSTEM IS UP...")
 
-    TrafficTableGenerator.GenerateNoximTrafficTable(AG, TG)
-    TrafficTableGenerator.GenerateGSNoCTrafficTable(AG, TG)
+    TrafficTableGenerator.generate_noxim_traffic_table(arch_graph, task_graph)
+    TrafficTableGenerator.generate_gsnoc_traffic_table(arch_graph, task_graph)
     if Config.GenMappingFrames:
-        Mapping_Animation.GenerateFrames(TG, AG, SHMU.SHM)
-    return TG, AG, SHMU, NoCRG, CriticalRG, NonCriticalRG, PMCG
+        Mapping_Animation.GenerateFrames(task_graph, arch_graph, SHMU.SHM)
+    return task_graph, arch_graph, SHMU, NoCRG, CriticalRG, NonCriticalRG, PMCG

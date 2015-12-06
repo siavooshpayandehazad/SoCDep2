@@ -34,12 +34,12 @@ elif '-GUI' in sys.argv[1:]:
     if not app.Apply_Button:
         sys.exit()
 elif '-UTEST' in sys.argv[1:]:
-     os.system('python ../../unittest/Python/Unit_tests.py')
-     sys.exit()
+    os.system('python ../../unittest/Python/Unit_tests.py')
+    sys.exit()
 elif '-BENCHMARK' in sys.argv[1:]:
-    Benchmark = sys.argv[sys.argv.index('-BENCHMARK') + 1]
-    print Benchmark
-    if Benchmark_Alg_Downloader.Download_Benchmark_Algorithms(str(Benchmark)):
+    benchmark = sys.argv[sys.argv.index('-BENCHMARK') + 1]
+    print benchmark
+    if Benchmark_Alg_Downloader.Download_Benchmark_Algorithms(str(benchmark)):
         pass
     else:
         sys.exit()
@@ -59,15 +59,15 @@ misc.GenerateFileDirectories()
 misc.DrawLogo()
 ####################################################################
 # Initialization of the system
-TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, PMCG = SystemInitialization.initialize_system(logging)
+task_graph, arch_graph, SHMU, NoCRG, CriticalRG, NonCriticalRG, PMCG = SystemInitialization.initialize_system(logging)
 
 
 # just to have a sense of how much time we are spending in each section
 print ("===========================================")
 SystemStartingTime = time.time()
-print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:"+str(round(SystemStartingTime-ProgramStartTime))+
+print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:"+str(round(SystemStartingTime-ProgramStartTime)) +
        " SECONDS AFTER PROGRAM START...")
-Simulator.RunSimulator(100, AG, SHM, NoCRG, logging)
+Simulator.RunSimulator(100, arch_graph, SHMU, NoCRG, logging)
 # FaultInjector.FaultInjector(SystemStartingTime, AG, SHM, NoCRG)
 logging.info('Logging finished...')
 

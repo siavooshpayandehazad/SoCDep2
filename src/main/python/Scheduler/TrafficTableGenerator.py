@@ -1,11 +1,11 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
-# "GenerateNoximTrafficTable" and "TranslateNodeNumberToNoximSystem" Functions were written in 2015 by Behrad Niazmand
+# "generate_noxim_traffic_table" and "TranslateNodeNumberToNoximSystem" Functions were written in 2015 by Behrad Niazmand
 
 from ArchGraphUtilities import AG_Functions
 from ConfigAndPackages import Config
 
 
-def GenerateNoximTrafficTable (AG, TG):
+def generate_noxim_traffic_table(arch_graph, task_graph):
     # here we should generate a traffic Table for Noxim Simulator to double
     # check our experiments with it.
 
@@ -34,39 +34,46 @@ def GenerateNoximTrafficTable (AG, TG):
     #   t_off:    Time (in cycles) at which activity ends
     #   t_period:	Period after which activity starts again
     # ---------------------------------------------------
-    TrafficTableFile = open('Generated_Files/NoximTrafficTable.txt','w')
-    for Node in AG.nodes():
-        if len(AG.node[Node]['PE'].MappedTasks)>0:
-            for Task in AG.node[Node]['PE'].MappedTasks:
-                for Edge in TG.edges():
-                    if Edge[0] == Task and (TranslateNodeNumberToNoximSystem(TG.node[Edge[0]]['Node']) != TranslateNodeNumberToNoximSystem(TG.node[Edge[1]]['Node'])):
-                        # in Noxim's traffic table, since each router has only one IP core connected to it, Node(i) cannot send data to Node(i)
-                        SourceNodeNoxim = TranslateNodeNumberToNoximSystem(TG.node[Edge[0]]['Node'])
-                        DestinationNodeNoxim = TranslateNodeNumberToNoximSystem(TG.node[Edge[1]]['Node'])
-                        StringToWrite  = str(SourceNodeNoxim) + " " + str(DestinationNodeNoxim)  # source + destination
+    traffic_table_file = open('Generated_Files/NoximTrafficTable.txt', 'w')
+    for Node in arch_graph.nodes():
+        if len(arch_graph.node[Node]['PE'].MappedTasks) > 0:
+            for Task in arch_graph.node[Node]['PE'].MappedTasks:
+                for Edge in task_graph.edges():
+                    if Edge[0] == Task and (translate_node_number_to_noxim_system(task_graph.node[Edge[0]]['Node']) !=
+                                            translate_node_number_to_noxim_system(task_graph.node[Edge[1]]['Node'])):
+                        # in Noxim's traffic table, since each router has only one IP core connected
+                        # to it, Node(i) cannot send data to Node(i)
+                        source_node_noxim = translate_node_number_to_noxim_system(task_graph.node[Edge[0]]['Node'])
+                        destination_node_noxim = translate_node_number_to_noxim_system(task_graph.node[Edge[1]]['Node'])
+                        # StringToWrite: source + destination
+                        string_to_write = str(source_node_noxim) + " " + str(destination_node_noxim)
 #                       StringToWrite += " 0" # Region ID (used for bLBDR/Virtualization)
-                        StringToWrite += " 0.01"  # pir (packet injection rate)
-                        StringToWrite += " 0.01"  # por (probability of retransmission)
-                        StringToWrite += " " + str(int(AG.node[Node]['PE'].Scheduling[Task][0]))   # t_on
-                        StringToWrite += " " + str(int(AG.node[Node]['PE'].Scheduling[Task][1]))   # t_off
-                        StringToWrite += " " + str(int(AG.node[Node]['PE'].Scheduling[Task][1]) + 1)   # t_period
-                        TrafficTableFile.write(StringToWrite+"\n")
-    TrafficTableFile.close()
+                        string_to_write += " 0.01"  # pir (packet injection rate)
+                        string_to_write += " 0.01"  # por (probability of retransmission)
+                        # t_on:
+                        string_to_write += " " + str(int(arch_graph.node[Node]['PE'].Scheduling[Task][0]))
+                        # t_off:
+                        string_to_write += " " + str(int(arch_graph.node[Node]['PE'].Scheduling[Task][1]))
+                        # t_period:
+                        string_to_write += " " + str(int(arch_graph.node[Node]['PE'].Scheduling[Task][1]) + 1)
+                        traffic_table_file.write(string_to_write+"\n")
+    traffic_table_file.close()
     return None
 
-def TranslateNodeNumberToNoximSystem(Node):
+
+def translate_node_number_to_noxim_system(node):
     """
     Translates the numbering system of Schedule and Depend to Noxim system
-    :param Node: Node ID in AG
+    :param node: Node ID in AG
     :return: Node coordination in Noxim System
     """
-    X,Y,Z = AG_Functions.ReturnNodeLocation(Node)
-    Z = Config.Network_Z_Size - Z -1
-    Y = Config.Network_Y_Size - Y -1
-    return AG_Functions.ReturnNodeNumber(X,Y,Z)
+    x, y, z = AG_Functions.ReturnNodeLocation(node)
+    z = Config.Network_Z_Size - z - 1
+    y = Config.Network_Y_Size - y - 1
+    return AG_Functions.ReturnNodeNumber(x, y, z)
 
 
-def GenerateGSNoCTrafficTable (AG, TG):
+def generate_gsnoc_traffic_table(arch_graph, task_graph):
     # here we should generate a traffic Table for GSNoC Simulator to double
     # check our experiments with it.
     # This is the format of the application file called GSPA:
@@ -92,18 +99,20 @@ def GenerateGSNoCTrafficTable (AG, TG):
     # which is similar to our numbering system. same Node number can be used for
     # GSNoC as well
 
-    TrafficTableFile = open('Generated_Files/GSNoCTrafficTable.txt','w')
-    for Node in AG.nodes():
-        if len(AG.node[Node]['PE'].MappedTasks)>0:
-            for Task in AG.node[Node]['PE'].MappedTasks:
-                for Edge in TG.edges():
+    traffic_table_file = open('Generated_Files/GSNoCTrafficTable.txt', 'w')
+    for Node in arch_graph.nodes():
+        if len(arch_graph.node[Node]['PE'].MappedTasks) > 0:
+            for Task in arch_graph.node[Node]['PE'].MappedTasks:
+                for Edge in task_graph.edges():
                     if Edge[0] == Task or Edge[1] == Task:
-                        StringToWrite = str(Node)+ "\t" + str(Task) + "\t"+str(TG.node[Task]['WCET']) + "\t"
-                        StringToWrite += str(Edge[0]) + str(Edge[1]) + " \t" +  str(TG.edge[Edge[0]][Edge[1]]['ComWeight'])
+                        string_to_write = str(Node) + "\t" + str(Task) + "\t"+str(task_graph.node[Task]['WCET']) + "\t"
+                        string_to_write += str(Edge[0]) + str(Edge[1]) + " \t" + \
+                            str(task_graph.edge[Edge[0]][Edge[1]]['ComWeight'])
                         # todo: This should be replaced with BW
-                        StringToWrite +=  "\t" + str(TG.edge[Edge[0]][Edge[1]]['ComWeight']) + " \t"
-                        StringToWrite += str(Edge[0]) +"\t"+ str(Edge[1]) + "\t"
-                        StringToWrite += str(TG.node[Edge[0]]['Node']) + "\t" + str(TG.node[Edge[1]]['Node'])
-                        TrafficTableFile.write(StringToWrite+"\n")
-    TrafficTableFile.close()
+                        string_to_write += "\t" + str(task_graph.edge[Edge[0]][Edge[1]]['ComWeight']) + " \t"
+                        string_to_write += str(Edge[0]) + "\t" + str(Edge[1]) + "\t"
+                        string_to_write += str(task_graph.node[Edge[0]]['Node']) + "\t" + \
+                            str(task_graph.node[Edge[1]]['Node'])
+                        traffic_table_file.write(string_to_write+"\n")
+    traffic_table_file.close()
     return None
