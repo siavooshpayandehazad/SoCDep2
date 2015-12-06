@@ -1,7 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
+
 from Utilities import misc
 misc.CheckForDependencies()
-
 
 import sys, os, time
 import logging

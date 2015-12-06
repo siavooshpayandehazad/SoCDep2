@@ -12,7 +12,8 @@ from ConfigAndPackages import Config
 from Mapper import Mapping_Functions
 import random, copy
 
-def GenerateOneStepDiagnosablePMCG(AG,SHM):
+
+def GenerateOneStepDiagnosablePMCG(AG, SHM):
     """
 
     :param AG: Architecture Unit
@@ -37,33 +38,32 @@ def GenerateOneStepDiagnosablePMCG(AG,SHM):
     else:
         t = int((n-1)/2)
 
-    # before reading this, please read the comment next to this part... about delta_M
+    # before reading this, please read the comment next to this part... about delta_m
     # If we have a system D_delta,t then
     # (delta, n) = 1  ===>  1. S is one-step t-fault diagnosable
     #                       2. D_delta,t, is an optimal design.
-    for i in range(0,n):
-        if gcd(delta,n) == 1:
+    for i in range(0, n):
+        if gcd(delta, n) == 1:
             break
         delta += 1
 
     # A system S is said to belong to a design D_delta,t
     # link from u_i to u_j exists if and only if <===> j-i = delta*m (modulo n) and m in [1,2,...,t]
-    delta_M = []
+    delta_m = []
     for m in range(1, t+1):
-        if (delta*m % n) not in delta_M:
-            delta_M.append(delta*m % n)
+        if (delta*m % n) not in delta_m:
+            delta_m.append(delta*m % n)
 
     for TesterNode in PMCG.nodes():
         for TestedNode in PMCG.nodes():
-            if (TesterNode - TestedNode)%n in delta_M:
-                #print "Connecting:",TesterNode, "to", TestedNode, "---> i-j = ", (TesterNode - TestedNode)%n, "mod", n
+            if (TesterNode - TestedNode) % n in delta_m:
+                # print "Connecting:",TesterNode, "to", TestedNode, "---> i-j = ", (TesterNode - TestedNode)%n, "mod", n
                 PMCG.add_edge(TesterNode, TestedNode, Weight=0)
     print ("PMC GRAPH (PMCG) IS READY...")
     return PMCG
 
 
-
-def GenerateSequentiallyDiagnosablePMCG(AG,SHM):
+def GenerateSequentiallyDiagnosablePMCG(AG, SHM):
     print ("===========================================")
     print ("PREPARING SEQUENTIALLY DIAGNOSABLE PMC GRAPH (PMCG)...")
     PMCG = networkx.DiGraph()
@@ -81,7 +81,7 @@ def GenerateSequentiallyDiagnosablePMCG(AG,SHM):
 
     for TesterNode in PMCG.nodes():
         for TestedNode in PMCG.nodes():
-            if (TesterNode - TestedNode)%n == 1:
+            if (TesterNode - TestedNode) % n == 1:
                 PMCG.add_edge(TesterNode, TestedNode, Weight=0)
 
     Counter = 0
@@ -89,11 +89,10 @@ def GenerateSequentiallyDiagnosablePMCG(AG,SHM):
     while Counter < 2*t-2:
         ChosenTester = random.choice(PMCG.nodes())
         # print (ChosenTester, Counter)
-        if ChosenTester != 0 and ChosenTester != n-1 and (ChosenTester,ChosenTestedNode) not in PMCG.edges():
+        if ChosenTester != 0 and ChosenTester != n-1 and (ChosenTester, ChosenTestedNode) not in PMCG.edges():
             PMCG.add_edge(ChosenTester, ChosenTestedNode, Weight=0)
             Counter += 1
     return PMCG
-
 
 
 def GenerateTestTGFromPMCG(PMCG):
@@ -107,9 +106,9 @@ def GenerateTestTGFromPMCG(PMCG):
     TTG = networkx.DiGraph()
     for edge in PMCG.edges():
         TTG.add_node("S"+str(edge[0])+str(edge[1]), Criticality='L', WCET=Config.NodeTestExeTime, Node=edge[1],
-                     Cluster=None, Priority=None, Distance=0 , Release=0, Type= 'Test')
+                     Cluster=None, Priority=None, Distance=0, Release=0, Type='Test')
         TTG.add_node("R"+str(edge[0])+str(edge[1]), Criticality='L', WCET=1, Node=edge[0], Cluster=None,
-                     Priority=None, Distance=1 , Release=0, Type= 'Test')
+                     Priority=None, Distance=1, Release=0, Type='Test')
         TTG.add_edge("S"+str(edge[0])+str(edge[1]), "R"+str(edge[0])+str(edge[1]), ComWeight=Config.NodeTestComWeight,
                      Criticality='L', Link=[])
     return TTG
@@ -121,9 +120,9 @@ def InsertTestTasksInTG(PMCG, TG):
     print ("INSERTING PMC TASKS FROM TG...")
     for edge in PMCG.edges():
         TG.add_node("S"+str(edge[0])+str(edge[1]), Criticality='L', WCET=Config.NodeTestExeTime, Node=edge[1],
-                    Cluster=None, Priority=None, Distance=0 , Release=0, Type= 'Test')
+                    Cluster=None, Priority=None, Distance=0, Release=0, Type='Test')
         TG.add_node("R"+str(edge[0])+str(edge[1]), Criticality='L', WCET=1, Node=edge[0], Cluster=None,
-                    Priority=None, Distance=1 , Release=0, Type= 'Test')
+                    Priority=None, Distance=1, Release=0, Type='Test')
         TG.add_edge("S"+str(edge[0])+str(edge[1]), "R"+str(edge[0])+str(edge[1]), ComWeight=Config.NodeTestComWeight,
                     Criticality='L', Link=[])
     return TG
@@ -137,6 +136,7 @@ def RemoveTestTasksFromTG(TG):
         if TG.node[Task]['Type'] == 'Test':
             TG.remove_node(Task)
     return TG
+
 
 def MapTestTasks(TG, AG, SHM, NoCRG, logging):
     """
@@ -152,8 +152,9 @@ def MapTestTasks(TG, AG, SHM, NoCRG, logging):
         if TG.node[Task]['Type'] == 'Test':
             Node = TG.node[Task]['Node']
             if not Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, None, None, Task, Node, logging):
-                raise ValueError(" MAPPING TEST TASK FAILED WHILE TYING TO MAP ",Task,"ON NODE", Node)
+                raise ValueError(" MAPPING TEST TASK FAILED WHILE TYING TO MAP ", Task, "ON NODE", Node)
     return None
+
 
 def DrawPMCG(PMCG):
     print ("===========================================")
@@ -166,6 +167,7 @@ def DrawPMCG(PMCG):
     plt.clf()
     print ("\033[35m* VIZ::\033[0m PMC GRAPH (PMCG) DRAWING CREATED AT:  GraphDrawings/PMCG.png")
     return None
+
 
 def DrawTTG(TTG):
     print ("===========================================")

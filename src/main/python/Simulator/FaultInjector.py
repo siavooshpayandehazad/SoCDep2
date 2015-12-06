@@ -1,4 +1,4 @@
-__author__ = 'siavoosh'
+# Copyright (C) 2015 Siavoosh Payandeh Azad
 
 
 from SystemHealthMonitoring import SHMU_Functions
