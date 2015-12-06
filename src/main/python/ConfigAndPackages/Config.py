@@ -241,7 +241,7 @@ Task_SlackCount = 0               # this is used for number of repetitions of th
 #          System's Fault  Config
 ################################################
 MTTF = None     # Mean time to failure in seconds have not used MTTF yet...
-MTBF = 30        # Mean time between failures in seconds
+MTBF = 2        # Mean time between failures in seconds
 SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal distribution
 ################################################
 #           Network Partitioning
