@@ -1,4 +1,7 @@
+# Copyright (C) 2015 Rene Pihlak
+
 #import numpy as np
+
 import collections
 import matplotlib.pyplot as plt
 from sklearn import svm

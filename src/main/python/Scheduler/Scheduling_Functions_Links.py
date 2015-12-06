@@ -1,4 +1,4 @@
-__author__ = 'siavoosh'
+# Copyright (C) 2015 Siavoosh Payandeh Azad
 
 
 def Add_TG_EdgeTo_link(TG, AG, Edge, Link, batch, Prob, StartTime, EndTime, logging):

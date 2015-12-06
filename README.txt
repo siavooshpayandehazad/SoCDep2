@@ -27,7 +27,7 @@ LICENSE: GNU GENERAL PUBLIC LICENSE Version 2
 PYTHON VER: 2.7.6
 THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME DEPENDABILITY
 MECHANISMS ON DIFFERENT ARCHITECTURES....
-Copyright (C) 2015 as collective work done by Siavoosh Payandeh Azad, Behrad Niazmand and René Pihlak. 
+Copyright (C) 2015 as collective work done Siavoosh Payandeh Azad, Behrad Niazmand and René Pihlak
 ===============================================================================
  	  IN CASE YOU WANT SOMETHING TO BE IMPLEMENTED,
  	  PLEASE CONTACT: siavoosh[AT]ati[DOT]ttu[DOT]ee
