@@ -12,7 +12,7 @@ import matplotlib.animation as animation
 def updatefig(*args):
     global index, new_data, in_data, dmb_bad, dmb_good, classifierSVM, classifierKNN, classifierDTree, axsvm, axknn, axdtr
     arr = []
-    if(index < len(in_data) - 5):
+    if index < len(in_data) - 5:
         dmb = "good"
         new_data.append(in_data[index])
         if(in_data[index] == 1):
@@ -23,11 +23,11 @@ def updatefig(*args):
             for i in range(0, 5):
                 dmb_good.append(0)
                 dmb_bad.append(0)
-        #elif(dmb_bad[4] == 1):
+        #elif dmb_bad[4] == 1:
             #dmb = "bad"
             #for i in range(0, 5):
                 #dmb_good.append(0)
-        if(sum(dmb_bad) == 5):
+        if sum(dmb_bad) == 5:
             dmb = "bad"
         predictedSVM = classifierSVM.predict(new_data)
         predictedKNN = classifierKNN.predict(new_data)
@@ -92,28 +92,30 @@ xdatadmb, ydatadmb = [], []
 #MUST HAVE EQUAL NUMBER OF ALL TYPES,
 #i.e., if n classified groups, then learning set size = n x m
 learn_data = [
-         [1,1,1,1,1],
-         [1,1,1,0,0],
-         [1,0,0,0,0],
-         [0,0,0,0,0],
-         [1,1,1,1,1],
-         [0,1,1,1,0],
-         [0,1,0,0,0],
-         [0,0,0,0,0],
-         [1,1,1,1,1],
-         [0,0,1,1,1],
-         [0,0,1,0,0],
-         [0,0,0,0,0],
-         [1,1,1,1,1],
-         [1,0,0,1,1],
-         [0,0,0,1,0],
-         [0,0,0,0,0],
-         [1,1,1,1,1],
-         [1,1,0,0,1],
-         [0,0,0,0,1],
-         [0,0,0,0,0]]
-learn_labels = [0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3]
-learn_labels_names = ["dead", "dying", "ok", "perfect", "dead", "dying", "ok", "perfect", "dead", "dying", "ok", "perfect", "dead", "dying", "ok", "perfect", "dead", "dying", "ok", "perfect"]
+         [1, 1, 1, 1, 1],
+         [1, 1, 1, 0, 0],
+         [1, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0],
+         [1, 1, 1, 1, 1],
+         [0, 1, 1, 1, 0],
+         [0, 1, 0, 0, 0],
+         [0, 0, 0, 0, 0],
+         [1, 1, 1, 1, 1],
+         [0, 0, 1, 1, 1],
+         [0, 0, 1, 0, 0],
+         [0, 0, 0, 0, 0],
+         [1, 1, 1, 1, 1],
+         [1, 0, 0, 1, 1],
+         [0, 0, 0, 1, 0],
+         [0, 0, 0, 0, 0],
+         [1, 1, 1, 1, 1],
+         [1, 1, 0, 0, 1],
+         [0, 0, 0, 0, 1],
+         [0, 0, 0, 0, 0]]
+learn_labels = [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3]
+learn_labels_names = ["dead", "dying", "ok", "perfect", "dead", "dying", "ok", "perfect",
+                      "dead", "dying", "ok", "perfect", "dead", "dying", "ok", "perfect",
+                      "dead", "dying", "ok", "perfect"]
 
 print("LEARNING DATA:")
 for index in range(0, len(learn_data)):
@@ -129,13 +131,15 @@ for index in range(0, len(learn_data)):
         ax1.set_title("Training: %s" % learn_labels_names[index])
         ax1.figure.canvas.draw()
 
-#plt.step(range(0,5),learn_data[10], where='pre')
-#plt.xlim(-0.5, len(learn_data[10]))
-#plt.ylim(-0.2, 1.3)
-#plt.title("Learned: %s" % (learn_labels_names[10]))
-#plt.draw()
+# plt.step(range(0,5),learn_data[10], where='pre')
+# plt.xlim(-0.5, len(learn_data[10]))
+# plt.ylim(-0.2, 1.3)
+# plt.title("Learned: %s" % (learn_labels_names[10]))
+# plt.draw()
 
-in_data = [1,1,1,1,1,1,1,1,0,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,1,0,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0,0,1,0,1,1,0,1,1,0,1,1,0,0,1,1,1]
+in_data = [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1,
+           0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0,
+           1, 1, 1]
 
 new_data = collections.deque(maxlen=5)
 dmb_good = collections.deque(maxlen=5)
@@ -148,11 +152,11 @@ for i in range(0, 5):
 
 index = 0
 
-#ax.set_ylim(-1.1, 1.1)
-#ax.set_xlim(0, 10)
-#del xdata[:]
-#del ydata[:]
-#line.set_data(xdata, ydata)
+# ax.set_ylim(-1.1, 1.1)
+# ax.set_xlim(0, 10)
+# del xdata[:]
+# del ydata[:]
+# line.set_data(xdata, ydata)
 
 
 # Create a classifier: a support vector classifier
@@ -165,13 +169,13 @@ classifierSVM.fit(learn_data, learn_labels)
 classifierKNN.fit(learn_data, learn_labels)
 classifierDTree.fit(learn_data, learn_labels)
 
-#predicted = classifier.predict(data)
+# predicted = classifier.predict(data)
 movis = animation.writers['avconv']
 movi = movis(fps=1, bitrate=1800)
 ani = animation.FuncAnimation(figure, updatefig, interval=500, blit=False)
 ani.save('../GraphDrawings/mlmultipletest.mp4', writer=movi, fps=1, bitrate=1800)
-#print("ANALYSED DATA:")
-#for index in range(0, len(data)):
+# print("ANALYSED DATA:")
+# for index in range(0, len(data)):
 #    print("%s: %s" % (data[index], learn_labels_names[predicted[index]]))
 
 plt.show()
