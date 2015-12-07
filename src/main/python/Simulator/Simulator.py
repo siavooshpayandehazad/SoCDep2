@@ -9,7 +9,7 @@ from FaultInjector import FaultEvent
 from SystemHealthMonitoring.FaultClassifier import CounterThreshold
 
 
-def processor_sim(env, node, schedule, counter_threshold, logging):
+def processor_sim(env, node, schedule, fault_time_list, counter_threshold, logging):
     """
     Runs tasks on each node
     :param env: simulation environment
@@ -32,7 +32,11 @@ def processor_sim(env, node, schedule, counter_threshold, logging):
                 break
         if found:
             print float("{0:.1f}".format(env.now)), "\tNODE:: Starting Task", task_num, "on Node:", node
-            counter_threshold.decrease_counter(node, logging)
+            for fault_time in fault_time_list:
+                if env.now <= fault_time <= env.now+length:
+                    pass
+                else:
+                    counter_threshold.increase_health_counter(node, logging)
             yield env.timeout(length)
             print float("{0:.1f}".format(env.now)), "\tNODE:: Task", task_num, "execution finished on Node", node
             found = False
@@ -40,7 +44,7 @@ def processor_sim(env, node, schedule, counter_threshold, logging):
             yield env.timeout(1)
 
 
-def router_sim(env, node, schedule, counter_threshold, logging):
+def router_sim(env, node, schedule, fault_time_list, counter_threshold, logging):
     """
     runs tasks on the routers
     :param env: simulation environment
@@ -66,7 +70,11 @@ def router_sim(env, node, schedule, counter_threshold, logging):
         if found:
             print float("{0:.1f}".format(env.now)), "\tRouter:: Starting Task", task_num, "on Router:", node
             location_dict = {node: "R"}
-            counter_threshold.decrease_counter(location_dict, logging)
+            for fault_time in fault_time_list:
+                if env.now <= fault_time <= env.now+length:
+                    pass
+                else:
+                    counter_threshold.increase_health_counter(location_dict, logging)
             yield env.timeout(length)
             print float("{0:.1f}".format(env.now)), "\tRouter:: Task", task_num, "execution finished on Router", node
             found = False
@@ -74,7 +82,7 @@ def router_sim(env, node, schedule, counter_threshold, logging):
             yield env.timeout(1)
 
 
-def link_sim(env, link, schedule, counter_threshold, logging):
+def link_sim(env, link, schedule, fault_time_list, counter_threshold, logging):
     """
     Runs tasks on each link
     :param env: simulation environment
@@ -96,7 +104,11 @@ def link_sim(env, link, schedule, counter_threshold, logging):
                 task_num = key
         if found:
             print float("{0:.1f}".format(env.now)), "\tLINK:: Starting Task", task_num, "on Link:", link
-            counter_threshold.decrease_counter(link, logging)
+            for fault_time in fault_time_list:
+                if env.now <= fault_time <= env.now+length:
+                    pass
+                else:
+                    counter_threshold.increase_health_counter(link, logging)
             yield env.timeout(length)
             print float("{0:.1f}".format(env.now)), "\tLINK:: Task", task_num, "execution finished on Link", link
             found = False
@@ -109,14 +121,8 @@ def RunSimulator(runtime, AG, SHM, NoCRG, logging):
     print "==========================================="
     print "STARTING SIMULATION..."
     env = simpy.Environment()
-    counter_threshold = CounterThreshold.CounterThreshold(4)
-    for node in AG.nodes():
-        # print node, AG.node[node]["Scheduling"]
-        env.process(processor_sim(env, node, AG.node[node]['PE'].Scheduling, counter_threshold, logging))
-        env.process(router_sim(env, node, AG.node[node]['Router'].Scheduling, counter_threshold, logging))
-    for link in AG.edges():
-        # print link, AG.edge[link[0]][link[1]]["Scheduling"]
-        env.process(link_sim(env, link, AG.edge[link[0]][link[1]]["Scheduling"], counter_threshold, logging))
+    counter_threshold = CounterThreshold.CounterThreshold(4, 3)
+
 
     fault_time_list = []
     fault_time = 0
@@ -129,6 +135,17 @@ def RunSimulator(runtime, AG, SHM, NoCRG, logging):
             fault_time += TimeUntilNextFault
         print fault_time_list
         env.process(FaultEvent(env, AG, SHM, NoCRG, fault_time_list, counter_threshold, logging))
+
+    for node in AG.nodes():
+        # print node, AG.node[node]["Scheduling"]
+        env.process(processor_sim(env, node, AG.node[node]['PE'].Scheduling,
+                                  fault_time_list, counter_threshold, logging))
+        env.process(router_sim(env, node, AG.node[node]['Router'].Scheduling,
+                               fault_time_list, counter_threshold, logging))
+    for link in AG.edges():
+        # print link, AG.edge[link[0]][link[1]]["Scheduling"]
+        env.process(link_sim(env, link, AG.edge[link[0]][link[1]]["Scheduling"],
+                             fault_time_list, counter_threshold, logging))
 
     env.run(until=runtime)
     print "DEAD Components:", counter_threshold.dead_components

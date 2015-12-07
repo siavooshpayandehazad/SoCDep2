@@ -22,23 +22,21 @@ def FaultEvent(env, AG, SHMU, NoCRG, fault_time_list, counter_threshold, logging
     :param logging: logging file
     :return:
     """
-    Fault = False
+    fault = False
     while True:
-        for FaultTime in fault_time_list:
-            #print env.now, FaultTime
-            if float("{0:.1f}".format(env.now)) == FaultTime:
-                Fault = True
+        for fault_time in fault_time_list:
+            # print env.now, fault_time
+            if float("{0:.1f}".format(env.now)) == fault_time:
+                fault = True
                 # print "Fault Location:", FaultLocation, "Type:", FaultType
                 pass
             else:
                 # print env.now, FaultTime
                 pass
-
-        if Fault:
-            FaultLocation, FaultType = SHMU_Functions.RandomFaultGeneration(SHMU.SHM)
-            SHMU_Functions.ApplyFaultEvent(AG, SHMU, NoCRG, FaultLocation, FaultType)
-
-            counter_threshold.increase_counter(FaultLocation, logging)
-            Fault = False
+        if fault:
+            fault_location, fault_type = SHMU_Functions.RandomFaultGeneration(SHMU.SHM)
+            SHMU_Functions.ApplyFaultEvent(AG, SHMU, NoCRG, fault_location, fault_type)
+            counter_threshold.increase_fault_counter(fault_location, logging)
+            fault = False
         yield env.timeout(0.1)
         pass

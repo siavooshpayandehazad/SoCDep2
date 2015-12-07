@@ -3,12 +3,14 @@
 
 class CounterThreshold():
 
-    def __init__(self, threshold):
-        self.counters = {}
-        self.threshold = threshold
+    def __init__(self, fault_threshold, health_threshold):
+        self.fault_counters = {}
+        self.health_counters = {}
+        self.fault_threshold = fault_threshold
+        self.health_threshold = health_threshold
         self.dead_components = []
 
-    def increase_counter(self, location, logging):
+    def increase_health_counter(self, location, logging):
         if type(location) is dict:
             # print location, str(location.keys()[0])+str(location[location.keys()[0]])
             location = "R"+str(location.keys()[0])
@@ -22,17 +24,47 @@ class CounterThreshold():
             print location, type(location)
             raise ValueError("location type is wrong!")
 
-        if location in self.counters.keys():
-            self.counters[location] += 1
+        if location in self.dead_components:
+            return None
+
+        if location in self.health_counters.keys():
+            self.health_counters[location] += 1
         else:
-            self.counters[location] = 1
-        logging.info("Increasing counter at location: "+location+" Counter: "+str(self.counters[location]))
-        if self.counters[location] == self.threshold:
-            logging.info("Declaring component: "+location+" dead!")
-            self.dead_components.append(location)
+            self.health_counters[location] = 1
+        logging.info("Increasing health counter at location: "+location +
+                     " Counter: "+str(self.health_counters[location]))
+        if self.health_counters[location] == self.health_threshold:
+            logging.info("resetting component: "+location+" counters")
+            self.reset_counters(location)
         return None
 
-    def decrease_counter(self, location, logging):
+    def increase_fault_counter(self, location, logging):
+        if type(location) is dict:
+            # print location, str(location.keys()[0])+str(location[location.keys()[0]])
+            location = "R"+str(location.keys()[0])
+        elif type(location) is tuple:
+            # print location, location[0], location[1]
+            location = str(location[0])+str(location[1])
+        elif type(location) is int:
+            # print location
+            location = str(location)
+        else:
+            print location, type(location)
+            raise ValueError("location type is wrong!")
+        if location in self.dead_components:
+            return None
+        if location in self.fault_counters.keys():
+            self.fault_counters[location] += 1
+        else:
+            self.fault_counters[location] = 1
+        logging.info("Increasing counter at location: "+location+" Counter: "+str(self.fault_counters[location]))
+        if self.fault_counters[location] == self.fault_threshold:
+            logging.info("Declaring component: "+location+" dead!")
+            self.dead_components.append(location)
+            self.reset_counters(location)
+        return None
+
+    def decrease_fault_counter(self, location, logging):
         if type(location) is dict:
             # print location, str(location.keys()[0])+str(location[location.keys()[0]])
             location = str(location.keys()[0])+str(location[location.keys()[0]])
@@ -43,19 +75,26 @@ class CounterThreshold():
             # print location
             location = str(location)
 
-        if location in self.counters.keys():
-            self.counters[location] -= 1
-            logging.info("Decreasing counter at location: "+location+" Counter: "+str(self.counters[location]))
-            if self.counters[location] == 0:
-                del self.counters[location]
+        if location in self.dead_components:
+            return None
+
+        if location in self.fault_counters.keys():
+            self.fault_counters[location] -= 1
+            logging.info("Decreasing counter at location: "+location+" Counter: "+str(self.fault_counters[location]))
+            if self.fault_counters[location] == 0:
+                del self.fault_counters[location]
                 logging.info("Freeing counter at location: "+location)
         else:
             pass
         return None
 
-    def reset_counter(self, location):
-        if location in self.counters.keys():
-            del self.counters[location]
+    def reset_counters(self, location):
+        if location in self.fault_counters.keys():
+            del self.fault_counters[location]
+        else:
+            pass
+        if location in self.health_counters.keys():
+            del self.health_counters[location]
         else:
             pass
         return None
