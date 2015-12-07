@@ -10,7 +10,7 @@ from SystemHealthMonitoring import SHMU_Functions
 ####################################################################
 
 
-def FaultEvent(env, AG, SHMU, NoCRG, fault_time_list, counter_threshold, logging):
+def fault_event(env, AG, SHMU, NoCRG, fault_time_list, counter_threshold, logging):
     """
 
     :param env: Simulator Environment
@@ -35,7 +35,7 @@ def FaultEvent(env, AG, SHMU, NoCRG, fault_time_list, counter_threshold, logging
                 pass
         if fault:
             fault_location, fault_type = SHMU_Functions.RandomFaultGeneration(SHMU.SHM)
-            SHMU_Functions.ApplyFaultEvent(AG, SHMU, NoCRG, fault_location, fault_type)
+            SHMU_Functions.apply_fault_event(AG, SHMU, NoCRG, fault_location, fault_type)
             counter_threshold.increase_fault_counter(fault_location, logging)
             fault = False
         yield env.timeout(0.1)

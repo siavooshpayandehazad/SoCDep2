@@ -5,7 +5,7 @@ import simpy
 import numpy
 
 from ConfigAndPackages import Config
-from FaultInjector import FaultEvent
+from FaultInjector import fault_event
 from SystemHealthMonitoring.FaultClassifier import CounterThreshold
 
 
@@ -116,25 +116,23 @@ def link_sim(env, link, schedule, fault_time_list, counter_threshold, logging):
             yield env.timeout(1)
 
 
-
-def RunSimulator(runtime, AG, SHM, NoCRG, logging):
+def run_simulator(runtime, AG, SHM, NoCRG, logging):
     print "==========================================="
     print "STARTING SIMULATION..."
     env = simpy.Environment()
     counter_threshold = CounterThreshold.CounterThreshold(4, 3)
 
-
     fault_time_list = []
     fault_time = 0
     if Config.EventDrivenFaultInjection:
-        TimeUntilNextFault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
-        fault_time += TimeUntilNextFault
+        time_until_next_fault=numpy.random.normal(Config.MTBF, Config.SD4MTBF)
+        fault_time += time_until_next_fault
         while fault_time < runtime:
             fault_time_list.append(float("{0:.1f}".format(fault_time)))
-            TimeUntilNextFault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
-            fault_time += TimeUntilNextFault
+            time_until_next_fault=numpy.random.normal(Config.MTBF, Config.SD4MTBF)
+            fault_time += time_until_next_fault
         print fault_time_list
-        env.process(FaultEvent(env, AG, SHM, NoCRG, fault_time_list, counter_threshold, logging))
+        env.process(fault_event(env, AG, SHM, NoCRG, fault_time_list, counter_threshold, logging))
 
     for node in AG.nodes():
         # print node, AG.node[node]["Scheduling"]

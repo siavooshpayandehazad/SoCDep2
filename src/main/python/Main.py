@@ -45,7 +45,7 @@ elif '-BENCHMARK' in sys.argv[1:]:
         sys.exit()
 
 
-ProgramStartTime = time.time()
+program_start_time = time.time()
 ##############################
 # Just for getting a copy of the current console
 sys.stdout = Logger.Logger()
@@ -64,11 +64,11 @@ task_graph, arch_graph, SHMU, NoCRG, CriticalRG, NonCriticalRG, PMCG = SystemIni
 
 # just to have a sense of how much time we are spending in each section
 print ("===========================================")
-SystemStartingTime = time.time()
-print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:"+str(round(SystemStartingTime-ProgramStartTime)) +
+system_starting_time = time.time()
+print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:"+str(round(system_starting_time-program_start_time)) +
        " SECONDS AFTER PROGRAM START...")
-Simulator.RunSimulator(100, arch_graph, SHMU, NoCRG, logging)
-# FaultInjector.FaultInjector(SystemStartingTime, AG, SHM, NoCRG)
+Simulator.run_simulator(100, arch_graph, SHMU, NoCRG, logging)
+# FaultInjector.FaultInjector(system_starting_time, AG, SHM, NoCRG)
 logging.info('Logging finished...')
 
 if Config.MemoryProfiler:

@@ -4,6 +4,7 @@ import random
 import SHMU_Reports
 from RoutingAlgorithms import Routing
 
+
 def ApplyInitialFaults(SHM):
         for BrokenLink in Config.ListOfBrokenLinks:
             SHM.BreakLink(BrokenLink, True)
@@ -16,6 +17,7 @@ def ApplyInitialFaults(SHM):
 
         for BrokenNode in Config.ListOfBrokenPEs:
             SHM.BreakNode(BrokenNode, True)
+
 
 def RandomFaultGeneration(SHM):
     """
@@ -56,7 +58,8 @@ def GenerateFaultConfig (SHMU):
             FaultConfig += "T" if SHMU.SHM.node[node]['TurnsHealth'][Turn] else "F"
     return FaultConfig
 
-def ApplyFaultEvent(AG, SHMU, NoCRG, FaultLocation, FaultType):
+
+def apply_fault_event(AG, SHMU, NoCRG, FaultLocation, FaultType):
         SHMU_Reports.ReportTheEvent(FaultLocation, FaultType)
         if type(FaultLocation) is tuple:      # its a Link fault
             if FaultType == 'T':    # Transient Fault
