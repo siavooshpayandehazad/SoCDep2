@@ -7,7 +7,7 @@ import re
 CurrentPath = re.sub('UnitTest', '', str(os.getcwd()))
 sys.path.append(CurrentPath)
 # Add Imports here:
-from ArchGraphUtilities.AG_Functions import ReturnNodeLocation, ReturnNodeNumber
+from ArchGraphUtilities.AG_Functions import ReturnNodeLocation, ReturnNodeNumber, ManhattanDistance
 from RoutingAlgorithms.Calculate_Reachability import IsNodeInsideRectangle
 from ConfigAndPackages import Config
 
@@ -20,8 +20,8 @@ class UnitTesting(unittest.TestCase):
             for j in range(0, Config.Network_Y_Size):
                 for i in range(0, Config.Network_X_Size):
                     self.assertEqual(ReturnNodeNumber(i, j, k),
-                                     i + j*Config.Network_X_Size + k*Config.Network_Y_Size* Config.Network_X_Size)
-        self.assertEqual(ReturnNodeNumber(Config.Network_X_Size -1, Config.Network_Y_Size -1, Config.Network_Z_Size -1),
+                                     i + j*Config.Network_X_Size + k*Config.Network_Y_Size*Config.Network_X_Size)
+        self.assertEqual(ReturnNodeNumber(Config.Network_X_Size-1, Config.Network_Y_Size-1, Config.Network_Z_Size-1),
                          Config.Network_X_Size * Config.Network_Y_Size * Config.Network_Z_Size - 1)
 
     def test_ReturnNodeLocation(self):
@@ -29,7 +29,13 @@ class UnitTesting(unittest.TestCase):
             for j in range(0, Config.Network_Y_Size):
                 for i in range(0, Config.Network_X_Size):
                     # we have the assumption that ReturnNodeNumber is fully tested...
-                    self.assertEqual(ReturnNodeLocation(ReturnNodeNumber(i,j,k)), (i, j, k))
+                    self.assertEqual(ReturnNodeLocation(ReturnNodeNumber(i, j, k)), (i, j, k))
+
+    def test_ManhattanDistance(self):
+        self.assertEqual(ManhattanDistance(0, 0), 0)
+        last_node_number = ReturnNodeNumber(Config.Network_X_Size-1, Config.Network_Y_Size-1, Config.Network_Z_Size-1)
+        self.assertEqual(ManhattanDistance(0, last_node_number),
+                         Config.Network_X_Size+Config.Network_Y_Size+Config.Network_Z_Size-3)
 
     def test_IsNodeInsideRectangle(self):
         # test that every node in network is inside a cube with size of network
@@ -41,7 +47,6 @@ class UnitTesting(unittest.TestCase):
         self.assertEqual(IsNodeInsideRectangle(Rectangle, Node), False)
 
     # todo: test MergeRectangleWithNode
-
 
 
 if __name__ == '__main__':
