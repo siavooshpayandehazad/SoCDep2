@@ -7,7 +7,7 @@ import re
 CurrentPath = re.sub('UnitTest', '', str(os.getcwd()))
 sys.path.append(CurrentPath)
 # Add Imports here:
-from ArchGraphUtilities.AG_Functions import return_node_location, return_node_number, ManhattanDistance
+from ArchGraphUtilities.AG_Functions import return_node_location, return_node_number, manhattan_distance
 from RoutingAlgorithms.Calculate_Reachability import is_node_inside_rectangle
 from ConfigAndPackages import Config
 
@@ -31,20 +31,20 @@ class UnitTesting(unittest.TestCase):
                     # we have the assumption that return_node_number is fully tested...
                     self.assertEqual(return_node_location(return_node_number(i, j, k)), (i, j, k))
 
-    def test_ManhattanDistance(self):
-        self.assertEqual(ManhattanDistance(0, 0), 0)
+    def test_manhattan_distance(self):
+        self.assertEqual(manhattan_distance(0, 0), 0)
         last_node_number = return_node_number(Config.Network_X_Size-1, Config.Network_Y_Size-1, Config.Network_Z_Size-1)
-        self.assertEqual(ManhattanDistance(0, last_node_number),
+        self.assertEqual(manhattan_distance(0, last_node_number),
                          Config.Network_X_Size+Config.Network_Y_Size+Config.Network_Z_Size-3)
 
     def test_is_node_inside_rectangle(self):
         # test that every node in network is inside a cube with size of network
-        Rectangle = (0, Config.Network_X_Size*Config.Network_Y_Size*Config.Network_Z_Size-1)
-        for Node in range(0, Config.Network_X_Size*Config.Network_Y_Size*Config.Network_Z_Size-1):
-            self.assertEqual(is_node_inside_rectangle(Rectangle, Node), True)
+        rectangle = (0, Config.Network_X_Size*Config.Network_Y_Size*Config.Network_Z_Size-1)
+        for node in range(0, Config.Network_X_Size*Config.Network_Y_Size*Config.Network_Z_Size-1):
+            self.assertEqual(is_node_inside_rectangle(rectangle, node), True)
 
-        Node = Config.Network_X_Size * Config.Network_Y_Size * Config.Network_Z_Size
-        self.assertEqual(is_node_inside_rectangle(Rectangle, Node), False)
+        node = Config.Network_X_Size * Config.Network_Y_Size * Config.Network_Z_Size
+        self.assertEqual(is_node_inside_rectangle(rectangle, node), False)
 
     # todo: test MergeRectangleWithNode
 

@@ -26,15 +26,15 @@ def initialize_system(logging):
     ####################################################################
     arch_graph = copy.deepcopy(AG_Functions.generate_arch_graph(logging))
     AG_Functions.update_arch_graph_regions(arch_graph)
-    AG_Functions.RandomDarkness(arch_graph)
+    AG_Functions.random_darkness(arch_graph)
     if Config.EnablePartitioning:
-        AG_Functions.SetupNetworkPartitioning(arch_graph)
+        AG_Functions.setup_network_partitioning(arch_graph)
     if Config.TestMode:
-        AG_Test.AG_Test()
+        AG_Test.arch_graph_test()
     if Config.FindOptimumAG:
-        Arch_Graph_Reports.DrawArchGraph(arch_graph, "AG_Full")
+        Arch_Graph_Reports.draw_arch_graph(arch_graph, "AG_Full")
     else:
-        Arch_Graph_Reports.DrawArchGraph(arch_graph, "AG")
+        Arch_Graph_Reports.draw_arch_graph(arch_graph, "AG")
     ####################################################################
     Config.SetUpTurnsHealth()
     if Config.TestMode:
@@ -46,7 +46,7 @@ def initialize_system(logging):
     if Config.FindOptimumAG:
         Optimize_3D_AG.OptimizeAG_VL(arch_graph, SHMU, logging)
         Optimize_3D_AG.CleanUpAG(arch_graph, SHMU)
-        Arch_Graph_Reports.DrawArchGraph(arch_graph, "AG_VLOpt")
+        Arch_Graph_Reports.draw_arch_graph(arch_graph, "AG_VLOpt")
     SHMU_Functions.ApplyInitialFaults(SHMU)
     if Config.SHM_Drawing:
         SHMU_Reports.DrawSHM(SHMU.SHM)

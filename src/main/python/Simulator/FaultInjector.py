@@ -10,11 +10,11 @@ from SystemHealthMonitoring import SHMU_Functions
 ####################################################################
 
 
-def fault_event(env, AG, SHMU, NoCRG, fault_time_list, counter_threshold, logging):
+def fault_event(env, arch_graph, SHMU, NoCRG, fault_time_list, counter_threshold, logging):
     """
 
     :param env: Simulator Environment
-    :param AG: Architecture Graph
+    :param arch_graph: Architecture Graph
     :param SHMU: System health Monitoring Unit
     :param NoCRG: NoC routing Graph
     :param fault_time_list: List of faults to happen in future
@@ -35,7 +35,7 @@ def fault_event(env, AG, SHMU, NoCRG, fault_time_list, counter_threshold, loggin
                 pass
         if fault:
             fault_location, fault_type = SHMU_Functions.RandomFaultGeneration(SHMU.SHM)
-            SHMU_Functions.apply_fault_event(AG, SHMU, NoCRG, fault_location, fault_type)
+            SHMU_Functions.apply_fault_event(arch_graph, SHMU, NoCRG, fault_location, fault_type)
             counter_threshold.increase_fault_counter(fault_location, logging)
             fault = False
         yield env.timeout(0.1)

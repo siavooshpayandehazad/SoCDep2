@@ -23,166 +23,166 @@ class PE():     # PROCESSING ELEMENT
         self.Type = 'Processor'       # Can be accelerator or something else
 
 
-def GenerateManualAG(PE_List, AG_Edge_List, AG_Edge_Port_List):
+def generate_manual_arch_graph(proc_element_list, arch_graph_edge_list, arch_graph_edge_port_list):
     """
     Generates an architecture graph from manually defined AG in  Config file
-    :param PE_List:  List of Processing Elements
-    :param AG_Edge_List: List of Edges between PEs
-    :param AG_Edge_Port_List:  Port connection for each of the links between PEs
-    :return:
+    :param proc_element_list:  List of Processing Elements
+    :param arch_graph_edge_list: List of Edges between PEs
+    :param arch_graph_edge_port_list:  Port connection for each of the links between PEs
+    :return: arch_graph
     """
     print("===========================================")
     print("PREPARING AN ARCHITECTURE GRAPH (AG)...")
     arch_graph = networkx.DiGraph()
-    for PE in PE_List:
-        arch_graph.add_node(PE, PE=PE(), Router=Router(), Region='L')
-    for i in range(0, len(AG_Edge_List)):
-        EDGE = AG_Edge_List[i]
-        arch_graph.add_edge(EDGE[0], EDGE[1], Port=AG_Edge_Port_List[i], MappedTasks={}, Scheduling={})
+    for processing_element in proc_element_list:
+        arch_graph.add_node(processing_element, PE=PE(), Router=Router(), Region='L')
+    for i in range(0, len(arch_graph_edge_list)):
+        edge = arch_graph_edge_list[i]
+        arch_graph.add_edge(edge[0], edge[1], Port=arch_graph_edge_port_list[i], MappedTasks={}, Scheduling={})
     print("\tNODES: "+str(arch_graph.nodes(data=False)))
     print("\tEDGES: "+str(arch_graph.edges(data=False)))
     print("ARCHITECTURE GRAPH (AG) IS READY...")
     return arch_graph
 
 
-def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
+def generate_generic_topology_arch_graph(topology, size_x, size_y, size_z, logging):
     """
     Takes a generic topology: 2DTorus, 2DMesh, 2DLine, 2DRing etc. and returns AG
-    :param Topology: a string with topology name
-    :SizeX: size of network in X dimension
-    :SizeY: size of network in Y dimension
-    :SizeZ: size of network in Z dimension
-    :logging: logging file
+    :param topology: a string with topology name
+    :param size_x: size of network in X dimension
+    :param size_y: size of network in Y dimension
+    :param size_z: size of network in Z dimension
+    :param logging: logging file
     :return: AG
     """
-    SupportedTopologies = ['2DTorus', '2DMesh', '2DRing', '2DLine', '3DMesh']
+    supported_topologies = ['2DTorus', '2DMesh', '2DRing', '2DLine', '3DMesh']
     print ("===========================================")
     print ("PREPARING AN ARCHITECTURE GRAPH (AG)...")
-    print ("TOPOLOGY: "+Topology)
-    print ("X SIZE:"+str(SizeX))
-    print ("Y SIZE:"+str(SizeY))
-    print ("Z SIZE:"+str(SizeZ))
-    AG = networkx.DiGraph()
+    print ("TOPOLOGY: "+topology)
+    print ("X SIZE:"+str(size_x))
+    print ("Y SIZE:"+str(size_y))
+    print ("Z SIZE:"+str(size_z))
+    arch_graph = networkx.DiGraph()
 
-    if Topology not in SupportedTopologies:
+    if topology not in supported_topologies:
         logging.error("TOPOLOGY NOT SUPPORTED...")
-        raise ValueError('TOPOLOGY ', Topology, ' is NOT SUPPORTED...')
+        raise ValueError('TOPOLOGY ', topology, ' is NOT SUPPORTED...')
 
     logging.info("GENERATING ARCHITECTURE GRAPH (AG)...")
-    if Topology == '2DSpidergon':
-        if SizeX == SizeY:
+    if topology == '2DSpidergon':
+        if size_x == size_y:
             # Todo: write spidergon
             pass
-    if Topology == '2DTorus':
-        for i in range(0, SizeX*SizeY):
-            AG.add_node(i, PE=PE(), Router=Router(), Region='N')
-        for i in range(0, SizeX):
-            CurrentNode = return_node_number(i, 0, 0)
-            NextNode = return_node_number(i, SizeY-1, 0)
-            logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
-            logging.info("CONNECTING  "+str((SizeY-1)*SizeX+i)+" TO "+str(CurrentNode))
-            AG.add_edge(CurrentNode, (SizeY-1)*SizeX+i, Port=('S', 'N'), MappedTasks={}, Scheduling={})
-            AG.add_edge(NextNode, CurrentNode, Port=('N', 'S'), MappedTasks={}, Scheduling={})
-        for j in range(0, SizeY):
-            CurrentNode = return_node_number(0, j, 0)
-            NextNode = return_node_number(SizeX-1, j, 0)
-            logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
-            logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
-            AG.add_edge(CurrentNode, NextNode, Port=('W', 'E'), MappedTasks={}, Scheduling={})
-            AG.add_edge(NextNode, CurrentNode, Port=('E', 'W'), MappedTasks={}, Scheduling={})
-            for i in range(0, SizeX-1):
-                CurrentNode = return_node_number(i, j, 0)
-                NextNode = return_node_number(i+1, j, 0)
-                logging.info("CONNECTING  " + str(CurrentNode) + " TO " + str(NextNode))
-                logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
-                AG.add_edge(CurrentNode, NextNode, Port=('E', 'W'), MappedTasks={}, Scheduling={})
-                AG.add_edge(NextNode, CurrentNode, Port=('W', 'E'), MappedTasks={}, Scheduling={})
-        for j in range(0, SizeY-1):
-            for i in range(0, SizeX):
-                CurrentNode = return_node_number(i, j, 0)
-                NextNode = return_node_number(i, j+1, 0)
-                logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
-                logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
-                AG.add_edge(CurrentNode, NextNode, Port=('N', 'S'), MappedTasks={}, Scheduling={})
-                AG.add_edge(NextNode, CurrentNode, Port=('S', 'N'), MappedTasks={}, Scheduling={})
+    if topology == '2DTorus':
+        for i in range(0, size_x*size_y):
+            arch_graph.add_node(i, PE=PE(), Router=Router(), Region='N')
+        for i in range(0, size_x):
+            current_node = return_node_number(i, 0, 0)
+            next_node = return_node_number(i, size_y-1, 0)
+            logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
+            logging.info("CONNECTING  "+str((size_y-1)*size_x+i)+" TO "+str(current_node))
+            arch_graph.add_edge(current_node, (size_y-1)*size_x+i, Port=('S', 'N'), MappedTasks={}, Scheduling={})
+            arch_graph.add_edge(next_node, current_node, Port=('N', 'S'), MappedTasks={}, Scheduling={})
+        for j in range(0, size_y):
+            current_node = return_node_number(0, j, 0)
+            next_node = return_node_number(size_x-1, j, 0)
+            logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
+            logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
+            arch_graph.add_edge(current_node, next_node, Port=('W', 'E'), MappedTasks={}, Scheduling={})
+            arch_graph.add_edge(next_node, current_node, Port=('E', 'W'), MappedTasks={}, Scheduling={})
+            for i in range(0, size_x-1):
+                current_node = return_node_number(i, j, 0)
+                next_node = return_node_number(i+1, j, 0)
+                logging.info("CONNECTING  " + str(current_node) + " TO " + str(next_node))
+                logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
+                arch_graph.add_edge(current_node, next_node, Port=('E', 'W'), MappedTasks={}, Scheduling={})
+                arch_graph.add_edge(next_node, current_node, Port=('W', 'E'), MappedTasks={}, Scheduling={})
+        for j in range(0, size_y-1):
+            for i in range(0, size_x):
+                current_node = return_node_number(i, j, 0)
+                next_node = return_node_number(i, j+1, 0)
+                logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
+                logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
+                arch_graph.add_edge(current_node, next_node, Port=('N', 'S'), MappedTasks={}, Scheduling={})
+                arch_graph.add_edge(next_node, current_node, Port=('S', 'N'), MappedTasks={}, Scheduling={})
     ##############################################################
-    if Topology == '2DMesh':
-        for i in range(0, SizeX*SizeY):
-            AG.add_node(i, PE=PE(), Router=Router(),  Region='N')
-        for j in range(0, SizeY):
-            for i in range(0, SizeX-1):
-                CurrentNode = return_node_number(i, j, 0)
-                NextNode = return_node_number(i+1, j, 0)
-                logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
-                logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
-                AG.add_edge(CurrentNode, NextNode, Port=('E', 'W'), MappedTasks={}, Scheduling={})
-                AG.add_edge(NextNode, CurrentNode, Port=('W', 'E'), MappedTasks={}, Scheduling={})
-        for j in range(0, SizeY-1):
-            for i in range(0, SizeX):
-                CurrentNode = return_node_number(i, j, 0)
-                NextNode = return_node_number(i, j+1, 0)
-                logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
-                logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
-                AG.add_edge(CurrentNode, NextNode, Port=('N', 'S'), MappedTasks={}, Scheduling={})
-                AG.add_edge(NextNode, CurrentNode, Port=('S', 'N'), MappedTasks={}, Scheduling={})
+    if topology == '2DMesh':
+        for i in range(0, size_x*size_y):
+            arch_graph.add_node(i, PE=PE(), Router=Router(),  Region='N')
+        for j in range(0, size_y):
+            for i in range(0, size_x-1):
+                current_node = return_node_number(i, j, 0)
+                next_node = return_node_number(i+1, j, 0)
+                logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
+                logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
+                arch_graph.add_edge(current_node, next_node, Port=('E', 'W'), MappedTasks={}, Scheduling={})
+                arch_graph.add_edge(next_node, current_node, Port=('W', 'E'), MappedTasks={}, Scheduling={})
+        for j in range(0, size_y-1):
+            for i in range(0, size_x):
+                current_node = return_node_number(i, j, 0)
+                next_node = return_node_number(i, j+1, 0)
+                logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
+                logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
+                arch_graph.add_edge(current_node, next_node, Port=('N', 'S'), MappedTasks={}, Scheduling={})
+                arch_graph.add_edge(next_node, current_node, Port=('S', 'N'), MappedTasks={}, Scheduling={})
     ##############################################################
-    if Topology == '3DMesh':
-        for i in range(0, SizeX*SizeY*SizeZ):
-            AG.add_node(i, PE=PE(), Router=Router(), Region='N')
-        for z in range(0, SizeZ):
+    if topology == '3DMesh':
+        for i in range(0, size_x*size_y*size_z):
+            arch_graph.add_node(i, PE=PE(), Router=Router(), Region='N')
+        for z in range(0, size_z):
             # connect the connections in each layer
-            for y in range(0, SizeY):
-                for x in range(0, SizeX-1):
-                    CurrentNode = return_node_number(x, y, z)
-                    NextNode = return_node_number(x+1, y, z)
-                    AG.add_edge(CurrentNode, NextNode, Port=('E', 'W'), MappedTasks={}, Scheduling={})
-                    AG.add_edge(NextNode, CurrentNode, Port=('W', 'E'), MappedTasks={}, Scheduling={})
-            for y in range(0, SizeY-1):
-                for x in range(0, SizeX):
-                    CurrentNode = return_node_number(x, y, z)
-                    NextNode = return_node_number(x, y+1, z)
-                    AG.add_edge(CurrentNode, NextNode, Port=('N', 'S'), MappedTasks={}, Scheduling={})
-                    AG.add_edge(NextNode, CurrentNode, Port=('S', 'N'), MappedTasks={}, Scheduling={})
-        for z in range(0, SizeZ-1):
+            for y in range(0, size_y):
+                for x in range(0, size_x-1):
+                    current_node = return_node_number(x, y, z)
+                    next_node = return_node_number(x+1, y, z)
+                    arch_graph.add_edge(current_node, next_node, Port=('E', 'W'), MappedTasks={}, Scheduling={})
+                    arch_graph.add_edge(next_node, current_node, Port=('W', 'E'), MappedTasks={}, Scheduling={})
+            for y in range(0, size_y-1):
+                for x in range(0, size_x):
+                    current_node = return_node_number(x, y, z)
+                    next_node = return_node_number(x, y+1, z)
+                    arch_graph.add_edge(current_node, next_node, Port=('N', 'S'), MappedTasks={}, Scheduling={})
+                    arch_graph.add_edge(next_node, current_node, Port=('S', 'N'), MappedTasks={}, Scheduling={})
+        for z in range(0, size_z-1):
             # connect routers between layers.
-            for y in range(0, SizeY):
-                for x in range(0, SizeX):
-                    CurrentNode = return_node_number(x, y, z)
-                    NextNode = return_node_number(x, y, z+1)
-                    AG.add_edge(CurrentNode, NextNode, Port=('U', 'D'), MappedTasks={}, Scheduling={})
-                    AG.add_edge(NextNode, CurrentNode, Port=('D', 'U'), MappedTasks={}, Scheduling={})
+            for y in range(0, size_y):
+                for x in range(0, size_x):
+                    current_node = return_node_number(x, y, z)
+                    next_node = return_node_number(x, y, z+1)
+                    arch_graph.add_edge(current_node, next_node, Port=('U', 'D'), MappedTasks={}, Scheduling={})
+                    arch_graph.add_edge(next_node, current_node, Port=('D', 'U'), MappedTasks={}, Scheduling={})
     ##############################################################
-    elif Topology == '2DRing':
-        for i in range(0, SizeX*SizeY):
-            AG.add_node(i, PE=PE(), Router=Router(), Region='N')
-        for j in range(0, SizeY):
-            CurrentNode = return_node_number(0, j, 0)
-            NextNode = return_node_number(SizeX-1, j, 0)
-            logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
-            logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
-            AG.add_edge(CurrentNode, j*SizeX+SizeX-1, Port=('W', 'E'), MappedTasks={}, Scheduling={})
-            AG.add_edge(NextNode, CurrentNode, Port=('E', 'W'), MappedTasks={}, Scheduling={})
-            for i in range(0, SizeX-1):
-                CurrentNode = return_node_number(i, j, 0)
-                NextNode = return_node_number(i+1, j, 0)
-                logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
-                logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
-                AG.add_edge(CurrentNode, NextNode, Port=('E', 'W'), MappedTasks={}, Scheduling={})
-                AG.add_edge(NextNode, CurrentNode, Port=('W', 'E'), MappedTasks={}, Scheduling={})
+    elif topology == '2DRing':
+        for i in range(0, size_x*size_y):
+            arch_graph.add_node(i, PE=PE(), Router=Router(), Region='N')
+        for j in range(0, size_y):
+            current_node = return_node_number(0, j, 0)
+            next_node = return_node_number(size_x-1, j, 0)
+            logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
+            logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
+            arch_graph.add_edge(current_node, j*size_x+size_x-1, Port=('W', 'E'), MappedTasks={}, Scheduling={})
+            arch_graph.add_edge(next_node, current_node, Port=('E', 'W'), MappedTasks={}, Scheduling={})
+            for i in range(0, size_x-1):
+                current_node = return_node_number(i, j, 0)
+                next_node = return_node_number(i+1, j, 0)
+                logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
+                logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
+                arch_graph.add_edge(current_node, next_node, Port=('E', 'W'), MappedTasks={}, Scheduling={})
+                arch_graph.add_edge(next_node, current_node, Port=('W', 'E'), MappedTasks={}, Scheduling={})
     ##############################################################
-    elif Topology == '2DLine':
-        for i in range(0, SizeX*SizeY):
-            AG.add_node(i, PE=PE(), Router=Router(), Region='N')
-        for j in range(0, SizeY):
-            for i in range(0, SizeX-1):
-                CurrentNode = return_node_number(i, j, 0)
-                NextNode = return_node_number(i+1, j, 0)
-                logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
-                logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
-                AG.add_edge(CurrentNode, NextNode, Port=('E', 'W'), MappedTasks={}, Scheduling={})
-                AG.add_edge(NextNode, CurrentNode, Port=('W', 'E'), MappedTasks={}, Scheduling={})
+    elif topology == '2DLine':
+        for i in range(0, size_x*size_y):
+            arch_graph.add_node(i, PE=PE(), Router=Router(), Region='N')
+        for j in range(0, size_y):
+            for i in range(0, size_x-1):
+                current_node = return_node_number(i, j, 0)
+                next_node = return_node_number(i+1, j, 0)
+                logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
+                logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
+                arch_graph.add_edge(current_node, next_node, Port=('E', 'W'), MappedTasks={}, Scheduling={})
+                arch_graph.add_edge(next_node, current_node, Port=('W', 'E'), MappedTasks={}, Scheduling={})
     print("ARCHITECTURE GRAPH (AG) IS READY...")
-    return AG
+    return arch_graph
 
 
 def generate_arch_graph(logging):
@@ -192,10 +192,10 @@ def generate_arch_graph(logging):
     :return: returns the generated Architecture Graph
     """
     if Config.AG_Type == 'Generic':
-        return GenerateGenericTopologyAG(Config.NetworkTopology, Config.Network_X_Size,
-                                         Config.Network_Y_Size, Config.Network_Z_Size, logging)
+        return generate_generic_topology_arch_graph(Config.NetworkTopology, Config.Network_X_Size,
+                                                    Config.Network_Y_Size, Config.Network_Z_Size, logging)
     elif Config.AG_Type == 'Manual':
-        return GenerateManualAG(Config.PE_List, Config.AG_Edge_List, Config.AG_Edge_Port_List)
+        return generate_manual_arch_graph(Config.PE_List, Config.AG_Edge_List, Config.AG_Edge_Port_List)
     else:
         raise ValueError('AG TYPE DOESNT EXIST...!!!')
 
@@ -237,53 +237,52 @@ def return_node_location(node_number):
     return node_x, node_y, node_z
 
 
-def return_node_number(NodeX, NodeY, NodeZ):
+def return_node_number(node_x, node_y, node_z):
     """
     Takes cartesian location of a node and returns node id
-    :param NodeX: Location of the node on X axis
-    :param NodeY:  Location of the node on Y axis
-    :param NodeZ: Location of the node on Z axis
+    :param node_x: Location of the node on X axis
+    :param node_y:  Location of the node on Y axis
+    :param node_z: Location of the node on Z axis
     :return: ID of the node as an integer
     """
-    NodeNumber = NodeZ * Config.Network_X_Size * Config.Network_Y_Size + NodeY * Config.Network_X_Size + NodeX
-    return NodeNumber
+    return node_z * Config.Network_X_Size * Config.Network_Y_Size + node_y * Config.Network_X_Size + node_x
 
 
-def node_neighbors(arch_graph, SHM):
+def node_neighbors(arch_graph, system_health_map):
     """
     :param arch_graph: Architecture graph (directed graph)
-    :param SHM: System Health Map
+    :param system_health_map: System Health Map
     :return: A dictionary with node number as the key and the number of neighbors as values
     """
     node_neighbor = {}
     for Node in arch_graph.nodes():
-        NumberOfNeighbours = 0
+        number_of_neighbours = 0
         for Link in arch_graph.edges():
             if Node in Link:
-                if SHM.edge[Link[0]][Link[1]]['LinkHealth']:
-                    NumberOfNeighbours += 1
-        node_neighbor[Node] = NumberOfNeighbours
+                if system_health_map.edge[Link[0]][Link[1]]['LinkHealth']:
+                    number_of_neighbours += 1
+        node_neighbor[Node] = number_of_neighbours
     return node_neighbor
 
 
-def max_node_neighbors(node_neighbors, sorted_node_neighbors):
+def max_node_neighbors(node_neighbors_dict, sorted_node_neighbors):
     """
-    :param node_neighbors: dictionary with nodes as keys and number of neighbors as values
+    :param node_neighbors_dict: dictionary with nodes as keys and number of neighbors as values
     :param sorted_node_neighbors: sorted list of nodes by number of neighbors
     :return: returns a list of nodes with maximum number of neighbors
     """
-    MaxNeighbourNum = 0
+    max_neighbour_num = 0
     for node in sorted_node_neighbors:
-        if node_neighbors[node] > MaxNeighbourNum:
-            MaxNeighbourNum = node_neighbors[node]
-    MaxNeighbourNodes = []
+        if node_neighbors_dict[node] > max_neighbour_num:
+            max_neighbour_num = node_neighbors_dict[node]
+    max_neighbour_nodes = []
     for node in sorted_node_neighbors:
-        if node_neighbors[node] == MaxNeighbourNum:
-            MaxNeighbourNodes.append(node)
-    return MaxNeighbourNodes
+        if node_neighbors_dict[node] == max_neighbour_num:
+            max_neighbour_nodes.append(node)
+    return max_neighbour_nodes
 
 
-def ManhattanDistance(node_1, node_2):
+def manhattan_distance(node_1, node_2):
     """
     Takes the node id of two nodes and returns the manhattan distance of those nodes
     :param node_1: Node id of 1st node
@@ -296,24 +295,24 @@ def ManhattanDistance(node_1, node_2):
     return abs(x2-x1)+abs(y2-y1)+abs(z2-z1)
 
 
-def SetupNetworkPartitioning(AG):
+def setup_network_partitioning(arch_graph):
     """
     Takes Architecture Graph as parameter and different regions from
     Config File and Sets up the partitioning for different regions
-    :param AG: Architecture Graph
+    :param arch_graph: Architecture Graph
     :return: None
     """
     # Todo: This needs to be tested...
     print ("===========================================")
     print ("SETTING UP NETWORK PARTITIONING...")
     NonCriticalNodes = []
-    for node in AG.nodes():
+    for node in arch_graph.nodes():
         if node not in Config.CriticalRegionNodes:
             if node not in Config.GateToNonCritical:
                 if node not in Config.GateToCritical:
                     NonCriticalNodes.append(node)
 
-    for link in AG.edges():
+    for link in arch_graph.edges():
         # ListOfBrokenLinks
         if link[0] in Config.CriticalRegionNodes and link[1] in NonCriticalNodes:
             Config.ListOfBrokenLinks.append(link)
@@ -324,7 +323,6 @@ def SetupNetworkPartitioning(AG):
             Config.ListOfBrokenLinks.append(link)
         if link[0] in NonCriticalNodes and link[1] in Config.GateToNonCritical:
             Config.ListOfBrokenLinks.append(link)
-
 
         # VirtualBrokenLinksForNonCritical
         if link[0] in Config.GateToCritical and link[1] in Config.CriticalRegionNodes:
@@ -343,54 +341,57 @@ def SetupNetworkPartitioning(AG):
     print "VirtualBrokenLinksForCritical:", Config.VirtualBrokenLinksForCritical
     return None
 
-def RandomDarkness(AG):
+
+def random_darkness(arch_graph):
     """
     Takes the percentage of Dark Nodes form the Config File and turns of some Nodes.
-    :param AG: Architecture Graph
+    :param arch_graph: Architecture Graph
     :return: None
     """
-    NumberOfDarkNodes = int(ceil(len(AG.nodes())*Config.DarkSiliconPercentage))
-    for i in range(0,NumberOfDarkNodes):
-        Node = random.choice(AG.nodes())
-        AG.node[Node]['PE'].Dark = True
+    number_of_dark_nodes = int(ceil(len(arch_graph.nodes())*Config.DarkSiliconPercentage))
+    for i in range(0, number_of_dark_nodes):
+        node = random.choice(arch_graph.nodes())
+        arch_graph.node[node]['PE'].Dark = True
     return None
 
-def ReturnActiveNodes(AG):
+
+def return_active_nodes(arch_graph):
     """
     Returns Nodes in AG which are active (Not falling in dark areas)
-    :param AG: Architecture Graph
+    :param arch_graph: Architecture Graph
     :return: list of active nodes.
     """
-    ActiveNodes = []
-    for Node in AG.nodes():
-        if not AG.node[Node]['PE'].Dark:
-            ActiveNodes.append(Node)
-    return ActiveNodes
+    active_nodes = []
+    for node in arch_graph.nodes():
+        if not arch_graph.node[node]['PE'].Dark:
+            active_nodes.append(node)
+    return active_nodes
 
-def ReturnHealthyNodes(AG, SHM):
+
+def return_healthy_nodes(arch_graph, system_health_map):
     """
     Returns Nodes in AG which are tagged Healthy in SHM
-    :param AG: Architecture Graph
-    :param SHM: System Health Map
+    :param arch_graph: Architecture Graph
+    :param system_health_map: System Health Map
     :return: List of healthy Nodes in AG
     """
-    HealthyNodes = []
-    for Node in AG.nodes():
-        if SHM.node[Node]['NodeHealth']:
-            HealthyNodes.append(Node)
-    return HealthyNodes
+    healthy_nodes = []
+    for node in arch_graph.nodes():
+        if system_health_map.node[node]['NodeHealth']:
+            healthy_nodes.append(node)
+    return healthy_nodes
 
 
-def ReturnHealthyActiveNodes(AG, SHM):
+def return_healthy_active_nodes(arch_graph, system_health_map):
     """
     Returns Nodes in AG which are tagged Healthy in SHM and are active
-    :param AG: Architecture Graph
-    :param SHM: System Health Map
+    :param arch_graph: Architecture Graph
+    :param system_health_map: System Health Map
     :return: list of Healthy Active nodes
     """
-    HealthyActiveNodes = []
-    for Node in AG.nodes():
-        if SHM.node[Node]['NodeHealth']:
-            if not AG.node[Node]['PE'].Dark:
-                HealthyActiveNodes.append(Node)
-    return HealthyActiveNodes
+    healthy_active_nodes = []
+    for node in arch_graph.nodes():
+        if system_health_map.node[node]['NodeHealth']:
+            if not arch_graph.node[node]['PE'].Dark:
+                healthy_active_nodes.append(node)
+    return healthy_active_nodes

@@ -5,40 +5,42 @@ import networkx
 from ConfigAndPackages import Config
 from AG_Functions import return_node_location
 
-def DrawArchGraph(AG, FileName):
+
+def draw_arch_graph(arch_graph, file_name):
     """
     Generates Visualizations of the Architecture Graph and saves it in "GraphDrawings/FileName.png"
-    :param AG: Architecture Graph
-    :param FileName: Name of the file for saving the graph
+    :param arch_graph: Architecture Graph
+    :param file_name: Name of the file for saving the graph
     :return: None
     """
-    POS ={}
-    ColorList = []
+    position = {}
+    color_list = []
 
-    NumberOfLayers = Config.Network_Z_Size
-    NodeSize = 500/NumberOfLayers
+    number_of_layers = Config.Network_Z_Size
+    node_size = 500/number_of_layers
 
-    NodeDistanceX = (6 * NodeSize * Config.Network_X_Size * (NumberOfLayers+1))
-    NodeDistanceY = (6 * NodeSize * Config.Network_Y_Size * (NumberOfLayers+1))
+    node_distance_x = (6 * node_size * Config.Network_X_Size * (number_of_layers+1))
+    node_distance_y = (6 * node_size * Config.Network_Y_Size * (number_of_layers+1))
 
-    offsetX = (4 * NodeSize * Config.Network_X_Size)
-    offsetY = (4 * NodeSize * Config.Network_Y_Size)
+    offset_x = (4 * node_size * Config.Network_X_Size)
+    offset_y = (4 * node_size * Config.Network_Y_Size)
 
-    for Node in AG.nodes():
-        x,y,z = return_node_location(Node)
-        POS[Node]= [(x*NodeDistanceX)+z*offsetX, (y*NodeDistanceY)+z*offsetY]
-        if AG.node[Node]['Region'] == 'H':
-            ColorList.append('#FF878B')
-        elif AG.node[Node]['Region'] == 'GH':   # gateway to high critical
-            ColorList.append('#FFC29C')
-        elif AG.node[Node]['Region'] == 'GNH':  # gateway to Non-high critical
-            ColorList.append('#928AFF')
+    for Node in arch_graph.nodes():
+        x, y, z = return_node_location(Node)
+        position[Node] = [(x*node_distance_x)+z*offset_x, (y*node_distance_y)+z*offset_y]
+        if arch_graph.node[Node]['Region'] == 'H':
+            color_list.append('#FF878B')
+        elif arch_graph.node[Node]['Region'] == 'GH':   # gateway to high critical
+            color_list.append('#FFC29C')
+        elif arch_graph.node[Node]['Region'] == 'GNH':  # gateway to Non-high critical
+            color_list.append('#928AFF')
         else:
-            ColorList.append('#CFECFF')
+            color_list.append('#CFECFF')
 
     # POS = networkx.spring_layout(AG)
 
-    networkx.draw(AG, POS, with_labels=True, node_size=NodeSize, arrows=False, node_color=ColorList, font_size=5, linewidths=1)
-    plt.savefig("GraphDrawings/"+FileName+".png", dpi=150)
+    networkx.draw(arch_graph, pos=position, with_labels=True, node_size=node_size, arrows=False,
+                  node_color=color_list, font_size=5, linewidths=1)
+    plt.savefig("GraphDrawings/"+file_name+".png", dpi=150)
     plt.clf()
     return None

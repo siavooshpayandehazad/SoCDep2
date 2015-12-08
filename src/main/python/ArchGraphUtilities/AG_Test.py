@@ -4,7 +4,7 @@ import AG_Functions
 from ConfigAndPackages import Config
 
 
-def AG_Test():
+def arch_graph_test():
     print ("===========================================")
     print ("STARTING AG TESTS...")
     print ("NO TESTS AVAILABLE...")

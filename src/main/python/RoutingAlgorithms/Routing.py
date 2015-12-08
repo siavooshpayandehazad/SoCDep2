@@ -274,7 +274,7 @@ def FindRouteInRouteGraph(NoCRG, CriticalRG, NonCriticalRG, SourceNode, Destinat
 
 def ReturnMinimalPaths(CurrentRG, SourceNode, DestinationNode):
     AllMinimalPaths=[]
-    MaxHopCount= AG_Functions.ManhattanDistance(SourceNode, DestinationNode)
+    MaxHopCount= AG_Functions.manhattan_distance(SourceNode, DestinationNode)
     Source = str(SourceNode)+str('L')+str('I')
     Destination = str(DestinationNode)+str('L')+str('O')
     AllPaths = list(networkx.all_shortest_paths(CurrentRG, Source, Destination))
