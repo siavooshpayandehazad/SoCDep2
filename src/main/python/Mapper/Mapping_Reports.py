@@ -41,7 +41,7 @@ def DrawMappingDistribution(AG, SHMU):
         MaxUtilization = max(AG.node[node]['PE'].Utilization, MaxUtilization)
 
     for node in AG.nodes():
-        Location = AG_Functions.ReturnNodeLocation(node)
+        Location = AG_Functions.return_node_location(node)
         XSize = float(Config.Network_X_Size)
         YSize = float(Config.Network_Y_Size)
         ZSize = float(Config.Network_Y_Size)
@@ -105,7 +105,7 @@ def DrawMapping(TG, AG, SHMU):
     StepSize = NodeSize * 1.08
     distance = StepSize * ZSize * 1.2
     for node in AG.nodes():
-        Location = AG_Functions.ReturnNodeLocation(node)
+        Location = AG_Functions.return_node_location(node)
         if SHMU.SHM.node[node]['NodeHealth']:
             if not AG.node[node]['PE'].Dark:
                 if Config.EnablePartitioning:

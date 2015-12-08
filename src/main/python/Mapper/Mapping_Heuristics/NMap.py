@@ -60,9 +60,9 @@ def NMap (TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
 
     print ("------------------")
     print ("STEP 2:")
-    NodeNeighborsDict = AG_Functions.NodeNeighbors(AG, SHM)
+    NodeNeighborsDict = AG_Functions.node_neighbors(AG, SHM)
     SortedNodeNeighbors = sorted(NodeNeighborsDict, key=NodeNeighborsDict.get, reverse=True)
-    MaxNeighborsNode = AG_Functions.MaxNodeNeighbors(NodeNeighborsDict, SortedNodeNeighbors)
+    MaxNeighborsNode = AG_Functions.max_node_neighbors(NodeNeighborsDict, SortedNodeNeighbors)
     print ("\t SORTED NODES BY NUMBER OF NEIGHBOURS:\n"+"\t "+str(SortedNodeNeighbors))
     print ("\t -------------")
     print ("\t NODES WITH MAX NEIGHBOURS:\t"+str(MaxNeighborsNode))

@@ -5,7 +5,7 @@ from ArchGraphUtilities import AG_Functions
 def ReportGSNoCFriendlyReachabilityInFile (AG):
     ReachabilityFile = open("Generated_Files/GSNoC_RectangleFile.txt",'w')
     for Node in AG.nodes():
-        NodeX, NodeY, NodeZ = AG_Functions.ReturnNodeLocation(Node)
+        NodeX, NodeY, NodeZ = AG_Functions.return_node_location(Node)
         for Port in AG.node[Node]['Router'].Unreachable:
             if Port == "S":
                 Direction = "SOUTH"
@@ -19,10 +19,10 @@ def ReportGSNoCFriendlyReachabilityInFile (AG):
                 ReachabilityFile.write( "["+str(NodeX)+","+str(NodeY)+","+str(NodeZ)+"] ")
                 UnreachableArea = AG.node[Node]['Router'].Unreachable[Port][Entry]
                 if UnreachableArea[0] is not None:
-                    UnreachableX, UnreachableY, UnreachableZ = AG_Functions.ReturnNodeLocation(UnreachableArea[0])
+                    UnreachableX, UnreachableY, UnreachableZ = AG_Functions.return_node_location(UnreachableArea[0])
                     ReachabilityFile.write(str(Direction)+" NetLocCube(ll=["+str(UnreachableX)+","+str(UnreachableY)+
                                            ","+str(UnreachableZ)+"],")
-                    UnreachableX, UnreachableY, UnreachableZ = AG_Functions.ReturnNodeLocation(UnreachableArea[1])
+                    UnreachableX, UnreachableY, UnreachableZ = AG_Functions.return_node_location(UnreachableArea[1])
                     ReachabilityFile.write("ur=["+str(UnreachableX)+","+str(UnreachableY)+
                                            ","+str(UnreachableZ)+"])\n")
                 else:

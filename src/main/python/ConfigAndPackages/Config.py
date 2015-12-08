@@ -19,7 +19,7 @@ TG_Type = 'RandomDependent'
 # For Random TG_Type:
 NumberOfTasks = 9
 NumberOfCriticalTasks = 0
-NumberOfEdges = 25
+NumberOfEdges = 20
 WCET_Range = 15
 EdgeWeightRange = 7
 Release_Range = 5      # task release time range
@@ -84,7 +84,7 @@ FlowControl = "Wormhole"
 ################################################
 #          Dark Silicon  Config
 ################################################
-DarkSiliconPercentage=0
+DarkSiliconPercentage = 0
 ################################################
 #          SHM  Config
 ################################################
@@ -228,7 +228,7 @@ elif Mapping_Function == 'SimulatedAnnealing':
 # 'MAX' = MaxLinkMakeSpan + MaxNodeMakeSpan
 # 'SD+MAX' = Link_MakeSpan_SD + MaxLinkMakeSpan + Node_MakeSpan_SD + MaxNodeMakeSpan
 # 'CONSTANT' = 1   ---> can be used if user needs only distance
-Mapping_CostFunctionType = 'MAX'
+Mapping_CostFunctionType = 'SD'
 # if 'DistanceBetweenMapping' is true => Cost += Hamming distance between the current
 # solution and the neighbour solution
 DistanceBetweenMapping = False
@@ -243,6 +243,8 @@ Task_SlackCount = 0               # this is used for number of repetitions of th
 MTTF = None     # Mean time to failure in seconds have not used MTTF yet...
 MTBF = 2        # Mean time between failures in seconds
 SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal distribution
+health_counter_threshold = 20
+fault_counter_threshold = 4
 ################################################
 #           Network Partitioning
 ################################################

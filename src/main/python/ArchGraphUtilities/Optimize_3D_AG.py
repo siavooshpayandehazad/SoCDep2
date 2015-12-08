@@ -1,7 +1,7 @@
 # Copyright (C) Siavoosh Payandeh Azad
 
 from  ConfigAndPackages import Config
-from AG_Functions import ReturnNodeNumber, ReturnNodeLocation
+from AG_Functions import return_node_number, return_node_location
 from RoutingAlgorithms import Routing, Calculate_Reachability, RoutingGraph_Reports
 import random, copy
 
@@ -105,7 +105,7 @@ def OptimizeAG_VL_LocalSearch(AG, SHM, logging):
 def FindAll_VL(AG):
     VL_List = []
     for link in AG.edges():
-        if ReturnNodeLocation(link[0])[2] != ReturnNodeLocation(link[1])[2]:    # these nodes are on different layers
+        if return_node_location(link[0])[2] != return_node_location(link[1])[2]:    # these nodes are on different layers
             if link not in VL_List:
                 VL_List.append(link)
     return VL_List
@@ -124,24 +124,24 @@ def FindFeasibleAG_VL(AG, SHMU):
         SourceX = random.randint(0, Config.Network_X_Size-1)
         SourceY = random.randint(0, Config.Network_Y_Size-1)
         SourceZ = random.randint(0, Config.Network_Z_Size-1)
-        SourceNode = ReturnNodeNumber(SourceX,SourceY,SourceZ)
+        SourceNode = return_node_number(SourceX,SourceY,SourceZ)
         PossibleZ=[]
         if SourceZ+1 <= Config.Network_Z_Size-1:
             PossibleZ.append(SourceZ+1)
         if 0 <= SourceZ-1:
             PossibleZ.append(SourceZ-1)
-        DestinationNode = ReturnNodeNumber(SourceX, SourceY, random.choice(PossibleZ))
+        DestinationNode = return_node_number(SourceX, SourceY, random.choice(PossibleZ))
         while SHMU.SHM.edge[SourceNode][DestinationNode]['LinkHealth']:
             SourceX = random.randint(0, Config.Network_X_Size-1)
             SourceY = random.randint(0, Config.Network_Y_Size-1)
             SourceZ = random.randint(0, Config.Network_Z_Size-1)
-            SourceNode = ReturnNodeNumber(SourceX, SourceY, SourceZ)
+            SourceNode = return_node_number(SourceX, SourceY, SourceZ)
             PossibleZ=[]
             if SourceZ + 1 <= Config.Network_Z_Size-1:
                 PossibleZ.append(SourceZ+1)
             if 0 <= SourceZ-1:
                 PossibleZ.append(SourceZ-1)
-            DestinationNode = ReturnNodeNumber(SourceX, SourceY, random.choice(PossibleZ))
+            DestinationNode = return_node_number(SourceX, SourceY, random.choice(PossibleZ))
 
         # here we have a candidate to restore
         SHMU.RestoreBrokenLink((SourceNode, DestinationNode), False)
@@ -165,25 +165,25 @@ def MoveToNewVLConfig(AG, SHMU, VL_Lists):
     SourceX = random.randint(0, Config.Network_X_Size-1)
     SourceY = random.randint(0, Config.Network_Y_Size-1)
     SourceZ = random.randint(0, Config.Network_Z_Size-1)
-    SourceNode = ReturnNodeNumber(SourceX, SourceY, SourceZ)
+    SourceNode = return_node_number(SourceX, SourceY, SourceZ)
     PossibleZ = []
     if SourceZ + 1 <= Config.Network_Z_Size-1:
         PossibleZ.append(SourceZ + 1)
     if 0 <= SourceZ - 1:
         PossibleZ.append(SourceZ - 1)
-    DestinationNode = ReturnNodeNumber(SourceX,SourceY,random.choice(PossibleZ))
+    DestinationNode = return_node_number(SourceX,SourceY,random.choice(PossibleZ))
 
     while SourceNode == DestinationNode or SHMU.SHM.edge[SourceNode][DestinationNode]['LinkHealth']:
         SourceX = random.randint(0, Config.Network_X_Size-1)
         SourceY = random.randint(0, Config.Network_Y_Size-1)
         SourceZ = random.randint(0, Config.Network_Z_Size-1)
-        SourceNode = ReturnNodeNumber(SourceX, SourceY, SourceZ)
+        SourceNode = return_node_number(SourceX, SourceY, SourceZ)
         PossibleZ=[]
         if SourceZ+1 <= Config.Network_Z_Size-1:
             PossibleZ.append(SourceZ+1)
         if 0 <= SourceZ-1:
             PossibleZ.append(SourceZ-1)
-        DestinationNode =  ReturnNodeNumber(SourceX, SourceY, random.choice(PossibleZ))
+        DestinationNode =  return_node_number(SourceX, SourceY, random.choice(PossibleZ))
     # here we have a candidate to restore
     SHMU.RestoreBrokenLink((SourceNode, DestinationNode), False)
     NewVL_Lists.append((SourceNode, DestinationNode))

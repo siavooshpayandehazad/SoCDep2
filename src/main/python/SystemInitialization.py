@@ -24,8 +24,8 @@ def initialize_system(logging):
     if Config.TestMode:
         TG_Test.CheckAcyclic(task_graph, logging)
     ####################################################################
-    arch_graph = copy.deepcopy(AG_Functions.GenerateAG(logging))
-    AG_Functions.UpdateAGRegions(arch_graph)
+    arch_graph = copy.deepcopy(AG_Functions.generate_arch_graph(logging))
+    AG_Functions.update_arch_graph_regions(arch_graph)
     AG_Functions.RandomDarkness(arch_graph)
     if Config.EnablePartitioning:
         AG_Functions.SetupNetworkPartitioning(arch_graph)
@@ -71,13 +71,13 @@ def initialize_system(logging):
     ####################################################################
     # in case of partitioning, we have to route based on different Route-graphs
     if Config.EnablePartitioning:
-        CriticalRG, NonCriticalRG = Calculate_Reachability.CalculateReachabilityWithRegions(arch_graph, SHMU)
+        CriticalRG, NonCriticalRG = Calculate_Reachability.calculate_reachability_with_regions(arch_graph, SHMU)
         ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(arch_graph)
     else:
         if Config.TestMode:
             Reachability_Test.ReachabilityTest()
         CriticalRG, NonCriticalRG = None, None
-        Calculate_Reachability.CalculateReachability(arch_graph, NoCRG)
+        Calculate_Reachability.calculate_reachability(arch_graph, NoCRG)
         Calculate_Reachability.OptimizeReachabilityRectangles(arch_graph, Config.NumberOfRects)
         # ReachabilityReports.ReportReachability(arch_graph)
         ReachabilityReports.ReportReachabilityInFile(arch_graph, "ReachAbilityNodeReport")
@@ -116,7 +116,7 @@ def initialize_system(logging):
         Task_Graph_Reports.DrawTaskGraph(task_graph, TTG=test_task_graph)
         TestSchedulingUnit.MapTestTasks(task_graph, arch_graph, SHMU.SHM, NoCRG, logging)
         Scheduler.ScheduleTestInTG(task_graph, arch_graph, SHMU.SHM, False, logging)
-        Scheduling_Reports.ReportMappedTasks(arch_graph, logging)
+        Scheduling_Reports.report_mapped_tasks(arch_graph, logging)
         # TestSchedulingUnit.RemoveTestTasksFromTG(test_task_graph, task_graph)
         # Task_Graph_Reports.DrawTaskGraph(task_graph, TTG=test_task_graph)
         Scheduling_Reports.GenerateGanttCharts(task_graph, arch_graph, "SchedulingWithTTG")

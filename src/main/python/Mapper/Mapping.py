@@ -94,7 +94,7 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 # Schedule all tasks
                 Scheduling_Functions.ClearScheduling(AG, TG)
                 Scheduler.ScheduleAll(TG, AG, SHM, Config.DebugInfo, Config.DebugDetails, logging)
-                Scheduling_Reports.ReportMappedTasks(AG, logging)
+                Scheduling_Reports.report_mapped_tasks(AG, logging)
                 Mapping_Functions.CostFunction(TG, AG, SHM, Config.DebugInfo)
                 if Config.Mapping_Function == 'LocalSearch':
                     MappingCostFile = open('Generated_Files/Internal/LocalSearchMappingCost.txt','w')
@@ -149,7 +149,7 @@ def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                 Mapping_Reports.ReportMapping(AG, logging)
                 Scheduling_Functions.ClearScheduling(AG, TG)
                 Scheduler.ScheduleAll(TG, AG, SHM, False, False, logging)
-                Scheduling_Reports.ReportMappedTasks(AG, logging)
+                Scheduling_Reports.report_mapped_tasks(AG, logging)
                 Mapping_Functions.CostFunction(TG, AG, SHM, True,  InitialMappingString = initmpSr)
                 return TG, AG
             else:

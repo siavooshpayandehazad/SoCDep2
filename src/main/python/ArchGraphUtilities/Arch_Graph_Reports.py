@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 import networkx
 from ConfigAndPackages import Config
-from AG_Functions import ReturnNodeLocation
+from AG_Functions import return_node_location
 
 def DrawArchGraph(AG, FileName):
     """
@@ -25,7 +25,7 @@ def DrawArchGraph(AG, FileName):
     offsetY = (4 * NodeSize * Config.Network_Y_Size)
 
     for Node in AG.nodes():
-        x,y,z = ReturnNodeLocation(Node)
+        x,y,z = return_node_location(Node)
         POS[Node]= [(x*NodeDistanceX)+z*offsetX, (y*NodeDistanceY)+z*offsetY]
         if AG.node[Node]['Region'] == 'H':
             ColorList.append('#FF878B')

@@ -68,7 +68,7 @@ def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SH
                 AG = copy.deepcopy(BestAG)
                 CTG = copy.deepcopy(BestCTG)
                 if Report:
-                    Scheduling_Reports.ReportMappedTasks(AG)
+                    Scheduling_Reports.report_mapped_tasks(AG)
                     Mapping_Functions.CostFunction(TG, AG, SHM, True)
                 return BestTG, BestCTG, BestAG
             TryCounter += 1

@@ -67,7 +67,7 @@ def DrawTempDistribution(SHM):
         MaxTemp = max(SHM.node[node]['NodeTemp'], MaxTemp)
 
     for node in SHM.nodes():
-        Location = AG_Functions.ReturnNodeLocation(node)
+        Location = AG_Functions.return_node_location(node)
         XSize = float(Config.Network_X_Size)
         YSize = float(Config.Network_Y_Size)
         ZSize = float(Config.Network_Y_Size)
@@ -127,7 +127,7 @@ def DrawSHM(SHM):
         plt.xlim([0, ZSize])
 
     for node in SHM.nodes():
-        Location = AG_Functions.ReturnNodeLocation(node)
+        Location = AG_Functions.return_node_location(node)
         X = (Location[0]/XSize)*ZSize
         Y = (Location[1]/YSize)*ZSize
         Z = (Location[2]/ZSize)
@@ -269,8 +269,8 @@ def DrawSHM(SHM):
             color = 'black'
         else:
             color = 'r'
-        SourceLoc = AG_Functions.ReturnNodeLocation(link[0])
-        DestinLoc = AG_Functions.ReturnNodeLocation(link[1])
+        SourceLoc = AG_Functions.return_node_location(link[0])
+        DestinLoc = AG_Functions.return_node_location(link[1])
 
         X = (SourceLoc[0]/XSize)*ZSize
         Y = (SourceLoc[1]/YSize)*ZSize

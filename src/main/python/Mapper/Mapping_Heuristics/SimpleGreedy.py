@@ -46,7 +46,7 @@ def Min_Min_Mapping (TG, AG, NoCRG, SHM, logging):
         if len(ShortestTasks) == 0:
             ShortestTasks = Mapping_Functions.FindUnMappedTaskWithSmallestWCET(TG, logging)
     print ("MIN-MIN MAPPING FINISHED...")
-    Scheduling_Reports.ReportMappedTasks(AG, logging)
+    Scheduling_Reports.report_mapped_tasks(AG, logging)
     return TG, AG
 
 
@@ -97,7 +97,7 @@ def Max_Min_Mapping (TG,AG,NoCRG,SHM,logging):
         if len(LongestTasks) == 0:
             LongestTasks = Mapping_Functions.FindUnMappedTaskWithBiggestWCET(TG, logging)
     print ("MIN-MAX MAPPING FINISHED...")
-    Scheduling_Reports.ReportMappedTasks(AG, logging)
+    Scheduling_Reports.report_mapped_tasks(AG, logging)
     return TG, AG
 
 def MinExecutionTime(TG, AG, SHM, logging):
@@ -128,7 +128,7 @@ def MinExecutionTime(TG, AG, SHM, logging):
 
         print ("\tTASK "+str(TaskToBeMapped)+" MAPPED ON NODE: "+str(ChosenNode))
     print ("MIN EXECUTION TIME MAPPING FINISHED...")
-    Scheduling_Reports.ReportMappedTasks(AG, logging)
+    Scheduling_Reports.report_mapped_tasks(AG, logging)
     return TG, AG
 
 def MinimumCompletionTime(TG, AG, SHM, logging):
@@ -159,7 +159,7 @@ def MinimumCompletionTime(TG, AG, SHM, logging):
 
         print ("\tTASK "+str(TaskToBeMapped)+" MAPPED ON NODE: "+str(ChosenNode))
     print ("MIN COMPLETION TIME MAPPING FINISHED...")
-    Scheduling_Reports.ReportMappedTasks(AG, logging)
+    Scheduling_Reports.report_mapped_tasks(AG, logging)
     return TG, AG
 
 def FirstFree(TG, AG, SHM, logging):
@@ -168,5 +168,5 @@ def FirstFree(TG, AG, SHM, logging):
     # Todo: to write the function
 
     print ("FIRST FREE MAPPING FINISHED...")
-    Scheduling_Reports.ReportMappedTasks(AG, logging)
+    Scheduling_Reports.report_mapped_tasks(AG, logging)
     return TG, AG

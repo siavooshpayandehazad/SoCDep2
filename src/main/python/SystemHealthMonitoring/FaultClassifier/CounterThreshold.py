@@ -9,6 +9,7 @@ class CounterThreshold():
         self.fault_threshold = fault_threshold
         self.health_threshold = health_threshold
         self.dead_components = []
+        self.memory_counter = 0
 
     def increase_health_counter(self, location, logging):
         if type(location) is dict:
@@ -26,6 +27,8 @@ class CounterThreshold():
 
         if location in self.dead_components:
             return None
+        if location not in self.fault_counters.keys():
+            return None
 
         if location in self.health_counters.keys():
             self.health_counters[location] += 1
@@ -36,6 +39,10 @@ class CounterThreshold():
         if self.health_counters[location] == self.health_threshold:
             logging.info("resetting component: "+location+" counters")
             self.reset_counters(location)
+
+        current_memory_usage = self.return_allocated_memory()
+        if current_memory_usage > self.memory_counter:
+            self.memory_counter = current_memory_usage
         return None
 
     def increase_fault_counter(self, location, logging):
@@ -62,6 +69,10 @@ class CounterThreshold():
             logging.info("Declaring component: "+location+" dead!")
             self.dead_components.append(location)
             self.reset_counters(location)
+
+        current_memory_usage = self.return_allocated_memory()
+        if current_memory_usage > self.memory_counter:
+            self.memory_counter = current_memory_usage
         return None
 
     def decrease_fault_counter(self, location, logging):
@@ -86,6 +97,11 @@ class CounterThreshold():
                 logging.info("Freeing counter at location: "+location)
         else:
             pass
+
+        current_memory_usage = self.return_allocated_memory()
+        if current_memory_usage > self.memory_counter:
+            self.memory_counter = current_memory_usage
+
         return None
 
     def reset_counters(self, location):
@@ -97,4 +113,16 @@ class CounterThreshold():
             del self.health_counters[location]
         else:
             pass
+        return None
+
+    def return_allocated_memory(self):
+        return len(self.health_counters) + len(self.fault_counters)
+
+    def report(self, number_of_nodes):
+        print "==========================================="
+        print "        COUNTER-THRESHOLD REPORT"
+        print "==========================================="
+        print "DEAD Components:", self.dead_components
+        print "MAX MEMORY USAGE:", self.memory_counter
+        print "AVERAGE COUNTER PER Node: ", float(self.memory_counter)/number_of_nodes
         return None

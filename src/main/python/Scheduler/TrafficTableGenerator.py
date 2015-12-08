@@ -67,10 +67,10 @@ def translate_node_number_to_noxim_system(node):
     :param node: Node ID in AG
     :return: Node coordination in Noxim System
     """
-    x, y, z = AG_Functions.ReturnNodeLocation(node)
+    x, y, z = AG_Functions.return_node_location(node)
     z = Config.Network_Z_Size - z - 1
     y = Config.Network_Y_Size - y - 1
-    return AG_Functions.ReturnNodeNumber(x, y, z)
+    return AG_Functions.return_node_number(x, y, z)
 
 
 def generate_gsnoc_traffic_table(arch_graph, task_graph):

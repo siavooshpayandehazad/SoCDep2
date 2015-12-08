@@ -8,7 +8,7 @@ from ConfigAndPackages import Config
 import Routing
 from ArchGraphUtilities import AG_Functions
 
-def CalculateReachability(AG, NoCRG):
+def calculate_reachability(AG, NoCRG):
     if '3D' in Config.NetworkTopology:
         PortList = ['U', 'N', 'E', 'W', 'S', 'D']
     else:
@@ -95,7 +95,7 @@ def MergeNodeWithRectangles (RectangleList, UnreachableNodeList):
                 Covered = True
                 break
             else:
-                if IsNodeInsideRectangle(RectangleList[Rectangle], UnreachableNode):
+                if is_node_inside_rectangle(RectangleList[Rectangle], UnreachableNode):
                     Covered = True
                     break
                 else:
@@ -108,14 +108,14 @@ def MergeNodeWithRectangles (RectangleList, UnreachableNodeList):
                     for NetworkNode_X in range(MergedX1, MergedX2+1):
                         for NetworkNode_Y in range(MergedY1, MergedY2+1):
                             for NetworkNode_Z in range(MergedZ1, MergedZ2+1):
-                                NodeNumber = AG_Functions.ReturnNodeNumber(NetworkNode_X,NetworkNode_Y, NetworkNode_Z)
+                                NodeNumber = AG_Functions.return_node_number(NetworkNode_X,NetworkNode_Y, NetworkNode_Z)
                                 if NodeNumber not in UnreachableNodeList:
                                     LossLessMerge = False
                                     break
                     # if we are not losing any Node, we perform Merge...
                     if LossLessMerge:
-                        Merged1 = AG_Functions.ReturnNodeNumber(MergedX1,MergedY1, MergedZ1)
-                        Merged2 = AG_Functions.ReturnNodeNumber(MergedX2,MergedY2, MergedZ2)
+                        Merged1 = AG_Functions.return_node_number(MergedX1,MergedY1, MergedZ1)
+                        Merged2 = AG_Functions.return_node_number(MergedX2,MergedY2, MergedZ2)
                         RectangleList[Rectangle] = copy.deepcopy((Merged1, Merged2))
                         Covered = True
                         break
@@ -125,10 +125,10 @@ def MergeNodeWithRectangles (RectangleList, UnreachableNodeList):
     return RectangleList
 
 
-def IsNodeInsideRectangle(Rect,Node):
-    RX1, RY1, RZ1 = AG_Functions.ReturnNodeLocation(Rect[0])
-    RX2, RY2, RZ2 = AG_Functions.ReturnNodeLocation(Rect[1])
-    NodeX, NodeY, NodeZ = AG_Functions.ReturnNodeLocation(Node)
+def is_node_inside_rectangle(Rect,Node):
+    RX1, RY1, RZ1 = AG_Functions.return_node_location(Rect[0])
+    RX2, RY2, RZ2 = AG_Functions.return_node_location(Rect[1])
+    NodeX, NodeY, NodeZ = AG_Functions.return_node_location(Node)
     if RX1 <= NodeX <= RX2 and RY1 <= NodeY <= RY2 and RZ1 <= NodeZ <= RZ2:
         return True
     else:
@@ -136,9 +136,9 @@ def IsNodeInsideRectangle(Rect,Node):
 
 
 def MergeRectangleWithNode(Rect_ll, Rect_ur, Node):
-    x1, y1, z1 = AG_Functions.ReturnNodeLocation(Rect_ll)
-    x2, y2, z2 = AG_Functions.ReturnNodeLocation(Rect_ur)
-    NodeX, NodeY, NodeZ = AG_Functions.ReturnNodeLocation(Node)
+    x1, y1, z1 = AG_Functions.return_node_location(Rect_ll)
+    x2, y2, z2 = AG_Functions.return_node_location(Rect_ur)
+    NodeX, NodeY, NodeZ = AG_Functions.return_node_location(Node)
     MergedX1 = min(x1, NodeX)
     MergedY1 = min(y1, NodeY)
     MergedZ1 = min(z1, NodeZ)
@@ -155,7 +155,7 @@ def ClearReachabilityCalculations(AG):
     return None
 
 
-def CalculateReachabilityWithRegions(AG, SHMU):
+def calculate_reachability_with_regions(AG, SHMU):
     # first Add the VirtualBrokenLinksForNonCritical
     AlreadyBrokenLinks= []
     for VirtualBrokenLink in Config.VirtualBrokenLinksForNonCritical:
@@ -166,7 +166,7 @@ def CalculateReachabilityWithRegions(AG, SHMU):
     # Construct The RoutingGraph
     NonCriticalRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHMU, Config.UsedTurnModel, False, False))
     # calculate the rectangles for Non-Critical
-    CalculateReachability(AG, NonCriticalRG)
+    calculate_reachability(AG, NonCriticalRG)
     # save Non Critical rectangles somewhere
     NonCriticalRect={}
     GateWayRect={}
@@ -191,7 +191,7 @@ def CalculateReachabilityWithRegions(AG, SHMU):
     # Construct The RoutingGraph
     CriticalRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHMU, Config.UsedTurnModel, False, False))
     # calculate the rectangles for Critical
-    CalculateReachability(AG, CriticalRG)
+    calculate_reachability(AG, CriticalRG)
     # save Critical rectangles somewhere
     CriticalRect={}
     for Node in Config.CriticalRegionNodes:

@@ -32,7 +32,7 @@ def GenerateFrames(TG, AG, SHM):
         # initialize an empty list of cirlces
         MappedPEList = line.split(" ")
         for node in AG.nodes():
-            Location = AG_Functions.ReturnNodeLocation(node)
+            Location = AG_Functions.return_node_location(node)
             # print (node, Location)
             if SHM.node[node]['NodeHealth']:
                 if Config.EnablePartitioning:

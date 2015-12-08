@@ -33,16 +33,16 @@ def GenerateManualAG(PE_List, AG_Edge_List, AG_Edge_Port_List):
     """
     print("===========================================")
     print("PREPARING AN ARCHITECTURE GRAPH (AG)...")
-    AG = networkx.DiGraph()
+    arch_graph = networkx.DiGraph()
     for PE in PE_List:
-        AG.add_node(PE, PE=PE(), Router=Router(), Region='L')
+        arch_graph.add_node(PE, PE=PE(), Router=Router(), Region='L')
     for i in range(0, len(AG_Edge_List)):
         EDGE = AG_Edge_List[i]
-        AG.add_edge(EDGE[0], EDGE[1], Port=AG_Edge_Port_List[i], MappedTasks={}, Scheduling={})
-    print("\tNODES: "+str(AG.nodes(data=False)))
-    print("\tEDGES: "+str(AG.edges(data=False)))
+        arch_graph.add_edge(EDGE[0], EDGE[1], Port=AG_Edge_Port_List[i], MappedTasks={}, Scheduling={})
+    print("\tNODES: "+str(arch_graph.nodes(data=False)))
+    print("\tEDGES: "+str(arch_graph.edges(data=False)))
     print("ARCHITECTURE GRAPH (AG) IS READY...")
-    return AG
+    return arch_graph
 
 
 def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
@@ -77,30 +77,30 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
         for i in range(0, SizeX*SizeY):
             AG.add_node(i, PE=PE(), Router=Router(), Region='N')
         for i in range(0, SizeX):
-            CurrentNode = ReturnNodeNumber(i, 0, 0)
-            NextNode = ReturnNodeNumber(i, SizeY-1, 0)
+            CurrentNode = return_node_number(i, 0, 0)
+            NextNode = return_node_number(i, SizeY-1, 0)
             logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
             logging.info("CONNECTING  "+str((SizeY-1)*SizeX+i)+" TO "+str(CurrentNode))
             AG.add_edge(CurrentNode, (SizeY-1)*SizeX+i, Port=('S', 'N'), MappedTasks={}, Scheduling={})
             AG.add_edge(NextNode, CurrentNode, Port=('N', 'S'), MappedTasks={}, Scheduling={})
         for j in range(0, SizeY):
-            CurrentNode = ReturnNodeNumber(0, j, 0)
-            NextNode = ReturnNodeNumber(SizeX-1, j, 0)
+            CurrentNode = return_node_number(0, j, 0)
+            NextNode = return_node_number(SizeX-1, j, 0)
             logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
             logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
             AG.add_edge(CurrentNode, NextNode, Port=('W', 'E'), MappedTasks={}, Scheduling={})
             AG.add_edge(NextNode, CurrentNode, Port=('E', 'W'), MappedTasks={}, Scheduling={})
             for i in range(0, SizeX-1):
-                CurrentNode = ReturnNodeNumber(i, j, 0)
-                NextNode = ReturnNodeNumber(i+1, j, 0)
+                CurrentNode = return_node_number(i, j, 0)
+                NextNode = return_node_number(i+1, j, 0)
                 logging.info("CONNECTING  " + str(CurrentNode) + " TO " + str(NextNode))
                 logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
                 AG.add_edge(CurrentNode, NextNode, Port=('E', 'W'), MappedTasks={}, Scheduling={})
                 AG.add_edge(NextNode, CurrentNode, Port=('W', 'E'), MappedTasks={}, Scheduling={})
         for j in range(0, SizeY-1):
             for i in range(0, SizeX):
-                CurrentNode = ReturnNodeNumber(i, j, 0)
-                NextNode = ReturnNodeNumber(i, j+1, 0)
+                CurrentNode = return_node_number(i, j, 0)
+                NextNode = return_node_number(i, j+1, 0)
                 logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
                 logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
                 AG.add_edge(CurrentNode, NextNode, Port=('N', 'S'), MappedTasks={}, Scheduling={})
@@ -111,16 +111,16 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
             AG.add_node(i, PE=PE(), Router=Router(),  Region='N')
         for j in range(0, SizeY):
             for i in range(0, SizeX-1):
-                CurrentNode = ReturnNodeNumber(i, j, 0)
-                NextNode = ReturnNodeNumber(i+1, j, 0)
+                CurrentNode = return_node_number(i, j, 0)
+                NextNode = return_node_number(i+1, j, 0)
                 logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
                 logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
                 AG.add_edge(CurrentNode, NextNode, Port=('E', 'W'), MappedTasks={}, Scheduling={})
                 AG.add_edge(NextNode, CurrentNode, Port=('W', 'E'), MappedTasks={}, Scheduling={})
         for j in range(0, SizeY-1):
             for i in range(0, SizeX):
-                CurrentNode = ReturnNodeNumber(i, j, 0)
-                NextNode = ReturnNodeNumber(i, j+1, 0)
+                CurrentNode = return_node_number(i, j, 0)
+                NextNode = return_node_number(i, j+1, 0)
                 logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
                 logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
                 AG.add_edge(CurrentNode, NextNode, Port=('N', 'S'), MappedTasks={}, Scheduling={})
@@ -133,22 +133,22 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
             # connect the connections in each layer
             for y in range(0, SizeY):
                 for x in range(0, SizeX-1):
-                    CurrentNode = ReturnNodeNumber(x, y, z)
-                    NextNode = ReturnNodeNumber(x+1, y, z)
+                    CurrentNode = return_node_number(x, y, z)
+                    NextNode = return_node_number(x+1, y, z)
                     AG.add_edge(CurrentNode, NextNode, Port=('E', 'W'), MappedTasks={}, Scheduling={})
                     AG.add_edge(NextNode, CurrentNode, Port=('W', 'E'), MappedTasks={}, Scheduling={})
             for y in range(0, SizeY-1):
                 for x in range(0, SizeX):
-                    CurrentNode = ReturnNodeNumber(x, y, z)
-                    NextNode = ReturnNodeNumber(x, y+1, z)
+                    CurrentNode = return_node_number(x, y, z)
+                    NextNode = return_node_number(x, y+1, z)
                     AG.add_edge(CurrentNode, NextNode, Port=('N', 'S'), MappedTasks={}, Scheduling={})
                     AG.add_edge(NextNode, CurrentNode, Port=('S', 'N'), MappedTasks={}, Scheduling={})
         for z in range(0, SizeZ-1):
             # connect routers between layers.
             for y in range(0, SizeY):
                 for x in range(0, SizeX):
-                    CurrentNode = ReturnNodeNumber(x, y, z)
-                    NextNode = ReturnNodeNumber(x, y, z+1)
+                    CurrentNode = return_node_number(x, y, z)
+                    NextNode = return_node_number(x, y, z+1)
                     AG.add_edge(CurrentNode, NextNode, Port=('U', 'D'), MappedTasks={}, Scheduling={})
                     AG.add_edge(NextNode, CurrentNode, Port=('D', 'U'), MappedTasks={}, Scheduling={})
     ##############################################################
@@ -156,15 +156,15 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
         for i in range(0, SizeX*SizeY):
             AG.add_node(i, PE=PE(), Router=Router(), Region='N')
         for j in range(0, SizeY):
-            CurrentNode = ReturnNodeNumber(0, j, 0)
-            NextNode = ReturnNodeNumber(SizeX-1, j, 0)
+            CurrentNode = return_node_number(0, j, 0)
+            NextNode = return_node_number(SizeX-1, j, 0)
             logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
             logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
             AG.add_edge(CurrentNode, j*SizeX+SizeX-1, Port=('W', 'E'), MappedTasks={}, Scheduling={})
             AG.add_edge(NextNode, CurrentNode, Port=('E', 'W'), MappedTasks={}, Scheduling={})
             for i in range(0, SizeX-1):
-                CurrentNode = ReturnNodeNumber(i, j, 0)
-                NextNode = ReturnNodeNumber(i+1, j, 0)
+                CurrentNode = return_node_number(i, j, 0)
+                NextNode = return_node_number(i+1, j, 0)
                 logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
                 logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
                 AG.add_edge(CurrentNode, NextNode, Port=('E', 'W'), MappedTasks={}, Scheduling={})
@@ -175,8 +175,8 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
             AG.add_node(i, PE=PE(), Router=Router(), Region='N')
         for j in range(0, SizeY):
             for i in range(0, SizeX-1):
-                CurrentNode = ReturnNodeNumber(i, j, 0)
-                NextNode = ReturnNodeNumber(i+1, j, 0)
+                CurrentNode = return_node_number(i, j, 0)
+                NextNode = return_node_number(i+1, j, 0)
                 logging.info("CONNECTING  "+str(CurrentNode)+" TO "+str(NextNode))
                 logging.info("CONNECTING  "+str(NextNode)+" TO "+str(CurrentNode))
                 AG.add_edge(CurrentNode, NextNode, Port=('E', 'W'), MappedTasks={}, Scheduling={})
@@ -185,7 +185,7 @@ def GenerateGenericTopologyAG(Topology, SizeX, SizeY, SizeZ, logging):
     return AG
 
 
-def GenerateAG(logging):
+def generate_arch_graph(logging):
     """
     This function generates the architecture graph based on the configuration in Config File
     :param logging: logging file
@@ -200,44 +200,44 @@ def GenerateAG(logging):
         raise ValueError('AG TYPE DOESNT EXIST...!!!')
 
 
-def UpdateAGRegions(AG):
+def update_arch_graph_regions(arch_graph):
     """
     Takes an architecture graph and updates the node's Regions according to config file
-    :param AG: Architecture graph
+    :param arch_graph: Architecture graph
     :return: None
     """
     print ("===========================================")
     print ("UPDATING ARCHITECTURE GRAPH (AG) REGIONS...")
-    for Node in AG.nodes():
-        if Node in Config.CriticalRegionNodes:
-            AG.node[Node]['Region'] = 'H'
-        elif Node in Config.GateToCritical:
-            AG.node[Node]['Region'] = 'GH'
-        elif Node in Config.GateToNonCritical:
-            AG.node[Node]['Region'] = 'GNH'
+    for node_id in arch_graph.nodes():
+        if node_id in Config.CriticalRegionNodes:
+            arch_graph.node[node_id]['Region'] = 'H'
+        elif node_id in Config.GateToCritical:
+            arch_graph.node[node_id]['Region'] = 'GH'
+        elif node_id in Config.GateToNonCritical:
+            arch_graph.node[node_id]['Region'] = 'GNH'
         else:
-            AG.node[Node]['Region'] = 'L'
+            arch_graph.node[node_id]['Region'] = 'L'
     print("ARCHITECTURE GRAPH (AG) REGIONS UPDATED...")
     return None
 
 
-def ReturnNodeLocation(NodeNumber):
+def return_node_location(node_number):
     """
     calculates the Cartesian location of the node
     Examples:
-    ReturnNodeLocation(0) = (0,0,0)
-    ReturnNodeLocation(Config.Network_X_Size * Config.Network_Y_Size * Config.Network_Z_Size - 1) =
+    return_node_location(0) = (0,0,0)
+    return_node_location(Config.Network_X_Size * Config.Network_Y_Size * Config.Network_Z_Size - 1) =
             (Config.Network_X_Size -1, Config.Network_Y_Size - 1, Config.Network_Z_Size -1)
-    :param NodeNumber: The node id used in AG
+    :param node_number: The node id used in AG
     :return: Cartesian location of the node in the form of (x,y,z)
     """
-    NodeX = NodeNumber % Config.Network_X_Size
-    NodeY = (NodeNumber / Config.Network_X_Size) % Config.Network_Y_Size
-    NodeZ = NodeNumber / (Config.Network_Y_Size * Config.Network_X_Size)
-    return NodeX, NodeY, NodeZ
+    node_x = node_number % Config.Network_X_Size
+    node_y = (node_number / Config.Network_X_Size) % Config.Network_Y_Size
+    node_z = node_number / (Config.Network_Y_Size * Config.Network_X_Size)
+    return node_x, node_y, node_z
 
 
-def ReturnNodeNumber(NodeX, NodeY, NodeZ):
+def return_node_number(NodeX, NodeY, NodeZ):
     """
     Takes cartesian location of a node and returns node id
     :param NodeX: Location of the node on X axis
@@ -249,16 +249,16 @@ def ReturnNodeNumber(NodeX, NodeY, NodeZ):
     return NodeNumber
 
 
-def NodeNeighbors(AG, SHM):
+def node_neighbors(arch_graph, SHM):
     """
-    :param AG: Architecture graph (directed graph)
+    :param arch_graph: Architecture graph (directed graph)
     :param SHM: System Health Map
     :return: A dictionary with node number as the key and the number of neighbors as values
     """
     node_neighbor = {}
-    for Node in AG.nodes():
+    for Node in arch_graph.nodes():
         NumberOfNeighbours = 0
-        for Link in AG.edges():
+        for Link in arch_graph.edges():
             if Node in Link:
                 if SHM.edge[Link[0]][Link[1]]['LinkHealth']:
                     NumberOfNeighbours += 1
@@ -266,32 +266,32 @@ def NodeNeighbors(AG, SHM):
     return node_neighbor
 
 
-def MaxNodeNeighbors(NodeNeighbors, SortedNodeNeighbors):
+def max_node_neighbors(node_neighbors, sorted_node_neighbors):
     """
-    :param NodeNeighbors: dictionary with nodes as keys and number of neighbors as values
-    :param SortedNodeNeighbors: sorted list of nodes by number of neighbors
+    :param node_neighbors: dictionary with nodes as keys and number of neighbors as values
+    :param sorted_node_neighbors: sorted list of nodes by number of neighbors
     :return: returns a list of nodes with maximum number of neighbors
     """
     MaxNeighbourNum = 0
-    for node in SortedNodeNeighbors:
-        if NodeNeighbors[node] > MaxNeighbourNum:
-            MaxNeighbourNum = NodeNeighbors[node]
+    for node in sorted_node_neighbors:
+        if node_neighbors[node] > MaxNeighbourNum:
+            MaxNeighbourNum = node_neighbors[node]
     MaxNeighbourNodes = []
-    for node in SortedNodeNeighbors:
-        if NodeNeighbors[node] == MaxNeighbourNum:
+    for node in sorted_node_neighbors:
+        if node_neighbors[node] == MaxNeighbourNum:
             MaxNeighbourNodes.append(node)
     return MaxNeighbourNodes
 
 
-def ManhattanDistance(Node1, Node2):
+def ManhattanDistance(node_1, node_2):
     """
     Takes the node id of two nodes and returns the manhattan distance of those nodes
-    :param Node1: Node id of 1st node
-    :param Node2: Node id of 2nd node
+    :param node_1: Node id of 1st node
+    :param node_2: Node id of 2nd node
     :return: returns manhattan distance between two nodes
     """
-    x1, y1, z1 = ReturnNodeLocation(Node1)
-    x2, y2, z2 = ReturnNodeLocation(Node2)
+    x1, y1, z1 = return_node_location(node_1)
+    x2, y2, z2 = return_node_location(node_2)
 
     return abs(x2-x1)+abs(y2-y1)+abs(z2-z1)
 

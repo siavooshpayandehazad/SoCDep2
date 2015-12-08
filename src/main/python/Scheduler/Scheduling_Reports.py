@@ -7,27 +7,39 @@ from Scheduling_Functions_Links import FindLastAllocatedTimeOnLink
 from ConfigAndPackages import Config
 import random
 
+
 ##########################################################################
 #
 #                           SCHEDULING REPORT
 #
 #
 ##########################################################################
-def ReportMappedTasks(AG, logging):
+def report_mapped_tasks(arch_graph, logging):
     logging.info("===========================================")
     logging.info("          REPORTING SCHEDULING ")
     logging.info("===========================================")
-    for Node in AG.nodes():
-        logging.info("NODE"+str(Node)+"CONTAINS THE FOLLOWING TASKS:"+str(AG.node[Node]['PE'].MappedTasks) +
-                     "\tWITH SCHEDULING:"+str(AG.node[Node]['PE'].Scheduling))
-    for Link in AG.edges():
+    for Node in arch_graph.nodes():
+        logging.info("NODE"+str(Node)+"CONTAINS THE FOLLOWING TASKS:"+str(arch_graph.node[Node]['PE'].MappedTasks) +
+                     "\tWITH SCHEDULING:"+str(arch_graph.node[Node]['PE'].Scheduling))
+    for Link in arch_graph.edges():
         logging.info("LINK" + str(Link)+"CONTAINS THE FOLLOWING TG's Edges:" +
-                     str(AG.edge[Link[0]][Link[1]]['MappedTasks']) + "\tWITH SCHEDULING:" +
-                     str(AG.edge[Link[0]][Link[1]]['Scheduling']))
+                     str(arch_graph.edge[Link[0]][Link[1]]['MappedTasks']) + "\tWITH SCHEDULING:" +
+                     str(arch_graph.edge[Link[0]][Link[1]]['Scheduling']))
 
     return None
 
 
+def report_scheduling_memory_usage(arch_graph):
+    print "==========================================="
+    print "        SCHEDULING MEMORY REPORT"
+    print "==========================================="
+    counter = 0
+    for node in arch_graph.nodes():
+        counter += len(arch_graph.node[node]['PE'].Scheduling)
+        counter += len(arch_graph.node[node]['Router'].Scheduling)
+    for link in arch_graph.edges():
+        counter += len(arch_graph.edge[link[0]][link[1]]['Scheduling'])
+    print "SCHEDULE MEMORY USE:", counter
 ##########################################################################
 #
 #

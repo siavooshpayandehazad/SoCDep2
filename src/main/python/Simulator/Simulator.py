@@ -6,6 +6,7 @@ import numpy
 
 from ConfigAndPackages import Config
 from FaultInjector import fault_event
+from Scheduler import Scheduling_Reports
 from SystemHealthMonitoring.FaultClassifier import CounterThreshold
 
 
@@ -120,7 +121,8 @@ def run_simulator(runtime, AG, SHM, NoCRG, logging):
     print "==========================================="
     print "STARTING SIMULATION..."
     env = simpy.Environment()
-    counter_threshold = CounterThreshold.CounterThreshold(4, 3)
+    counter_threshold = CounterThreshold.CounterThreshold(Config.fault_counter_threshold,
+                                                          Config.health_counter_threshold)
 
     fault_time_list = []
     fault_time = 0
@@ -146,6 +148,7 @@ def run_simulator(runtime, AG, SHM, NoCRG, logging):
                              fault_time_list, counter_threshold, logging))
 
     env.run(until=runtime)
-    print "DEAD Components:", counter_threshold.dead_components
     print "SIMULATION FINISHED..."
+    counter_threshold.report(len(AG.nodes()))
+    Scheduling_Reports.report_scheduling_memory_usage(AG)
     return None

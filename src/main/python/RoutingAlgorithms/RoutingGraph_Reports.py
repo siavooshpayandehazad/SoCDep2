@@ -18,7 +18,7 @@ def DrawRG(RoutingGraph):
     step = (distance*0.8)/Config.Network_Z_Size
     for node in RoutingGraph.nodes():
         Node = int(re.search(r'\d+', node).group())
-        Location = AG_Functions.ReturnNodeLocation(Node)
+        Location = AG_Functions.return_node_location(Node)
         circle1 = plt.Circle((Location[0]*distance+step*Location[2], Location[1]*distance+step*Location[2]),
                              radius=35, color='#8ABDFF', fill=False)
         plt.gca().add_patch(circle1)
