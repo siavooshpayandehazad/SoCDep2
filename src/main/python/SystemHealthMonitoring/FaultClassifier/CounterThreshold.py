@@ -75,35 +75,6 @@ class CounterThreshold():
             self.memory_counter = current_memory_usage
         return None
 
-    def decrease_fault_counter(self, location, logging):
-        if type(location) is dict:
-            # print location, str(location.keys()[0])+str(location[location.keys()[0]])
-            location = str(location.keys()[0])+str(location[location.keys()[0]])
-        elif type(location) is tuple:
-            # print location, location[0], location[1]
-            location = str(location[0])+str(location[1])
-        elif type(location) is int:
-            # print location
-            location = str(location)
-
-        if location in self.dead_components:
-            return None
-
-        if location in self.fault_counters.keys():
-            self.fault_counters[location] -= 1
-            logging.info("Decreasing counter at location: "+location+" Counter: "+str(self.fault_counters[location]))
-            if self.fault_counters[location] == 0:
-                del self.fault_counters[location]
-                logging.info("Freeing counter at location: "+location)
-        else:
-            pass
-
-        current_memory_usage = self.return_allocated_memory()
-        if current_memory_usage > self.memory_counter:
-            self.memory_counter = current_memory_usage
-
-        return None
-
     def reset_counters(self, location):
         if location in self.fault_counters.keys():
             del self.fault_counters[location]
