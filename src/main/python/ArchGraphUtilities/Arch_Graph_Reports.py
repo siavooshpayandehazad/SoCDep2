@@ -6,10 +6,10 @@ from ConfigAndPackages import Config
 from AG_Functions import return_node_location
 
 
-def draw_arch_graph(arch_graph, file_name):
+def draw_ag(ag, file_name):
     """
     Generates Visualizations of the Architecture Graph and saves it in "GraphDrawings/FileName.png"
-    :param arch_graph: Architecture Graph
+    :param ag: Architecture Graph
     :param file_name: Name of the file for saving the graph
     :return: None
     """
@@ -25,21 +25,21 @@ def draw_arch_graph(arch_graph, file_name):
     offset_x = (4 * node_size * Config.Network_X_Size)
     offset_y = (4 * node_size * Config.Network_Y_Size)
 
-    for Node in arch_graph.nodes():
+    for Node in ag.nodes():
         x, y, z = return_node_location(Node)
         position[Node] = [(x*node_distance_x)+z*offset_x, (y*node_distance_y)+z*offset_y]
-        if arch_graph.node[Node]['Region'] == 'H':
+        if ag.node[Node]['Region'] == 'H':
             color_list.append('#FF878B')
-        elif arch_graph.node[Node]['Region'] == 'GH':   # gateway to high critical
+        elif ag.node[Node]['Region'] == 'GH':   # gateway to high critical
             color_list.append('#FFC29C')
-        elif arch_graph.node[Node]['Region'] == 'GNH':  # gateway to Non-high critical
+        elif ag.node[Node]['Region'] == 'GNH':  # gateway to Non-high critical
             color_list.append('#928AFF')
         else:
             color_list.append('#CFECFF')
 
     # POS = networkx.spring_layout(AG)
 
-    networkx.draw(arch_graph, pos=position, with_labels=True, node_size=node_size, arrows=False,
+    networkx.draw(ag, pos=position, with_labels=True, node_size=node_size, arrows=False,
                   node_color=color_list, font_size=5, linewidths=1)
     plt.savefig("GraphDrawings/"+file_name+".png", dpi=150)
     plt.clf()

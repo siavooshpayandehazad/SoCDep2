@@ -59,7 +59,7 @@ misc.GenerateFileDirectories()
 misc.DrawLogo()
 ####################################################################
 # Initialization of the system
-task_graph, arch_graph, SHMU, NoCRG, CriticalRG, NonCriticalRG, PMCG = SystemInitialization.initialize_system(logging)
+tg, ag, SHMU, NoCRG, CriticalRG, NonCriticalRG, PMCG = SystemInitialization.initialize_system(logging)
 
 
 # just to have a sense of how much time we are spending in each section
@@ -67,7 +67,7 @@ print ("===========================================")
 system_starting_time = time.time()
 print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:"+str(round(system_starting_time-program_start_time)) +
        " SECONDS AFTER PROGRAM START...")
-Simulator.run_simulator(100, arch_graph, SHMU, NoCRG, logging)
+Simulator.run_simulator(100, ag, SHMU, NoCRG, logging)
 # FaultInjector.FaultInjector(system_starting_time, AG, SHM, NoCRG)
 logging.info('Logging finished...')
 

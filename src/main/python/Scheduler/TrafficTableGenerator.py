@@ -5,7 +5,7 @@ from ArchGraphUtilities import AG_Functions
 from ConfigAndPackages import Config
 
 
-def generate_noxim_traffic_table(arch_graph, task_graph):
+def generate_noxim_traffic_table(ag, tg):
     # here we should generate a traffic Table for Noxim Simulator to double
     # check our experiments with it.
 
@@ -35,27 +35,27 @@ def generate_noxim_traffic_table(arch_graph, task_graph):
     #   t_period:	Period after which activity starts again
     # ---------------------------------------------------
     traffic_table_file = open('Generated_Files/NoximTrafficTable.txt', 'w')
-    for Node in arch_graph.nodes():
-        if len(arch_graph.node[Node]['PE'].MappedTasks) > 0:
-            for Task in arch_graph.node[Node]['PE'].MappedTasks:
-                for Edge in task_graph.edges():
-                    if Edge[0] == Task and (translate_node_number_to_noxim_system(task_graph.node[Edge[0]]['Node']) !=
-                                            translate_node_number_to_noxim_system(task_graph.node[Edge[1]]['Node'])):
+    for Node in ag.nodes():
+        if len(ag.node[Node]['PE'].MappedTasks) > 0:
+            for Task in ag.node[Node]['PE'].MappedTasks:
+                for Edge in tg.edges():
+                    if Edge[0] == Task and (translate_node_number_to_noxim_system(tg.node[Edge[0]]['Node']) !=
+                                            translate_node_number_to_noxim_system(tg.node[Edge[1]]['Node'])):
                         # in Noxim's traffic table, since each router has only one IP core connected
                         # to it, Node(i) cannot send data to Node(i)
-                        source_node_noxim = translate_node_number_to_noxim_system(task_graph.node[Edge[0]]['Node'])
-                        destination_node_noxim = translate_node_number_to_noxim_system(task_graph.node[Edge[1]]['Node'])
+                        source_node_noxim = translate_node_number_to_noxim_system(tg.node[Edge[0]]['Node'])
+                        destination_node_noxim = translate_node_number_to_noxim_system(tg.node[Edge[1]]['Node'])
                         # StringToWrite: source + destination
                         string_to_write = str(source_node_noxim) + " " + str(destination_node_noxim)
 #                       StringToWrite += " 0" # Region ID (used for bLBDR/Virtualization)
                         string_to_write += " 0.01"  # pir (packet injection rate)
                         string_to_write += " 0.01"  # por (probability of retransmission)
                         # t_on:
-                        string_to_write += " " + str(int(arch_graph.node[Node]['PE'].Scheduling[Task][0]))
+                        string_to_write += " " + str(int(ag.node[Node]['PE'].Scheduling[Task][0]))
                         # t_off:
-                        string_to_write += " " + str(int(arch_graph.node[Node]['PE'].Scheduling[Task][1]))
+                        string_to_write += " " + str(int(ag.node[Node]['PE'].Scheduling[Task][1]))
                         # t_period:
-                        string_to_write += " " + str(int(arch_graph.node[Node]['PE'].Scheduling[Task][1]) + 1)
+                        string_to_write += " " + str(int(ag.node[Node]['PE'].Scheduling[Task][1]) + 1)
                         traffic_table_file.write(string_to_write+"\n")
     traffic_table_file.close()
     return None
@@ -73,7 +73,7 @@ def translate_node_number_to_noxim_system(node):
     return AG_Functions.return_node_number(x, y, z)
 
 
-def generate_gsnoc_traffic_table(arch_graph, task_graph):
+def generate_gsnoc_traffic_table(ag, tg):
     # here we should generate a traffic Table for GSNoC Simulator to double
     # check our experiments with it.
     # This is the format of the application file called GSPA:
@@ -100,19 +100,19 @@ def generate_gsnoc_traffic_table(arch_graph, task_graph):
     # GSNoC as well
 
     traffic_table_file = open('Generated_Files/GSNoCTrafficTable.txt', 'w')
-    for Node in arch_graph.nodes():
-        if len(arch_graph.node[Node]['PE'].MappedTasks) > 0:
-            for Task in arch_graph.node[Node]['PE'].MappedTasks:
-                for Edge in task_graph.edges():
+    for Node in ag.nodes():
+        if len(ag.node[Node]['PE'].MappedTasks) > 0:
+            for Task in ag.node[Node]['PE'].MappedTasks:
+                for Edge in tg.edges():
                     if Edge[0] == Task or Edge[1] == Task:
-                        string_to_write = str(Node) + "\t" + str(Task) + "\t"+str(task_graph.node[Task]['WCET']) + "\t"
+                        string_to_write = str(Node) + "\t" + str(Task) + "\t"+str(tg.node[Task]['WCET']) + "\t"
                         string_to_write += str(Edge[0]) + str(Edge[1]) + " \t" + \
-                            str(task_graph.edge[Edge[0]][Edge[1]]['ComWeight'])
+                            str(tg.edge[Edge[0]][Edge[1]]['ComWeight'])
                         # todo: This should be replaced with BW
-                        string_to_write += "\t" + str(task_graph.edge[Edge[0]][Edge[1]]['ComWeight']) + " \t"
+                        string_to_write += "\t" + str(tg.edge[Edge[0]][Edge[1]]['ComWeight']) + " \t"
                         string_to_write += str(Edge[0]) + "\t" + str(Edge[1]) + "\t"
-                        string_to_write += str(task_graph.node[Edge[0]]['Node']) + "\t" + \
-                            str(task_graph.node[Edge[1]]['Node'])
+                        string_to_write += str(tg.node[Edge[0]]['Node']) + "\t" + \
+                            str(tg.node[Edge[1]]['Node'])
                         traffic_table_file.write(string_to_write+"\n")
     traffic_table_file.close()
     return None

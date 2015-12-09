@@ -10,153 +10,150 @@ from Mapping_Heuristics import SimpleGreedy,Local_Search,SimulatedAnnealing,NMap
 from Scheduler import Scheduler,Scheduling_Reports, Scheduling_Functions
 
 
-def Mapping(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
+def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
     """
     Calculate different mapping algorithms
-    Returns TG And AG after Mapping in case of success
-    :param TG: Task Graph
-    :param AG: Architecture Graph
-    :param NoCRG: NoC Routing Graph
-    :param CriticalRG: NoC Routing Graph for Critical Region
-    :param NonCriticalRG: NoC Routing Graph for non-Critical Region
-    :param SHM: System Health Map! (Please note that mapper should not even have access to ful SHMU info)
+    Returns tg And ag after Mapping in case of success
+    :param tg: Task Graph
+    :param ag: Architecture Graph
+    :param noc_rg: NoC Routing Graph
+    :param critical_rg: NoC Routing Graph for Critical Region
+    :param non_critical_rg: NoC Routing Graph for non-Critical Region
+    :param shm: System Health Map! (Please note that mapper should not even have access to ful SHMU info)
     :param logging: logging file
-    :return: (TG, AG) in case of failing returns (None, None)
+    :return: (tg, ag) in case of failing returns (None, None)
     """
     # to run the following heuristics (Min_Min,Max_Min), one needs to use independent
-    # tasks... Please use: generate_random_independent_task_graph
+    # tasks... Please use: generate_random_independent_tg
     if Config.Mapping_Function == 'MinMin':
         if Config.TG_Type == 'RandomIndependent':
-            return SimpleGreedy.Min_Min_Mapping(TG, AG, NoCRG, SHM, logging)
+            return SimpleGreedy.Min_Min_Mapping(tg, ag, noc_rg, shm, logging)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
     elif Config.Mapping_Function == 'MaxMin':
         if Config.TG_Type == 'RandomIndependent':
-            return SimpleGreedy.Max_Min_Mapping (TG, AG, NoCRG, SHM, logging)
+            return SimpleGreedy.Max_Min_Mapping(tg, ag, noc_rg, shm, logging)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
     elif Config.Mapping_Function == 'MinExecutionTime':
         if Config.TG_Type == 'RandomIndependent':
-            return SimpleGreedy.MinExecutionTime(TG, AG, SHM, logging)
+            return SimpleGreedy.MinExecutionTime(tg, ag, shm, logging)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
     elif Config.Mapping_Function == 'MinimumCompletionTime':
         if Config.TG_Type == 'RandomIndependent':
-            return SimpleGreedy.MinimumCompletionTime(TG, AG, SHM, logging)
+            return SimpleGreedy.MinimumCompletionTime(tg, ag, shm, logging)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
     elif Config.Mapping_Function == 'NMap':
-        return NMap.NMap(TG, AG, NoCRG, CriticalRG, NonCriticalRG, SHM, logging)
+        return NMap.NMap(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging)
 
     elif Config.Mapping_Function in ['LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing']:
         if Config.TG_Type in ['RandomDependent', 'Manual', 'FromDOTFile']:
             pass
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomDependent')
-        ClusteringStartTime = time.time()
+        clustering_start_time = time.time()
         # clustered task graph
-        CTG = copy.deepcopy(Clustering.TaskClusterGeneration(len(AG.nodes())))
-        if Clustering.InitialClustering(TG, CTG):
+        ctg = copy.deepcopy(Clustering.TaskClusterGeneration(len(ag.nodes())))
+        if Clustering.InitialClustering(tg, ctg):
             # Clustered Task Graph Optimization
             if Config.Clustering_Optimization:
-                (BestClustering, BestTaskGraph) = Clustering.ClusteringOptimization_LocalSearch(TG, CTG,
-                                                                                                Config.ClusteringIteration,
-                                                                                                logging)
-                TG = copy.deepcopy(BestTaskGraph)
-                CTG = copy.deepcopy(BestClustering)
-                del BestClustering, BestTaskGraph
-                # Clustering_Test.DoubleCheckCTG(TG, CTG)
-                Clustering_Reports.ReportCTG(CTG, "CTG_PostOpt.png")
+                (best_clustering, best_task_graph) = \
+                    Clustering.ClusteringOptimization_LocalSearch(tg, ctg, Config.ClusteringIteration, logging)
+                tg = copy.deepcopy(best_task_graph)
+                ctg = copy.deepcopy(best_clustering)
+                del best_clustering, best_task_graph
+                # Clustering_Test.DoubleCheckCTG(tg, CTG)
+                Clustering_Reports.ReportCTG(ctg, "CTG_PostOpt.png")
                 Clustering_Reports.VizClusteringOpt()
             else:
                 print ("CLUSTERING OPTIMIZATION TURNED OFF...")
                 print ("REMOVING EMPTY CLUSTERS...")
-                Clustering_Functions.DeleteEmptyClusters(CTG)
-                Clustering_Reports.ReportCTG(CTG, "CTG_PostCleaning.png")
+                Clustering_Functions.DeleteEmptyClusters(ctg)
+                Clustering_Reports.ReportCTG(ctg, "CTG_PostCleaning.png")
 
             print ("\033[92mTIME::\033[0m CLUSTERING AND OPTIMIZATION TOOK: "
-                   +str(round(time.time()-ClusteringStartTime))+" SECONDS")
-            MappingStartTime = time.time()
+                   + str(round(time.time()-clustering_start_time))+" SECONDS")
+            mapping_start_time = time.time()
             # Mapping CTG on AG
-            if Mapping_Functions.MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, True, logging):
-
+            if Mapping_Functions.MakeInitialMapping(tg, ctg, ag, shm, noc_rg, critical_rg, non_critical_rg,
+                                                    True, logging):
                 if Config.DistanceBetweenMapping:
-                    initmpSr = Mapping_Functions.MappingIntoString(TG)
-                    # print (initmpSr)
+                    init_mapping_string = Mapping_Functions.MappingIntoString(tg)
+                    # print (init_mapping_string)
                 else:
-                    initmpSr = None
+                    init_mapping_string = None
 
-                Mapping_Reports.ReportMapping(AG, logging)
+                Mapping_Reports.ReportMapping(ag, logging)
                 # Schedule all tasks
-                Scheduling_Functions.ClearScheduling(AG, TG)
-                Scheduler.ScheduleAll(TG, AG, SHM, Config.DebugInfo, Config.DebugDetails, logging)
-                Scheduling_Reports.report_mapped_tasks(AG, logging)
-                Mapping_Functions.CostFunction(TG, AG, SHM, Config.DebugInfo)
+                Scheduling_Functions.ClearScheduling(ag, tg)
+                Scheduler.schedule_all(tg, ag, shm, Config.DebugInfo, Config.DebugDetails, logging)
+                Scheduling_Reports.report_mapped_tasks(ag, logging)
+                Mapping_Functions.CostFunction(tg, ag, shm, Config.DebugInfo)
                 if Config.Mapping_Function == 'LocalSearch':
-                    MappingCostFile = open('Generated_Files/Internal/LocalSearchMappingCost.txt','w')
-                    CurrentCost = Mapping_Functions.CostFunction(TG, AG, SHM, False)
-                    MappingCostFile.write(str(CurrentCost)+"\n")
-                    MappingCostFile.close()
+                    mapping_cost_file = open('Generated_Files/Internal/LocalSearchMappingCost.txt', 'w')
+                    current_cost = Mapping_Functions.CostFunction(tg, ag, shm, False)
+                    mapping_cost_file.write(str(current_cost)+"\n")
+                    mapping_cost_file.close()
 
-                    MappingProcessFile = open('Generated_Files/Internal/MappingProcess.txt','w')
-                    MappingProcessFile.write(Mapping_Functions.MappingIntoString(TG)+"\n")
-                    MappingProcessFile.close()
+                    mapping_process_file = open('Generated_Files/Internal/MappingProcess.txt', 'w')
+                    mapping_process_file.write(Mapping_Functions.MappingIntoString(tg)+"\n")
+                    mapping_process_file.close()
 
-                    (BestTG, BestCTG, BestAG) = Local_Search.OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG,
-                                                                                        NonCriticalRG, SHM,
-                                                                                        Config.LocalSearchIteration,
-                                                                                        Config.DebugInfo,
-                                                                                        Config.DebugDetails, logging,
-                                                                                        "LocalSearchMappingCost",
-                                                                                        "MappingProcess")
-                    TG = copy.deepcopy(BestTG)
-                    AG = copy.deepcopy(BestAG)
-                    del BestTG,BestCTG,BestAG
+                    (best_tg, best_ctg, best_ag) = \
+                        Local_Search.OptimizeMappingLocalSearch(tg, ctg, ag, noc_rg, critical_rg,
+                                                                non_critical_rg, shm,
+                                                                Config.LocalSearchIteration,
+                                                                Config.DebugInfo, Config.DebugDetails, logging,
+                                                                "LocalSearchMappingCost", "MappingProcess")
+                    tg = copy.deepcopy(best_tg)
+                    ag = copy.deepcopy(best_ag)
+                    del best_tg, best_ctg, best_ag
                     Mapping_Reports.VizMappingOpt('LocalSearchMappingCost')
                 elif Config.Mapping_Function == 'IterativeLocalSearch':
-                    (BestTG, BestCTG, BestAG) = Local_Search.OptimizeMappingIterativeLocalSearch(TG, CTG, AG, NoCRG,
-                                                                                                 CriticalRG,
-                                                                                                 NonCriticalRG, SHM,
-                                                                                                 Config.IterativeLocalSearchIterations,
-                                                                                                 Config.LocalSearchIteration,
-                                                                                                 Config.DebugInfo,
-                                                                                                 Config.DebugDetails,
-                                                                                                 logging)
-                    TG = copy.deepcopy(BestTG)
-                    AG = copy.deepcopy(BestAG)
-                    del BestTG, BestCTG, BestAG
+                    (best_tg, best_ctg, best_ag) = \
+                        Local_Search.OptimizeMappingIterativeLocalSearch(tg, ctg, ag, noc_rg, critical_rg,
+                                                                         non_critical_rg, shm,
+                                                                         Config.IterativeLocalSearchIterations,
+                                                                         Config.LocalSearchIteration,
+                                                                         Config.DebugInfo, Config.DebugDetails,
+                                                                         logging)
+                    tg = copy.deepcopy(best_tg)
+                    ag = copy.deepcopy(best_ag)
+                    del best_tg, best_ctg, best_ag
                     Mapping_Reports.VizMappingOpt('LocalSearchMappingCost')
                 elif Config.Mapping_Function == 'SimulatedAnnealing':
-                    (BestTG, BestCTG, BestAG) = SimulatedAnnealing.OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG,
-                                                                                      NonCriticalRG, SHM,
-                                                                                      'SA_MappingCost', logging)
+                    (best_tg, best_ctg, best_ag) = SimulatedAnnealing.OptimizeMapping_SA(tg, ctg, ag, noc_rg,
+                                                                                         critical_rg, non_critical_rg,
+                                                                                         shm, 'SA_MappingCost', logging)
                     Mapping_Reports.VizMappingOpt('SA_MappingCost')
                     if Config.SA_AnnealingSchedule == 'Adaptive':
                         Mapping_Reports.VizCostSlope()
                     elif Config.SA_AnnealingSchedule == 'Huang':
                         Mapping_Reports.VizHuangRace()
-                    TG = copy.deepcopy(BestTG)
-                    AG = copy.deepcopy(BestAG)
-                    del BestTG, BestCTG, BestAG
+                    tg = copy.deepcopy(best_tg)
+                    ag = copy.deepcopy(best_ag)
+                    del best_tg, best_ctg, best_ag
                 # print (Mapping_Functions.MappingIntoString(TG))
                 print ("\033[92mTIME::\033[0m MAPPING AND OPTIMIZATION TOOK: "
-                       +str(round(time.time()-MappingStartTime))+" SECONDS")
+                       + str(round(time.time()-mapping_start_time))+" SECONDS")
 
-                Mapping_Reports.ReportMapping(AG, logging)
-                Scheduling_Functions.ClearScheduling(AG, TG)
-                Scheduler.ScheduleAll(TG, AG, SHM, False, False, logging)
-                Scheduling_Reports.report_mapped_tasks(AG, logging)
-                Mapping_Functions.CostFunction(TG, AG, SHM, True,  InitialMappingString = initmpSr)
-                return TG, AG
+                Mapping_Reports.ReportMapping(ag, logging)
+                Scheduling_Functions.ClearScheduling(ag, tg)
+                Scheduler.schedule_all(tg, ag, shm, False, False, logging)
+                Scheduling_Reports.report_mapped_tasks(ag, logging)
+                Mapping_Functions.CostFunction(tg, ag, shm, True,  InitialMappingString=init_mapping_string)
+                return tg, ag
             else:
-                Mapping_Reports.ReportMapping(AG, logging)
+                Mapping_Reports.ReportMapping(ag, logging)
                 print ("===========================================")
                 raise ValueError("INITIAL MAPPING FAILED...")
-        else :
+        else:
             print ("Initial Clustering Failed....")
             raise ValueError("INITIAL CLUSTERING FAILED...")
     return None, None

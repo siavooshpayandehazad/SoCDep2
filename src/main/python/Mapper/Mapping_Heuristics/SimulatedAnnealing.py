@@ -78,12 +78,12 @@ def OptimizeMapping_SA(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG,
         NewTG, NewCTG, NewAG = MoveToAnotherSolution(CurrentTG, CurrentCTG, CurrentAG,  NoCRG,
                                                      SHM, CriticalRG, NonCriticalRG, logging)
         Scheduling_Functions.ClearScheduling(NewAG, NewTG)
-        Scheduler.ScheduleAll(NewTG, NewAG, SHM, False, False, logging)
+        Scheduler.schedule_all(NewTG, NewAG, SHM, False, False, logging)
 
         # calculate the cost of new solution
         NewCost = Mapping_Functions.CostFunction(NewTG, NewAG, SHM, False, InitialMappingString=InitMapString)
 
-        if NewCost<BestCost:
+        if NewCost < BestCost:
             BestTG = copy.deepcopy(NewTG)
             BestAG = copy.deepcopy(NewAG)
             BestCTG = copy.deepcopy(NewCTG)

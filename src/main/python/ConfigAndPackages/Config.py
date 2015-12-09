@@ -17,9 +17,9 @@ EventDrivenFaultInjection = True
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile'
 TG_Type = 'RandomDependent'
 # For Random TG_Type:
-NumberOfTasks = 9
+NumberOfTasks = 19
 NumberOfCriticalTasks = 0
-NumberOfEdges = 20
+NumberOfEdges = 30
 WCET_Range = 15
 EdgeWeightRange = 7
 Release_Range = 5      # task release time range
@@ -84,7 +84,7 @@ FlowControl = "Wormhole"
 ################################################
 #          Dark Silicon  Config
 ################################################
-DarkSiliconPercentage = 0.1
+DarkSiliconPercentage = 0
 ################################################
 #          SHM  Config
 ################################################
@@ -292,6 +292,6 @@ PMCG_Drawing = False
 TTG_Drawing = False
 Mapping_Dstr_Drawing = True
 Mapping_Drawing = True
-SHM_Drawing = True          # if True generates SHM Drawing
+SHM_Drawing = False          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks

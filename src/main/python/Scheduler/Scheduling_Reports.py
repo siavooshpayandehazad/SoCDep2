@@ -14,481 +14,485 @@ import random
 #
 #
 ##########################################################################
-def report_mapped_tasks(arch_graph, logging):
+def report_mapped_tasks(ag, logging):
     logging.info("===========================================")
     logging.info("          REPORTING SCHEDULING ")
     logging.info("===========================================")
-    for Node in arch_graph.nodes():
-        logging.info("NODE"+str(Node)+"CONTAINS THE FOLLOWING TASKS:"+str(arch_graph.node[Node]['PE'].MappedTasks) +
-                     "\tWITH SCHEDULING:"+str(arch_graph.node[Node]['PE'].Scheduling))
-    for Link in arch_graph.edges():
-        logging.info("LINK" + str(Link)+"CONTAINS THE FOLLOWING TG's Edges:" +
-                     str(arch_graph.edge[Link[0]][Link[1]]['MappedTasks']) + "\tWITH SCHEDULING:" +
-                     str(arch_graph.edge[Link[0]][Link[1]]['Scheduling']))
+    for node in ag.nodes():
+        logging.info("NODE"+str(node)+"CONTAINS THE FOLLOWING TASKS:"+str(ag.node[node]['PE'].MappedTasks) +
+                     "\tWITH SCHEDULING:"+str(ag.node[node]['PE'].Scheduling))
+    for link in ag.edges():
+        logging.info("LINK" + str(link)+"CONTAINS THE FOLLOWING TG's Edges:" +
+                     str(ag.edge[link[0]][link[1]]['MappedTasks']) + "\tWITH SCHEDULING:" +
+                     str(ag.edge[link[0]][link[1]]['Scheduling']))
 
     return None
 
 
-def report_scheduling_memory_usage(arch_graph):
+def report_scheduling_memory_usage(ag):
     print "==========================================="
     print "        SCHEDULING MEMORY REPORT"
     print "==========================================="
     counter = 0
-    for node in arch_graph.nodes():
-        counter += len(arch_graph.node[node]['PE'].Scheduling)
-        counter += len(arch_graph.node[node]['Router'].Scheduling)
-    for link in arch_graph.edges():
-        counter += len(arch_graph.edge[link[0]][link[1]]['Scheduling'])
+    for node in ag.nodes():
+        counter += len(ag.node[node]['PE'].Scheduling)
+        counter += len(ag.node[node]['Router'].Scheduling)
+    for link in ag.edges():
+        counter += len(ag.edge[link[0]][link[1]]['Scheduling'])
     print "SCHEDULE MEMORY USE:", counter
+
+
 ##########################################################################
 #
 #
 #                   Generating Gantt Charts
 #
 ##########################################################################
-def GenerateGanttCharts(TG, AG, FileName):
+def generate_gantt_charts(tg, ag, file_name):
     print ("===========================================")
     print ("GENERATING SCHEDULING GANTT CHARTS...")
-    NodeMakeSpanList = []
-    RouterMakeSpanList = []
-    LinkMakeSpanList = []
-    for Node in AG.nodes():
-        NodeMakeSpanList.append(FindLastAllocatedTimeOnNode(TG, AG, Node, logging=None))
-        RouterMakeSpanList.append(FindLastAllocatedTimeOnRouter(TG, AG, Node, logging=None))
-    for link in AG.edges():
-        LinkMakeSpanList.append(FindLastAllocatedTimeOnLink(TG, AG, link, logging=None))
-    if len(LinkMakeSpanList) > 0:
-        MAX_Time_Link = max(LinkMakeSpanList)
+    node_makespan_list = []
+    router_makespan_list = []
+    link_makespan_list = []
+    for node in ag.nodes():
+        node_makespan_list.append(FindLastAllocatedTimeOnNode(tg, ag, node, logging=None))
+        router_makespan_list.append(FindLastAllocatedTimeOnRouter(tg, ag, node, logging=None))
+    for link in ag.edges():
+        link_makespan_list.append(FindLastAllocatedTimeOnLink(tg, ag, link, logging=None))
+    if len(link_makespan_list) > 0:
+        max_time_link = max(link_makespan_list)
     else:
-        MAX_Time_Link = 0
-    if len(NodeMakeSpanList) > 0:
-        MAX_Time_Node = max(NodeMakeSpanList)
+        max_time_link = 0
+    if len(node_makespan_list) > 0:
+        max_time_node = max(node_makespan_list)
     else:
-        MAX_Time_Node = 0
-    if len(RouterMakeSpanList) > 0:
-        MAX_Time_Router = max(RouterMakeSpanList)
+        max_time_node = 0
+    if len(router_makespan_list) > 0:
+        max_time_router = max(router_makespan_list)
     else:
-        MAX_Time_Router = 0
-    Max_Time = max(MAX_Time_Link, MAX_Time_Node, MAX_Time_Router)
+        max_time_router = 0
+    max_time = max(max_time_link, max_time_node, max_time_router)
 
-    NodeCounter = 0
-    RouterCounter = 0
-    LinkCounter = 0
-    for Node in AG.nodes():
-        if len(AG.node[Node]['PE'].MappedTasks) > 0:
-            NodeCounter += 1
-        if len(AG.node[Node]['Router'].MappedTasks) > 0:
-            RouterCounter += 1
-    for Link in AG.edges():
-        if len(AG.edge[Link[0]][Link[1]]['MappedTasks']) > 0:
-            LinkCounter += 1
-    NumberOfPlots = NodeCounter + LinkCounter + RouterCounter
-    if NumberOfPlots < 10:
-        NumberOfPlots = 10
+    node_counter = 0
+    router_counter = 0
+    link_counter = 0
+    for node in ag.nodes():
+        if len(ag.node[node]['PE'].MappedTasks) > 0:
+            node_counter += 1
+        if len(ag.node[node]['Router'].MappedTasks) > 0:
+            router_counter += 1
+    for Link in ag.edges():
+        if len(ag.edge[Link[0]][Link[1]]['MappedTasks']) > 0:
+            link_counter += 1
+    num_of_plots = node_counter + link_counter + router_counter
+    if num_of_plots < 10:
+        num_of_plots = 10
     count = 1
-    fig = plt.figure(figsize=(Max_Time/10+1, NumberOfPlots/2))
+    fig = plt.figure(figsize=(max_time/10+1, num_of_plots/2))
     plt.subplots_adjust(hspace=0.1)
-    count, ax1 = Add_PEs_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, RouterCounter, Max_Time, count)
-    count, ax1 = Add_Routers_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter,RouterCounter, Max_Time, count)
-    count, ax1 = Add_Links_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter,
-                                      RouterCounter, Max_Time, count)
+    count, ax1 = add_pe_to_drawing(tg, ag, num_of_plots, fig, node_counter,
+                                   link_counter, router_counter, max_time, count)
+    count, ax1 = add_routers_to_drawing(tg, ag, num_of_plots, fig, node_counter,
+                                        link_counter, router_counter, max_time, count)
+    count, ax1 = add_links_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter,
+                                      router_counter, max_time, count)
 
-    if LinkCounter+NodeCounter+RouterCounter > 0:
+    if link_counter+node_counter+router_counter > 0:
         if ax1 is not None:
             ax1.xaxis.set_ticks_position('bottom')
-    plt.savefig("GraphDrawings/"+FileName+".png", dpi=200)
+    plt.savefig("GraphDrawings/"+file_name+".png", dpi=200)
     plt.clf()
     plt.close(fig)
     print ("\033[35m* VIZ::\033[0mSCHEDULING GANTT CHARTS CREATED AT: GraphDrawings/Scheduling.png")
     return None
 
 
-def Add_PEs_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, RouterCounter, Max_Time, Count):
+def add_pe_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, router_counter, max_time, count):
     ax1 = None
-    for Node in AG.nodes():
-        if len(AG.node[Node]['PE'].MappedTasks) > 0:
-            ax1 = fig.add_subplot(NumberOfPlots, 1, Count)
-            for Task in AG.node[Node]['PE'].MappedTasks:
-                    PE_T = []
-                    PE_P = []
-                    PE_P.append(0)
-                    PE_T.append(0)
-                    Slack_T = []
-                    Slack_P = []
-                    Slack_T.append(0)
-                    Slack_P.append(0)
-                    TaskColor = 'w'
-                    if Task in AG.node[Node]['PE'].Scheduling:
-                        if TG.node[Task]['Criticality'] == 'H':
-                            StartTime = AG.node[Node]['PE'].Scheduling[Task][0]
-                            TaskLength = AG.node[Node]['PE'].Scheduling[Task][1]-AG.node[Node]['PE'].Scheduling[Task][0]
-                            EndTime = StartTime + (TaskLength/(Config.Task_SlackCount+1))
-                            PE_T.append(StartTime)
-                            PE_P.append(0)
-                            PE_T.append(StartTime)
-                            PE_P.append(0.1)
-                            PE_T.append(EndTime)
-                            PE_P.append(0.1)
-                            PE_T.append(EndTime)
-                            PE_P.append(0)
-                            TaskColor = '#FF878B'
-                            if Config.Task_SlackCount > 0:
-                                StartTime = EndTime
-                                EndTime = StartTime + (TaskLength / (Config.Task_SlackCount+1)) * Config.Task_SlackCount
-                                Slack_T.append(StartTime)
-                                Slack_P.append(0)
-                                Slack_T.append(StartTime)
-                                Slack_P.append(0.1)
-                                Slack_T.append(EndTime)
-                                Slack_P.append(0.1)
-                                Slack_T.append(EndTime)
-                                Slack_P.append(0)
+    for node in ag.nodes():
+        if len(ag.node[node]['PE'].MappedTasks) > 0:
+            ax1 = fig.add_subplot(num_of_plots, 1, count)
+            for task in ag.node[node]['PE'].MappedTasks:
+                    pe_t = []
+                    pe_p = []
+                    pe_p.append(0)
+                    pe_t.append(0)
+                    slack_t = []
+                    slack_p = []
+                    slack_t.append(0)
+                    slack_p.append(0)
+                    task_color = 'w'
+                    if task in ag.node[node]['PE'].Scheduling:
+                        if tg.node[task]['Criticality'] == 'H':
+                            start_time = ag.node[node]['PE'].Scheduling[task][0]
+                            task_length = ag.node[node]['PE'].Scheduling[task][1]-ag.node[node]['PE'].Scheduling[task][0]
+                            end_time = start_time + (task_length/(Config.task_Slackcount+1))
+                            pe_t.append(start_time)
+                            pe_p.append(0)
+                            pe_t.append(start_time)
+                            pe_p.append(0.1)
+                            pe_t.append(end_time)
+                            pe_p.append(0.1)
+                            pe_t.append(end_time)
+                            pe_p.append(0)
+                            task_color = '#FF878B'
+                            if Config.task_Slackcount > 0:
+                                start_time = end_time
+                                end_time = start_time + (task_length / (Config.task_Slackcount+1)) * Config.task_Slackcount
+                                slack_t.append(start_time)
+                                slack_p.append(0)
+                                slack_t.append(start_time)
+                                slack_p.append(0.1)
+                                slack_t.append(end_time)
+                                slack_p.append(0.1)
+                                slack_t.append(end_time)
+                                slack_p.append(0)
                         else:
-                            StartTime = AG.node[Node]['PE'].Scheduling[Task][0]
-                            EndTime = AG.node[Node]['PE'].Scheduling[Task][1]
-                            PE_T.append(StartTime)
-                            PE_P.append(0)
-                            PE_T.append(StartTime)
-                            PE_P.append(0.1)
-                            PE_T.append(EndTime)
-                            PE_P.append(0.1)
-                            PE_T.append(EndTime)
-                            PE_P.append(0)
-                            if TG.node[Task]['Criticality'] == 'GH':
-                                TaskColor = '#FFC29C'
-                            elif TG.node[Task]['Criticality'] == 'GNH':
-                                TaskColor = '#928AFF'
+                            start_time = ag.node[node]['PE'].Scheduling[task][0]
+                            end_time = ag.node[node]['PE'].Scheduling[task][1]
+                            pe_t.append(start_time)
+                            pe_p.append(0)
+                            pe_t.append(start_time)
+                            pe_p.append(0.1)
+                            pe_t.append(end_time)
+                            pe_p.append(0.1)
+                            pe_t.append(end_time)
+                            pe_p.append(0)
+                            if tg.node[task]['Criticality'] == 'GH':
+                                task_color = '#FFC29C'
+                            elif tg.node[task]['Criticality'] == 'GNH':
+                                task_color = '#928AFF'
                             else:
-                                if TG.node[Task]['Type'] == 'Test':
-                                    if 'S' in Task:
-                                        TaskColor = '#FFDA3D'
+                                if tg.node[task]['Type'] == 'Test':
+                                    if 'S' in task:
+                                        task_color = '#FFDA3D'
                                     else:
-                                        TaskColor = '#FFEAA7'
+                                        task_color = '#FFEAA7'
                                 else:
-                                    TaskColor = '#CFECFF'
-                    PE_T.append(Max_Time)
-                    PE_P.append(0)
-                    ax1.fill_between(PE_T, PE_P, 0, facecolor=TaskColor, edgecolor='k')
+                                    task_color = '#CFECFF'
+                    pe_t.append(max_time)
+                    pe_p.append(0)
+                    ax1.fill_between(pe_t, pe_p, 0, facecolor=task_color, edgecolor='k')
                     if Config.Task_SlackCount > 0:
-                        ax1.fill_between(Slack_T, Slack_P, 0, facecolor='#808080', edgecolor='k')
+                        ax1.fill_between(slack_t, slack_p, 0, facecolor='#808080', edgecolor='k')
             plt.setp(ax1.get_yticklabels(), visible=False)
-            if Count < LinkCounter + NodeCounter + RouterCounter:
+            if count < link_counter + node_counter + router_counter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
 
-            for Task in AG.node[Node]['PE'].MappedTasks:
-                if Task in AG.node[Node]['PE'].Scheduling:
-                    StartTime = AG.node[Node]['PE'].Scheduling[Task][0]
-                    if TG.node[Task]['Criticality'] == 'H':
-                        TaskLength = (AG.node[Node]['PE'].Scheduling[Task][1] -
-                                      AG.node[Node]['PE'].Scheduling[Task][0])/(Config.Task_SlackCount+1)
-                        ax1.text(StartTime+(TaskLength)/2 - len(str(Task))/2, 0.01, str(Task), fontsize=10)
-                        EndTime = AG.node[Node]['PE'].Scheduling[Task][1]
-                        if Config.Task_SlackCount > 0:
-                            ax1.text((StartTime+TaskLength+EndTime)/2 - len(str(Task)+'S')/2,
-                                     0.01, str(Task)+'S', fontsize=5)
+            for task in ag.node[node]['PE'].MappedTasks:
+                if task in ag.node[node]['PE'].Scheduling:
+                    start_time = ag.node[node]['PE'].Scheduling[task][0]
+                    if tg.node[task]['Criticality'] == 'H':
+                        task_length = (ag.node[node]['PE'].Scheduling[task][1] -
+                                      ag.node[node]['PE'].Scheduling[task][0])/(Config.task_Slackcount+1)
+                        ax1.text(start_time+task_length/2 - len(str(task))/2, 0.01, str(task), fontsize=10)
+                        end_time = ag.node[node]['PE'].Scheduling[task][1]
+                        if Config.task_Slackcount > 0:
+                            ax1.text((start_time+task_length+end_time)/2 - len(str(task)+'S')/2,
+                                     0.01, str(task)+'S', fontsize=5)
                     else:
-                        EndTime = AG.node[Node]['PE'].Scheduling[Task][1]
-                        ax1.text((StartTime+EndTime)/2 - len(str(Task))/2, 0.01, str(Task), fontsize=5)
+                        end_time = ag.node[node]['PE'].Scheduling[task][1]
+                        ax1.text((start_time+end_time)/2 - len(str(task))/2, 0.01, str(task), fontsize=5)
             ax1.yaxis.set_label_coords(-0.08, 0)
-            ax1.set_ylabel(r'PE'+str(Node), size=14, rotation=0)
-            Count += 1
-    return Count, ax1
+            ax1.set_ylabel(r'PE'+str(node), size=14, rotation=0)
+            count += 1
+    return count, ax1
 
 
-def Add_Routers_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, RouterCounter, Max_Time, Count):
+def add_routers_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, router_counter, max_time, count):
     """
-    :param TG: Task Graph
-    :param AG: Architecture Graph
-    :param NumberOfPlots: Total Number of plots (All PEs that have mapping+All routers that pass a packet+all links)
+    :param tg: task Graph
+    :param ag: Architecture Graph
+    :param num_of_plots: Total Number of plots (All PEs that have mapping+All routers that pass a packet+all links)
     :param fig: a mathplotlib figure
-    :param NodeCounter: counter that shows number of active nodes
-    :param LinkCounter: counter that shows the number of active links
-    :param Max_Time: maximum execution time on the network
-    :param Count: counter of the number of plots added to this point
-    :return: Count ,ax1
+    :param node_counter: counter that shows number of active nodes
+    :param link_counter: counter that shows the number of active links
+    :param max_time: maximum execution time on the network
+    :param count: counter of the number of plots added to this point
+    :return: count ,ax1
     """
     ax1 = None
-    for Node in AG.nodes():
-        if len(AG.node[Node]['Router'].MappedTasks) > 0:
-            ax1 = fig.add_subplot(NumberOfPlots, 1, Count)
-            SchedulList = []
-            Zorder = len(AG.node[Node]['Router'].MappedTasks)
-            for Task in AG.node[Node]['Router'].MappedTasks:
-                PE_T = [0, 0]
-                PE_P = [0.1, 0]
-                EdgeColor = 'w'
-                Slack_T = [0]
-                Slack_P = [0]
+    for node in ag.nodes():
+        if len(ag.node[node]['Router'].MappedTasks) > 0:
+            ax1 = fig.add_subplot(num_of_plots, 1, count)
+            schedule_list = []
+            zorder = len(ag.node[node]['Router'].MappedTasks)
+            for task in ag.node[node]['Router'].MappedTasks:
+                pe_t = [0, 0]
+                pe_p = [0.1, 0]
+                edge_color = 'w'
+                slack_t = [0]
+                slack_p = [0]
 
-                if Task in AG.node[Node]['Router'].Scheduling:
-                    if TG.edge[Task[0]][Task[1]]['Criticality'] == 'H':
-                        for BatchAndSchedule in AG.node[Node]['Router'].Scheduling:
-                            StartTime = BatchAndSchedule[0]
-                            BatchNum = BatchAndSchedule[2]
-                            TaskLength = BatchAndSchedule[1] - StartTime
-                            EndTime = StartTime + (TaskLength / (Config.Communication_SlackCount+1))
-                            PE_T.append(StartTime)
-                            PE_P.append(0)
-                            PE_T.append(StartTime)
-                            PE_P.append(0.1)
-                            PE_T.append(EndTime)
-                            PE_P.append(0.1)
-                            PE_T.append(EndTime)
-                            PE_P.append(0)
-                            EdgeColor = '#FF878B'
-                            if Config.Communication_SlackCount > 0:
-                                StartTime = EndTime
-                                EndTime = StartTime + (TaskLength / (Config.Communication_SlackCount+1)) * Config.Communication_SlackCount
-                                Slack_T.append(StartTime)
-                                Slack_P.append(0)
-                                Slack_T.append(StartTime)
-                                Slack_P.append(0.1)
-                                Slack_T.append(EndTime)
-                                Slack_P.append(0.1)
-                                Slack_T.append(EndTime)
-                                Slack_P.append(0)
-                        SchedulList.append((StartTime, EndTime, 1))
-                        Zorder -= 1
+                if task in ag.node[node]['Router'].Scheduling:
+                    if tg.edge[task[0]][task[1]]['Criticality'] == 'H':
+                        for batch_and_schedule in ag.node[node]['Router'].Scheduling:
+                            start_time = batch_and_schedule[0]
+                            batch_num = batch_and_schedule[2]
+                            task_length = batch_and_schedule[1] - start_time
+                            end_time = start_time + (task_length / (Config.Communication_Slackcount+1))
+                            pe_t.append(start_time)
+                            pe_p.append(0)
+                            pe_t.append(start_time)
+                            pe_p.append(0.1)
+                            pe_t.append(end_time)
+                            pe_p.append(0.1)
+                            pe_t.append(end_time)
+                            pe_p.append(0)
+                            edge_color = '#FF878B'
+                            if Config.Communication_Slackcount > 0:
+                                start_time = end_time
+                                end_time = start_time + (task_length / (Config.Communication_Slackcount+1)) * Config.Communication_Slackcount
+                                slack_t.append(start_time)
+                                slack_p.append(0)
+                                slack_t.append(start_time)
+                                slack_p.append(0.1)
+                                slack_t.append(end_time)
+                                slack_p.append(0.1)
+                                slack_t.append(end_time)
+                                slack_p.append(0)
+                        schedule_list.append((start_time, end_time, 1))
+                        zorder -= 1
                     else:
-                        for BatchAndSchedule in AG.node[Node]['Router'].Scheduling[Task]:
+                        for batch_and_schedule in ag.node[node]['Router'].Scheduling[task]:
 
-                            StartTime = BatchAndSchedule[0]
-                            EndTime = BatchAndSchedule[1]
-                            BatchNum = BatchAndSchedule[2]
-                            Prob = BatchAndSchedule[3]
+                            start_time = batch_and_schedule[0]
+                            end_time = batch_and_schedule[1]
+                            batch_num = batch_and_schedule[2]
+                            prob = batch_and_schedule[3]
 
-                            PE_T.append(StartTime)
-                            PE_P.append(0)
-                            PE_T.append(StartTime)
-                            PE_P.append(0.1 * Prob)
+                            pe_t.append(start_time)
+                            pe_p.append(0)
+                            pe_t.append(start_time)
+                            pe_p.append(0.1 * prob)
 
-                            PastProb = 0
-                            for AddedRect in SchedulList:
-                                if AddedRect[0] <= StartTime < AddedRect[1]:
-                                    PastProb += AddedRect[2]
+                            past_prob = 0
+                            for added_rect in schedule_list:
+                                if added_rect[0] <= start_time < added_rect[1]:
+                                    past_prob += added_rect[2]
 
-                            if PastProb > 0:
-                                PE_T.append(StartTime)
-                                Prob = BatchAndSchedule[3]+PastProb
-                                PE_P.append(0.1 * Prob)
+                            if past_prob > 0:
+                                pe_t.append(start_time)
+                                prob = batch_and_schedule[3]+past_prob
+                                pe_p.append(0.1 * prob)
 
-                            UpDict = {}
-                            for AddedRect in SchedulList:
-                                if StartTime < AddedRect[0] < EndTime:
-                                    if AddedRect[0] in UpDict:
-                                        UpDict[AddedRect[0]] += AddedRect[2]
+                            up_dict = {}
+                            for added_rect in schedule_list:
+                                if start_time < added_rect[0] < end_time:
+                                    if added_rect[0] in up_dict:
+                                        up_dict[added_rect[0]] += added_rect[2]
                                     else:
-                                        UpDict[AddedRect[0]] = AddedRect[2]
+                                        up_dict[added_rect[0]] = added_rect[2]
 
-                            DownDict = {}
-                            for AddedRect in SchedulList:
-                                if StartTime < AddedRect[1] < EndTime:
-                                    if AddedRect[1] in DownDict:
-                                        DownDict[AddedRect[1]] += AddedRect[2]
+                            down_dict = {}
+                            for added_rect in schedule_list:
+                                if start_time < added_rect[1] < end_time:
+                                    if added_rect[1] in down_dict:
+                                        down_dict[added_rect[1]] += added_rect[2]
                                     else:
-                                        DownDict[AddedRect[1]] = AddedRect[2]
+                                        down_dict[added_rect[1]] = added_rect[2]
 
-                            for TimeInstant in sorted(UpDict.keys()+DownDict.keys()):
-                                if TimeInstant in UpDict.keys():
-                                    PE_T.append(TimeInstant)
-                                    PE_P.append(0.1 * Prob)
-                                    Prob = UpDict[TimeInstant] + Prob
-                                    PE_T.append(TimeInstant)
-                                    PE_P.append(0.1 * Prob)
+                            for time_instant in sorted(up_dict.keys()+down_dict.keys()):
+                                if time_instant in up_dict.keys():
+                                    pe_t.append(time_instant)
+                                    pe_p.append(0.1 * prob)
+                                    prob = up_dict[time_instant] + prob
+                                    pe_t.append(time_instant)
+                                    pe_p.append(0.1 * prob)
 
-                                if TimeInstant in DownDict.keys():
-                                    PE_T.append(TimeInstant)
-                                    PE_P.append(0.1 * Prob)
-                                    Prob = Prob - DownDict[TimeInstant]
-                                    PE_T.append(TimeInstant)
-                                    PE_P.append(0.1 * Prob)
+                                if time_instant in down_dict.keys():
+                                    pe_t.append(time_instant)
+                                    pe_p.append(0.1 * prob)
+                                    prob = prob - down_dict[time_instant]
+                                    pe_t.append(time_instant)
+                                    pe_p.append(0.1 * prob)
 
-                            PastProb = 0
-                            for AddedRect in SchedulList:
-                                if AddedRect[0] < EndTime <= AddedRect[1]:
-                                        PastProb += AddedRect[2]
+                            past_prob = 0
+                            for added_rect in schedule_list:
+                                if added_rect[0] < end_time <= added_rect[1]:
+                                        past_prob += added_rect[2]
 
-                            if PastProb > 0:
-                                PE_T.append(EndTime)
-                                Prob = BatchAndSchedule[3]+PastProb
-                                PE_P.append(0.1 * Prob)
+                            if past_prob > 0:
+                                pe_t.append(end_time)
+                                prob = batch_and_schedule[3]+past_prob
+                                pe_p.append(0.1 * prob)
                             else:
-                                PE_T.append(EndTime)
-                                PE_P.append(0.1 * BatchAndSchedule[3])
-                            PE_T.append(EndTime)
-                            PE_P.append(0)
-                            random.seed(Task)
+                                pe_t.append(end_time)
+                                pe_p.append(0.1 * batch_and_schedule[3])
+                            pe_t.append(end_time)
+                            pe_p.append(0)
+                            random.seed(task)
                             r = random.randrange(0, 255)
                             g = random.randrange(0, 255)
                             b = random.randrange(0, 255)
-                            EdgeColor = '#%02X%02X%02X' % (r, g, b)
-                            # EdgeColor = '#CFECFF'
+                            edge_color = '#%02X%02X%02X' % (r, g, b)
+                            # edge_color = '#CFECFF'
                             # print TryOutList
-                            SchedulList.append((StartTime, EndTime, BatchAndSchedule[3]))
-                            Zorder -= 1
+                            schedule_list.append((start_time, end_time, batch_and_schedule[3]))
+                            zorder -= 1
 
-                PE_T.append(Max_Time)
-                PE_P.append(0)
-                PE_T.append(Max_Time)
-                PE_P.append(0.1)
-                PE_T.append(Max_Time)
-                PE_P.append(0)
-                if TG.node[Task[0]]['Type'] == 'Test' or TG.node[Task[1]]['Type'] == 'Test':
-                    ax1.fill_between(PE_T, PE_P, 0, color=EdgeColor, edgecolor='k', zorder= Zorder, hatch='\\')
+                pe_t.append(max_time)
+                pe_p.append(0)
+                pe_t.append(max_time)
+                pe_p.append(0.1)
+                pe_t.append(max_time)
+                pe_p.append(0)
+                if tg.node[task[0]]['Type'] == 'Test' or tg.node[task[1]]['Type'] == 'Test':
+                    ax1.fill_between(pe_t, pe_p, 0, color=edge_color, edgecolor='k', zorder=zorder, hatch='\\')
                 else:
-                    ax1.fill_between(PE_T, PE_P, 0, color=EdgeColor, edgecolor=EdgeColor, zorder=Zorder)
+                    ax1.fill_between(pe_t, pe_p, 0, color=edge_color, edgecolor=edge_color, zorder=zorder)
                 if Config.Communication_SlackCount > 0:
-                    ax1.fill_between(Slack_T, Slack_P, 0, color='#808080', edgecolor='#808080')
+                    ax1.fill_between(slack_t, slack_p, 0, color='#808080', edgecolor='#808080')
 
             plt.setp(ax1.get_yticklabels(), visible=False)
-            if Count < LinkCounter+NodeCounter+RouterCounter:
+            if count < link_counter+node_counter+router_counter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
 
             ax1.yaxis.set_label_coords(-0.08, 0)
-            ax1.set_ylabel(r'R'+str(Node), size=14, rotation=0)
-            Count += 1
-    return Count, ax1
+            ax1.set_ylabel(r'R'+str(node), size=14, rotation=0)
+            count += 1
+    return count, ax1
 
 
-def Add_Links_To_Drawing(TG, AG, NumberOfPlots, fig, NodeCounter, LinkCounter, RouterCounter, Max_Time, Count):
+def add_links_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, router_counter, max_time, count):
     ax1 = None
-    for Link in AG.edges():
-        if len(AG.edge[Link[0]][Link[1]]['MappedTasks'])>0:
-            ax1 = fig.add_subplot(NumberOfPlots, 1, Count)
-            SchedulList = []
-            Zorder = len(AG.edge[Link[0]][Link[1]]['MappedTasks'])
-            for Task in AG.edge[Link[0]][Link[1]]['MappedTasks']:
-                PE_T = [0, 0]
-                PE_P = [0.1, 0]
-                EdgeColor = 'w'
-                Slack_T = [0]
-                Slack_P = [0]
+    for Link in ag.edges():
+        if len(ag.edge[Link[0]][Link[1]]['MappedTasks']) > 0:
+            ax1 = fig.add_subplot(num_of_plots, 1, count)
+            schedule_list = []
+            zorder = len(ag.edge[Link[0]][Link[1]]['MappedTasks'])
+            for task in ag.edge[Link[0]][Link[1]]['MappedTasks']:
+                pe_t = [0, 0]
+                pe_p = [0.1, 0]
+                edge_color = 'w'
+                slack_t = [0]
+                slack_p = [0]
 
-                if Task in AG.edge[Link[0]][Link[1]]['Scheduling']:
-                    if TG.edge[Task[0]][Task[1]]['Criticality'] == 'H':
-                        for BatchAndSchedule in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
-                            StartTime = BatchAndSchedule[0]
-                            BatchNum = BatchAndSchedule[2]
-                            TaskLength = BatchAndSchedule[1] - StartTime
-                            EndTime = StartTime + (TaskLength / (Config.Communication_SlackCount+1))
-                            PE_T.append(StartTime)
-                            PE_P.append(0)
-                            PE_T.append(StartTime)
-                            PE_P.append(0.1)
-                            PE_T.append(EndTime)
-                            PE_P.append(0.1)
-                            PE_T.append(EndTime)
-                            PE_P.append(0)
-                            EdgeColor = '#FF878B'
-                            if Config.Communication_SlackCount > 0:
-                                StartTime = EndTime
-                                EndTime = StartTime + (TaskLength / (Config.Communication_SlackCount+1)) * Config.Communication_SlackCount
-                                Slack_T.append(StartTime)
-                                Slack_P.append(0)
-                                Slack_T.append(StartTime)
-                                Slack_P.append(0.1)
-                                Slack_T.append(EndTime)
-                                Slack_P.append(0.1)
-                                Slack_T.append(EndTime)
-                                Slack_P.append(0)
-                        SchedulList.append((StartTime, EndTime, 1))
-                        Zorder -= 1
+                if task in ag.edge[Link[0]][Link[1]]['Scheduling']:
+                    if tg.edge[task[0]][task[1]]['Criticality'] == 'H':
+                        for batch_and_schedule in ag.edge[Link[0]][Link[1]]['Scheduling'][task]:
+                            start_time = batch_and_schedule[0]
+                            batch_num = batch_and_schedule[2]
+                            task_length = batch_and_schedule[1] - start_time
+                            end_time = start_time + (task_length / (Config.Communication_Slackcount+1))
+                            pe_t.append(start_time)
+                            pe_p.append(0)
+                            pe_t.append(start_time)
+                            pe_p.append(0.1)
+                            pe_t.append(end_time)
+                            pe_p.append(0.1)
+                            pe_t.append(end_time)
+                            pe_p.append(0)
+                            edge_color = '#FF878B'
+                            if Config.Communication_Slackcount > 0:
+                                start_time = end_time
+                                end_time = start_time + (task_length / (Config.Communication_Slackcount+1)) * Config.Communication_Slackcount
+                                slack_t.append(start_time)
+                                slack_p.append(0)
+                                slack_t.append(start_time)
+                                slack_p.append(0.1)
+                                slack_t.append(end_time)
+                                slack_p.append(0.1)
+                                slack_t.append(end_time)
+                                slack_p.append(0)
+                        schedule_list.append((start_time, end_time, 1))
+                        zorder -= 1
                     else:
-                        for BatchAndSchedule in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
+                        for batch_and_schedule in ag.edge[Link[0]][Link[1]]['Scheduling'][task]:
 
-                            StartTime = BatchAndSchedule[0]
-                            EndTime = BatchAndSchedule[1]
-                            BatchNum = BatchAndSchedule[2]
-                            Prob = BatchAndSchedule[3]
+                            start_time = batch_and_schedule[0]
+                            end_time = batch_and_schedule[1]
+                            batch_num = batch_and_schedule[2]
+                            prob = batch_and_schedule[3]
 
-                            PE_T.append(StartTime)
-                            PE_P.append(0)
-                            PE_T.append(StartTime)
-                            PE_P.append(0.1 * Prob)
+                            pe_t.append(start_time)
+                            pe_p.append(0)
+                            pe_t.append(start_time)
+                            pe_p.append(0.1 * prob)
 
-                            PastProb = 0
-                            for AddedRect in SchedulList:
-                                if AddedRect[0] <= StartTime < AddedRect[1]:
-                                    PastProb += AddedRect[2]
+                            past_prob = 0
+                            for added_rect in schedule_list:
+                                if added_rect[0] <= start_time < added_rect[1]:
+                                    past_prob += added_rect[2]
 
-                            if PastProb > 0:
-                                PE_T.append(StartTime)
-                                Prob = BatchAndSchedule[3]+PastProb
-                                PE_P.append(0.1 * Prob)
+                            if past_prob > 0:
+                                pe_t.append(start_time)
+                                prob = batch_and_schedule[3]+past_prob
+                                pe_p.append(0.1 * prob)
 
-                            UpDict = {}
-                            for AddedRect in SchedulList:
-                                if StartTime < AddedRect[0] < EndTime:
-                                    if AddedRect[0] in UpDict:
-                                        UpDict[AddedRect[0]] += AddedRect[2]
+                            up_dict = {}
+                            for added_rect in schedule_list:
+                                if start_time < added_rect[0] < end_time:
+                                    if added_rect[0] in up_dict:
+                                        up_dict[added_rect[0]] += added_rect[2]
                                     else:
-                                        UpDict[AddedRect[0]] = AddedRect[2]
+                                        up_dict[added_rect[0]] = added_rect[2]
 
-                            DownDict = {}
-                            for AddedRect in SchedulList:
-                                if StartTime < AddedRect[1] < EndTime:
-                                    if AddedRect[1] in DownDict:
-                                        DownDict[AddedRect[1]] += AddedRect[2]
+                            down_dict = {}
+                            for added_rect in schedule_list:
+                                if start_time < added_rect[1] < end_time:
+                                    if added_rect[1] in down_dict:
+                                        down_dict[added_rect[1]] += added_rect[2]
                                     else:
-                                        DownDict[AddedRect[1]] = AddedRect[2]
+                                        down_dict[added_rect[1]] = added_rect[2]
 
-                            for TimeInstant in sorted(UpDict.keys()+DownDict.keys()):
-                                if TimeInstant in UpDict.keys():
-                                    PE_T.append(TimeInstant)
-                                    PE_P.append(0.1 * Prob)
-                                    Prob = UpDict[TimeInstant] + Prob
-                                    PE_T.append(TimeInstant)
-                                    PE_P.append(0.1 * Prob)
+                            for time_instant in sorted(up_dict.keys()+down_dict.keys()):
+                                if time_instant in up_dict.keys():
+                                    pe_t.append(time_instant)
+                                    pe_p.append(0.1 * prob)
+                                    prob = up_dict[time_instant] + prob
+                                    pe_t.append(time_instant)
+                                    pe_p.append(0.1 * prob)
 
-                                if TimeInstant in DownDict.keys():
-                                    PE_T.append(TimeInstant)
-                                    PE_P.append(0.1 * Prob)
-                                    Prob = Prob - DownDict[TimeInstant]
-                                    PE_T.append(TimeInstant)
-                                    PE_P.append(0.1 * Prob)
+                                if time_instant in down_dict.keys():
+                                    pe_t.append(time_instant)
+                                    pe_p.append(0.1 * prob)
+                                    prob = prob - down_dict[time_instant]
+                                    pe_t.append(time_instant)
+                                    pe_p.append(0.1 * prob)
 
-                            PastProb = 0
-                            for AddedRect in SchedulList:
-                                if AddedRect[0] < EndTime <= AddedRect[1]:
-                                        PastProb += AddedRect[2]
+                            past_prob = 0
+                            for added_rect in schedule_list:
+                                if added_rect[0] < end_time <= added_rect[1]:
+                                        past_prob += added_rect[2]
 
-                            if PastProb > 0:
-                                PE_T.append(EndTime)
-                                Prob = BatchAndSchedule[3]+PastProb
-                                PE_P.append(0.1 * Prob)
+                            if past_prob > 0:
+                                pe_t.append(end_time)
+                                prob = batch_and_schedule[3]+past_prob
+                                pe_p.append(0.1 * prob)
                             else:
-                                PE_T.append(EndTime)
-                                PE_P.append(0.1 * BatchAndSchedule[3])
-                            PE_T.append(EndTime)
-                            PE_P.append(0)
-                            random.seed(Task)
+                                pe_t.append(end_time)
+                                pe_p.append(0.1 * batch_and_schedule[3])
+                            pe_t.append(end_time)
+                            pe_p.append(0)
+                            random.seed(task)
                             r = random.randrange(0, 255)
                             g = random.randrange(0, 255)
                             b = random.randrange(0, 255)
-                            EdgeColor = '#%02X%02X%02X' % (r, g, b)
-                            # EdgeColor = '#CFECFF'
+                            edge_color = '#%02X%02X%02X' % (r, g, b)
+                            # edge_color = '#CFECFF'
                             # print TryOutList
-                            SchedulList.append((StartTime, EndTime, BatchAndSchedule[3]))
-                            Zorder -= 1
+                            schedule_list.append((start_time, end_time, batch_and_schedule[3]))
+                            zorder -= 1
 
-                PE_T.append(Max_Time)
-                PE_P.append(0)
-                PE_T.append(Max_Time)
-                PE_P.append(0.1)
-                PE_T.append(Max_Time)
-                PE_P.append(0)
-                if TG.node[Task[0]]['Type'] == 'Test' or TG.node[Task[1]]['Type'] == 'Test':
-                    ax1.fill_between(PE_T, PE_P, 0, color=EdgeColor, edgecolor='k', zorder= Zorder, hatch='\\')
+                pe_t.append(max_time)
+                pe_p.append(0)
+                pe_t.append(max_time)
+                pe_p.append(0.1)
+                pe_t.append(max_time)
+                pe_p.append(0)
+                if tg.node[task[0]]['Type'] == 'Test' or tg.node[task[1]]['Type'] == 'Test':
+                    ax1.fill_between(pe_t, pe_p, 0, color=edge_color, edgecolor='k', zorder=zorder, hatch='\\')
                 else:
-                    ax1.fill_between(PE_T, PE_P, 0, color=EdgeColor, edgecolor=EdgeColor, zorder=Zorder)
+                    ax1.fill_between(pe_t, pe_p, 0, color=edge_color, edgecolor=edge_color, zorder=zorder)
                 if Config.Communication_SlackCount > 0:
-                    ax1.fill_between(Slack_T, Slack_P, 0, color='#808080', edgecolor='#808080')
+                    ax1.fill_between(slack_t, slack_p, 0, color='#808080', edgecolor='#808080')
 
             plt.setp(ax1.get_yticklabels(), visible=False)
-            if Count < LinkCounter + NodeCounter + RouterCounter :
+            if count < link_counter + node_counter + router_counter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
 
             ax1.yaxis.set_label_coords(-0.08, 0)
             ax1.set_ylabel(r'L'+str(Link), size=14, rotation=0)
-            Count += 1
-    return Count, ax1
+            count += 1
+    return count, ax1

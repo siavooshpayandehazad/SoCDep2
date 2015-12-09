@@ -74,7 +74,7 @@ def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SH
             TryCounter += 1
 
         Scheduling_Functions.ClearScheduling(AG, TG)
-        Scheduler.ScheduleAll(TG, AG, SHM, False, DetailedReport, logging)
+        Scheduler.schedule_all(TG, AG, SHM, False, DetailedReport, logging)
 
         CurrentCost = Mapping_Functions.CostFunction(TG, AG, SHM, DetailedReport)
         MappingProcessFile.write(Mapping_Functions.MappingIntoString(TG)+"\n")
@@ -98,7 +98,7 @@ def OptimizeMappingLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, SH
             MappingProcessFile.write(Mapping_Functions.MappingIntoString(TG)+"\n")
 
     Scheduling_Functions.ClearScheduling(AG, TG)
-    Scheduler.ScheduleAll(TG, AG, SHM, False, DetailedReport, logging)
+    Scheduler.schedule_all(TG, AG, SHM, False, DetailedReport, logging)
     MappingProcessFile.close()
     MappingCostFile.close()
     if Report:print ("-------------------------------------")
@@ -156,7 +156,7 @@ def OptimizeMappingIterativeLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriti
             counter += 1
         if Schedule:
             Scheduling_Functions.ClearScheduling(AG, TG)
-            Scheduler.ScheduleAll(TG, AG, SHM, False, False, logging)
+            Scheduler.schedule_all(TG, AG, SHM, False, False, logging)
         else:
             if Report:print ("\033[33mWARNING::\033[0m CAN NOT FIND ANOTHER FEASIBLE SOLUTION... ",
                              "ABORTING ITERATIVE LOCAL SEARCH...")
