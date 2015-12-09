@@ -53,7 +53,7 @@ Network_Z_Size = 1
 # Number of Vertical Links
 FindOptimumAG = False
 # Available Choices: 'LocalSearch', 'IterativeLocalSearch'
-VL_OptAlg = "IterativeLocalSearch"
+VL_OptAlg = "LocalSearch"
 AG_Opt_Iterations_ILS = 10
 AG_Opt_Iterations_LS = 10
 VerticalLinksNum = 20
@@ -84,10 +84,12 @@ FlowControl = "Wormhole"
 ################################################
 #          Dark Silicon  Config
 ################################################
-DarkSiliconPercentage = 0
+DarkSiliconPercentage = 0.1
 ################################################
 #          SHM  Config
 ################################################
+
+
 # Do not change if you have conventional 2D NoC
 def SetUpTurnsHealth():
     global TurnsHealth
@@ -168,7 +170,7 @@ CTG_CirculationLength = 3
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'NMap'
+Mapping_Function = 'LocalSearch'
 LocalSearchIteration = 10
 IterativeLocalSearchIterations = 20
 #######################
@@ -290,6 +292,6 @@ PMCG_Drawing = False
 TTG_Drawing = False
 Mapping_Dstr_Drawing = True
 Mapping_Drawing = True
-SHM_Drawing = False          # if True generates SHM Drawing
+SHM_Drawing = True          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks

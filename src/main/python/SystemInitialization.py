@@ -44,8 +44,8 @@ def initialize_system(logging):
     # Here we are injecting initial faults of the system: we assume these fault
     # information is obtained by post manufacturing system diagnosis
     if Config.FindOptimumAG:
-        Optimize_3D_AG.OptimizeAG_VL(arch_graph, SHMU, logging)
-        Optimize_3D_AG.CleanUpAG(arch_graph, SHMU)
+        Optimize_3D_AG.optimize_arch_graph_vertical_links(arch_graph, SHMU, logging)
+        Optimize_3D_AG.cleanup_arch_graph(arch_graph, SHMU)
         Arch_Graph_Reports.draw_arch_graph(arch_graph, "AG_VLOpt")
     SHMU_Functions.ApplyInitialFaults(SHMU)
     if Config.SHM_Drawing:

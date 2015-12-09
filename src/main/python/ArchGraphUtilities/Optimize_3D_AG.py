@@ -6,192 +6,202 @@ from RoutingAlgorithms import Routing, Calculate_Reachability, RoutingGraph_Repo
 import random, copy
 
 
-def OptimizeAG_VL(AG, SHM, logging):
+def optimize_arch_graph_vertical_links(arch_graph, sys_health_map, logging):
     if Config.Network_Z_Size < 2:
         raise ValueError("Can not optimize VL placement with 1 layer... (NOC is still 2D)")
     if Config.VL_OptAlg == "LocalSearch":
-        return OptimizeAG_VL_LocalSearch(AG, SHM, logging)
+        return opt_arch_graph_vertical_link_local_search(arch_graph, sys_health_map, logging)
     elif Config.VL_OptAlg == "IterativeLocalSearch":
-        return OptimizeAG_VL_IterativeLocalSearch(AG, SHM, logging)
+        return opt_arch_graph_vertical_link_iterative_local_search(arch_graph, sys_health_map, logging)
     else:
         raise ValueError("VL_OptAlg parameter is not valid")
 
 
-def OptimizeAG_VL_IterativeLocalSearch(AG, SHM, logging):
-    BestVL_List = []
+def opt_arch_graph_vertical_link_iterative_local_search(arch_graph, sys_health_map, logging):
+    best_vertical_link_list = []
+    starting_cost = None
     for j in range(0, Config.AG_Opt_Iterations_ILS):
-        RemoveAll_VL(SHM, AG)
-        VL_List_init = copy.deepcopy(FindFeasibleAG_VL(AG, SHM))
-        RG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, False, False))
-        Cost = Calculate_Reachability.ReachabilityMetric(AG, RG, False)
-        CurrentBestCost = Cost
+        remove_all_vertical_links(sys_health_map, arch_graph)
+        vertical_link_list_init = copy.deepcopy(find_feasible_arch_graph_vertical_link_placement(arch_graph,
+                                                                                                 sys_health_map))
+        routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(arch_graph, sys_health_map,
+                                                                    Config.UsedTurnModel, False, False))
+        cost = Calculate_Reachability.ReachabilityMetric(arch_graph, routing_graph, False)
+        current_best_cost = cost
         if j == 0:
             print ("=====================================")
             print ("STARTING AG VERTICAL LINK PLACEMENT OPTIMIZATION")
             print ("NUMBER OF LINKS: "+str(Config.VerticalLinksNum))
             print ("NUMBER OF ITERATIONS: "+str(Config.AG_Opt_Iterations_ILS*Config.AG_Opt_Iterations_LS))
-            print ("INITIAL REACHABILITY METRIC: "+str(Cost))
-            StartingCost = Cost
-            BestCost = Cost
-            BestVL_List = VL_List_init[:]
+            print ("INITIAL REACHABILITY METRIC: "+str(cost))
+            starting_cost = cost
+            best_cost = cost
+            best_vertical_link_list = vertical_link_list_init[:]
         else:
-            print ("\033[33m* NOTE::\033[0mSTARITNG NEW ROUND: "+str(j+1)+"\t STARTING COST:"+str(Cost))
-            if Cost > BestCost:
-                BestVL_List = VL_List_init[:]
-                BestCost = Cost
+            print ("\033[33m* NOTE::\033[0m STARITNG NEW ROUND: "+str(j+1)+"\t STARTING COST:"+str(cost))
+            if cost > best_cost:
+                best_vertical_link_list = vertical_link_list_init[:]
+                best_cost = cost
                 print ("\033[32m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:" +
-                       str(Cost) + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS))
-        VL_List = VL_List_init[:]
+                       str(cost) + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS))
+        vertical_link_list = vertical_link_list_init[:]
         for i in range(0, Config.AG_Opt_Iterations_LS):
-            New_VL_List = copy.deepcopy(MoveToNewVLConfig(AG, SHM, VL_List))
-            NewRG = Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, False, False)
-            Cost = Calculate_Reachability.ReachabilityMetric(AG, NewRG, False)
+            new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(arch_graph, sys_health_map,
+                                                                                           vertical_link_list))
+            new_routing_graph = Routing.GenerateNoCRouteGraph(arch_graph, sys_health_map, Config.UsedTurnModel,
+                                                              False, False)
+            cost = Calculate_Reachability.ReachabilityMetric(arch_graph, new_routing_graph, False)
 
-            if Cost >= CurrentBestCost:
-                VL_List = New_VL_List[:]
-                if Cost > CurrentBestCost:
-                    CurrentBestCost = Cost
-                    print ("\t \tMOVED TO SOLUTION WITH COST:" + str(Cost)
+            if cost >= current_best_cost:
+                vertical_link_list = new_vertical_link_list[:]
+                if cost > current_best_cost:
+                    current_best_cost = cost
+                    print ("\t \tMOVED TO SOLUTION WITH COST:" + str(cost)
                            + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS+i))
             else:
-                ReturnToSolution(AG, SHM, VL_List)
+                return_to_solution(arch_graph, sys_health_map, vertical_link_list)
 
-            if Cost > BestCost:
-                BestVL_List = VL_List[:]
-                BestCost = Cost
+            if cost > best_cost:
+                best_vertical_link_list = vertical_link_list[:]
+                best_cost = cost
                 print ("\033[32m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:" +
-                       str(Cost) + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS+i))
+                       str(cost) + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS+i))
 
-    ReturnToSolution(AG, SHM, BestVL_List)
+    return_to_solution(arch_graph, sys_health_map, best_vertical_link_list)
     print ("-------------------------------------")
-    print ("STARTING COST:"+str(StartingCost)+"\tFINAL COST:"+str(BestCost))
-    print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(BestCost-StartingCost)/StartingCost))+" %")
-    return SHM
+    print ("STARTING COST:"+str(starting_cost)+"\tFINAL COST:"+str(best_cost))
+    print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(best_cost-starting_cost)/starting_cost))+" %")
+    return sys_health_map
 
 
-def OptimizeAG_VL_LocalSearch(AG, SHM, logging):
-    RemoveAll_VL(SHM, AG)
-    VL_List = FindFeasibleAG_VL(AG, SHM)
-    RG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, Config.DebugInfo, Config.DebugDetails))
-    Cost = Calculate_Reachability.ReachabilityMetric(AG, RG, False)
+def opt_arch_graph_vertical_link_local_search(arch_graph, sys_health_map, logging):
+    remove_all_vertical_links(sys_health_map, arch_graph)
+    vertical_link_list = find_feasible_arch_graph_vertical_link_placement(arch_graph, sys_health_map)
+    routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(arch_graph, sys_health_map, Config.UsedTurnModel,
+                                                                Config.DebugInfo, Config.DebugDetails))
+    cost = Calculate_Reachability.ReachabilityMetric(arch_graph, routing_graph, False)
     print ("=====================================")
     print ("STARTING AG VERTICAL LINK PLACEMENT OPTIMIZATION")
     print ("NUMBER OF LINKS: "+str(Config.VerticalLinksNum))
     print ("NUMBER OF ITERATIONS: "+str(Config.AG_Opt_Iterations_LS))
-    print ("INITIAL REACHABILITY METRIC: "+str(Cost))
-    StartingCost = Cost
-    BestCost = Cost
+    print ("INITIAL REACHABILITY METRIC: "+str(cost))
+    starting_cost = cost
+    best_cost = cost
     for i in range(0, Config.AG_Opt_Iterations_LS):
-        New_VL_List = copy.deepcopy(MoveToNewVLConfig(AG, SHM, VL_List))
-        NewRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHM, Config.UsedTurnModel, False, False))
-        Cost = Calculate_Reachability.ReachabilityMetric(AG, NewRG, False)
-        if Cost >= BestCost:
-            VL_List = copy.deepcopy(New_VL_List)
-            if Cost > BestCost:
-                BestCost = Cost
-                print ("\033[32m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:" + str(Cost) + "\t ITERATION: "+str(i))
+        new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(arch_graph, sys_health_map,
+                                                                                       vertical_link_list))
+        new_routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(arch_graph, sys_health_map,
+                                                                        Config.UsedTurnModel, False, False))
+        cost = Calculate_Reachability.ReachabilityMetric(arch_graph, new_routing_graph, False)
+        if cost >= best_cost:
+            vertical_link_list = copy.deepcopy(new_vertical_link_list)
+            if cost > best_cost:
+                best_cost = cost
+                print ("\033[32m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:" + str(cost) + "\t ITERATION: "+str(i))
             else:
                 # print ("\033[33m* NOTE::\033[0mMOVED TO SOLUTION WITH COST:" + str(Cost) + "\t ITERATION: "+str(i))
                 pass
         else:
-            ReturnToSolution(AG,SHM, VL_List)
-            VL_List = copy.deepcopy(VL_List)
+            return_to_solution(arch_graph, sys_health_map, vertical_link_list)
+            vertical_link_list = copy.deepcopy(vertical_link_list)
     print ("-------------------------------------")
-    print ("STARTING COST:"+str(StartingCost)+"\tFINAL COST:"+str(BestCost))
-    print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(BestCost-StartingCost)/StartingCost))+" %")
-    return SHM
+    print ("STARTING COST:"+str(starting_cost)+"\tFINAL COST:"+str(best_cost))
+    print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(best_cost-starting_cost)/starting_cost))+" %")
+    return sys_health_map
 
 
-def FindAll_VL(AG):
-    VL_List = []
-    for link in AG.edges():
-        if return_node_location(link[0])[2] != return_node_location(link[1])[2]:    # these nodes are on different layers
-            if link not in VL_List:
-                VL_List.append(link)
-    return VL_List
+def find_all_vertical_links(arch_graph):
+    vertical_link_list = []
+    for link in arch_graph.edges():
+        # if these nodes are on different layers
+        if return_node_location(link[0])[2] != return_node_location(link[1])[2]:
+            if link not in vertical_link_list:
+                vertical_link_list.append(link)
+    return vertical_link_list
 
 
-def RemoveAll_VL(SHM, AG):
-    VL_List = FindAll_VL(AG)
-    for VLink in VL_List:
-        SHM.BreakLink(VLink, False)
+def remove_all_vertical_links(sys_health_map, arch_graph):
+    vertical_link_list = find_all_vertical_links(arch_graph)
+    for VLink in vertical_link_list:
+        sys_health_map.BreakLink(VLink, False)
     return None
 
 
-def FindFeasibleAG_VL(AG, SHMU):
-    NewVL_Lists = []
+def find_feasible_arch_graph_vertical_link_placement(arch_graph, sys_health_monitoring_unit):
+    new_vertical_link_lists = []
     for i in range(0, Config.VerticalLinksNum):
-        SourceX = random.randint(0, Config.Network_X_Size-1)
-        SourceY = random.randint(0, Config.Network_Y_Size-1)
-        SourceZ = random.randint(0, Config.Network_Z_Size-1)
-        SourceNode = return_node_number(SourceX,SourceY,SourceZ)
-        PossibleZ=[]
-        if SourceZ+1 <= Config.Network_Z_Size-1:
-            PossibleZ.append(SourceZ+1)
-        if 0 <= SourceZ-1:
-            PossibleZ.append(SourceZ-1)
-        DestinationNode = return_node_number(SourceX, SourceY, random.choice(PossibleZ))
-        while SHMU.SHM.edge[SourceNode][DestinationNode]['LinkHealth']:
-            SourceX = random.randint(0, Config.Network_X_Size-1)
-            SourceY = random.randint(0, Config.Network_Y_Size-1)
-            SourceZ = random.randint(0, Config.Network_Z_Size-1)
-            SourceNode = return_node_number(SourceX, SourceY, SourceZ)
-            PossibleZ=[]
-            if SourceZ + 1 <= Config.Network_Z_Size-1:
-                PossibleZ.append(SourceZ+1)
-            if 0 <= SourceZ-1:
-                PossibleZ.append(SourceZ-1)
-            DestinationNode = return_node_number(SourceX, SourceY, random.choice(PossibleZ))
+        source_x = random.randint(0, Config.Network_X_Size-1)
+        source_y = random.randint(0, Config.Network_Y_Size-1)
+        source_z = random.randint(0, Config.Network_Z_Size-1)
+        source_node = return_node_number(source_x, source_y, source_z)
+        possible_z = []
+        if source_z+1 <= Config.Network_Z_Size-1:
+            possible_z.append(source_z+1)
+        if 0 <= source_z-1:
+            possible_z.append(source_z-1)
+        destination_node = return_node_number(source_x, source_y, random.choice(possible_z))
+        while sys_health_monitoring_unit.SHM.edge[source_node][destination_node]['LinkHealth']:
+            source_x = random.randint(0, Config.Network_X_Size-1)
+            source_y = random.randint(0, Config.Network_Y_Size-1)
+            source_z = random.randint(0, Config.Network_Z_Size-1)
+            source_node = return_node_number(source_x, source_y, source_z)
+            possible_z = []
+            if source_z + 1 <= Config.Network_Z_Size-1:
+                possible_z.append(source_z+1)
+            if 0 <= source_z-1:
+                possible_z.append(source_z-1)
+            destination_node = return_node_number(source_x, source_y, random.choice(possible_z))
 
         # here we have a candidate to restore
-        SHMU.RestoreBrokenLink((SourceNode, DestinationNode), False)
-        NewVL_Lists.append((SourceNode, DestinationNode))
-    return NewVL_Lists
+        sys_health_monitoring_unit.RestoreBrokenLink((source_node, destination_node), False)
+        new_vertical_link_lists.append((source_node, destination_node))
+    return new_vertical_link_lists
 
 
-def ReturnToSolution(AG, SHM, VL_List):
-    RemoveAll_VL(SHM, AG)
-    for Link in VL_List:
-        SHM.RestoreBrokenLink(Link, False)
+def return_to_solution(arch_graph, sys_health_map, vertical_link_list):
+    remove_all_vertical_links(sys_health_map, arch_graph)
+    for link in vertical_link_list:
+        sys_health_map.RestoreBrokenLink(link, False)
     return None
 
 
-def MoveToNewVLConfig(AG, SHMU, VL_Lists):
-    NewVL_Lists = copy.deepcopy(VL_Lists)
-    ChosenLinkToFix = random.choice(NewVL_Lists)
-    NewVL_Lists.remove(ChosenLinkToFix)
-    SHMU.BreakLink(ChosenLinkToFix, False)
+def move_to_new_vertical_link_configuration(arch_graph, sys_health_monitoring_unit, vertical_link_lists):
+    new_vertical_link_lists = copy.deepcopy(vertical_link_lists)
+    chosen_link_to_fix = random.choice(new_vertical_link_lists)
+    new_vertical_link_lists.remove(chosen_link_to_fix)
+    sys_health_monitoring_unit.BreakLink(chosen_link_to_fix, False)
 
-    SourceX = random.randint(0, Config.Network_X_Size-1)
-    SourceY = random.randint(0, Config.Network_Y_Size-1)
-    SourceZ = random.randint(0, Config.Network_Z_Size-1)
-    SourceNode = return_node_number(SourceX, SourceY, SourceZ)
-    PossibleZ = []
-    if SourceZ + 1 <= Config.Network_Z_Size-1:
-        PossibleZ.append(SourceZ + 1)
-    if 0 <= SourceZ - 1:
-        PossibleZ.append(SourceZ - 1)
-    DestinationNode = return_node_number(SourceX,SourceY,random.choice(PossibleZ))
+    source_x = random.randint(0, Config.Network_X_Size-1)
+    source_y = random.randint(0, Config.Network_Y_Size-1)
+    source_z = random.randint(0, Config.Network_Z_Size-1)
+    source_node = return_node_number(source_x, source_y, source_z)
+    possible_z = []
+    if source_z + 1 <= Config.Network_Z_Size-1:
+        possible_z.append(source_z + 1)
+    if 0 <= source_z - 1:
+        possible_z.append(source_z - 1)
+    destination_node = return_node_number(source_x, source_y, random.choice(possible_z))
 
-    while SourceNode == DestinationNode or SHMU.SHM.edge[SourceNode][DestinationNode]['LinkHealth']:
-        SourceX = random.randint(0, Config.Network_X_Size-1)
-        SourceY = random.randint(0, Config.Network_Y_Size-1)
-        SourceZ = random.randint(0, Config.Network_Z_Size-1)
-        SourceNode = return_node_number(SourceX, SourceY, SourceZ)
-        PossibleZ=[]
-        if SourceZ+1 <= Config.Network_Z_Size-1:
-            PossibleZ.append(SourceZ+1)
-        if 0 <= SourceZ-1:
-            PossibleZ.append(SourceZ-1)
-        DestinationNode =  return_node_number(SourceX, SourceY, random.choice(PossibleZ))
+    while source_node == destination_node or \
+            sys_health_monitoring_unit.SHM.edge[source_node][destination_node]['LinkHealth']:
+        source_x = random.randint(0, Config.Network_X_Size-1)
+        source_y = random.randint(0, Config.Network_Y_Size-1)
+        source_z = random.randint(0, Config.Network_Z_Size-1)
+        source_node = return_node_number(source_x, source_y, source_z)
+        possible_z = []
+        if source_z+1 <= Config.Network_Z_Size-1:
+            possible_z.append(source_z+1)
+        if 0 <= source_z-1:
+            possible_z.append(source_z-1)
+        destination_node = return_node_number(source_x, source_y, random.choice(possible_z))
     # here we have a candidate to restore
-    SHMU.RestoreBrokenLink((SourceNode, DestinationNode), False)
-    NewVL_Lists.append((SourceNode, DestinationNode))
-    return NewVL_Lists
+    sys_health_monitoring_unit.RestoreBrokenLink((source_node, destination_node), False)
+    new_vertical_link_lists.append((source_node, destination_node))
+    return new_vertical_link_lists
 
 
-def CleanUpAG(AG, SHMU):
-    for link in SHMU.SHM.edges():
-        if not SHMU.SHM.edge[link[0]][link[1]]['LinkHealth']:
-            AG.remove_edge(link[0], link[1])
+def cleanup_arch_graph(arch_graph, sys_health_monitoring_unit):
+    for link in sys_health_monitoring_unit.SHM.edges():
+        if not sys_health_monitoring_unit.SHM.edge[link[0]][link[1]]['LinkHealth']:
+            arch_graph.remove_edge(link[0], link[1])
     return None

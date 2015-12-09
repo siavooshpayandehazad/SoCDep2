@@ -67,15 +67,15 @@ ToDo:
         * ArchGraphUtilities/AG_Tests:
                                         * AG_Test
         * ArchGraphUtilities/Optimize_3D_AG:
-                                        * OptimizeAG_VL
-                                        * OptimizeAG_VL_IterativeLocalSearch
-                                        * OptimizeAG_VL_LocalSearch
-                                        * FindAll_VL
-                                        * RemoveAll_VL
-                                        * FindFeasibleAG_VL
-                                        * ReturnToSolution
-                                        * MoveToNewVLConfig
-                                        * CleanUpAG
+                                        * optimize_arch_graph_vertical_links
+                                        * opt_arch_graph_vertical_link_iterative_local_search
+                                        * opt_arch_graph_vertical_link_local_search
+                                        * find_all_vertical_links
+                                        * remove_all_vertical_links
+                                        * find_feasible_arch_graph_vertical_link_placement
+                                        * return_to_solution
+                                        * move_to_new_vertical_link_configuration
+                                        * cleanup_arch_graph
         * Clusterer/Clustering_Function:
                                         * TaskCirculation
         * Clusterer/Clustering_Reports:
