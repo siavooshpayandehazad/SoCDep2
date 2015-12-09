@@ -81,7 +81,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                    + str(round(time.time()-clustering_start_time))+" SECONDS")
             mapping_start_time = time.time()
             # Mapping CTG on AG
-            if Mapping_Functions.MakeInitialMapping(tg, ctg, ag, shm, noc_rg, critical_rg, non_critical_rg,
+            if Mapping_Functions.make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, non_critical_rg,
                                                     True, logging):
                 if Config.DistanceBetweenMapping:
                     init_mapping_string = Mapping_Functions.MappingIntoString(tg)

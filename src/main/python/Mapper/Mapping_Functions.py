@@ -8,49 +8,51 @@ import random
 from math import ceil
 
 
-
-def MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Report, logging):
+def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritica_rg, report, logging):
     """
     Generates Initial Mapping
-    :param TG:  Task Graph
-    :param CTG: Clustered Task Graph
-    :param AG:  Architecture Graph
-    :param SHM:     System Health Map
-    :param NoCRG:   NoC Routing Graph
-    :param CriticalRG:  Critical Region Routing Graph
-    :param NonCriticalRG: Non-Critical Region Routing Graph
-    :param Report:
+    :param tg:  Task Graph
+    :param ctg: Clustered Task Graph
+    :param ag:  Architecture Graph
+    :param shm:     System Health Map
+    :param noc_rg:   NoC Routing Graph
+    :param critical_rg:  Critical Region Routing Graph
+    :param noncritica_rg: Non-Critical Region Routing Graph
+    :param report:
     :param logging: Logging File
     :return: True if mapping pass with success False if mapping fails
     """
-    #todo: It Fails if it attempts n Times and fails... its not the best way to make sure...
-    if Report: print ("===========================================")
-    if Report: print ("STARTING INITIAL MAPPING...")
-    Itteration=0
-    for Cluster in CTG.nodes():
-        DestNode = random.choice(AG.nodes())
+    # todo: It Fails if it attempts n Times and fails... its not the best way to make sure...
+    if report:
+        print ("===========================================")
+        print ("STARTING INITIAL MAPPING...")
+    iteration = 0
+    for cluster in ctg.nodes():
+        destination_node = random.choice(ag.nodes())
         if Config.EnablePartitioning:
-            while(CTG.node[Cluster]['Criticality']!= AG.node[DestNode]['Region']):
-                DestNode = random.choice(AG.nodes())
+            while ctg.node[cluster]['Criticality'] != ag.node[destination_node]['Region']:
+                destination_node = random.choice(ag.nodes())
         # print (CTG.node[Cluster]['Criticality'],AG.node[DestNode]['Region'])
-        while not AddClusterToNode(TG, CTG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Cluster, DestNode, logging):
-            Itteration += 1
-            DestNode = random.choice(AG.nodes())        # try another node
+        while not AddClusterToNode(tg, ctg, ag, shm, noc_rg, critical_rg,
+                                   noncritica_rg, cluster, destination_node, logging):
+            iteration += 1
+            destination_node = random.choice(ag.nodes())        # try another node
             if Config.EnablePartitioning:
-                while(CTG.node[Cluster]['Criticality']!= AG.node[DestNode]['Region']):
-                    DestNode = random.choice(AG.nodes())
+                while ctg.node[cluster]['Criticality'] != ag.node[destination_node]['Region']:
+                    destination_node = random.choice(ag.nodes())
             # print (CTG.node[Cluster]['Criticality'],AG.node[DestNode]['Region'])
-            logging.info("\tMAPPING ATTEMPT: #"+str(Itteration+1)+"FOR CLUSTER:"+str(Cluster))
-            if Itteration == 10*len(CTG.nodes()):
-                if Report: print ("\033[33mWARNING::\033[0m INITIAL MAPPING FAILED... AFTER "+str(Itteration)+" ITERATIONS")
+            logging.info("\tMAPPING ATTEMPT: #"+str(iteration+1)+"FOR CLUSTER:"+str(cluster))
+            if iteration == 10*len(ctg.nodes()):
+                if report:
+                    print ("\033[33mWARNING::\033[0m INITIAL MAPPING FAILED... AFTER "+str(iteration)+" ITERATIONS")
                 logging.warning("INITIAL MAPPING FAILED...")
-                ClearMapping(TG,CTG,AG)
+                ClearMapping(tg, ctg, ag)
                 return False
-        logging.info("MAPPED CLUSTER "+str(Cluster)+" ON NODE "+str(DestNode))
-        Itteration = 0
-    if Report: print ("INITIAL MAPPING READY... ")
+        logging.info("MAPPED CLUSTER "+str(cluster)+" ON NODE "+str(destination_node))
+        iteration = 0
+    if report:
+        print ("INITIAL MAPPING READY... ")
     return True
-
 
 
 def MapTaskToNode(TG, AG, SHM, NoCRG, CriticalRG, NonCriticalRG, Task, Node, logging):
@@ -326,31 +328,31 @@ def RemoveClusterFromNode(TG, CTG, AG, NoCRG, CriticalRG, NonCriticalRG, Cluster
     return True
 
 
-def ClearMapping(TG, CTG, AG):
+def ClearMapping(tg, ctg, ag):
     """
     Removes the mapping and clears TG, AG and CTG mapping related attributes
-    :param TG: Task Graph
-    :param CTG: Clustered Task Graph
-    :param AG: Architecture Graph
+    :param tg: Task Graph
+    :param ctg: Clustered Task Graph
+    :param ag: Architecture Graph
     :return: True
     """
-    for node in TG.nodes():
-        TG.node[node]['Node'] = None
-    for Edge in TG.edges():
-        TG.edge[Edge[0]][Edge[1]]['Link'] = []
-    for cluster in CTG.nodes():
-        CTG.node[cluster]['Node'] = None
-    for node in AG.nodes():
-        AG.node[node]['PE'].MappedTasks = []
-        AG.node[node]['PE'].Utilization = 0
-        AG.node[node]['PE'].Scheduling = {}
+    for node in tg.nodes():
+        tg.node[node]['Node'] = None
+    for edge in tg.edges():
+        tg.edge[edge[0]][edge[1]]['Link'] = []
+    for cluster in ctg.nodes():
+        ctg.node[cluster]['Node'] = None
+    for node in ag.nodes():
+        ag.node[node]['PE'].MappedTasks = []
+        ag.node[node]['PE'].Utilization = 0
+        ag.node[node]['PE'].Scheduling = {}
 
-        AG.node[node]['Router'].Scheduling = {}
-        AG.node[node]['Router'].MappedTasks = {}
+        ag.node[node]['Router'].Scheduling = {}
+        ag.node[node]['Router'].MappedTasks = {}
 
-    for link in AG.edges():
-        AG.edge[link[0]][link[1]]['MappedTasks'] = {}
-        AG.edge[link[0]][link[1]]['Scheduling'] = {}
+    for link in ag.edges():
+        ag.edge[link[0]][link[1]]['MappedTasks'] = {}
+        ag.edge[link[0]][link[1]]['Scheduling'] = {}
     return True
 
 
