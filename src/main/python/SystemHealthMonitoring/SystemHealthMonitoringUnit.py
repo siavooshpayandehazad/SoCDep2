@@ -14,13 +14,13 @@ class SystemHealthMonitoringUnit:
         self.SnapShot = None
         self.MPM={}                     # Most Probable Mapping Lib
 
-    def SetUp_NoC_SystemHealthMap(self, ArchGraph, TurnsHealth):
+    def setup_noc_shm(self, ArchGraph, TurnsHealth):
         print ("===========================================")
         print ("PREPARING SYSTEM HEALTH MAP...")
         if not Config.SetRoutingFromFile:
             for node in ArchGraph.nodes():
                 self.SHM.add_node(node, TurnsHealth=copy.deepcopy(TurnsHealth), NodeHealth=True, NodeSpeed=100,
-                                  RouterTemp=10,NodeTemp=random.randint(0,Config.MaxTemp))
+                                  RouterTemp=10, NodeTemp=random.randint(0,Config.MaxTemp))
         else:
             try:
                 RoutingFile = open(Config.RoutingFilePath, 'r')
@@ -54,18 +54,18 @@ class SystemHealthMonitoringUnit:
         print ("SYSTEM HEALTH MAP CREATED...")
 
     ##################################################
-    def BreakLink(self,link,Report):
+    def break_link(self, link, Report):
         if Report:print ("===========================================")
         if Report:print ("\033[33mSHM::\033[0m BREAKING LINK: "+str(link))
         self.SHM.edge[link[0]][link[1]]['LinkHealth'] = False
 
-    def RestoreBrokenLink(self, link, Report):
+    def restore_broken_link(self, link, Report):
         if Report:print ("===========================================")
         if Report:print ("\033[33mSHM::\033[0m LINK: "+str(link)+" RESTORED...")
         self.SHM.edge[link[0]][link[1]]['LinkHealth'] = True
 
     ##################################################
-    def BreakTurn(self, Node, Turn, Report):
+    def break_turn(self, Node, Turn, Report):
         if Report:print ("===========================================")
         if Report:print ("\033[33mSHM::\033[0m BREAKING TURN: "+str(Turn)+" IN NODE "+str(Node))
         self.SHM.node[Node]['TurnsHealth'][Turn] = False
@@ -116,7 +116,7 @@ class SystemHealthMonitoringUnit:
         :param TG: Task Graph
         :return: None
         """
-        MappingString = Mapping_Functions.MappingIntoString(TG)
+        MappingString = Mapping_Functions.mapping_into_string(TG)
         self.MPM[hashlib.md5(SHMU_Functions.GenerateFaultConfig(self)).hexdigest()] = MappingString
         return None
 

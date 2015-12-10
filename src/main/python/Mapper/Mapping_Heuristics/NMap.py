@@ -74,7 +74,7 @@ def NMap(tg, ag, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
     unallocated_nodes.remove(chosen_node)
     print ("\t REMOVED NODE "+str(chosen_node)+" FROM UN-ALLOCATED NODES LIST")
     # Map Chosen Task on Chosen Node...
-    if Mapping_Functions.MapTaskToNode(tg, ag, SHM, NoCRG, CriticalRG,
+    if Mapping_Functions.map_task_to_node(tg, ag, SHM, NoCRG, CriticalRG,
                                        NonCriticalRG, chosen_task, chosen_node, logging):
         print ("\t \033[32m* NOTE::\033[0mTASK "+str(chosen_task)+" MAPPED ON NODE "+str(chosen_node))
     else:
@@ -194,7 +194,7 @@ def NMap(tg, ag, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
         unallocated_nodes.remove(chosen_node)
         print ("\t REMOVED NODE "+str(chosen_node)+" FROM UN-ALLOCATED NODES LIST")
 
-        if Mapping_Functions.MapTaskToNode(tg, ag, SHM, NoCRG, CriticalRG,
+        if Mapping_Functions.map_task_to_node(tg, ag, SHM, NoCRG, CriticalRG,
                                            NonCriticalRG, chosen_task, chosen_node, logging):
             print ("\t \033[32m* NOTE::\033[0mTASK "+str(chosen_task)+" MAPPED ON NODE "+str(chosen_node))
         else:
@@ -274,14 +274,14 @@ def swap_nodes(tg, ag, SHM, NoCRG, critical_routing_graph,
 
     task_1 = ag.node[node_1]['PE'].MappedTasks[0]
     task_2 = ag.node[node_2]['PE'].MappedTasks[0]
-    Mapping_Functions.RemoveTaskFromNode(tg, ag, NoCRG, critical_routing_graph,
+    Mapping_Functions.remove_task_from_node(tg, ag, NoCRG, critical_routing_graph,
                                          non_critical_routing_graph, task_1, node_1, logging)
-    Mapping_Functions.RemoveTaskFromNode(tg, ag, NoCRG, critical_routing_graph,
+    Mapping_Functions.remove_task_from_node(tg, ag, NoCRG, critical_routing_graph,
                                          non_critical_routing_graph, task_2, node_2, logging)
-    if not Mapping_Functions.MapTaskToNode(tg, ag, SHM, NoCRG, critical_routing_graph,
+    if not Mapping_Functions.map_task_to_node(tg, ag, SHM, NoCRG, critical_routing_graph,
                                            non_critical_routing_graph, task_1, node_2, logging):
         raise ValueError("swap_nodes FAILED WHILE TYING TO MAP FIRST CHOSEN TASK ON SECOND NODE ")
-    if not Mapping_Functions.MapTaskToNode(tg, ag, SHM, NoCRG, critical_routing_graph,
+    if not Mapping_Functions.map_task_to_node(tg, ag, SHM, NoCRG, critical_routing_graph,
                                            non_critical_routing_graph, task_2, node_1, logging):
         raise ValueError("swap_nodes FAILED WHILE TYING TO MAP SECOND CHOSEN TASK ON FIRST NODE ")
     return True

@@ -151,7 +151,7 @@ def MapTestTasks(TG, AG, SHM, NoCRG, logging):
     for task in TG.nodes():
         if TG.node[task]['Type'] == 'Test':
             Node = TG.node[task]['Node']
-            if not Mapping_Functions.MapTaskToNode(TG, AG, SHM, NoCRG, None, None, task, Node, logging):
+            if not Mapping_Functions.map_task_to_node(TG, AG, SHM, NoCRG, None, None, task, Node, logging):
                 raise ValueError(" MAPPING TEST TASK FAILED WHILE TYING TO MAP ", task, "ON NODE", Node)
     return None
 

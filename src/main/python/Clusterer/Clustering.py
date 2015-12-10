@@ -63,7 +63,7 @@ def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter, logging):
     ClusteringCostFile = open('Generated_Files/Internal/ClusteringCost.txt','w')
     print ("===========================================")
     print ("STARTING LOCAL SEARCH OPTIMIZATION FOR CTG...")
-    Cost=CostFunction(CTG)
+    Cost = CostFunction(CTG)
     StartingCost = Cost
     ClusteringCostFile.write(str(Cost)+"\n")
     BestSolution = copy.deepcopy(CTG)

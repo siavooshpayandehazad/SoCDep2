@@ -123,7 +123,7 @@ def find_all_vertical_links(ag):
 def remove_all_vertical_links(shm, ag):
     vertical_link_list = find_all_vertical_links(ag)
     for VLink in vertical_link_list:
-        shm.BreakLink(VLink, False)
+        shm.break_link(VLink, False)
     return None
 
 
@@ -153,7 +153,7 @@ def find_feasible_ag_vertical_link_placement(ag, shmu):
             destination_node = return_node_number(source_x, source_y, random.choice(possible_z))
 
         # here we have a candidate to restore
-        shmu.RestoreBrokenLink((source_node, destination_node), False)
+        shmu.restore_broken_link((source_node, destination_node), False)
         new_vertical_link_lists.append((source_node, destination_node))
     return new_vertical_link_lists
 
@@ -161,7 +161,7 @@ def find_feasible_ag_vertical_link_placement(ag, shmu):
 def return_to_solution(ag, shm, vertical_link_list):
     remove_all_vertical_links(shm, ag)
     for link in vertical_link_list:
-        shm.RestoreBrokenLink(link, False)
+        shm.restore_broken_link(link, False)
     return None
 
 
@@ -169,7 +169,7 @@ def move_to_new_vertical_link_configuration(ag, shmu, vertical_link_lists):
     new_vertical_link_lists = copy.deepcopy(vertical_link_lists)
     chosen_link_to_fix = random.choice(new_vertical_link_lists)
     new_vertical_link_lists.remove(chosen_link_to_fix)
-    shmu.BreakLink(chosen_link_to_fix, False)
+    shmu.break_link(chosen_link_to_fix, False)
 
     source_x = random.randint(0, Config.Network_X_Size-1)
     source_y = random.randint(0, Config.Network_Y_Size-1)
@@ -195,7 +195,7 @@ def move_to_new_vertical_link_configuration(ag, shmu, vertical_link_lists):
             possible_z.append(source_z-1)
         destination_node = return_node_number(source_x, source_y, random.choice(possible_z))
     # here we have a candidate to restore
-    shmu.RestoreBrokenLink((source_node, destination_node), False)
+    shmu.restore_broken_link((source_node, destination_node), False)
     new_vertical_link_lists.append((source_node, destination_node))
     return new_vertical_link_lists
 

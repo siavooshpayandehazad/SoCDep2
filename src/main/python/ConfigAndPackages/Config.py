@@ -170,7 +170,7 @@ CTG_CirculationLength = 3
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'LocalSearch'
+Mapping_Function = 'SimulatedAnnealing'
 LocalSearchIteration = 10
 IterativeLocalSearchIterations = 20
 #######################
@@ -179,9 +179,9 @@ SA_InitialTemp = 100
 SA_StopTemp = 5             # Stops annealing earlier if reaches this temp
 SA_ReportSolutions = False   # if True, it prints every accepted move to console
 # Available Annealing Schedule: 'Linear', 'Exponential', 'Adaptive', 'Markov', 'Logarithmic', 'Aart', 'Huang'
-SA_AnnealingSchedule = 'Linear'
+SA_AnnealingSchedule = 'Huang'
 # Termination Criteria Could be either 'StopTemp' or 'IterationNum'
-TerminationCriteria = 'StopTemp'
+TerminationCriteria = 'IterationNum'
 # --------------------------
 
 if SA_AnnealingSchedule == 'Linear':
@@ -287,11 +287,11 @@ NodeTestComWeight = 2
 ###############################################
 #           VISUALIZATION Config
 ###############################################
-RG_Draw = True
+RG_Draw = False
 PMCG_Drawing = False
 TTG_Drawing = False
 Mapping_Dstr_Drawing = True
 Mapping_Drawing = True
-SHM_Drawing = True          # if True generates SHM Drawing
+SHM_Drawing = False          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks

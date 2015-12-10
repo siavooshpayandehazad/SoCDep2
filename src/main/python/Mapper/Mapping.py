@@ -84,7 +84,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
             if Mapping_Functions.make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, non_critical_rg,
                                                     True, logging):
                 if Config.DistanceBetweenMapping:
-                    init_mapping_string = Mapping_Functions.MappingIntoString(tg)
+                    init_mapping_string = Mapping_Functions.mapping_into_string(tg)
                     # print (init_mapping_string)
                 else:
                     init_mapping_string = None
@@ -94,15 +94,15 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                 Scheduling_Functions.ClearScheduling(ag, tg)
                 Scheduler.schedule_all(tg, ag, shm, Config.DebugInfo, Config.DebugDetails, logging)
                 Scheduling_Reports.report_mapped_tasks(ag, logging)
-                Mapping_Functions.CostFunction(tg, ag, shm, Config.DebugInfo)
+                Mapping_Functions.mapping_cost_function(tg, ag, shm, Config.DebugInfo)
                 if Config.Mapping_Function == 'LocalSearch':
                     mapping_cost_file = open('Generated_Files/Internal/LocalSearchMappingCost.txt', 'w')
-                    current_cost = Mapping_Functions.CostFunction(tg, ag, shm, False)
+                    current_cost = Mapping_Functions.mapping_cost_function(tg, ag, shm, False)
                     mapping_cost_file.write(str(current_cost)+"\n")
                     mapping_cost_file.close()
 
                     mapping_process_file = open('Generated_Files/Internal/MappingProcess.txt', 'w')
-                    mapping_process_file.write(Mapping_Functions.MappingIntoString(tg)+"\n")
+                    mapping_process_file.write(Mapping_Functions.mapping_into_string(tg)+"\n")
                     mapping_process_file.close()
 
                     (best_tg, best_ctg, best_ag) = \
@@ -128,9 +128,10 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                     del best_tg, best_ctg, best_ag
                     Mapping_Reports.VizMappingOpt('LocalSearchMappingCost')
                 elif Config.Mapping_Function == 'SimulatedAnnealing':
-                    (best_tg, best_ctg, best_ag) = SimulatedAnnealing.OptimizeMapping_SA(tg, ctg, ag, noc_rg,
-                                                                                         critical_rg, non_critical_rg,
-                                                                                         shm, 'SA_MappingCost', logging)
+                    (best_tg, best_ctg, best_ag) = SimulatedAnnealing.optimize_mapping_sa(tg, ctg, ag, noc_rg,
+                                                                                          critical_rg, non_critical_rg,
+                                                                                          shm, 'SA_MappingCost',
+                                                                                          logging)
                     Mapping_Reports.VizMappingOpt('SA_MappingCost')
                     if Config.SA_AnnealingSchedule == 'Adaptive':
                         Mapping_Reports.VizCostSlope()
@@ -139,7 +140,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                     tg = copy.deepcopy(best_tg)
                     ag = copy.deepcopy(best_ag)
                     del best_tg, best_ctg, best_ag
-                # print (Mapping_Functions.MappingIntoString(TG))
+                # print (Mapping_Functions.mapping_into_string(TG))
                 print ("\033[92mTIME::\033[0m MAPPING AND OPTIMIZATION TOOK: "
                        + str(round(time.time()-mapping_start_time))+" SECONDS")
 
@@ -147,7 +148,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                 Scheduling_Functions.ClearScheduling(ag, tg)
                 Scheduler.schedule_all(tg, ag, shm, False, False, logging)
                 Scheduling_Reports.report_mapped_tasks(ag, logging)
-                Mapping_Functions.CostFunction(tg, ag, shm, True,  InitialMappingString=init_mapping_string)
+                Mapping_Functions.mapping_cost_function(tg, ag, shm, True,  initial_mapping_string=init_mapping_string)
                 return tg, ag
             else:
                 Mapping_Reports.ReportMapping(ag, logging)

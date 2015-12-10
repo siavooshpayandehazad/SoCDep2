@@ -81,7 +81,7 @@ ToDo:
         * Clusterer/Clustering_Reports:
                                         * ReportCTG
         * Mapper/Mapping_Functions:
-                                        * CalculateReliabilityCost
+                                        * calculate_reliability_cost
 
         * Mapper/Mapping_Heuristics/Local_Search:
                                         * OptimizeMappingLocalSearch
@@ -89,11 +89,11 @@ ToDo:
         * Mapper/Mapping_Heuristics/Local_Search:
                                         * FirstFree
         * Mapper/Mapping_Heuristics/SimulatedAnnealing:
-                                        * OptimizeMapping_SA
-                                        * NextTemp
-                                        * CalculateSlopeOfCost
-                                        * Metropolis
-                                        * MoveToAnotherSolution
+                                        * optimize_mapping_sa
+                                        * next_temp
+                                        * calculate_slope_of_cost
+                                        * metropolis
+                                        * move_to_next_solution
 
     --------------------------------------------------
     List of functions without Test:

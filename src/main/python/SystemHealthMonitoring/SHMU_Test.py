@@ -2,58 +2,59 @@
 import SystemHealthMonitoringUnit
 from ConfigAndPackages import Config
 
-def TestSHMU(AG):
+
+def test_shmu(ag):
     print ("===========================================")
     print ("STARTING SYSTEM HEALTH MAP TESTS...")
-    SHMU4Test = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
-    SHMU4Test.SetUp_NoC_SystemHealthMap(AG, Config.TurnsHealth)
-    TestBreaking(SHMU4Test)
-    TestRestore(SHMU4Test)
-    TestAging(SHMU4Test)
+    shmu_4_test = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
+    shmu_4_test.setup_noc_shm(ag, Config.TurnsHealth)
+    TestBreaking(shmu_4_test)
+    TestRestore(shmu_4_test)
+    TestAging(shmu_4_test)
     # todo: needs more test etc...
-    del SHMU4Test
+    del shmu_4_test
     print ("ALL SHM TESTS PASSED...")
     return None
 
 
-def TestBreaking(SHMU):
-    for Node in SHMU.SHM.nodes():
-        SHMU.BreakNode(Node, False)
-        if SHMU.SHM.node[Node]['NodeHealth']:
-            raise ValueError('SHM BreakNode DID NOT WORK FOR NODE', Node)
-        for Turn in SHMU.SHM.node[Node]['TurnsHealth']:
-            SHMU.BreakTurn(Node, Turn, False)
-            if SHMU.SHM.node[Node]['TurnsHealth'][Turn]:
-                raise ValueError('SHM BreakTurn DID NOT WORK FOR NODE:', Node, 'TURN:', Turn)
-    for link in SHMU.SHM.edges():
-        SHMU.BreakLink(link, False)
-        if SHMU.SHM.edge[link[0]][link[1]]['LinkHealth']:
-            raise ValueError('SHM BreakLink DID NOT WORK FOR LINK', link)
+def TestBreaking(shmu):
+    for node in shmu.SHM.nodes():
+        shmu.BreakNode(node, False)
+        if shmu.SHM.node[node]['NodeHealth']:
+            raise ValueError('SHM BreakNode DID NOT WORK FOR NODE', node)
+        for Turn in shmu.SHM.node[node]['TurnsHealth']:
+            shmu.break_turn(node, Turn, False)
+            if shmu.SHM.node[node]['TurnsHealth'][Turn]:
+                raise ValueError('SHM break_turn DID NOT WORK FOR NODE:', node, 'TURN:', Turn)
+    for link in shmu.SHM.edges():
+        shmu.break_link(link, False)
+        if shmu.SHM.edge[link[0]][link[1]]['LinkHealth']:
+            raise ValueError('SHM break_link DID NOT WORK FOR LINK', link)
     print ("  - BREAKING TESTS PASSED...")
 
 
-def TestRestore(SHMU):
-    for Node in SHMU.SHM.nodes():
-        SHMU.RestoreBrokenNode(Node, False)
-        if not SHMU.SHM.node[Node]['NodeHealth']:
-            raise ValueError('SHM RestoreBrokenNode DID NOT WORK FOR NODE', Node)
-        for Turn in SHMU.SHM.node[Node]['TurnsHealth']:
-            SHMU.RestoreBrokenTurn(Node, Turn, False)
-            if not SHMU.SHM.node[Node]['TurnsHealth'][Turn]:
-                raise ValueError('SHM RestoreBrokenTurn DID NOT WORK FOR NODE:', Node, 'TURN:', Turn)
-    for link in SHMU.SHM.edges():
-        SHMU.RestoreBrokenLink(link, False)
-        if not SHMU.SHM.edge[link[0]][link[1]]['LinkHealth']:
-            raise ValueError('SHM RestoreBrokenLink DID NOT WORK FOR LINK', link)
+def TestRestore(shmu):
+    for node in shmu.SHM.nodes():
+        shmu.RestoreBrokenNode(node, False)
+        if not shmu.SHM.node[node]['NodeHealth']:
+            raise ValueError('SHM RestoreBrokenNode DID NOT WORK FOR NODE', node)
+        for turn in shmu.SHM.node[node]['TurnsHealth']:
+            shmu.RestoreBrokenTurn(node, turn, False)
+            if not shmu.SHM.node[node]['TurnsHealth'][turn]:
+                raise ValueError('SHM RestoreBrokenTurn DID NOT WORK FOR NODE:', node, 'TURN:', turn)
+    for link in shmu.SHM.edges():
+        shmu.restore_broken_link(link, False)
+        if not shmu.SHM.edge[link[0]][link[1]]['LinkHealth']:
+            raise ValueError('SHM restore_broken_link DID NOT WORK FOR LINK', link)
     print ("  - RESTORE TESTS PASSED...")
 
 
-def TestAging(SHMU):
-    for Node in SHMU.SHM.nodes():
-        SHMU.IntroduceAging(Node, 0.5, False)
-        if SHMU.SHM.node[Node]['NodeSpeed'] != 50:
+def TestAging(shmu):
+    for Node in shmu.SHM.nodes():
+        shmu.IntroduceAging(Node, 0.5, False)
+        if shmu.SHM.node[Node]['NodeSpeed'] != 50:
             raise ValueError('SHM IntroduceAging DID NOT WORK FOR NODE', Node)
-        SHMU.IntroduceAging(Node, 0.5, False)
-        if SHMU.SHM.node[Node]['NodeSpeed'] != 25:
+        shmu.IntroduceAging(Node, 0.5, False)
+        if shmu.SHM.node[Node]['NodeSpeed'] != 25:
             raise ValueError('SHM IntroduceAging ROUND 2 DID NOT WORK FOR NODE', Node)
     print ("  - AGING TESTS PASSED...")

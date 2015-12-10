@@ -40,9 +40,9 @@ def initialize_system(logging):
     ####################################################################
     Config.SetUpTurnsHealth()
     if Config.TestMode:
-        SHMU_Test.TestSHMU(ag)
+        SHMU_Test.test_shmu(ag)
     shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
-    shmu.SetUp_NoC_SystemHealthMap(ag, Config.TurnsHealth)
+    shmu.setup_noc_shm(ag, Config.TurnsHealth)
     # Here we are injecting initial faults of the system: we assume these fault
     # information is obtained by post manufacturing system diagnosis
     if Config.FindOptimumAG:

@@ -1,17 +1,17 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
-from RoutingAlgorithms import Routing
 from Scheduler import Scheduling_Functions_Nodes, Scheduling_Functions_Links
 from ConfigAndPackages import Config
 import statistics
 import random
 from math import ceil
+from RoutingAlgorithms import Routing
 
 
 def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritica_rg, report, logging):
     """
     Generates Initial Mapping
-    :param tg:  Task Graph
+    :param tg:  Task Graphs
     :param ctg: Clustered Task Graph
     :param ag:  Architecture Graph
     :param shm:     System Health Map
@@ -33,8 +33,8 @@ def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritica_rg, r
             while ctg.node[cluster]['Criticality'] != ag.node[destination_node]['Region']:
                 destination_node = random.choice(ag.nodes())
         # print (CTG.node[Cluster]['Criticality'],AG.node[destination_node]['Region'])
-        while not AddClusterToNode(tg, ctg, ag, shm, noc_rg, critical_rg,
-                                   noncritica_rg, cluster, destination_node, logging):
+        while not add_cluster_to_node(tg, ctg, ag, shm, noc_rg, critical_rg,
+                                      noncritica_rg, cluster, destination_node, logging):
             iteration += 1
             destination_node = random.choice(ag.nodes())        # try another node
             if Config.EnablePartitioning:
@@ -55,7 +55,7 @@ def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritica_rg, r
     return True
 
 
-def MapTaskToNode(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, task, node, logging):
+def map_task_to_node(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, task, node, logging):
     """
     Maps a task from Task Graph to a specific Node in Architecture Graph
     :param tg:  Task Graph
@@ -76,7 +76,7 @@ def MapTaskToNode(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, task, node, 
         logging.info("CAN NOT MAP ON DARK NODE: "+str(node))
         return False
 
-    logging.info( "\tADDING TASK:"+str(task)+"TO NODE:"+str(node))
+    logging.info("\tADDING TASK:"+str(task)+"TO NODE:"+str(node))
     tg.node[task]['Node'] = node
     ag.node[node]['PE'].MappedTasks.append(task)
     ag.node[node]['PE'].Utilization += tg.node[task]['WCET']
@@ -89,7 +89,7 @@ def MapTaskToNode(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, task, node, 
                 if source_node != destination_node:
                     # Find the links to be used
                     list_of_links, number_of_paths = Routing.FindRouteInRouteGraph(noc_rg, critical_rg, noncritical_rg,
-                                                                source_node, destination_node, False)
+                                                                                   source_node, destination_node, False)
                     # print number_of_paths, list_of_links
                     if list_of_links is not None:
                         logging.info("\t\t\tADDING PATH FROM NODE:"+str(source_node)+"TO NODE"+str(destination_node))
@@ -121,14 +121,14 @@ def MapTaskToNode(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, task, node, 
 
                             counter += 1
                     else:
-                        RemoveTaskFromNode(tg, ag, noc_rg, critical_rg, noncritical_rg, task, node, logging)
+                        remove_task_from_node(tg, ag, noc_rg, critical_rg, noncritical_rg, task, node, logging)
                         logging.warning("\tNO PATH FOUND FROM "+str(source_node)+" TO "+str(destination_node)+"...")
                         print ("NO PATH FOUND FROM "+str(source_node)+" TO "+str(destination_node)+" ...")
                         return False
     return True
 
 
-def RemoveTaskFromNode(tg, ag, noc_rg, critical_rg, noncritical_rg, task, Node, logging):
+def remove_task_from_node(tg, ag, noc_rg, critical_rg, noncritical_rg, task, node, logging):
     """
     Removes a task from TG from a certain Node in AG
     :param tg:  Task Graph
@@ -136,15 +136,15 @@ def RemoveTaskFromNode(tg, ag, noc_rg, critical_rg, noncritical_rg, task, Node, 
     :param noc_rg:   NoC routing graph
     :param critical_rg:  NoC routing Graph for Critical Section
     :param noncritical_rg:   NoC routing graph for non-Critical Section
-    :param Task:    Task ID to be removed from Node
-    :param Node:    Node with Task Mapped on it
+    :param task:    Task ID to be removed from Node
+    :param node:    Node with Task Mapped on it
     :param logging: logging File
     :return:    True if it removes task with sucess
     """
-    if task not in ag.node[Node]['PE'].MappedTasks:
+    if task not in ag.node[node]['PE'].MappedTasks:
         raise ValueError("Trying removing Task from Node which is not the host")
 
-    logging.info("\tREMOVING TASK:"+str(task)+"FROM NODE:"+str(Node))
+    logging.info("\tREMOVING TASK:"+str(task)+"FROM NODE:"+str(node))
     for edge in tg.edges():
         if task in edge:
             source_node = tg.node[edge[0]]['Node']
@@ -171,44 +171,44 @@ def RemoveTaskFromNode(tg, ag, noc_rg, critical_rg, noncritical_rg, task, Node, 
                     else:
                         logging.warning("\tNOTHING TO BE REMOVED...")
     tg.node[task]['Node'] = None
-    ag.node[Node]['PE'].MappedTasks.remove(task)
-    ag.node[Node]['PE'].Utilization -= tg.node[task]['WCET']
+    ag.node[node]['PE'].MappedTasks.remove(task)
+    ag.node[node]['PE'].Utilization -= tg.node[task]['WCET']
     return True
 
 
-def AddClusterToNode(TG, CTG, AG, shm, noc_rg, critical_rg, noncritical_rg, Cluster, Node, logging):
+def add_cluster_to_node(tg, CTG, ag, shm, noc_rg, critical_rg, noncritical_rg, cluster, node, logging):
     """
     Adds a Cluster from CTG and all its Task to a Node from Architecture Graph
-    :param TG:  Task Graph
+    :param tg:  Task Graph
     :param CTG: Clustered Task Graph
-    :param AG:  Architecture Graph
+    :param ag:  Architecture Graph
     :param shm: System Health Map
     :param noc_rg: NoC Routing Graph
     :param critical_rg: NoC Routing Graph for Critical region
     :param noncritical_rg: NoC routing Graph for Non-Critical Region
-    :param Cluster: ID Cluster to be mapped
-    :param Node: ID of the Node for mapping cluster on
+    :param cluster: ID Cluster to be mapped
+    :param node: ID of the Node for mapping cluster on
     :param logging: logging file
     :return: True if maps the cluster successfully otherwise False
     """
-    if not shm.node[Node]['NodeHealth']:
-        logging.info("CAN NOT MAP ON BROKEN NODE: "+str(Node))
+    if not shm.node[node]['NodeHealth']:
+        logging.info("CAN NOT MAP ON BROKEN NODE: "+str(node))
         return False
-    elif AG.node[Node]['PE'].Dark:
-        logging.info("CAN NOT MAP ON DARK NODE: "+str(Node))
+    elif ag.node[node]['PE'].Dark:
+        logging.info("CAN NOT MAP ON DARK NODE: "+str(node))
         return False
 
     # Adding The cluster to Node...
-    logging.info("\tADDING CLUSTER:"+str(Cluster)+"TO NODE:"+str(Node))
-    CTG.node[Cluster]['Node'] = Node
-    for Task in CTG.node[Cluster]['TaskList']:
-        TG.node[Task]['Node'] = Node
-        AG.node[Node]['PE'].MappedTasks.append(Task)
-    AG.node[Node]['PE'].Utilization += CTG.node[Cluster]['Utilization']
+    logging.info("\tADDING CLUSTER:"+str(cluster)+"TO NODE:"+str(node))
+    CTG.node[cluster]['Node'] = node
+    for Task in CTG.node[cluster]['TaskList']:
+        tg.node[Task]['Node'] = node
+        ag.node[node]['PE'].MappedTasks.append(Task)
+    ag.node[node]['PE'].Utilization += CTG.node[cluster]['Utilization']
 
     for ctg_edge in CTG.edges():
-        if Cluster in ctg_edge:     # find all the edges that are connected to Cluster
-            logging.info("\t\tEDGE:"+str(ctg_edge)+"CONTAINS CLUSTER:"+str(Cluster))
+        if cluster in ctg_edge:     # find all the edges that are connected to cluster
+            logging.info("\t\tEDGE:"+str(ctg_edge)+"CONTAINS CLUSTER:"+str(cluster))
             source_node = CTG.node[ctg_edge[0]]['Node']
             destination_node = CTG.node[ctg_edge[1]]['Node']
             if source_node is not None and destination_node is not None:    # check if both ends of this edge is mapped
@@ -221,9 +221,9 @@ def AddClusterToNode(TG, CTG, AG, shm, noc_rg, critical_rg, noncritical_rg, Clus
                     # print number_of_paths, list_of_links
                     if list_of_links is not None:
                             # find all the edges in TaskGraph that contribute to this edge in CTG
-                            for tg_edge in TG.edges():
-                                if TG.node[tg_edge[0]]['Cluster'] == ctg_edge[0] and \
-                                                TG.node[tg_edge[1]]['Cluster'] == ctg_edge[1]:
+                            for tg_edge in tg.edges():
+                                if tg.node[tg_edge[0]]['Cluster'] == ctg_edge[0] and \
+                                        tg.node[tg_edge[1]]['Cluster'] == ctg_edge[1]:
                                     list_of_edges.append(tg_edge)
                     # print ("LIST OF LINKS:", list_of_links)
                     # add edges from list of edges to all links from list of links
@@ -236,42 +236,49 @@ def AddClusterToNode(TG, CTG, AG, shm, noc_rg, critical_rg, noncritical_rg, Clus
                         for path in list_of_links:
                             for link in path:
                                 for chosen_edge in list_of_edges:
-                                    if TG.edge[chosen_edge[0]][chosen_edge[1]]["Criticality"] == 'H':
+                                    if tg.edge[chosen_edge[0]][chosen_edge[1]]["Criticality"] == 'H':
                                         probability = 1         # we reserve the whole bandwidth for critical packets...
                                     else:
                                         probability = 1.0/number_of_paths
 
-                                    if chosen_edge in AG.edge[link[0]][link[1]]['MappedTasks'].keys():
-                                        AG.edge[link[0]][link[1]]['MappedTasks'][chosen_edge].append((counter, probability))
-                                        AG.node[link[0]]['Router'].MappedTasks[chosen_edge].append((counter, probability))
+                                    if chosen_edge in ag.edge[link[0]][link[1]]['MappedTasks'].keys():
+                                        ag.edge[link[0]][link[1]]['MappedTasks'][chosen_edge].append((counter,
+                                                                                                      probability))
+                                        ag.node[link[0]]['Router'].MappedTasks[chosen_edge].append((counter,
+                                                                                                    probability))
                                         logging.info("\t\t\t\tAdding Packet "+str(chosen_edge)+" To Router:" +
                                                      str(link[0]))
                                     else:
-                                        AG.edge[link[0]][link[1]]['MappedTasks'][chosen_edge] = [(counter, probability)]
-                                        AG.node[link[0]]['Router'].MappedTasks[chosen_edge] = [(counter, probability)]
+                                        ag.edge[link[0]][link[1]]['MappedTasks'][chosen_edge] = [(counter, probability)]
+                                        ag.node[link[0]]['Router'].MappedTasks[chosen_edge] = [(counter, probability)]
                                         logging.info("\t\t\t\tAdding Packet "+str(chosen_edge)+" To Router:" +
                                                      str(link[0]))
-                                    edge_list_of_links = list(batch[1] for batch in TG.edge[chosen_edge[0]][chosen_edge[1]]['Link'])
+                                    edge_list_of_links = list(batch[1] for batch in
+                                                              tg.edge[chosen_edge[0]][chosen_edge[1]]['Link'])
                                     if link not in edge_list_of_links:
-                                        TG.edge[chosen_edge[0]][chosen_edge[1]]['Link'].append((counter, link, probability))
+                                        tg.edge[chosen_edge[0]][chosen_edge[1]]['Link'].append((counter, link,
+                                                                                                probability))
 
                             for chosen_edge in list_of_edges:
-                                if TG.edge[chosen_edge[0]][chosen_edge[1]]["Criticality"] == 'H':
+                                if tg.edge[chosen_edge[0]][chosen_edge[1]]["Criticality"] == 'H':
                                     probability = 1         # we reserve the whole bandwidth for critical packets...
                                 else:
                                     probability = 1.0/number_of_paths
-                                AG.node[path[len(path)-1][1]]['Router'].MappedTasks[chosen_edge] = [(counter, probability)]
-                                logging.info("\t\t\t\tAdding Packet "+str(chosen_edge)+" To Router:"+str(path[len(path)-1][1]))
+                                ag.node[path[len(path)-1][1]]['Router'].MappedTasks[chosen_edge] = \
+                                    [(counter, probability)]
+                                logging.info("\t\t\t\tAdding Packet "+str(chosen_edge)+" To Router:" +
+                                             str(path[len(path)-1][1]))
                             counter += 1
                     else:
-                        logging.warning( "\tNO PATH FOUND FROM SOURCE TO DESTINATION...")
-                        logging.info("REMOVING ALL THE MAPPED CONNECTIONS FOR CLUSTER "+str(Cluster))
-                        RemoveClusterFromNode(TG, CTG, AG, noc_rg, critical_rg, noncritical_rg, Cluster, Node, logging)
+                        logging.warning("\tNO PATH FOUND FROM SOURCE TO DESTINATION...")
+                        logging.info("REMOVING ALL THE MAPPED CONNECTIONS FOR CLUSTER "+str(cluster))
+                        remove_cluster_from_node(tg, CTG, ag, noc_rg, critical_rg, noncritical_rg,
+                                                 cluster, node, logging)
                         return False
     return True
 
 
-def RemoveClusterFromNode(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, cluster, node, logging):
+def remove_cluster_from_node(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, cluster, node, logging):
     """
     removes a cluster and all its tasks from a certain Node from Architecture Graph(AG)
     :param tg: Task Graph
@@ -300,7 +307,7 @@ def RemoveClusterFromNode(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, clus
                         # find all the edges in TaskGraph that contribute to this edge in CTG
                         for tg_edge in tg.edges():
                             if tg.node[tg_edge[0]]['Cluster'] == ctg_edge[0] and \
-                                            tg.node[tg_edge[1]]['Cluster'] == ctg_edge[1]:
+                                    tg.node[tg_edge[1]]['Cluster'] == ctg_edge[1]:
                                 list_of_edges.append(tg_edge)
 
                     # remove edges from list of edges to all links from list of links
@@ -363,73 +370,72 @@ def clear_mapping(tg, ctg, ag):
     return True
 
 
-def CostFunction(TG, AG, shm, Report, InitialMappingString = None):
+def mapping_cost_function(TG, AG, shm, report, initial_mapping_string=None):
     """
     Calculates the Costs of a mapping based on the configurations of Config file
     :param TG: Task Graph
     :param AG: Architecture Graph
     :param shm: System Health Map
-    :param Report: If true prints cost function report to Command-line
-    :param InitialMappingString: Initial mapping string used for calculating distance from the current mapping
+    :param report: If true prints cost function report to Command-line
+    :param initial_mapping_string: Initial mapping string used for calculating distance from the current mapping
     :return: cost of the mapping
     """
-    NodeMakeSpanList = []
-    LinkMakeSpanList = []
+    node_makspan_list = []
+    link_makspan_list = []
     for Node in AG.nodes():
         if shm.node[Node]['NodeHealth'] and (not AG.node[Node]['PE'].Dark):
-            NodeMakeSpanList.append(Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(TG, AG, Node, logging=None))
+            node_makspan_list.append(Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(TG, AG, Node, logging=None))
     for link in AG.edges():
         if shm.edge[link[0]][link[1]]['LinkHealth']:
-            LinkMakeSpanList.append(Scheduling_Functions_Links.FindLastAllocatedTimeOnLink(TG, AG, link, logging=None))
-    NodeMakeSpan_Stdev = statistics.stdev(NodeMakeSpanList)
-    NodeMakeSpan_Max = max(NodeMakeSpanList)
-    LinkMakeSpan_Stdev = statistics.stdev(LinkMakeSpanList)
-    LinkMakeSpan_Max = max(LinkMakeSpanList)
+            link_makspan_list.append(Scheduling_Functions_Links.FindLastAllocatedTimeOnLink(TG, AG, link, logging=None))
+    node_makspan_sd = statistics.stdev(node_makspan_list)
+    node_makspan_max = max(node_makspan_list)
+    link_makspan_sd = statistics.stdev(link_makspan_list)
+    link_makspan_max = max(link_makspan_list)
 
     if Config.Mapping_CostFunctionType == 'SD':
-        cost = NodeMakeSpan_Stdev + LinkMakeSpan_Stdev
+        cost = node_makspan_sd + link_makspan_sd
     elif Config.Mapping_CostFunctionType == 'SD+MAX':
-        cost = NodeMakeSpan_Max + NodeMakeSpan_Stdev + LinkMakeSpan_Stdev + LinkMakeSpan_Max
+        cost = node_makspan_max + node_makspan_sd + link_makspan_sd + link_makspan_max
     elif Config.Mapping_CostFunctionType == 'MAX':
-        cost = NodeMakeSpan_Max + LinkMakeSpan_Max
+        cost = node_makspan_max + link_makspan_max
     elif Config.Mapping_CostFunctionType == 'CONSTANT':
         cost = 1
     else:
         raise ValueError("Mapping_CostFunctionType is not valid")
 
-    Distance = None
-    if InitialMappingString is not None:
-        Distance = HammingDistanceOfMapping(InitialMappingString,MappingIntoString(TG))
-        cost+= Distance
-    if Report:
+    distance = None
+    if initial_mapping_string is not None:
+        distance = hamming_distance_of_mapping(initial_mapping_string, mapping_into_string(TG))
+        cost += distance
+    if report:
         print ("===========================================")
         print ("      REPORTING MAPPING COST")
         print ("===========================================")
-        print ("NODES MAKE SPAN MAX:"+str(NodeMakeSpan_Max))
-        print ("NODES MAKE SPAN STANDARD DEVIATION:"+str(NodeMakeSpan_Stdev))
-        print ("LINKS MAKE SPAN MAX:"+str(LinkMakeSpan_Max))
-        print ("LINKS MAKE SPAN STANDARD DEVIATION:"+str(LinkMakeSpan_Stdev))
-        if Distance is not None:
-            print ("DISTANCE FROM STARTING SOLUTION:"+str(Distance))
+        print ("NODES MAKE SPAN MAX:"+str(node_makspan_max))
+        print ("NODES MAKE SPAN STANDARD DEVIATION:"+str(node_makspan_sd))
+        print ("LINKS MAKE SPAN MAX:"+str(link_makspan_max))
+        print ("LINKS MAKE SPAN STANDARD DEVIATION:"+str(link_makspan_sd))
+        if distance is not None:
+            print ("DISTANCE FROM STARTING SOLUTION:"+str(distance))
         print ("MAPPING SCHEDULING COST:"+str(cost))
 
-    if cost== 0:
+    if cost == 0:
             raise ValueError("Mapping with 0 cost... Something is wrong here...")
     return cost
 
 
-def CalculateReliabilityCost(tg, noc_rg, logging):
+def calculate_reliability_cost(tg, noc_rg, logging):
     # todo...
     cost = 0
     for edge in tg.edges():
         node1 = tg.node[edge[0]]['Node']
         node2 = tg.node[edge[1]]['Node']
         logging.info("PACKET FROM NODE "+str(node1)+"TO NODE "+str(node2))
-
     return cost
 
 
-def FindUnMappedTaskWithSmallestWCET(tg, logging):
+def unmapped_task_with_smallest_wcet(tg, logging):
     """
     Finds the list of shortest(with Smallest WCET) unmapped Tasks from TG...
     :param tg: Task Graph
@@ -451,7 +457,7 @@ def FindUnMappedTaskWithSmallestWCET(tg, logging):
     return shortest_tasks
 
 
-def FindUnMappedTaskWithBiggestWCET(tg, logging):
+def unmapped_task_with_biggest_wcet(tg, logging):
     """
     Finds and returns a list of longest (with the biggest WCET) unmapped tasks from TG
     :param tg: Task Graph
@@ -463,7 +469,7 @@ def FindUnMappedTaskWithBiggestWCET(tg, logging):
     for node in tg.nodes():
         if tg.node[node]['Node'] is None:
             if tg.node[node]['WCET'] > biggest_wcet:
-                biggest_wcet= tg.node[node]['WCET']
+                biggest_wcet = tg.node[node]['WCET']
     logging.info("THE LONGEST WCET OF UNMAPPED TASKS IS:"+str(biggest_wcet))
     for nodes in tg.nodes():
         if tg.node[nodes]['Node'] is None:
@@ -473,8 +479,9 @@ def FindUnMappedTaskWithBiggestWCET(tg, logging):
     return longest_tasks
 
 
-def FindNodeWithSmallestCompletionTime(ag, tg, shm, task):
+def nodes_with_smallest_ct(ag, tg, shm, task):
     """
+    finds nodes with smallest completion time of the task!
     THIS FUNCTION CAN BE STRICTLY USED FOR INDEPENDENT TGs
     :param ag: Arch Graph
     :param tg: Task Graph
@@ -510,7 +517,6 @@ def FindNodeWithSmallestCompletionTime(ag, tg, shm, task):
             node_speed_down = 1+((100.0-shm.node[node]['NodeSpeed'])/100)
             last_allocated_time_on_node = Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag, node, None)
             task_execution_on_node = tg.node[task]['WCET']*node_speed_down
-            completion_on_node = 0
             if last_allocated_time_on_node < tg.node[task]['Release']:
                 completion_on_node = tg.node[task]['Release']+task_execution_on_node
             else:
@@ -520,7 +526,7 @@ def FindNodeWithSmallestCompletionTime(ag, tg, shm, task):
     return node_with_smallest_ct
 
 
-def FindFastestNodes(ag, shm, task_to_be_mapped):
+def fastest_nodes(ag, shm, task_to_be_mapped):
     """
     Finds the fastest Nodes in AG
     :param ag:  Architecture Graph
@@ -530,7 +536,7 @@ def FindFastestNodes(ag, shm, task_to_be_mapped):
     """
     # todo: we need to add some accelerator nodes which have some specific purpose and
     # enable different tasks to behave differently on them.
-    fastest_nodes = []
+    fastest_nodes_list = []
     max_speedup = 0
     for node in ag.nodes():
         if not ag.node[node]['PE'].Dark:
@@ -539,11 +545,11 @@ def FindFastestNodes(ag, shm, task_to_be_mapped):
     for node in ag.nodes():
         if not ag.node[node]['PE'].Dark:
             if shm.node[node]['NodeSpeed'] == max_speedup:
-                fastest_nodes.append(node)
-    return fastest_nodes
+                fastest_nodes_list.append(node)
+    return fastest_nodes_list
 
 
-def MappingIntoString(tg):
+def mapping_into_string(tg):
     """
     Takes a Mapped Task Graph and returns a string which contains the mapping information
     :param tg: Task Graph
@@ -555,21 +561,21 @@ def MappingIntoString(tg):
     return mapping_string
 
 
-def HammingDistanceOfMapping(MappingString1, MappingString2):
+def hamming_distance_of_mapping(mapping_string1, mapping_string2):
     """
     Calculate the hamming distance between two mappings
-    :param MappingString1: First mapping String
-    :param MappingString2: 2nd Mapping string
+    :param mapping_string1: First mapping String
+    :param mapping_string2: 2nd Mapping string
     :return: hamming distance between two mappings
     """
-    if type(MappingString1) is str and type(MappingString2) is str:
-        Str1_List = MappingString1.split()
-        Str2_List = MappingString2.split()
+    if type(mapping_string1) is str and type(mapping_string2) is str:
+        str1_list = mapping_string1.split()
+        str2_list = mapping_string2.split()
 
-        if len(Str1_List) == len(Str2_List):
+        if len(str1_list) == len(str2_list):
             distance = 0
-            for i in range(0, len(Str1_List)):
-                if Str2_List[i] != Str1_List[i]:
+            for i in range(0, len(str1_list)):
+                if str2_list[i] != str1_list[i]:
                     distance += 1
             return distance
         else:

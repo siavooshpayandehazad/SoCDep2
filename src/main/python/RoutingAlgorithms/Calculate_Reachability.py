@@ -160,7 +160,7 @@ def calculate_reachability_with_regions(AG, SHMU):
     AlreadyBrokenLinks= []
     for VirtualBrokenLink in Config.VirtualBrokenLinksForNonCritical:
         if SHMU.SHM.edge[VirtualBrokenLink[0]][VirtualBrokenLink[1]]['LinkHealth']:
-            SHMU.BreakLink(VirtualBrokenLink,True)
+            SHMU.break_link(VirtualBrokenLink,True)
         else:
             AlreadyBrokenLinks.append(VirtualBrokenLink)
     # Construct The RoutingGraph
@@ -178,13 +178,13 @@ def calculate_reachability_with_regions(AG, SHMU):
     # Restore the VirtualBrokenLinksForNonCritical
     for VirtualBrokenLink in Config.VirtualBrokenLinksForNonCritical:
         if VirtualBrokenLink not in AlreadyBrokenLinks:
-            SHMU.RestoreBrokenLink(VirtualBrokenLink,True)
+            SHMU.restore_broken_link(VirtualBrokenLink,True)
 
     AlreadyBrokenLinks = []
     # Add VirtualBrokenLinksForCritical
     for VirtualBrokenLink in Config.VirtualBrokenLinksForCritical:
         if SHMU.SHM.edge[VirtualBrokenLink[0]][VirtualBrokenLink[1]]['LinkHealth']:
-            SHMU.BreakLink(VirtualBrokenLink, True)
+            SHMU.break_link(VirtualBrokenLink, True)
         else:
             AlreadyBrokenLinks.append(VirtualBrokenLink)
     ClearReachabilityCalculations(AG)
@@ -201,7 +201,7 @@ def calculate_reachability_with_regions(AG, SHMU):
     # Restore the VirtualBrokenLinksForNonCritical
     for VirtualBrokenLink in Config.VirtualBrokenLinksForCritical:
         if VirtualBrokenLink not in AlreadyBrokenLinks:
-            SHMU.RestoreBrokenLink(VirtualBrokenLink, True)
+            SHMU.restore_broken_link(VirtualBrokenLink, True)
 
     # Combine Lists
     for Node in AG.nodes():
