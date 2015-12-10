@@ -170,8 +170,8 @@ CTG_CirculationLength = 3
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'SimulatedAnnealing'
-LocalSearchIteration = 10
+Mapping_Function = 'LocalSearch'
+LocalSearchIteration = 1000
 IterativeLocalSearchIterations = 20
 #######################
 SimulatedAnnealingIteration = 50000
@@ -179,9 +179,9 @@ SA_InitialTemp = 100
 SA_StopTemp = 5             # Stops annealing earlier if reaches this temp
 SA_ReportSolutions = False   # if True, it prints every accepted move to console
 # Available Annealing Schedule: 'Linear', 'Exponential', 'Adaptive', 'Markov', 'Logarithmic', 'Aart', 'Huang'
-SA_AnnealingSchedule = 'Huang'
+SA_AnnealingSchedule = 'Linear'
 # Termination Criteria Could be either 'StopTemp' or 'IterationNum'
-TerminationCriteria = 'IterationNum'
+TerminationCriteria = 'StopTemp'
 # --------------------------
 
 if SA_AnnealingSchedule == 'Linear':

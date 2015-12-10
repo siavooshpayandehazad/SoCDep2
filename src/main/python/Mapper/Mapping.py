@@ -82,7 +82,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
             mapping_start_time = time.time()
             # Mapping CTG on AG
             if Mapping_Functions.make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, non_critical_rg,
-                                                    True, logging):
+                                                      True, logging):
                 if Config.DistanceBetweenMapping:
                     init_mapping_string = Mapping_Functions.mapping_into_string(tg)
                     # print (init_mapping_string)

@@ -10,31 +10,31 @@ from ArchGraphUtilities import AG_Functions
 import random
 
 
-def GenerateFrames(TG, AG, SHM):
+def generate_frames(tg, ag, shm):
     """
     Generates Animation frames for the mapping process.
-    :param TG: Task Graph
-    :param AG: Architecture Graph
-    :param SHM: System Health Map
+    :param tg: Task Graph
+    :param ag: Architecture Graph
+    :param shm: System Health Map
     :return: None
     """
     print ("===========================================")
     print ("GENERATING MAPPING ANIMATION FRAMES...")
-    MappingProcessFile = open("Generated_Files/Internal/MappingProcess.txt", 'r')
-    XSize = float(Config.Network_X_Size)
-    YSize = float(Config.Network_Y_Size)
-    line = MappingProcessFile.readline()
+    mapping_process_file = open("Generated_Files/Internal/MappingProcess.txt", 'r')
+    x_size = float(Config.Network_X_Size)
+    y_size = float(Config.Network_Y_Size)
+    line = mapping_process_file.readline()
 
-    Bound = int(log10(2 * Config.MaxNumberOfIterations)) + 1   # UpperBoundOnFileNumberDigits
-    Counter = 0
+    bound = int(log10(2 * Config.MaxNumberOfIterations)) + 1   # UpperBoundOnFileNumberDigits
+    counter = 0
     while line != '':
         fig = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size), dpi=Config.FrameResolution)
         # initialize an empty list of cirlces
-        MappedPEList = line.split(" ")
-        for node in AG.nodes():
-            Location = AG_Functions.return_node_location(node)
-            # print (node, Location)
-            if SHM.node[node]['NodeHealth']:
+        mapped_pe_list = line.split(" ")
+        for node in ag.nodes():
+            location = AG_Functions.return_node_location(node)
+            # print (node, location)
+            if shm.node[node]['NodeHealth']:
                 if Config.EnablePartitioning:
                     if node in Config.CriticalRegionNodes:
                         color = '#FF878B'
@@ -48,38 +48,37 @@ def GenerateFrames(TG, AG, SHM):
                     color = 'white'
             else:   # node is broken
                 color = '#7B747B'
-            fig.gca().add_patch(patches.Rectangle((Location[0]/XSize, Location[1]/YSize),
-                                                   width=0.15, height=0.15, facecolor=color,
-                                                   edgecolor="black", linewidth=3, alpha= 0.5))
-            if str(node) in MappedPEList:
-                Tasks = [i for i,x in enumerate(MappedPEList) if x == str(node)]
-                OffsetX = 0
-                OffsetY = 0.02
-                TaskCount = 0
-                for task in Tasks:
-                    TaskCount += 1
-                    OffsetX += 0.03
-                    if TaskCount == 5:
-                        TaskCount = 1
-                        OffsetX = 0.03
-                        OffsetY += 0.03
+            fig.gca().add_patch(patches.Rectangle((location[0]/x_size, location[1]/y_size),
+                                width=0.15, height=0.15, facecolor=color,
+                                edgecolor="black", linewidth=3, alpha=0.5))
+            if str(node) in mapped_pe_list:
+                tasks = [i for i, x in enumerate(mapped_pe_list) if x == str(node)]
+                offset_x = 0
+                offset_y = 0.02
+                task_count = 0
+                for task in tasks:
+                    task_count += 1
+                    offset_x += 0.03
+                    if task_count == 5:
+                        task_count = 1
+                        offset_x = 0.03
+                        offset_y += 0.03
                     random.seed(task)
-                    r = random.randrange(0,255)
-                    g = random.randrange(0,255)
-                    b = random.randrange(0,255)
-                    color = '#%02X%02X%02X' % (r,g,b)
-                    circle = plt.Circle((Location[0]/XSize+OffsetX, Location[1]/YSize+OffsetY), 0.01, fc=color)
+                    r = random.randrange(0, 255)
+                    g = random.randrange(0, 255)
+                    b = random.randrange(0, 255)
+                    color = '#%02X%02X%02X' % (r, g, b)
+                    circle = plt.Circle((location[0]/x_size+offset_x, location[1]/y_size+offset_y), 0.01, fc=color)
                     if Config.FrameResolution >= 50:
-                        plt.text(Location[0]/XSize+OffsetX, Location[1]/YSize+OffsetY -  0.001,task)
+                        plt.text(location[0]/x_size+offset_x, location[1]/y_size+offset_y-0.001, task)
                     plt.gca().add_patch(circle)
-        fig.text(0.25, 0.02, "Iteration:" + str(Counter), fontsize=35)
-        plt.savefig("GraphDrawings/Mapping_Animation_Material/Mapping_Frame_"+ str(Counter).zfill(Bound) + ".png",
+        fig.text(0.25, 0.02, "Iteration:" + str(counter), fontsize=35)
+        plt.savefig("GraphDrawings/Mapping_Animation_Material/Mapping_Frame_"+str(counter).zfill(bound) + ".png",
                     dpi=Config.FrameResolution)
         plt.clf()
         plt.close(fig)
-        Counter += 1
-        line = MappingProcessFile.readline()
-    MappingProcessFile.close()
+        counter += 1
+        line = mapping_process_file.readline()
+    mapping_process_file.close()
     print ("\033[35m* VIZ::\033[0mMAPPING ANIMATION FRAMES READY AT: GraphDrawings/Mapping_Animation_Material")
     return None
-
