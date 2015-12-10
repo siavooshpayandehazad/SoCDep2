@@ -25,7 +25,7 @@ def find_task_asap_scheduling(tg, ag, shm, task, node, logging):
     node_speed_down = 1+((100.0-shm.node[node]['NodeSpeed'])/100)
     task_execution_on_node = ceil(tg.node[task]['WCET']*node_speed_down)
     if tg.node[task]['Criticality'] == 'H':
-        end_time = start_time+task_execution_on_node + Config.task_SlackCount*task_execution_on_node
+        end_time = start_time+task_execution_on_node + Config.Task_SlackCount*task_execution_on_node
     else:
         end_time = start_time+task_execution_on_node
     return start_time, end_time

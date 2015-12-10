@@ -145,10 +145,10 @@ def OptimizeMappingIterativeLocalSearch(TG, CTG, AG, NoCRG, CriticalRG, NonCriti
         del CurrentTG
         del CurrentAG
         del CurrentCTG
-        Mapping_Functions.ClearMapping(TG, CTG, AG)
+        Mapping_Functions.clear_mapping(TG, CTG, AG)
         counter = 0
         Schedule = True
-        while not Mapping_Functions.MakeInitialMapping(TG, CTG, AG, SHM, NoCRG, CriticalRG,
+        while not Mapping_Functions.make_initial_mapping(TG, CTG, AG, SHM, NoCRG, CriticalRG,
                                                        NonCriticalRG, False, logging):
             if counter == 10:   # we try 10 times to find some initial solution... how ever if it fails...
                 Schedule = False

@@ -134,7 +134,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                                                                                           logging)
                     Mapping_Reports.VizMappingOpt('SA_MappingCost')
                     if Config.SA_AnnealingSchedule == 'Adaptive':
-                        Mapping_Reports.VizCostSlope()
+                        Mapping_Reports.Vizcost_slope()
                     elif Config.SA_AnnealingSchedule == 'Huang':
                         Mapping_Reports.VizHuangRace()
                     tg = copy.deepcopy(best_tg)

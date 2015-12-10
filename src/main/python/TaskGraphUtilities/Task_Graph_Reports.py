@@ -30,7 +30,7 @@ def ReportTaskGraph(tg, logging):
 def DrawTaskGraph(tg, ttg=None):
     print ("DRAWING TASK GRAPH...")
     fig = plt.figure()
-    NodeColors=[]
+    NodeColors = []
     for Node in tg.nodes():
         if tg.node[Node]['Criticality']== 'H':
             NodeColors.append('#FF878B')
@@ -40,7 +40,7 @@ def DrawTaskGraph(tg, ttg=None):
             NodeColors.append('#928AFF')
         else:
             NodeColors.append('#A0CBE2')
-    Edge_Colors=[]
+    Edge_Colors = []
     for Edge in tg.edges():
         if tg.edge[Edge[0]][Edge[1]]['Criticality']== 'H':
             Edge_Colors.append('red')

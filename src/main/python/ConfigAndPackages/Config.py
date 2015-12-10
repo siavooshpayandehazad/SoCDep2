@@ -15,7 +15,7 @@ EventDrivenFaultInjection = True
 #          TG  Config
 ################################################
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile'
-TG_Type = 'RandomDependent'
+TG_Type = 'Manual'
 # For Random TG_Type:
 NumberOfTasks = 19
 NumberOfCriticalTasks = 0
@@ -28,7 +28,7 @@ Release_Range = 5      # task release time range
 #           network.
 Task_List = [0, 1, 2, 3, 4, 5, 6, 7]
 Task_WCET_List = [30, 30, 20, 40, 10, 5, 15, 20]
-Task_Criticality_List = ['H', 'L', 'H', 'L', 'L', 'H', 'L', 'L']
+Task_Criticality_List = ['L', 'L', 'L', 'L', 'L', 'L', 'L', 'L']
 TG_Edge_List = [(1, 2), (1, 3), (2, 5), (0, 5), (4, 7), (4, 3), (1, 6), (0, 6)]
 TG_Edge_Weight = [5, 9, 4, 7, 5, 3, 5, 1]
 
@@ -170,26 +170,26 @@ CTG_CirculationLength = 3
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'LocalSearch'
-LocalSearchIteration = 1000
-IterativeLocalSearchIterations = 20
+Mapping_Function = 'SimulatedAnnealing'
+LocalSearchIteration = 100
+IterativeLocalSearchIterations = 10
 #######################
-SimulatedAnnealingIteration = 50000
+SimulatedAnnealingIteration = 30000
 SA_InitialTemp = 100
 SA_StopTemp = 5             # Stops annealing earlier if reaches this temp
 SA_ReportSolutions = False   # if True, it prints every accepted move to console
 # Available Annealing Schedule: 'Linear', 'Exponential', 'Adaptive', 'Markov', 'Logarithmic', 'Aart', 'Huang'
-SA_AnnealingSchedule = 'Linear'
+SA_AnnealingSchedule = 'Logarithmic'
 # Termination Criteria Could be either 'StopTemp' or 'IterationNum'
-TerminationCriteria = 'StopTemp'
+TerminationCriteria = 'IterationNum'
 # --------------------------
 
 if SA_AnnealingSchedule == 'Linear':
     pass
 elif SA_AnnealingSchedule == 'Exponential':
-    SA_Alpha = 0.999
+    SA_Alpha = 0.99995
 elif SA_AnnealingSchedule == 'Logarithmic':
-    LogCoolingConstant = 1000       # c should be greater than or equal to the largest energy barrier in the problem
+    LogCoolingConstant = 50       # c should be greater than or equal to the largest energy barrier in the problem
 elif SA_AnnealingSchedule == 'Adaptive':
     CostMonitorQueSize = 2000
     SlopeRangeForCooling = 0.02     # If the slope falls between SlopeRangeForCooling and 0, the SA
@@ -291,7 +291,7 @@ RG_Draw = False
 PMCG_Drawing = False
 TTG_Drawing = False
 Mapping_Dstr_Drawing = True
-Mapping_Drawing = True
+Mapping_Drawing = False
 SHM_Drawing = False          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks

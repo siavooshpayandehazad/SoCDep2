@@ -126,7 +126,7 @@ def add_pe_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, rou
                         if tg.node[task]['Criticality'] == 'H':
                             start_time = ag.node[node]['PE'].Scheduling[task][0]
                             task_length = ag.node[node]['PE'].Scheduling[task][1]-ag.node[node]['PE'].Scheduling[task][0]
-                            end_time = start_time + (task_length/(Config.task_Slackcount+1))
+                            end_time = start_time + (task_length/(Config.Task_SlackCount+1))
                             pe_t.append(start_time)
                             pe_p.append(0)
                             pe_t.append(start_time)
@@ -136,9 +136,9 @@ def add_pe_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, rou
                             pe_t.append(end_time)
                             pe_p.append(0)
                             task_color = '#FF878B'
-                            if Config.task_Slackcount > 0:
+                            if Config.Task_SlackCount > 0:
                                 start_time = end_time
-                                end_time = start_time + (task_length / (Config.task_Slackcount+1)) * Config.task_Slackcount
+                                end_time = start_time + (task_length / (Config.Task_SlackCount+1)) * Config.Task_SlackCount
                                 slack_t.append(start_time)
                                 slack_p.append(0)
                                 slack_t.append(start_time)
@@ -184,10 +184,10 @@ def add_pe_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, rou
                     start_time = ag.node[node]['PE'].Scheduling[task][0]
                     if tg.node[task]['Criticality'] == 'H':
                         task_length = (ag.node[node]['PE'].Scheduling[task][1] -
-                                      ag.node[node]['PE'].Scheduling[task][0])/(Config.task_Slackcount+1)
+                                       ag.node[node]['PE'].Scheduling[task][0])/(Config.Task_SlackCount+1)
                         ax1.text(start_time+task_length/2 - len(str(task))/2, 0.01, str(task), fontsize=10)
                         end_time = ag.node[node]['PE'].Scheduling[task][1]
-                        if Config.task_Slackcount > 0:
+                        if Config.Task_SlackCount > 0:
                             ax1.text((start_time+task_length+end_time)/2 - len(str(task)+'S')/2,
                                      0.01, str(task)+'S', fontsize=5)
                     else:
@@ -228,9 +228,9 @@ def add_routers_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter
                     if tg.edge[task[0]][task[1]]['Criticality'] == 'H':
                         for batch_and_schedule in ag.node[node]['Router'].Scheduling:
                             start_time = batch_and_schedule[0]
-                            batch_num = batch_and_schedule[2]
+                            # batch_num = batch_and_schedule[2]
                             task_length = batch_and_schedule[1] - start_time
-                            end_time = start_time + (task_length / (Config.Communication_Slackcount+1))
+                            end_time = start_time + (task_length / (Config.Communication_SlackCount+1))
                             pe_t.append(start_time)
                             pe_p.append(0)
                             pe_t.append(start_time)
@@ -240,9 +240,9 @@ def add_routers_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter
                             pe_t.append(end_time)
                             pe_p.append(0)
                             edge_color = '#FF878B'
-                            if Config.Communication_Slackcount > 0:
+                            if Config.Communication_SlackCount > 0:
                                 start_time = end_time
-                                end_time = start_time + (task_length / (Config.Communication_Slackcount+1)) * Config.Communication_Slackcount
+                                end_time = start_time + (task_length / (Config.Communication_SlackCount+1)) * Config.Communication_SlackCount
                                 slack_t.append(start_time)
                                 slack_p.append(0)
                                 slack_t.append(start_time)
@@ -374,7 +374,7 @@ def add_links_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, 
                             start_time = batch_and_schedule[0]
                             batch_num = batch_and_schedule[2]
                             task_length = batch_and_schedule[1] - start_time
-                            end_time = start_time + (task_length / (Config.Communication_Slackcount+1))
+                            end_time = start_time + (task_length / (Config.Communication_SlackCount+1))
                             pe_t.append(start_time)
                             pe_p.append(0)
                             pe_t.append(start_time)
@@ -384,9 +384,9 @@ def add_links_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, 
                             pe_t.append(end_time)
                             pe_p.append(0)
                             edge_color = '#FF878B'
-                            if Config.Communication_Slackcount > 0:
+                            if Config.Communication_SlackCount > 0:
                                 start_time = end_time
-                                end_time = start_time + (task_length / (Config.Communication_Slackcount+1)) * Config.Communication_Slackcount
+                                end_time = start_time + (task_length / (Config.Communication_SlackCount+1)) * Config.Communication_SlackCount
                                 slack_t.append(start_time)
                                 slack_p.append(0)
                                 slack_t.append(start_time)
