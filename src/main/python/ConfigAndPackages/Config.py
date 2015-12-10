@@ -170,26 +170,26 @@ CTG_CirculationLength = 3
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'SimulatedAnnealing'
+Mapping_Function = 'LocalSearch'
 LocalSearchIteration = 100
 IterativeLocalSearchIterations = 10
 #######################
-SimulatedAnnealingIteration = 30000
-SA_InitialTemp = 100
-SA_StopTemp = 5             # Stops annealing earlier if reaches this temp
+SimulatedAnnealingIteration = 50000
+SA_InitialTemp = 20
+SA_StopTemp = 1             # Stops annealing earlier if reaches this temp
 SA_ReportSolutions = False   # if True, it prints every accepted move to console
 # Available Annealing Schedule: 'Linear', 'Exponential', 'Adaptive', 'Markov', 'Logarithmic', 'Aart', 'Huang'
-SA_AnnealingSchedule = 'Logarithmic'
+SA_AnnealingSchedule = 'Linear'
 # Termination Criteria Could be either 'StopTemp' or 'IterationNum'
-TerminationCriteria = 'IterationNum'
+TerminationCriteria = 'StopTemp'
 # --------------------------
 
 if SA_AnnealingSchedule == 'Linear':
     pass
 elif SA_AnnealingSchedule == 'Exponential':
-    SA_Alpha = 0.99995
+    SA_Alpha = 0.9999
 elif SA_AnnealingSchedule == 'Logarithmic':
-    LogCoolingConstant = 50       # c should be greater than or equal to the largest energy barrier in the problem
+    LogCoolingConstant = 10       # c should be greater than or equal to the largest energy barrier in the problem
 elif SA_AnnealingSchedule == 'Adaptive':
     CostMonitorQueSize = 2000
     SlopeRangeForCooling = 0.02     # If the slope falls between SlopeRangeForCooling and 0, the SA

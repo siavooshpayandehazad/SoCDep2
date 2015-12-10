@@ -1,11 +1,9 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad 
 
-
-
 import copy
 from Mapper import Mapping_Functions
 from ConfigAndPackages import Config
-from Scheduler import Scheduler,Scheduling_Functions,Scheduling_Reports
+from Scheduler import Scheduler, Scheduling_Functions
 import random
 from math import exp, log10, log1p
 from collections import deque

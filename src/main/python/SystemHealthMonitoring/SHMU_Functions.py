@@ -13,10 +13,10 @@ def ApplyInitialFaults(SHM):
             SHM.break_turn(NodeWithBrokenTurn, Config.ListOfBrokenTurns[NodeWithBrokenTurn], True)
 
         for AgedPE in Config.ListOfAgedPEs:
-            SHM.IntroduceAging(AgedPE, Config.ListOfAgedPEs[AgedPE], True)
+            SHM.introduce_aging(AgedPE, Config.ListOfAgedPEs[AgedPE], True)
 
         for BrokenNode in Config.ListOfBrokenPEs:
-            SHM.BreakNode(BrokenNode, True)
+            SHM.break_node(BrokenNode, True)
 
 
 def RandomFaultGeneration(SHM):
@@ -80,7 +80,7 @@ def apply_fault_event(AG, SHMU, NoCRG, FaultLocation, FaultType):
             if FaultType == 'T':    # Transient Fault
                 if SHMU.SHM.node[CurrentNode]['TurnsHealth'][CurrentTurn]:   # check if the turn is actually working
                     SHMU.break_turn(CurrentNode, CurrentTurn, True)
-                    SHMU.RestoreBrokenTurn(CurrentNode, CurrentTurn, True)
+                    SHMU.restore_broken_turn(CurrentNode, CurrentTurn, True)
                 else:
                     print ("\033[33mSHM:: NOTE:\033[0mTURN ALREADY BROKEN")
             elif FaultType == 'P':   # Permanent Fault
@@ -91,10 +91,10 @@ def apply_fault_event(AG, SHMU, NoCRG, FaultLocation, FaultType):
         else:           # its a Node fault
             if FaultType == 'T':    # Transient Fault
                 if SHMU.SHM.node[FaultLocation]['NodeHealth']:
-                    SHMU.BreakNode(FaultLocation, True)
-                    SHMU.RestoreBrokenNode(FaultLocation, True)
+                    SHMU.break_node(FaultLocation, True)
+                    SHMU.restore_broken_node(FaultLocation, True)
                 else:
                     print ("\033[33mSHM:: NOTE:\033[0m NODE ALREADY BROKEN")
             elif FaultType == 'P':   # Permanent Fault
-                SHMU.BreakNode(FaultLocation, True)
+                SHMU.break_node(FaultLocation, True)
         return None
