@@ -146,7 +146,7 @@ MaxTemp = 100
 ################################################
 #          Clustering Function  Config
 ################################################
-Clustering_Optimization = False     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
+Clustering_Optimization = True     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
 ClusteringIteration = 2000
 Clustering_Report = False
 Clustering_DetailedReport = False
@@ -287,11 +287,11 @@ NodeTestComWeight = 2
 ###############################################
 #           VISUALIZATION Config
 ###############################################
-RG_Draw = False
+RG_Draw = True
 PMCG_Drawing = False
 TTG_Drawing = False
 Mapping_Dstr_Drawing = True
 Mapping_Drawing = True
-SHM_Drawing = False          # if True generates SHM Drawing
+SHM_Drawing = True          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks
