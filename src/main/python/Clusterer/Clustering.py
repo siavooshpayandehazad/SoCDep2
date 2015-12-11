@@ -4,94 +4,96 @@ import random
 import copy
 from ConfigAndPackages import Config
 import networkx
+# from Clustering_Functions import remove_task_from_ctg
+from Clustering_Functions import add_task_to_ctg, clear_clustering, \
+    ctg_cost_function, remove_empty_clusters, ctg_opt_move
+from Clustering_Test import double_check_ctg
+from Clustering_Reports import report_ctg
 
 
-from Clustering_Functions import AddTaskToCTG, RemoveTaskFromCTG, ClearClustering, \
-    CostFunction,DeleteEmptyClusters, CTG_OptimizationMove
-from Clustering_Test import DoubleCheckCTG
-from Clustering_Reports import ReportCTG
-
-def TaskClusterGeneration(NumberOfClusters):
+def generate_ctg(num_of_clusters):
     """
     Generates a clustered task graph without any edges or tasks assigned to clusters.
     the number of clusters should be the same as the number of nodes in Architecture graph.
-    :param NumberOfClusters: Number of clusters to be generated
+    :param num_of_clusters: Number of clusters to be generated
     :return: Empty Clustered Task Graph
     """
     print ("===========================================")
     print ("PREPARING FOR CLUSTERING THE TASK GRAPH...")
-    print ("   NUMBER OF CLUSTERS: "+str(NumberOfClusters))
-    CTG=networkx.DiGraph()
-    for i in range(0, NumberOfClusters):
-        CTG.add_node(i, TaskList=[], Node=None, Utilization=0, Criticality='L')
+    print ("   NUMBER OF CLUSTERS: "+str(num_of_clusters))
+    ctg = networkx.DiGraph()
+    for i in range(0, num_of_clusters):
+        ctg.add_node(i, TaskList=[], Node=None, Utilization=0, Criticality='L')
     print ("CLUSTERS GENERATED...")
-    return CTG
+    return ctg
 
 
-def InitialClustering(TG, CTG):
+def initial_clustering(tg, ctg):
     """
     Randomly assign the tasks to clusters to make the initial solution for optimization...
-    :param TG: Task Graph
-    :param CTG: Clustered Task Graph
+    :param tg: Task Graph
+    :param ctg: Clustered Task Graph
     :return: True if successful, False otherwise
     """
     print ("===========================================")
     print ("STARTING INITIAL CLUSTERING...")
-    for Task in TG.nodes():
-        Itteration=0
-        DestCluster = random.choice(CTG.nodes())
-        while(not AddTaskToCTG(TG,CTG,Task,DestCluster)):
-            # RemoveTaskFromCTG(TG,CTG,Task)
-            Itteration+=1
-            DestCluster = random.choice(CTG.nodes())
-            if Itteration == 10* len(CTG.nodes()):
-                ClearClustering(TG,CTG)
+    for task in tg.nodes():
+        iteration = 0
+        destination_cluster = random.choice(ctg.nodes())
+        while not add_task_to_ctg(tg, ctg, task, destination_cluster):
+            # remove_task_from_ctg(TG,CTG,Task)
+            iteration += 1
+            destination_cluster = random.choice(ctg.nodes())
+            if iteration == 10*len(ctg.nodes()):
+                clear_clustering(tg, ctg)
                 return False
-    # DoubleCheckCTG(TG,CTG)
+    # double_check_ctg(TG,CTG)
     print ("INITIAL CLUSTERED TASK GRAPH (CTG) READY...")
-    ReportCTG(CTG,"CTG_Initial.png")
+    report_ctg(ctg, "CTG_Initial.png")
     return True
 
-def ClusteringOptimization_LocalSearch(TG, CTG, NumberOfIter, logging):
+
+def ctg_opt_local_search(tg, ctg, num_of_iter, logging):
     """
     Local Search optimization for reducing the cost of a clustering solution
-    :param TG: Task Graph
-    :param CTG: Clustered Task Graph
-    :param NumberOfIter: Number of iterations for local search
+    :param tg: Task Graph
+    :param ctg: Clustered Task Graph
+    :param num_of_iter: Number of iterations for local search
     :return: best answer (CTG) found by the search
     """
-    ClusteringCostFile = open('Generated_Files/Internal/ClusteringCost.txt','w')
+    clustering_cost_file = open('Generated_Files/Internal/ClusteringCost.txt', 'w')
     print ("===========================================")
     print ("STARTING LOCAL SEARCH OPTIMIZATION FOR CTG...")
-    Cost = CostFunction(CTG)
-    StartingCost = Cost
-    ClusteringCostFile.write(str(Cost)+"\n")
-    BestSolution = copy.deepcopy(CTG)
-    BestTaskGraph = copy.deepcopy(TG)
-    print ("\tINITIAL COST: "+ str(Cost))
+    cost = ctg_cost_function(ctg)
+    starting_cost = cost
+    clustering_cost_file.write(str(cost)+"\n")
+    best_solution = copy.deepcopy(ctg)
+    best_tg = copy.deepcopy(tg)
+    print ("\tINITIAL COST: "+str(cost))
     # choose a random task from TG
-    for i in range(0,NumberOfIter):
+    for i in range(0, num_of_iter):
 
         # print ("\tITERATION:",i)
         if Config.TestMode:
-            DoubleCheckCTG(TG,CTG)
+            double_check_ctg(tg, ctg)
         # Make a move!
-        CTG_OptimizationMove(TG, CTG, logging)
-        NewCost = CostFunction(CTG)
-        ClusteringCostFile.write(str(NewCost)+"\n")
-        if NewCost <= Cost:
-            if NewCost < Cost:
-                print ("\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:\t"+str(NewCost)+"\t\tIteration #:"+str(i))
-            BestSolution = copy.deepcopy(CTG)
-            BestTaskGraph = copy.deepcopy(TG)
-            Cost = NewCost
+        ctg_opt_move(tg, ctg, logging)
+        new_cost = ctg_cost_function(ctg)
+        clustering_cost_file.write(str(new_cost)+"\n")
+        if new_cost <= cost:
+            if new_cost < cost:
+                print ("\033[32m* NOTE::\033[0mBETTER SOLUTION FOUND WITH COST:\t" +
+                       str(new_cost)+"\t\tIteration #:"+str(i))
+            best_solution = copy.deepcopy(ctg)
+            best_tg = copy.deepcopy(tg)
+            cost = new_cost
         else:
-            CTG = copy.deepcopy(BestSolution)
-            TG = copy.deepcopy(BestTaskGraph)
-    ClusteringCostFile.close()
-    DeleteEmptyClusters(BestSolution)
-    # DoubleCheckCTG(BestTaskGraph,BestSolution)
+            ctg = copy.deepcopy(best_solution)
+            tg = copy.deepcopy(best_tg)
+    clustering_cost_file.close()
+    remove_empty_clusters(best_solution)
+    # double_check_ctg(best_tg, best_solution)
     print ("-------------------------------------")
-    print ("STARTING COST:"+str(StartingCost)+"\tFINAL COST: "+str(Cost)+"\tAFTER "+str(NumberOfIter)+" ITERATIONS")
-    print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(StartingCost-Cost)/StartingCost))+" %")
-    return BestSolution,BestTaskGraph
+    print ("STARTING COST:"+str(starting_cost)+"\tFINAL COST: "+str(cost)+"\tAFTER "+str(num_of_iter)+" ITERATIONS")
+    print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(starting_cost-cost)/starting_cost))+" %")
+    return best_solution, best_tg

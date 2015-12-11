@@ -1,13 +1,13 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
-import copy, time
-
+import copy
+import time
 from ConfigAndPackages import Config
-import Scheduler
-import Mapping_Functions, Mapping_Reports, Mapping_Animation
+import Mapping_Functions
+import Mapping_Reports
 from Clusterer import Clustering, Clustering_Reports, Clustering_Functions
-from Mapping_Heuristics import SimpleGreedy,Local_Search,SimulatedAnnealing,NMap
-from Scheduler import Scheduler,Scheduling_Reports, Scheduling_Functions
+from Mapping_Heuristics import SimpleGreedy, Local_Search, SimulatedAnnealing, NMap
+from Scheduler import Scheduler, Scheduling_Reports, Scheduling_Functions
 
 
 def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
@@ -59,23 +59,23 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomDependent')
         clustering_start_time = time.time()
         # clustered task graph
-        ctg = copy.deepcopy(Clustering.TaskClusterGeneration(len(ag.nodes())))
-        if Clustering.InitialClustering(tg, ctg):
+        ctg = copy.deepcopy(Clustering.generate_ctg(len(ag.nodes())))
+        if Clustering.initial_clustering(tg, ctg):
             # Clustered Task Graph Optimization
             if Config.Clustering_Optimization:
                 (best_clustering, best_task_graph) = \
-                    Clustering.ClusteringOptimization_LocalSearch(tg, ctg, Config.ClusteringIteration, logging)
+                    Clustering.ctg_opt_local_search(tg, ctg, Config.ClusteringIteration, logging)
                 tg = copy.deepcopy(best_task_graph)
                 ctg = copy.deepcopy(best_clustering)
                 del best_clustering, best_task_graph
-                # Clustering_Test.DoubleCheckCTG(tg, CTG)
-                Clustering_Reports.ReportCTG(ctg, "CTG_PostOpt.png")
-                Clustering_Reports.VizClusteringOpt()
+                # Clustering_Test.double_check_ctg(tg, ctg)
+                Clustering_Reports.report_ctg(ctg, "CTG_PostOpt.png")
+                Clustering_Reports.viz_clustering_opt()
             else:
                 print ("CLUSTERING OPTIMIZATION TURNED OFF...")
                 print ("REMOVING EMPTY CLUSTERS...")
-                Clustering_Functions.DeleteEmptyClusters(ctg)
-                Clustering_Reports.ReportCTG(ctg, "CTG_PostCleaning.png")
+                Clustering_Functions.remove_empty_clusters(ctg)
+                Clustering_Reports.report_ctg(ctg, "CTG_PostCleaning.png")
 
             print ("\033[92mTIME::\033[0m CLUSTERING AND OPTIMIZATION TOOK: "
                    + str(round(time.time()-clustering_start_time))+" SECONDS")
@@ -106,23 +106,23 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                     mapping_process_file.close()
 
                     (best_tg, best_ctg, best_ag) = \
-                        Local_Search.OptimizeMappingLocalSearch(tg, ctg, ag, noc_rg, critical_rg,
-                                                                non_critical_rg, shm,
-                                                                Config.LocalSearchIteration,
-                                                                Config.DebugInfo, Config.DebugDetails, logging,
-                                                                "LocalSearchMappingCost", "MappingProcess")
+                        Local_Search.mapping_opt_local_search(tg, ctg, ag, noc_rg, critical_rg,
+                                                              non_critical_rg, shm,
+                                                              Config.LocalSearchIteration,
+                                                              Config.DebugInfo, Config.DebugDetails, logging,
+                                                              "LocalSearchMappingCost", "MappingProcess")
                     tg = copy.deepcopy(best_tg)
                     ag = copy.deepcopy(best_ag)
                     del best_tg, best_ctg, best_ag
                     Mapping_Reports.VizMappingOpt('LocalSearchMappingCost')
                 elif Config.Mapping_Function == 'IterativeLocalSearch':
                     (best_tg, best_ctg, best_ag) = \
-                        Local_Search.OptimizeMappingIterativeLocalSearch(tg, ctg, ag, noc_rg, critical_rg,
-                                                                         non_critical_rg, shm,
-                                                                         Config.IterativeLocalSearchIterations,
-                                                                         Config.LocalSearchIteration,
-                                                                         Config.DebugInfo, Config.DebugDetails,
-                                                                         logging)
+                        Local_Search.mapping_opt_iterative_local_search(tg, ctg, ag, noc_rg, critical_rg,
+                                                                        non_critical_rg, shm,
+                                                                        Config.IterativeLocalSearchIterations,
+                                                                        Config.LocalSearchIteration,
+                                                                        Config.DebugInfo, Config.DebugDetails,
+                                                                        logging)
                     tg = copy.deepcopy(best_tg)
                     ag = copy.deepcopy(best_ag)
                     del best_tg, best_ctg, best_ag

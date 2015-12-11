@@ -77,15 +77,15 @@ ToDo:
                                         * move_to_new_vertical_link_configuration
                                         * cleanup_arch_graph
         * Clusterer/Clustering_Function:
-                                        * TaskCirculation
+                                        * task_circulation
         * Clusterer/Clustering_Reports:
-                                        * ReportCTG
+                                        * report_ctg
         * Mapper/Mapping_Functions:
                                         * calculate_reliability_cost
 
         * Mapper/Mapping_Heuristics/Local_Search:
-                                        * OptimizeMappingLocalSearch
-                                        * OptimizeMappingIterativeLocalSearch
+                                        * mapping_opt_local_search
+                                        * mapping_opt_iterative_local_search
         * Mapper/Mapping_Heuristics/Local_Search:
                                         * FirstFree
         * Mapper/Mapping_Heuristics/SimulatedAnnealing:

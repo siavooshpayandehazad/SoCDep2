@@ -163,15 +163,15 @@ Clustering_CostFunctionType = 'SD+MAX'
 # RandomTaskMove: randomly chooses a task from a cluster and moves it to another random cluster
 # Swap: randomly chooses a 2 tasks from 2 clusters and Swaps them
 # Circulate: randomly chooses a N tasks from N clusters and Circulates them (is not implemented yet)
-ClusteringOptMove = 'Swap'
+ClusteringOptMove = 'RandomTaskMove'
 CTG_CirculationLength = 3
 ################################################
 #          Mapping Function  Config
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'LocalSearch'
-LocalSearchIteration = 100
+Mapping_Function = 'IterativeLocalSearch'
+LocalSearchIteration = 10
 IterativeLocalSearchIterations = 10
 #######################
 SimulatedAnnealingIteration = 50000

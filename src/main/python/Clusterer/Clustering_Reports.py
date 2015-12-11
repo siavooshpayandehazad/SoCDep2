@@ -4,32 +4,33 @@
 import networkx
 import matplotlib.pyplot as plt
 
-def ReportCTG(CTG, filename):
+
+def report_ctg(ctg, filename):
     print "==========================================="
     print "      REPORTING CLUSTERED TASK GRAPH"
     print "==========================================="
-    ClusterTaskListDicForDraw = {}
-    ClusterWeightDicForDraw = {}
-    for node in CTG.nodes():
-        print ("\tCLUSTER #: "+str(node)+"\tTASKS:"+str(CTG.node[node]['TaskList'])+"\tUTILIZATION: "+
-               str(CTG.node[node]['Utilization']))
-        ClusterTaskListDicForDraw[node] = CTG.node[node]['TaskList']
-    for edge in CTG.edges():
-        print ("\tEDGE #: "+str(edge)+"\tWEIGHT: "+str(CTG.edge[edge[0]][edge[1]]['Weight']))
-        ClusterWeightDicForDraw[edge] = CTG.edge[edge[0]][edge[1]]['Weight']
+    cluster_task_list_dict = {}
+    cluster_weight_dict = {}
+    for node in ctg.nodes():
+        print ("\tCLUSTER #: "+str(node)+"\tTASKS:"+str(ctg.node[node]['TaskList'])+"\tUTILIZATION: " +
+               str(ctg.node[node]['Utilization']))
+        cluster_task_list_dict[node] = ctg.node[node]['TaskList']
+    for edge in ctg.edges():
+        print ("\tEDGE #: "+str(edge)+"\tWEIGHT: "+str(ctg.edge[edge[0]][edge[1]]['Weight']))
+        cluster_weight_dict[edge] = ctg.edge[edge[0]][edge[1]]['Weight']
     print ("PREPARING GRAPH DRAWINGS...")
-    pos = networkx.shell_layout(CTG)
-    networkx.draw_networkx_nodes(CTG, pos, node_size=2200)
-    networkx.draw_networkx_edges(CTG, pos)
-    networkx.draw_networkx_edge_labels(CTG, pos, edge_labels=ClusterWeightDicForDraw)
-    networkx.draw_networkx_labels(CTG, pos, labels=ClusterTaskListDicForDraw)
+    pos = networkx.shell_layout(ctg)
+    networkx.draw_networkx_nodes(ctg, pos, node_size=2200)
+    networkx.draw_networkx_edges(ctg, pos)
+    networkx.draw_networkx_edge_labels(ctg, pos, edge_labels=cluster_weight_dict)
+    networkx.draw_networkx_labels(ctg, pos, labels=cluster_task_list_dict)
     plt.savefig("GraphDrawings/"+filename)
     plt.clf()
     print ("\033[35m* VIZ::\033[0mGRAPH DRAWINGS DONE, CHECK \"GraphDrawings/"+filename+"\"")
     return None
 
 
-def VizClusteringOpt():
+def viz_clustering_opt():
     """
     Visualizes the cost of solutions during clustering optimization process
     :return: None
@@ -38,23 +39,23 @@ def VizClusteringOpt():
     print ("GENERATING CLUSTERING OPTIMIZATION VISUALIZATIONS...")
 
     try:
-        ClusteringCostFile = open('Generated_Files/Internal/ClusteringCost.txt', 'r')
-        Cost = []
-        line = ClusteringCostFile.readline()
-        Cost.append(float(line))
-        MinCost = float(line)
-        MinCostList = []
-        MinCostList.append(MinCost)
+        clustering_cost_file = open('Generated_Files/Internal/ClusteringCost.txt', 'r')
+        cost = []
+        line = clustering_cost_file.readline()
+        cost.append(float(line))
+        min_cost = float(line)
+        min_cost_list = []
+        min_cost_list.append(min_cost)
         while line != "":
-            Cost.append(float(line))
-            if float(line) < MinCost:
-                MinCost = float(line)
-            MinCostList.append(MinCost)
-            line = ClusteringCostFile.readline()
-        SolutionNum = range(0, len(Cost))
-        ClusteringCostFile.close()
+            cost.append(float(line))
+            if float(line) < min_cost:
+                min_cost = float(line)
+            min_cost_list.append(min_cost)
+            line = clustering_cost_file.readline()
+        solution_num = range(0, len(cost))
+        clustering_cost_file.close()
 
-        plt.plot(SolutionNum, Cost, 'b', SolutionNum, MinCostList, 'r')
+        plt.plot(solution_num, cost, 'b', solution_num, min_cost_list, 'r')
         plt.savefig("GraphDrawings/CTG_Opt_Process.png")
         plt.clf()
         print ("\033[35m* VIZ::\033[0mCLUSTERING OPTIMIZATION PROCESS CREATED AT: GraphDrawings/CTG_Opt_Process.png")

@@ -7,271 +7,269 @@ from ConfigAndPackages import Config
 import random
 
 
-def RemoveTaskFromCTG(TG, CTG, Task):
+def remove_task_from_ctg(tg, ctg, task):
     """
     Removes a Task from TG from Clustred Task graph
-    :param TG: Task graph
-    :param CTG: Clustred Task Graph
-    :param Task: Task ID
+    :param tg: Task graph
+    :param ctg: Clustered Task Graph
+    :param task: Task ID
     :return: None
     """
-    TaskCluster = TG.node[Task]['Cluster']
-    #print ("\tREMOVING TASK:", Task, " FROM CLUSTER:", TaskCluster)
-    for edge in TG.edges():
-        if Task in edge:
-            WeightToRemove = TG.edge[edge[0]][edge[1]]['ComWeight']
-            SourceCluster = TG.node[edge[0]]['Cluster']
-            DestCluster = TG.node[edge[1]]['Cluster']
-            if SourceCluster is not None and DestCluster is not None:
-                if SourceCluster != DestCluster:
-                    #print ("\t\tREMOVING TG EDGE:", edge, "WITH WEIGHT", WeightToRemove, "FROM CLUSTER:", \
-                    #    SourceCluster, "--->", DestCluster)
-                    if (SourceCluster,DestCluster) not in CTG.edges():
-                        print ("\t\033[31mERROR\033[0m:: EDGE ",SourceCluster, "--->", DestCluster,"DOESNT EXIST")
-                        Clustering_Reports.ReportCTG(CTG,"CTG_Error.png")
-                        raise ValueError("RemoveTaskFromCTG::EDGE DOESNT EXIST")
+    task_cluster = tg.node[task]['Cluster']
+    # print ("\tREMOVING TASK:", Task, " FROM CLUSTER:", task_cluster)
+    for edge in tg.edges():
+        if task in edge:
+            weight_to_remove = tg.edge[edge[0]][edge[1]]['ComWeight']
+            source_cluster = tg.node[edge[0]]['Cluster']
+            destination_cluster = tg.node[edge[1]]['Cluster']
+            if source_cluster is not None and destination_cluster is not None:
+                if source_cluster != destination_cluster:
+                    # print ("\t\tREMOVING TG EDGE:", edge, "WITH WEIGHT", weight_to_remove, "FROM CLUSTER:", \
+                    #    source_cluster, "--->", destination_cluster)
+                    if (source_cluster, destination_cluster) not in ctg.edges():
+                        print ("\t\033[31mERROR\033[0m:: EDGE ", source_cluster, "--->",
+                               destination_cluster, "DOESNT EXIST")
+                        Clustering_Reports.report_ctg(ctg, "CTG_Error.png")
+                        raise ValueError("remove_task_from_ctg::EDGE DOESNT EXIST")
                     else:
-                        if CTG.edge[SourceCluster][DestCluster]['Weight'] - WeightToRemove >= 0:
-                            CTG.edge[SourceCluster][DestCluster]['Weight'] -= WeightToRemove
-                            if CTG.edge[SourceCluster][DestCluster]['Weight'] == 0:
-                                CTG.remove_edge(SourceCluster,DestCluster)
+                        if ctg.edge[source_cluster][destination_cluster]['Weight'] - weight_to_remove >= 0:
+                            ctg.edge[source_cluster][destination_cluster]['Weight'] -= weight_to_remove
+                            if ctg.edge[source_cluster][destination_cluster]['Weight'] == 0:
+                                ctg.remove_edge(source_cluster, destination_cluster)
                         else:
                             print ("\t\033[31mERROR\033[0m::FINAL WEIGHT IS NEGATIVE")
-                            raise ValueError("RemoveTaskFromCTG::FINAL WEIGHT IS NEGATIVE")
-    TG.node[Task]['Cluster'] = None
-    CTG.node[TaskCluster]['TaskList'].remove(Task)
-    if len(CTG.node[TaskCluster]['TaskList']) == 0:
-        CTG.node[TaskCluster]['Criticality'] = 'L'
-    CTG.node[TaskCluster]['Utilization'] -= TG.node[Task]['WCET']
+                            raise ValueError("remove_task_from_ctg::FINAL WEIGHT IS NEGATIVE")
+    tg.node[task]['Cluster'] = None
+    ctg.node[task_cluster]['TaskList'].remove(task)
+    if len(ctg.node[task_cluster]['TaskList']) == 0:
+        ctg.node[task_cluster]['Criticality'] = 'L'
+    ctg.node[task_cluster]['Utilization'] -= tg.node[task]['WCET']
     return None
 
 
-def AddTaskToCTG(TG,CTG,Task,Cluster):
+def add_task_to_ctg(tg, ctg, task, cluster):
     """
     Takes a Task from a Task Graph and adds it to a cluster in Cluster graph
     by adding related edges etc.
-    :param TG: Task graph
-    :param CTG:  clustered task graph
-    :param Task: Task to be added
-    :param Cluster: destination cluster fro mapping the Task
+    :param tg: Task graph
+    :param ctg:  clustered task graph
+    :param task: Task to be added
+    :param cluster: destination cluster fro mapping the Task
     :return: True if addition is success, False if otherwise...
     """
-    #print ("\tADDING TASK:", Task, " TO CLUSTER:", Cluster)
-    if len(CTG.node[Cluster]['TaskList']) == 0 :
-        CTG.node[Cluster]['Criticality'] = TG.node[Task]['Criticality']
+    # print ("\tADDING TASK:", task, " TO CLUSTER:", cluster)
+    if len(ctg.node[cluster]['TaskList']) == 0:
+        ctg.node[cluster]['Criticality'] = tg.node[task]['Criticality']
     else:
         if Config.EnablePartitioning:
-            if CTG.node[Cluster]['Criticality'] == TG.node[Task]['Criticality']:
+            if ctg.node[cluster]['Criticality'] == tg.node[task]['Criticality']:
                 pass
             else:
                 return False
-    CTG.node[Cluster]['TaskList'].append(Task)
-    CTG.node[Cluster]['Utilization']+= TG.node[Task]['WCET']
-    TG.node[Task]['Cluster'] = Cluster
-    for Edge in TG.edges():
-        if Task in Edge:
-            WeightToAdd = TG.edge[Edge[0]][Edge[1]]['ComWeight']
-            SrcCluster = TG.node[Edge[0]]['Cluster']
-            DstCluster = TG.node[Edge[1]]['Cluster']
-            if SrcCluster is not None and DstCluster is not None:
-                if SrcCluster != DstCluster:
-                    if (SrcCluster, DstCluster) in CTG.edges():
+    ctg.node[cluster]['TaskList'].append(task)
+    ctg.node[cluster]['Utilization'] += tg.node[task]['WCET']
+    tg.node[task]['Cluster'] = cluster
+    for edge in tg.edges():
+        if task in edge:
+            weight_to_add = tg.edge[edge[0]][edge[1]]['ComWeight']
+            source_cluster = tg.node[edge[0]]['Cluster']
+            destination_cluster = tg.node[edge[1]]['Cluster']
+            if source_cluster is not None and destination_cluster is not None:
+                if source_cluster != destination_cluster:
+                    if (source_cluster, destination_cluster) in ctg.edges():
                         if Config.Clustering_DetailedReport:
-                            print ("\t\tEDGE", SrcCluster,"--->", DstCluster,
-                                   "ALREADY EXISTS... ADDING", WeightToAdd, "TO WEIGHT...")
-                        CTG.edge[SrcCluster][DstCluster]['Weight'] += WeightToAdd
+                            print ("\t\tEDGE", source_cluster, "--->", destination_cluster,
+                                   "ALREADY EXISTS... ADDING", weight_to_add, "TO WEIGHT...")
+                        ctg.edge[source_cluster][destination_cluster]['Weight'] += weight_to_add
                     else:
                         if Config.Clustering_DetailedReport:
-                            print ("\t\tEDGE", SrcCluster, DstCluster, "DOES NOT EXISTS... ADDING EDGE WITH WEIGHT:",
-                                  TG.edge[Edge[0]][Edge[1]]['ComWeight'])
-                        CTG.add_edge(SrcCluster, DstCluster, Weight=WeightToAdd)
+                            print ("\t\tEDGE", source_cluster, destination_cluster,
+                                   "DOES NOT EXISTS... ADDING EDGE WITH WEIGHT:",
+                                   tg.edge[edge[0]][edge[1]]['ComWeight'])
+                        ctg.add_edge(source_cluster, destination_cluster, Weight=weight_to_add)
     return True
 
 
-def CostFunction(CTG):
+def ctg_cost_function(ctg):
     """
     This Function is calculating the cost of a solution for clustering optimization algorithm.
-    :param CTG: The Clustered task graph
+    :param ctg: The Clustered task graph
     :return: Cost
     """
-    ComWeightList = []
-    for edge in CTG.edges():
-        ComWeightList .append(CTG.edge[edge[0]][edge[1]]['Weight'])
+    com_weight_list = []
+    for edge in ctg.edges():
+        com_weight_list .append(ctg.edge[edge[0]][edge[1]]['Weight'])
 
+    cluster_utilization = []
+    for node in ctg.nodes():
+        cluster_utilization.append(ctg.node[node]['Utilization'])
 
-    ClusterUtilization = []
-    for Node in CTG.nodes():
-        ClusterUtilization.append(CTG.node[Node]['Utilization'])
-
-
-    CommunicationWeight = sum(ComWeightList)
-    MaxComWeight = max(ComWeightList)
-    MaxUtil = max(ClusterUtilization)
-    AvgUtil = sum(ClusterUtilization)/len(ClusterUtilization)
-
-
-    # print ("\tCOMWEIGHT:",CommunicationWeight,"STDEV:",ClusterUtilSD, "MAXUTIL:", MaxUtil, "AVG_UTIL:", AvgUtil)
+    total_com_weight = sum(com_weight_list)
+    max_com_weight = max(com_weight_list)
+    max_util = max(cluster_utilization)
+    avg_util = sum(cluster_utilization)/len(cluster_utilization)
 
     if Config.Clustering_CostFunctionType == 'SD':
-        ClusterUtilSD = statistics.stdev(ClusterUtilization)
-        ComWeightSD = statistics.stdev(ComWeightList)
-        Cost = ClusterUtilSD + ComWeightSD
+        cluster_util_sd = statistics.stdev(cluster_utilization)
+        com_weight_sd = statistics.stdev(com_weight_list)
+        cost = cluster_util_sd + com_weight_sd
     elif Config.Clustering_CostFunctionType == 'SD+MAX':
-        ClusterUtilSD = statistics.stdev(ClusterUtilization)
-        ComWeightSD = statistics.stdev(ComWeightList)
-        Cost = MaxComWeight + ComWeightSD + MaxUtil + ClusterUtilSD
+        cluster_util_sd = statistics.stdev(cluster_utilization)
+        com_weight_sd = statistics.stdev(com_weight_list)
+        cost = max_com_weight + com_weight_sd + max_util + cluster_util_sd
     elif Config.Clustering_CostFunctionType == 'MAX':
-        Cost = MaxComWeight + MaxUtil
+        cost = max_com_weight + max_util
     elif Config.Clustering_CostFunctionType == 'MAXCOM':
-        Cost = MaxComWeight
+        cost = max_com_weight
     elif Config.Clustering_CostFunctionType == 'AVGUTIL':
-        Cost = AvgUtil
+        cost = avg_util
     elif Config.Clustering_CostFunctionType == 'SUMCOM':
-        Cost = CommunicationWeight
+        cost = total_com_weight
     else:
         raise ValueError("Clustering_CostFunctionType is not valid")
-    return Cost
+    return cost
 
 
-def ClearClustering(TG, CTG):
+def clear_clustering(tg, ctg):
     """
     Clears a clustering that has been done. by removing the tasks in task-list of clusters,
     removing parent cluster of tasks and deleting all the edges in cluster graph.
-    :param TG: Task Graph
-    :param CTG: Clustered Task Graph
+    :param tg: Task Graph
+    :param ctg: Clustered Task Graph
     :return: None
     """
-    for node in TG.nodes():
-        TG.node[node]['Cluster'] = None
-    for cluster in CTG.nodes():
-        CTG.node[cluster]['TaskList'] = []
-        CTG.node[cluster]['Utilization'] = 0
-        CTG.node[cluster]['Criticality'] = None
-    for edge in CTG.edges():
-        CTG.remove_edge(edge[0], edge[1])
+    for node in tg.nodes():
+        tg.node[node]['Cluster'] = None
+    for cluster in ctg.nodes():
+        ctg.node[cluster]['TaskList'] = []
+        ctg.node[cluster]['Utilization'] = 0
+        ctg.node[cluster]['Criticality'] = None
+    for edge in ctg.edges():
+        ctg.remove_edge(edge[0], edge[1])
     return None
 
 
-def CTG_OptimizationMove(TG, CTG, logging):
+def ctg_opt_move(tg, ctg, logging):
     """
     Controls the Optimization moves for CTG optimization
-    :param TG: Task Graph
-    :param CTG: Clustered Task Graph
+    :param tg: Task Graph
+    :param ctg: Clustered Task Graph
     :param logging: logging file
     :return: None
     """
     if Config.ClusteringOptMove == 'RandomTaskMove':
-        RandomTaskMove(TG, CTG, logging)
+        random_task_move(tg, ctg, logging)
     elif Config.ClusteringOptMove == 'Swap':
-        TaskSwap(TG, CTG, logging)
+        task_swap(tg, ctg, logging)
     elif Config.ClusteringOptMove == 'Circulate':
-        TaskCirculation(TG, CTG, Config.CTG_CirculationLength, logging)
+        task_circulation(tg, ctg, Config.CTG_CirculationLength, logging)
     return None
 
-def RandomTaskMove(TG, CTG, logging):
+
+def random_task_move(tg, ctg, logging):
     """
     Randomly chooses one task from CTG and moves it from its cluster to another random cluster
-    :param TG: Task Graph
-    :param CTG: Clustered Task Graph
+    :param tg: Task Graph
+    :param ctg: Clustered Task Graph
     :param logging: logging file
     :return: None
     """
-    RandomTask = random.choice(TG.nodes())
-    RandomTaskCluster = TG.node[RandomTask]['Cluster']
+    random_task = random.choice(tg.nodes())
+    random_task_cluster = tg.node[random_task]['Cluster']
     # remove it and all its connections from CTG
-    RemoveTaskFromCTG(TG,CTG,RandomTask)
+    remove_task_from_ctg(tg, ctg, random_task)
     # randomly choose another cluster
     # move the task to the cluster and add the connections
-    RandomCluster = random.choice(CTG.nodes())
-    while not AddTaskToCTG(TG,CTG,RandomTask,RandomCluster):
-        # RemoveTaskFromCTG(TG,CTG,RandomTask)
-        AddTaskToCTG(TG,CTG,RandomTask,RandomTaskCluster)
-        # DoubleCheckCTG(TG,CTG)
-        RandomTask = random.choice(TG.nodes())
-        RandomTaskCluster = TG.node[RandomTask]['Cluster']
+    random_cluster = random.choice(ctg.nodes())
+    while not add_task_to_ctg(tg, ctg, random_task, random_cluster):
+        # remove_task_from_ctg(tg, ctg, random_task)
+        add_task_to_ctg(tg, ctg, random_task, random_task_cluster)
+        # double_check_ctg(tg, ctg)
+        random_task = random.choice(tg.nodes())
+        random_task_cluster = tg.node[random_task]['Cluster']
 
-        RemoveTaskFromCTG(TG,CTG,RandomTask)
-        RandomCluster = random.choice(CTG.nodes())
-    logging.info("TASK"+str(RandomTask)+"MOVED TO CLUSTER"+str(RandomCluster)+"RESULTS IN UTILIZATION:"+
-                   str(CTG.node[RandomCluster]['Utilization']+TG.node[RandomTask]['WCET']))
+        remove_task_from_ctg(tg, ctg, random_task)
+        random_cluster = random.choice(ctg.nodes())
+    logging.info("TASK"+str(random_task)+"MOVED TO CLUSTER"+str(random_cluster)+"RESULTS IN UTILIZATION:" +
+                 str(ctg.node[random_cluster]['Utilization']+tg.node[random_task]['WCET']))
     return None
 
 
-def TaskSwap(TG, CTG, logging):
+def task_swap(tg, ctg, logging):
     """
     randomly chooses 2 tasks in CTG and swaps them.
-    :param TG: Task Graph
-    :param CTG: Clustered Task Graph
+    :param tg: Task Graph
+    :param ctg: Clustered Task Graph
     :param logging: logging file
     :return: None
     """
-    RandomCluster1 = None
-    RandomCluster2 = None
+    random_cluster1 = None
+    random_cluster2 = None
 
-    while RandomCluster1 == RandomCluster2:
-        RandomCluster1 = random.choice(CTG.nodes())
-        while len(CTG.node[RandomCluster1]['TaskList']) == 0:
-            RandomCluster1 = random.choice(CTG.nodes())
-        RandomCluster2 = random.choice(CTG.nodes())
-        while len(CTG.node[RandomCluster2]['TaskList']) == 0:
-            RandomCluster2 = random.choice(CTG.nodes())
+    while random_cluster1 == random_cluster2:
+        random_cluster1 = random.choice(ctg.nodes())
+        while len(ctg.node[random_cluster1]['TaskList']) == 0:
+            random_cluster1 = random.choice(ctg.nodes())
+        random_cluster2 = random.choice(ctg.nodes())
+        while len(ctg.node[random_cluster2]['TaskList']) == 0:
+            random_cluster2 = random.choice(ctg.nodes())
 
-    RandomTask1 = random.choice(CTG.node[RandomCluster1]['TaskList'])
-    RandomTask2 = random.choice(CTG.node[RandomCluster2]['TaskList'])
+    random_task1 = random.choice(ctg.node[random_cluster1]['TaskList'])
+    random_task2 = random.choice(ctg.node[random_cluster2]['TaskList'])
 
-    RemoveTaskFromCTG(TG, CTG, RandomTask1)
-    RemoveTaskFromCTG(TG, CTG, RandomTask2)
+    remove_task_from_ctg(tg, ctg, random_task1)
+    remove_task_from_ctg(tg, ctg, random_task2)
 
-    Task1Clustering = AddTaskToCTG(TG, CTG, RandomTask1, RandomCluster2)
-    Task2Clustering = AddTaskToCTG(TG, CTG, RandomTask2, RandomCluster1)
+    task1_clustering = add_task_to_ctg(tg, ctg, random_task1, random_cluster2)
+    task2_clustering = add_task_to_ctg(tg, ctg, random_task2, random_cluster1)
 
-    while not (Task1Clustering and Task2Clustering):
-        if Task1Clustering:
-            RemoveTaskFromCTG(TG, CTG, RandomTask1)
-        if Task2Clustering:
-            RemoveTaskFromCTG(TG, CTG, RandomTask2)
+    while not (task1_clustering and task2_clustering):
+        if task1_clustering:
+            remove_task_from_ctg(tg, ctg, random_task1)
+        if task2_clustering:
+            remove_task_from_ctg(tg, ctg, random_task2)
 
-        AddTaskToCTG(TG, CTG, RandomTask1, RandomCluster1)
-        AddTaskToCTG(TG, CTG, RandomTask2, RandomCluster2)
+        add_task_to_ctg(tg, ctg, random_task1, random_cluster1)
+        add_task_to_ctg(tg, ctg, random_task2, random_cluster2)
 
         # here we are back to normal...
-        RandomCluster1 = None
-        RandomCluster2 = None
+        random_cluster1 = None
+        random_cluster2 = None
 
-        while RandomCluster1 == RandomCluster2:
-            RandomCluster1 = random.choice(CTG.nodes())
-            while len(CTG.node[RandomCluster1]['TaskList']) == 0:
-                RandomCluster1 = random.choice(CTG.nodes())
-            RandomCluster2 = random.choice(CTG.nodes())
-            while len(CTG.node[RandomCluster2]['TaskList']) == 0:
-                RandomCluster2 = random.choice(CTG.nodes())
+        while random_cluster1 == random_cluster2:
+            random_cluster1 = random.choice(ctg.nodes())
+            while len(ctg.node[random_cluster1]['TaskList']) == 0:
+                random_cluster1 = random.choice(ctg.nodes())
+            random_cluster2 = random.choice(ctg.nodes())
+            while len(ctg.node[random_cluster2]['TaskList']) == 0:
+                random_cluster2 = random.choice(ctg.nodes())
 
-        RandomTask1 = random.choice(CTG.node[RandomCluster1]['TaskList'])
-        RandomTask2 = random.choice(CTG.node[RandomCluster2]['TaskList'])
+        random_task1 = random.choice(ctg.node[random_cluster1]['TaskList'])
+        random_task2 = random.choice(ctg.node[random_cluster2]['TaskList'])
 
-        RemoveTaskFromCTG(TG, CTG, RandomTask1)
-        RemoveTaskFromCTG(TG, CTG, RandomTask2)
+        remove_task_from_ctg(tg, ctg, random_task1)
+        remove_task_from_ctg(tg, ctg, random_task2)
 
-        Task1Clustering = AddTaskToCTG(TG, CTG, RandomTask1, RandomCluster2)
-        Task2Clustering = AddTaskToCTG(TG, CTG, RandomTask2, RandomCluster1)
+        task1_clustering = add_task_to_ctg(tg, ctg, random_task1, random_cluster2)
+        task2_clustering = add_task_to_ctg(tg, ctg, random_task2, random_cluster1)
 
-    logging.info("TASK "+str(RandomTask1) + " FROM CLUSTER " + str(RandomCluster1) + " SWAPPED WITH TASK " +
-                 str(RandomTask2)+" FROM CLUSTER "+str(RandomCluster2))
+    logging.info("TASK "+str(random_task1) + " FROM CLUSTER " + str(random_cluster1) + " SWAPPED WITH TASK " +
+                 str(random_task2)+" FROM CLUSTER "+str(random_cluster2))
     return None
 
 
-def TaskCirculation(TG, CTG, CirculationLength, logging):
+def task_circulation(tg, ctg, circulation_length, logging):
     # todo... Circulate N tasks...
     return None
 
 
-def DeleteEmptyClusters(CTG):
+def remove_empty_clusters(ctg):
     """
-    Takes a CTG and deletes the empty clusters
-    :param CTG: Clustered Task Graph
+    Takes a ctg and deletes the empty clusters
+    :param ctg: Clustered Task Graph
     :return: None
     """
-    for Cluster in CTG.nodes():
-        if len(CTG.node[Cluster]['TaskList']) == 0:
-            CTG.remove_node(Cluster)
+    for cluster in ctg.nodes():
+        if len(ctg.node[cluster]['TaskList']) == 0:
+            ctg.remove_node(cluster)
     return None
