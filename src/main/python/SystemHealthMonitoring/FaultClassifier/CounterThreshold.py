@@ -3,11 +3,15 @@
 
 class CounterThreshold():
 
-    def __init__(self, fault_threshold, health_threshold):
+    def __init__(self, fault_threshold, health_threshold, intermittent_threshold):
         self.fault_counters = {}
+        self.intermittent_counters = {}
         self.health_counters = {}
+
         self.fault_threshold = fault_threshold
+        self.intermittent_threshold = intermittent_threshold
         self.health_threshold = health_threshold
+
         self.dead_components = []
         self.memory_counter = 0
 
@@ -45,6 +49,10 @@ class CounterThreshold():
             self.memory_counter = current_memory_usage
         return None
 
+    def increase_intermittent_counter(self):
+
+        return None
+
     def increase_fault_counter(self, location, logging):
         if type(location) is dict:
             # print location, str(location.keys()[0])+str(location[location.keys()[0]])
@@ -78,6 +86,10 @@ class CounterThreshold():
     def reset_counters(self, location):
         if location in self.fault_counters.keys():
             del self.fault_counters[location]
+        else:
+            pass
+        if location in self.intermittent_counters.keys():
+            del self.intermittent_counters[location]
         else:
             pass
         if location in self.health_counters.keys():

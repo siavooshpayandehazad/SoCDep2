@@ -15,11 +15,11 @@ EventDrivenFaultInjection = True
 #          TG  Config
 ################################################
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile'
-TG_Type = 'Manual'
+TG_Type = 'RandomDependent'
 # For Random TG_Type:
-NumberOfTasks = 19
+NumberOfTasks = 9
 NumberOfCriticalTasks = 0
-NumberOfEdges = 30
+NumberOfEdges = 15
 WCET_Range = 15
 EdgeWeightRange = 7
 Release_Range = 5      # task release time range
@@ -139,8 +139,8 @@ ListOfBrokenTurns = {}
 # For aging, we need to give the tool a dictionary of nodes and their speed down...
 # so {1: 0.3} means that node 1's speed has decreased by 30% from its current state.
 # I know its a dictionary
-ListOfAgedPEs = {3: 0.3, 2: 0.1}
-# ListOfAgedPEs = {}
+# ListOfAgedPEs = {3: 0.3, 2: 0.1}
+ListOfAgedPEs = {}
 # ==========================
 MaxTemp = 100
 ################################################
@@ -170,7 +170,7 @@ CTG_CirculationLength = 3
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'IterativeLocalSearch'
+Mapping_Function = 'NMap'
 LocalSearchIteration = 10
 IterativeLocalSearchIterations = 10
 #######################
@@ -291,7 +291,7 @@ RG_Draw = False
 PMCG_Drawing = False
 TTG_Drawing = False
 Mapping_Dstr_Drawing = True
-Mapping_Drawing = False
+Mapping_Drawing = True
 SHM_Drawing = False          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks

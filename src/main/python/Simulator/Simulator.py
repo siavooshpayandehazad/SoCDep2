@@ -122,16 +122,16 @@ def run_simulator(runtime, AG, SHM, NoCRG, logging):
     print "STARTING SIMULATION..."
     env = simpy.Environment()
     counter_threshold = CounterThreshold.CounterThreshold(Config.fault_counter_threshold,
-                                                          Config.health_counter_threshold)
+                                                          Config.health_counter_threshold, 0)
 
     fault_time_list = []
     fault_time = 0
     if Config.EventDrivenFaultInjection:
-        time_until_next_fault=numpy.random.normal(Config.MTBF, Config.SD4MTBF)
+        time_until_next_fault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
         fault_time += time_until_next_fault
         while fault_time < runtime:
             fault_time_list.append(float("{0:.1f}".format(fault_time)))
-            time_until_next_fault=numpy.random.normal(Config.MTBF, Config.SD4MTBF)
+            time_until_next_fault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
             fault_time += time_until_next_fault
         print fault_time_list
         env.process(fault_event(env, AG, SHM, NoCRG, fault_time_list, counter_threshold, logging))

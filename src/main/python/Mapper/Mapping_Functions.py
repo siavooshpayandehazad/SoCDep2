@@ -115,7 +115,7 @@ def map_task_to_node(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, task, nod
                                 ag.node[path[len(path)-1][1]]['Router'].MappedTasks[edge] = [(counter, probability)]
                                 logging.info("\t\t\t\tAdding Packet "+str(edge)+" To Router:"+str(path[len(path)-1][1]))
 
-                                edge_list_of_links = list(batch[1] for batch in ag.edge[edge[0]][edge[1]]['Link'])
+                                edge_list_of_links = list(batch[1] for batch in tg.edge[edge[0]][edge[1]]['Link'])
                                 if link not in edge_list_of_links:
                                     tg.edge[edge[0]][edge[1]]['Link'].append((counter, link, probability))
 
