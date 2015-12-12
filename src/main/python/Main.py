@@ -12,7 +12,6 @@ from GUI_Util import GUI
 from pympler import tracker
 from Simulator import Simulator, FaultInjector
 
-
 if Config.MemoryProfiler:
     tr = tracker.SummaryTracker()
 
@@ -43,7 +42,6 @@ elif '-BENCHMARK' in sys.argv[1:]:
         pass
     else:
         sys.exit()
-
 
 program_start_time = time.time()
 ##############################

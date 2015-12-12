@@ -103,7 +103,7 @@ def initialize_system(logging):
     if Config.GeneratePMCG:
         pmcg_start_time = time.time()
         if Config.OneStepDiagnosable:
-            pmcg = TestSchedulingUnit.GenerateOneStepDiagnosablePMCG(ag, shmu)
+            pmcg = TestSchedulingUnit.GenerateOneStepDiagnosablePMCG(ag, shmu.SHM)
         else:
             pmcg = TestSchedulingUnit.GenerateSequentiallyDiagnosablePMCG(ag, shmu.SHM)
         test_tg = TestSchedulingUnit.GenerateTestTGFromPMCG(pmcg)

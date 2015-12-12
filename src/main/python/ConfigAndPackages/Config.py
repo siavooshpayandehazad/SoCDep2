@@ -1,5 +1,10 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 import PackageFile
+import ConfigParser
+
+config = ConfigParser.ConfigParser(allow_no_value=True)
+config.read("ConfigAndPackages/ConfigFile.txt")
+# print config.sections()
 
 ################################################
 #          Program  Config
@@ -14,28 +19,24 @@ EventDrivenFaultInjection = True
 ################################################
 #          TG  Config
 ################################################
-# TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile'
-TG_Type = 'Manual'
-# For Random TG_Type:
-NumberOfTasks = 9
-NumberOfCriticalTasks = 0
-NumberOfEdges = 15
-WCET_Range = 15
-EdgeWeightRange = 7
-Release_Range = 5      # task release time range
-# The following is only for Manual TG_Type:
-# Note::    if you have High-critical tasks in your TG, make sure that you have checked partitioning options for the
-#           network.
-Task_List = [0, 1, 2, 3, 4, 5, 6, 7]
-Task_WCET_List = [30, 30, 20, 40, 10, 5, 15, 20]
-Task_Criticality_List = ['L', 'L', 'L', 'L', 'L', 'L', 'L', 'L']
-TG_Edge_List = [(1, 2), (1, 3), (2, 5), (0, 5), (4, 7), (4, 3), (1, 6), (0, 6)]
-TG_Edge_Weight = [5, 9, 4, 7, 5, 3, 5, 1]
 
-# TG DOT FILE PATH
-# you can use this one: http://express.ece.ucsb.edu/benchmark/jpeg/h2v2_smooth_downsample.html
-# as example...
-TG_DOT_Path = 'Something.dot'
+TG_Type = config.get("TG_Config", "TG_Type")
+
+NumberOfTasks = config.getint("TG_Config", "NumberOfTasks")
+NumberOfCriticalTasks = config.getint("TG_Config", "NumberOfCriticalTasks")
+NumberOfEdges = config.getint("TG_Config", "NumberOfEdges")
+WCET_Range = config.getint("TG_Config", "WCET_Range")
+EdgeWeightRange = config.getint("TG_Config", "EdgeWeightRange")
+Release_Range = config.getint("TG_Config", "Release_Range")      # task release time range
+
+Task_List = map(int, config.get("TG_Config", "Task_List").split(","))
+Task_WCET_List = map(int, config.get("TG_Config", "Task_WCET_List").split(","))
+Task_Criticality_List = config.get("TG_Config", "Task_Criticality_List").split(",")
+TG_Edge_List = [(1, 2), (1, 3), (2, 5), (0, 5), (4, 7), (4, 3), (1, 6), (0, 6)]
+print config.get("TG_Config", "TG_Edge_List").split(",")
+TG_Edge_Weight = map(int, config.get("TG_Config", "TG_Edge_Weight").split(","))
+
+TG_DOT_Path = config.get("TG_Config", "TG_DOT_Path")
 ################################################
 #          AG  Config
 ################################################
@@ -171,8 +172,8 @@ CTG_CirculationLength = 3
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'SimulatedAnnealing'
-LocalSearchIteration = 1000
+Mapping_Function = 'LocalSearch'
+LocalSearchIteration = 100
 IterativeLocalSearchIterations = 5
 mapping_random_seed = 2000
 #######################
@@ -280,12 +281,15 @@ else:
 ###############################################
 #           PMCG Config
 ###############################################
-GeneratePMCG = False
-OneStepDiagnosable = False     # set to False if you need Sequentially diagnosable PMCG
-TFaultDiagnosable = None        # one-step t-fault diagnosable system, if set to none, default value would be
+GeneratePMCG = config.getboolean("PMCG_Config", "GeneratePMCG")
+# set to False if you need Sequentially diagnosable PMCG
+OneStepDiagnosable = config.getboolean("PMCG_Config", "OneStepDiagnosable")
+# one-step t-fault diagnosable system, if set to None, default value would be
 #                                 (n-1)/2
-NodeTestExeTime = 2
-NodeTestComWeight = 2
+TFaultDiagnosable = config.get("PMCG_Config", "TFaultDiagnosable")
+NodeTestExeTime = config.getint("PMCG_Config", "NodeTestExeTime")
+NodeTestComWeight = config.getint("PMCG_Config", "NodeTestComWeight")
+
 ###############################################
 #           VISUALIZATION Config
 ###############################################
