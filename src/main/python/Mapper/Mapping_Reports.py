@@ -23,11 +23,11 @@ def ReportMapping(ag, logging):
     return None
 
 
-def DrawMappingDistribution(ag, shmu):
+def DrawMappingDistribution(ag, shum):
     """
     Draws mapping Task Number and Utilization Distribution
     :param ag: Architecture Graph
-    :param shmu: System health Monitoring Unit
+    :param shum: System health Monitoring Unit
     :return: None
     """
     print ("===========================================")
@@ -47,7 +47,7 @@ def DrawMappingDistribution(ag, shmu):
         z_size = float(Config.Network_Y_Size)
         num = 255*len(ag.node[node]['PE'].MappedTasks)/float(max_number_of_tasks)
         util = 255*ag.node[node]['PE'].Utilization/float(max_utilization)
-        if shmu.SHM.node[node]['NodeHealth']:
+        if shum.SHM.node[node]['NodeHealth']:
             if not ag.node[node]['PE'].Dark:
                 color = '#%02X%02X%02X' % (255, 255-num, 255-num)
             else:
@@ -58,7 +58,7 @@ def DrawMappingDistribution(ag, shmu):
                                                    location[1]/y_size+location[2]/(z_size*y_size**2)),
                                 width=0.15, height=0.15, facecolor=color,
                                 edgecolor="black", linewidth=3, zorder=z_size-location[2]))
-        if shmu.SHM.node[node]['NodeHealth']:
+        if shum.SHM.node[node]['NodeHealth']:
             if not ag.node[node]['PE'].Dark:
                 color = '#%02X%02X%02X' % (255, 255-util, 255-util)
             else:
@@ -83,13 +83,14 @@ def DrawMappingDistribution(ag, shmu):
     return None
 
 
-def DrawMapping(tg, ag, shmu):
+def DrawMapping(tg, ag, shm, mapping_file_name):
     """
     This function draws the tasks on tiles of network. this would be very useful to check how our
     mapping optimization is acting...
     :param tg: Task Graph
     :param ag: Architecture Graph
-    :param shmu: System Health Management Unit
+    :param shm: System Health Map
+    :param mapping_file_name: string containing name of the file in which the mapping would be generated
     :return: None
     """
     print ("===========================================")
@@ -105,7 +106,7 @@ def DrawMapping(tg, ag, shmu):
     distance = step_size * z_size * 1.2
     for node in ag.nodes():
         location = AG_Functions.return_node_location(node)
-        if shmu.SHM.node[node]['NodeHealth']:
+        if shm.node[node]['NodeHealth']:
             if not ag.node[node]['PE'].Dark:
                 if Config.EnablePartitioning:
                     if node in Config.CriticalRegionNodes:
@@ -172,7 +173,7 @@ def DrawMapping(tg, ag, shmu):
     plt.gca().add_patch(patches.Arrow(-node_size*2/3, -node_size*2/3, node_size/3, node_size/3, width=node_size/10))
     plt.gca().add_patch(patches.Arrow(-node_size*2/3, -node_size*2/3, 0, node_size, width=node_size/10))
 
-    fig.savefig("GraphDrawings/Mapping.png")
+    fig.savefig("GraphDrawings/"+mapping_file_name+".png")
     plt.clf()
     plt.close(fig)
     print ("\033[35m* VIZ::\033[0mMAPPING DRAWING CREATED AT: GraphDrawings/Mapping.png")
@@ -209,7 +210,7 @@ def VizMappingOpt(cost_file_name):
 
         ax1.set_ylabel('Mapping Cost')
         ax1.set_xlabel('Iteration #')
-        ax1.plot(solution_num, cost, 'b', solution_num, min_cost_list, 'r')
+        ax1.plot(solution_num, cost, '#5095FD', solution_num, min_cost_list, 'r')
 
         if Config.Mapping_Function == 'IterativeLocalSearch':
             for Iteration in range(1, Config.IterativeLocalSearchIterations+1):
@@ -232,14 +233,14 @@ def VizMappingOpt(cost_file_name):
             sa_temp_file.close()
             # print (len(temp), len(solution_num))
             ax2 = ax1.twinx()
-            ax2.plot(solution_num, temp, 'g')
+            ax2.plot(solution_num, temp, 'g--')
             ax2.set_ylabel('Temperature')
             for tl in ax2.get_yticklabels():
                 tl.set_color('g')
         except IOError:
             print ('CAN NOT OPEN SATemp.txt')
 
-    plt.savefig("GraphDrawings/Mapping_Opt_Process.png")
+    plt.savefig("GraphDrawings/Mapping_Opt_Process.png", dpi=300)
     plt.clf()
     plt.close(fig)
     print ("\033[35m* VIZ::\033[0mMAPPING OPTIMIZATION PROCESS GRAPH CREATED AT: GraphDrawings/Mapping_Opt_Process.png")

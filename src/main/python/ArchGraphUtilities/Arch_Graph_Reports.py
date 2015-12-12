@@ -17,7 +17,7 @@ def draw_ag(ag, file_name):
     color_list = []
 
     number_of_layers = Config.Network_Z_Size
-    node_size = 500/number_of_layers
+    node_size = 700/number_of_layers
 
     node_distance_x = (6 * node_size * Config.Network_X_Size * (number_of_layers+1))
     node_distance_y = (6 * node_size * Config.Network_Y_Size * (number_of_layers+1))

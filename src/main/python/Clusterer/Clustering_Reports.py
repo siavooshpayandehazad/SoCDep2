@@ -20,7 +20,7 @@ def report_ctg(ctg, filename):
         cluster_weight_dict[edge] = ctg.edge[edge[0]][edge[1]]['Weight']
     print ("PREPARING GRAPH DRAWINGS...")
     pos = networkx.shell_layout(ctg)
-    networkx.draw_networkx_nodes(ctg, pos, node_size=2200)
+    networkx.draw_networkx_nodes(ctg, pos, node_size=2200, node_color='#FAA5A5')
     networkx.draw_networkx_edges(ctg, pos)
     networkx.draw_networkx_edge_labels(ctg, pos, edge_labels=cluster_weight_dict)
     networkx.draw_networkx_labels(ctg, pos, labels=cluster_task_list_dict)
@@ -44,8 +44,7 @@ def viz_clustering_opt():
         line = clustering_cost_file.readline()
         cost.append(float(line))
         min_cost = float(line)
-        min_cost_list = []
-        min_cost_list.append(min_cost)
+        min_cost_list = [min_cost]
         while line != "":
             cost.append(float(line))
             if float(line) < min_cost:
@@ -55,8 +54,8 @@ def viz_clustering_opt():
         solution_num = range(0, len(cost))
         clustering_cost_file.close()
 
-        plt.plot(solution_num, cost, 'b', solution_num, min_cost_list, 'r')
-        plt.savefig("GraphDrawings/CTG_Opt_Process.png")
+        plt.plot(solution_num, cost, '#5095FD', solution_num, min_cost_list, 'r')
+        plt.savefig("GraphDrawings/CTG_Opt_Process.png", dpi=300)
         plt.clf()
         print ("\033[35m* VIZ::\033[0mCLUSTERING OPTIMIZATION PROCESS CREATED AT: GraphDrawings/CTG_Opt_Process.png")
     except IOError:

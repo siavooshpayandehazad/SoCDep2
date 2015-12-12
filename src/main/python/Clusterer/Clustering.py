@@ -37,6 +37,14 @@ def initial_clustering(tg, ctg):
     """
     print ("===========================================")
     print ("STARTING INITIAL CLUSTERING...")
+
+    if Config.ctg_random_seed is not None:
+        print "RANDOM SEED: ", Config.ctg_random_seed
+        random.seed(Config.ctg_random_seed)
+    else:
+        print "RANDOM SEED SET TO NONE!"
+        random.seed(None)
+
     for task in tg.nodes():
         iteration = 0
         destination_cluster = random.choice(ctg.nodes())

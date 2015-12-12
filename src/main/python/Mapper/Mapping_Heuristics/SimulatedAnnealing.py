@@ -40,7 +40,8 @@ def optimize_mapping_sa(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg,
         if Config.Mapping_CostFunctionType == 'CONSTANT':
             Mapping_Functions.clear_mapping(tg, ctg, ag)
             if not Mapping_Functions.make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg,
-                                                          noncritical_rg, True, logging):
+                                                          noncritical_rg, True, logging,
+                                                          Config.mapping_random_seed):
                 raise ValueError("FEASIBLE MAPPING NOT FOUND...")
     else:
         init_map_string = None
@@ -94,6 +95,7 @@ def optimize_mapping_sa(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg,
         prob = metropolis(current_cost, new_cost, temperature)
         # print ("prob:", prob)
         # throw the coin with probability P
+        random.seed(None)
         if prob > random.random():
             # accept the new solution
             move_accepted = True
@@ -211,29 +213,29 @@ def optimize_mapping_sa(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg,
 def next_temp(initial_temp, iteration, max_iteration, current_temp, slope=None, standard_deviation=None):
     if Config.SA_AnnealingSchedule == 'Linear':
         temp = (float(max_iteration-iteration)/max_iteration)*initial_temp
-        print ("\033[36m* COOLING::\033[0m CURRENT TEMP:"+str(temp))
+        print ("\033[36m* COOLING::\033[0m CURRENT TEMP: "+str(temp))
 #   ----------------------------------------------------------------
     elif Config.SA_AnnealingSchedule == 'Exponential':
         temp = current_temp * Config.SA_Alpha
-        print ("\033[36m* COOLING::\033[0m CURRENT TEMP:"+str(temp))
+        print ("\033[36m* COOLING::\033[0m CURRENT TEMP: "+str(temp))
 #   ----------------------------------------------------------------
     elif Config.SA_AnnealingSchedule == 'Logarithmic':
         # this is based on "A comparison of simulated annealing cooling strategies"
         # by Yaghout Nourani and Bjarne Andresen
         temp = Config.LogCoolingConstant * (1.0/log10(1+(iteration+1)))     # iteration should be > 1 so I added 1
-        print ("\033[36m* COOLING::\033[0m CURRENT TEMP:"+str(temp))
+        print ("\033[36m* COOLING::\033[0m CURRENT TEMP: "+str(temp))
 #   ----------------------------------------------------------------
     elif Config.SA_AnnealingSchedule == 'Adaptive':
         temp = current_temp
         if iteration > Config.CostMonitorQueSize:
             if 0 < slope < Config.SlopeRangeForCooling:
                 temp = current_temp * Config.SA_Alpha
-                print ("\033[36m* COOLING::\033[0m CURRENT TEMP:"+str(temp))
+                print ("\033[36m* COOLING::\033[0m CURRENT TEMP: "+str(temp))
 #   ----------------------------------------------------------------
     elif Config.SA_AnnealingSchedule == 'Markov':
         temp = initial_temp - (iteration/Config.MarkovNum)*Config.MarkovTempStep
         if temp < current_temp:
-            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:"+str(temp))
+            print ("\033[36m* COOLING::\033[0m CURRENT TEMP: "+str(temp))
         if temp <= 0:
             temp = current_temp
 #   ----------------------------------------------------------------
@@ -243,20 +245,20 @@ def next_temp(initial_temp, iteration, max_iteration, current_temp, slope=None, 
         # Emile H. L. Aarts, Jan Karel Lenstra
         if iteration % Config.CostMonitorQueSize == 0 and standard_deviation is not None and standard_deviation != 0:
             temp = float(current_temp)/(1+(current_temp*(log1p(Config.Delta)/standard_deviation)))
-            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:"+str(temp))
+            print ("\033[36m* COOLING::\033[0m CURRENT TEMP: "+str(temp))
         elif standard_deviation == 0:
             temp = float(current_temp)*Config.SA_Alpha
-            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:"+str(temp))
+            print ("\033[36m* COOLING::\033[0m CURRENT TEMP: "+str(temp))
         else:
             temp = current_temp
 #   ----------------------------------------------------------------
     elif Config.SA_AnnealingSchedule == 'Huang':
         if standard_deviation is not None and standard_deviation != 0:
             temp = float(current_temp)/(1+(current_temp*(log1p(Config.Delta)/standard_deviation)))
-            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:"+str(temp))
+            print ("\033[36m* COOLING::\033[0m CURRENT TEMP: "+str(temp))
         elif standard_deviation == 0:
             temp = float(current_temp)*Config.SA_Alpha
-            print ("\033[36m* COOLING::\033[0m CURRENT TEMP:"+str(temp))
+            print ("\033[36m* COOLING::\033[0m CURRENT TEMP: "+str(temp))
         else:
             temp = current_temp
 #   ----------------------------------------------------------------
@@ -285,6 +287,7 @@ def metropolis(current_cost, new_cost, temperature):
 
 
 def move_to_next_solution(tg, ctg, ag, noc_rg, shm, critical_rg, noncritical_rg, logging):
+    random.seed(None)
     cluster_to_move = random.choice(ctg.nodes())
     current_node = ctg.node[cluster_to_move]['Node']
     Mapping_Functions.remove_cluster_from_node(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg,

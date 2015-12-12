@@ -15,7 +15,7 @@ EventDrivenFaultInjection = True
 #          TG  Config
 ################################################
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile'
-TG_Type = 'RandomDependent'
+TG_Type = 'Manual'
 # For Random TG_Type:
 NumberOfTasks = 9
 NumberOfCriticalTasks = 0
@@ -147,7 +147,8 @@ MaxTemp = 100
 #          Clustering Function  Config
 ################################################
 Clustering_Optimization = True     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
-ClusteringIteration = 2000
+ClusteringIteration = 500
+ctg_random_seed = 100
 Clustering_Report = False
 Clustering_DetailedReport = False
 # here you can change the type of cost function used for Clustering the available cost functions are:
@@ -158,7 +159,7 @@ Clustering_DetailedReport = False
 # 'AVGUTIL' = sum(ClusterUtilization)/len(ClusterUtilization)
 # 'SUMCOM' = sum(CommunicationWeight)   This one is really funny. one thinks it would converge to a point that
 # it puts every task in one cluster. however, it usually gets into local minima. and the result is really interesting
-Clustering_CostFunctionType = 'SD+MAX'
+Clustering_CostFunctionType = 'MAX'
 
 # RandomTaskMove: randomly chooses a task from a cluster and moves it to another random cluster
 # Swap: randomly chooses a 2 tasks from 2 clusters and Swaps them
@@ -170,11 +171,12 @@ CTG_CirculationLength = 3
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'NMap'
-LocalSearchIteration = 10
-IterativeLocalSearchIterations = 10
+Mapping_Function = 'SimulatedAnnealing'
+LocalSearchIteration = 1000
+IterativeLocalSearchIterations = 5
+mapping_random_seed = 2000
 #######################
-SimulatedAnnealingIteration = 50000
+SimulatedAnnealingIteration = 1000
 SA_InitialTemp = 20
 SA_StopTemp = 1             # Stops annealing earlier if reaches this temp
 SA_ReportSolutions = False   # if True, it prints every accepted move to console
@@ -187,7 +189,7 @@ TerminationCriteria = 'StopTemp'
 if SA_AnnealingSchedule == 'Linear':
     pass
 elif SA_AnnealingSchedule == 'Exponential':
-    SA_Alpha = 0.9999
+    SA_Alpha = 0.999
 elif SA_AnnealingSchedule == 'Logarithmic':
     LogCoolingConstant = 10       # c should be greater than or equal to the largest energy barrier in the problem
 elif SA_AnnealingSchedule == 'Adaptive':
@@ -197,7 +199,7 @@ elif SA_AnnealingSchedule == 'Adaptive':
     # A counter would count number of steps moved with slope = 0. when the counter reaches MaxSteadyState,
     # the process terminates
     MaxSteadyState = 30000          # 5-10% of the iteration numbers would makes sense
-    SA_Alpha = 0.999
+    SA_Alpha = 0.9999
 elif SA_AnnealingSchedule == 'Markov':
     MarkovNum = 2000
     MarkovTempStep = 1          # this is the amount of Temp decrease that the system would have after MarkovNum Steps

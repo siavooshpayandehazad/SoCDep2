@@ -81,8 +81,9 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                    + str(round(time.time()-clustering_start_time))+" SECONDS")
             mapping_start_time = time.time()
             # Mapping CTG on AG
+            random_seed = Config.mapping_random_seed
             if Mapping_Functions.make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, non_critical_rg,
-                                                      True, logging):
+                                                      True, logging, random_seed):
                 if Config.DistanceBetweenMapping:
                     init_mapping_string = Mapping_Functions.mapping_into_string(tg)
                     # print (init_mapping_string)

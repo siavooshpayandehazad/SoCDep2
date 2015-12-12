@@ -5,10 +5,11 @@ from ConfigAndPackages import Config
 import statistics
 import random
 from math import ceil
+from Mapping_Reports import DrawMapping
 from RoutingAlgorithms import Routing
 
 
-def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritica_rg, report, logging):
+def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritica_rg, report, logging, random_seed):
     """
     Generates Initial Mapping
     :param tg:  Task Graphs
@@ -26,6 +27,12 @@ def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritica_rg, r
     if report:
         print ("===========================================")
         print ("STARTING INITIAL MAPPING...")
+
+    if random_seed is not None:
+        logging.info("NEW ROUND RANDOM SEED: "+str(random_seed))
+        random.seed(random_seed)
+    else:
+        random.seed(None)
     iteration = 0
     for cluster in ctg.nodes():
         destination_node = random.choice(ag.nodes())
@@ -52,6 +59,7 @@ def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritica_rg, r
         iteration = 0
     if report:
         print ("INITIAL MAPPING READY... ")
+        DrawMapping(tg, ag, shm, "Mapping_init")
     return True
 
 
@@ -176,11 +184,11 @@ def remove_task_from_node(tg, ag, noc_rg, critical_rg, noncritical_rg, task, nod
     return True
 
 
-def add_cluster_to_node(tg, CTG, ag, shm, noc_rg, critical_rg, noncritical_rg, cluster, node, logging):
+def add_cluster_to_node(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, cluster, node, logging):
     """
     Adds a Cluster from CTG and all its Task to a Node from Architecture Graph
     :param tg:  Task Graph
-    :param CTG: Clustered Task Graph
+    :param ctg: Clustered Task Graph
     :param ag:  Architecture Graph
     :param shm: System Health Map
     :param noc_rg: NoC Routing Graph
@@ -200,17 +208,17 @@ def add_cluster_to_node(tg, CTG, ag, shm, noc_rg, critical_rg, noncritical_rg, c
 
     # Adding The cluster to Node...
     logging.info("\tADDING CLUSTER:"+str(cluster)+"TO NODE:"+str(node))
-    CTG.node[cluster]['Node'] = node
-    for Task in CTG.node[cluster]['TaskList']:
+    ctg.node[cluster]['Node'] = node
+    for Task in ctg.node[cluster]['TaskList']:
         tg.node[Task]['Node'] = node
         ag.node[node]['PE'].MappedTasks.append(Task)
-    ag.node[node]['PE'].Utilization += CTG.node[cluster]['Utilization']
+    ag.node[node]['PE'].Utilization += ctg.node[cluster]['Utilization']
 
-    for ctg_edge in CTG.edges():
+    for ctg_edge in ctg.edges():
         if cluster in ctg_edge:     # find all the edges that are connected to cluster
             logging.info("\t\tEDGE:"+str(ctg_edge)+"CONTAINS CLUSTER:"+str(cluster))
-            source_node = CTG.node[ctg_edge[0]]['Node']
-            destination_node = CTG.node[ctg_edge[1]]['Node']
+            source_node = ctg.node[ctg_edge[0]]['Node']
+            destination_node = ctg.node[ctg_edge[1]]['Node']
             if source_node is not None and destination_node is not None:    # check if both ends of this edge is mapped
                 if source_node != destination_node:
                     list_of_links, number_of_paths = Routing.FindRouteInRouteGraph(noc_rg, critical_rg, noncritical_rg,
@@ -272,7 +280,7 @@ def add_cluster_to_node(tg, CTG, ag, shm, noc_rg, critical_rg, noncritical_rg, c
                     else:
                         logging.warning("\tNO PATH FOUND FROM SOURCE TO DESTINATION...")
                         logging.info("REMOVING ALL THE MAPPED CONNECTIONS FOR CLUSTER "+str(cluster))
-                        remove_cluster_from_node(tg, CTG, ag, noc_rg, critical_rg, noncritical_rg,
+                        remove_cluster_from_node(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg,
                                                  cluster, node, logging)
                         return False
     return True

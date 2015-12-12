@@ -21,8 +21,8 @@ def initialize_system(logging):
     :return:  tg, ag, shmu, noc_rg, critical_rg, nonnritical_rg, pmcg
     """
     tg = copy.deepcopy(TG_Functions.generate_tg())
-    Task_Graph_Reports.ReportTaskGraph(tg, logging)
-    Task_Graph_Reports.DrawTaskGraph(tg)
+    Task_Graph_Reports.report_task_graph(tg, logging)
+    Task_Graph_Reports.draw_task_graph(tg)
     if Config.TestMode:
         TG_Test.CheckAcyclic(tg, logging)
     ####################################################################
@@ -94,7 +94,7 @@ def initialize_system(logging):
     if Config.Mapping_Dstr_Drawing:
         Mapping_Reports.DrawMappingDistribution(ag, shmu)
     if Config.Mapping_Drawing:
-        Mapping_Reports.DrawMapping(tg, ag, shmu)
+        Mapping_Reports.DrawMapping(tg, ag, shmu.SHM, "Mapping_post_opt")
     Scheduling_Reports.generate_gantt_charts(tg, ag, "SchedulingTG")
     ####################################################################
     # PMC-Graph
@@ -114,12 +114,12 @@ def initialize_system(logging):
         if Config.TTG_Drawing:
             TestSchedulingUnit.DrawTTG(test_tg)
         TestSchedulingUnit.InsertTestTasksInTG(pmcg, tg)
-        Task_Graph_Reports.DrawTaskGraph(tg, ttg=test_tg)
+        Task_Graph_Reports.draw_task_graph(tg, ttg=test_tg)
         TestSchedulingUnit.MapTestTasks(tg, ag, shmu.SHM, noc_rg, logging)
         Scheduler.schedule_test_in_tg(tg, ag, shmu.SHM, False, logging)
         Scheduling_Reports.report_mapped_tasks(ag, logging)
         # TestSchedulingUnit.RemoveTestTasksFromTG(test_tg, tg)
-        # Task_Graph_Reports.DrawTaskGraph(tg, TTG=test_tg)
+        # Task_Graph_Reports.draw_task_graph(tg, TTG=test_tg)
         Scheduling_Reports.generate_gantt_charts(tg, ag, "SchedulingWithTTG")
     else:
         pmcg = None
