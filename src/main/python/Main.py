@@ -38,7 +38,11 @@ elif '-UTEST' in sys.argv[1:]:
     os.system('python ../../unittest/Python/Unit_tests.py')
     sys.exit()
 elif '-CONF' in sys.argv[1:]:
-    misc.update_config("ConfigAndPackages/ConfigFile.txt")
+    if len(sys.argv) == 2:
+        misc.update_config("ConfigAndPackages/ConfigFile.txt")
+    else:
+        path_to_config_file = sys.argv[sys.argv.index('-CONF') + 1]
+        misc.update_config(path_to_config_file)
 elif '-BENCHMARK' in sys.argv[1:]:
     benchmark = sys.argv[sys.argv.index('-BENCHMARK') + 1]
     print benchmark

@@ -94,6 +94,27 @@ def update_config(config_file_path):
     Config.Network_X_Size = config.getint("AG_Config", "Network_X_Size")
     Config.Network_Y_Size = config.getint("AG_Config", "Network_Y_Size")
     Config.Network_Z_Size = config.getint("AG_Config", "Network_Z_Size")
+    Config.PE_List = map(int, config.get("AG_Config", "PE_List").split(","))
+
+    if config.get("Routing_Config", "UsedTurnModel") == "XY_TurnModel":
+        Config.UsedTurnModel = PackageFile.XY_TurnModel
+    elif config.get("Routing_Config", "UsedTurnModel") == "WestFirst_TurnModel":
+        Config.UsedTurnModel = PackageFile.WestFirst_TurnModel
+    elif config.get("Routing_Config", "UsedTurnModel") == "NorthLast_TurnModel":
+        Config.UsedTurnModel = PackageFile.NorthLast_TurnModel
+    elif config.get("Routing_Config", "UsedTurnModel") == "NegativeFirst2D_TurnModel":
+        Config.UsedTurnModel = PackageFile.NegativeFirst2D_TurnModel
+    elif config.get("Routing_Config", "UsedTurnModel") == "XYZ_TurnModel":
+        Config.UsedTurnModel = PackageFile.XYZ_TurnModel
+    elif config.get("Routing_Config", "UsedTurnModel") == "NegativeFirst3D_TurnModel":
+        Config.UsedTurnModel = PackageFile.NegativeFirst3D_TurnModel
+    else:
+        raise ValueError("Turn Model not Available")
+
+    Config.RotingType = config.get("Routing_Config", "RotingType")
+    Config.RoutingFilePath = config.get("Routing_Config", "RoutingFilePath")
+    Config.SetRoutingFromFile = config.getboolean("Routing_Config", "SetRoutingFromFile")
+    Config.FlowControl = config.get("Routing_Config", "FlowControl")
 
     Config.FindOptimumAG = config.getboolean("VL_Config", "FindOptimumAG")
     Config.VL_OptAlg = config.get("VL_Config", "VL_OptAlg")
@@ -101,11 +122,19 @@ def update_config(config_file_path):
     Config.AG_Opt_Iterations_LS = config.getint("VL_Config", "AG_Opt_Iterations_LS")
     Config.VerticalLinksNum = config.getint("VL_Config", "VerticalLinksNum")
 
+    Config.DarkSiliconPercentage = config.getint("Dark_Sil_Config", "DarkSiliconPercentage")
+
+    Config.Clustering_Optimization = config.getboolean("CTG_Config", "Clustering_Optimization")
+    Config.ClusteringIteration = config.getint("CTG_Config", "ClusteringIteration")
+    Config.ctg_random_seed = config.getint("CTG_Config", "ctg_random_seed")
+    Config.Clustering_Report = config.getboolean("CTG_Config", "Clustering_Report")
+    Config.Clustering_DetailedReport = config.getboolean("CTG_Config", "Clustering_DetailedReport")
+    Config.Clustering_CostFunctionType = config.get("CTG_Config", "Clustering_CostFunctionType")
+    Config.ClusteringOptMove = config.get("CTG_Config", "ClusteringOptMove")
+    Config.CTG_CirculationLength = config.getint("CTG_Config", "CTG_CirculationLength")
+
     Config.GeneratePMCG = config.getboolean("PMCG_Config", "GeneratePMCG")
-    # set to False if you need Sequentially diagnosable PMCG
     Config.OneStepDiagnosable = config.getboolean("PMCG_Config", "OneStepDiagnosable")
-    # one-step t-fault diagnosable system, if set to None, default value would be
-    #                                 (n-1)/2
     Config.TFaultDiagnosable = config.get("PMCG_Config", "TFaultDiagnosable")
     Config.NodeTestExeTime = config.getint("PMCG_Config", "NodeTestExeTime")
     Config.NodeTestComWeight = config.getint("PMCG_Config", "NodeTestComWeight")

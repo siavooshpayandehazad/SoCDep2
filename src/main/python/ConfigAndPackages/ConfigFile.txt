@@ -35,10 +35,11 @@ AG_Type: Generic
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
 NetworkTopology: 2DMesh
-Network_X_Size: 3
+Network_X_Size: 4
 Network_Y_Size: 4
 Network_Z_Size: 1
 
+PE_List: 0, 1, 2, 3
 #------------------------------------------------
 #               VL_Config
 #------------------------------------------------
@@ -50,6 +51,51 @@ AG_Opt_Iterations_ILS: 10
 AG_Opt_Iterations_LS: 10
 # Number of Vertical Links
 VerticalLinksNum: 20
+
+#------------------------------------------------
+#               Dark_Sil_Config
+#------------------------------------------------
+[Dark_Sil_Config]
+DarkSiliconPercentage: 0
+
+#------------------------------------------------
+#               Routing_Config
+#------------------------------------------------
+[Routing_Config]
+UsedTurnModel: XY_TurnModel
+# Available choices: 'MinimalPath', 'NonMinimalPath'
+RotingType: MinimalPath
+RoutingFilePath: User_Inputs/RoutingFile.txt
+SetRoutingFromFile: False
+# Flow control switch can be: "StoreAndForward" or "Wormhole"
+FlowControl: Wormhole
+
+#------------------------------------------------
+#               CTG_Config
+#------------------------------------------------
+[CTG_Config]
+# If false, Turns the clustering off. Each Cluster would have only one Task in it.
+Clustering_Optimization: True
+ClusteringIteration: 500
+ctg_random_seed: 100
+Clustering_Report: False
+Clustering_DetailedReport: False
+
+# here you can change the type of cost function used for Clustering the available cost functions are:
+# 'SD' = Com_Weight_SD + Node_Util_SD
+# 'SD+MAX' = Com_Weight_SD + MaxComWeight + Node_Util_SD + MaxNodeUtil
+# 'MAX' = MaxComWeight + MaxNodeUtil
+# 'MAXCOM' = MaxComWeight
+# 'AVGUTIL' = sum(ClusterUtilization)/len(ClusterUtilization)
+# 'SUMCOM' = sum(CommunicationWeight)   This one is really funny. one thinks it would converge to a point that
+# it puts every task in one cluster. however, it usually gets into local minima. and the result is really interesting
+Clustering_CostFunctionType: MAX
+
+# RandomTaskMove: randomly chooses a task from a cluster and moves it to another random cluster
+# Swap: randomly chooses a 2 tasks from 2 clusters and Swaps them
+# Circulate: randomly chooses a N tasks from N clusters and Circulates them (is not implemented yet)
+ClusteringOptMove: RandomTaskMove
+CTG_CirculationLength: 3
 
 #------------------------------------------------
 #               PMCG_Config
