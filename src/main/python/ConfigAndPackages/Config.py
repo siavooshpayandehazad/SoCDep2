@@ -1,10 +1,5 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 import PackageFile
-import ConfigParser
-
-config = ConfigParser.ConfigParser(allow_no_value=True)
-config.read("ConfigAndPackages/ConfigFile.txt")
-# print config.sections()
 
 ################################################
 #          Program  Config
@@ -12,33 +7,37 @@ config.read("ConfigAndPackages/ConfigFile.txt")
 ProgramRunTime = 9      # in seconds
 DebugInfo = True
 DebugDetails = False
-LoGDirectory = "LOGS"
+
 TestMode = True
 MemoryProfiler = False
 EventDrivenFaultInjection = True
 ################################################
-#          TG  Config
+#          TG Config
 ################################################
-
-TG_Type = config.get("TG_Config", "TG_Type")
-
-NumberOfTasks = config.getint("TG_Config", "NumberOfTasks")
-NumberOfCriticalTasks = config.getint("TG_Config", "NumberOfCriticalTasks")
-NumberOfEdges = config.getint("TG_Config", "NumberOfEdges")
-WCET_Range = config.getint("TG_Config", "WCET_Range")
-EdgeWeightRange = config.getint("TG_Config", "EdgeWeightRange")
-Release_Range = config.getint("TG_Config", "Release_Range")      # task release time range
-
-Task_List = map(int, config.get("TG_Config", "Task_List").split(","))
-Task_WCET_List = map(int, config.get("TG_Config", "Task_WCET_List").split(","))
-Task_Criticality_List = config.get("TG_Config", "Task_Criticality_List").split(",")
+# TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile'
+TG_Type = 'Manual'
+# For Random TG_Type:
+NumberOfTasks = 9
+NumberOfCriticalTasks = 0
+NumberOfEdges = 15
+WCET_Range = 15
+EdgeWeightRange = 7
+Release_Range = 5      # task release time range
+# The following is only for Manual TG_Type:
+# Note::    if you have High-critical tasks in your TG, make sure that you have checked partitioning options for the
+#           network.
+Task_List = [0, 1, 2, 3, 4, 5, 6, 7]
+Task_WCET_List = [30, 30, 20, 40, 10, 5, 15, 20]
+Task_Criticality_List = ['L', 'L', 'L', 'L', 'L', 'L', 'L', 'L']
 TG_Edge_List = [(1, 2), (1, 3), (2, 5), (0, 5), (4, 7), (4, 3), (1, 6), (0, 6)]
-print config.get("TG_Config", "TG_Edge_List").split(",")
-TG_Edge_Weight = map(int, config.get("TG_Config", "TG_Edge_Weight").split(","))
+TG_Edge_Weight = [5, 9, 4, 7, 5, 3, 5, 1]
 
-TG_DOT_Path = config.get("TG_Config", "TG_DOT_Path")
+# TG DOT FILE PATH
+# you can use this one: http://express.ece.ucsb.edu/benchmark/jpeg/h2v2_smooth_downsample.html
+# as example...
+TG_DOT_Path = 'Something.dot'
 ################################################
-#          AG  Config
+#          AG Config
 ################################################
 # AG_Type can be : 'Generic','Manual'
 AG_Type = 'Generic'
@@ -51,14 +50,6 @@ Network_X_Size = 3
 Network_Y_Size = 3
 Network_Z_Size = 1
 
-# Number of Vertical Links
-FindOptimumAG = False
-# Available Choices: 'LocalSearch', 'IterativeLocalSearch'
-VL_OptAlg = "LocalSearch"
-AG_Opt_Iterations_ILS = 10
-AG_Opt_Iterations_LS = 10
-VerticalLinksNum = 20
-
 # this is just for double check...
 if '2D' in NetworkTopology:
     Network_Z_Size = 1
@@ -68,8 +59,19 @@ PE_List = [0, 1, 2, 3]
 AG_Edge_List = [(0, 1), (0, 2), (1, 0), (1, 3), (2, 0), (2, 3), (3, 2), (3, 1)]
 # AG_Edge_Port_List shows which port of each router is connected to which port of the other on every link
 AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'), ('E', 'W'), ('W', 'E'), ('N', 'S')]
+
 ################################################
-#          Routing  Config
+#          VL Config
+################################################
+FindOptimumAG = False
+# Available Choices: 'LocalSearch', 'IterativeLocalSearch'
+VL_OptAlg = "LocalSearch"
+AG_Opt_Iterations_ILS = 10
+AG_Opt_Iterations_LS = 10
+# Number of Vertical Links
+VerticalLinksNum = 20
+################################################
+#          Routing Config
 ################################################
 # Todo: introduce more turn models
 # Available Turn Models :
@@ -89,10 +91,10 @@ DarkSiliconPercentage = 0
 ################################################
 #          SHM  Config
 ################################################
-
-
 # Do not change if you have conventional 2D NoC
-def SetUpTurnsHealth():
+
+
+def setup_turns_health():
     global TurnsHealth
     if '2D' in NetworkTopology:
         TurnsHealth = PackageFile.TurnsHealth_2DNetwork
@@ -111,7 +113,7 @@ def SetUpTurnsHealth():
     return None
 
 TurnsHealth = {}
-SetUpTurnsHealth()
+setup_turns_health()
 # ==========================
 # Number of Unreachable-Rectangles
 NumberOfRects = 5
@@ -281,14 +283,14 @@ else:
 ###############################################
 #           PMCG Config
 ###############################################
-GeneratePMCG = config.getboolean("PMCG_Config", "GeneratePMCG")
+GeneratePMCG = False
 # set to False if you need Sequentially diagnosable PMCG
-OneStepDiagnosable = config.getboolean("PMCG_Config", "OneStepDiagnosable")
+OneStepDiagnosable = False
 # one-step t-fault diagnosable system, if set to None, default value would be
 #                                 (n-1)/2
-TFaultDiagnosable = config.get("PMCG_Config", "TFaultDiagnosable")
-NodeTestExeTime = config.getint("PMCG_Config", "NodeTestExeTime")
-NodeTestComWeight = config.getint("PMCG_Config", "NodeTestComWeight")
+TFaultDiagnosable = None
+NodeTestExeTime = 2
+NodeTestComWeight = 2
 
 ###############################################
 #           VISUALIZATION Config

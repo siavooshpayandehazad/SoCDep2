@@ -23,7 +23,7 @@ def Download_Benchmark_Algorithms(Benchmark):
 
     if not os.path.isfile(DestinationFile):
         code = urllib.urlopen(url).code
-        if (code / 100 >= 4):
+        if code/100 >= 4:
             print "BENCHMARK IS NOT AVAILABLE..."
             return False
         else:

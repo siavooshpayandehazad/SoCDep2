@@ -38,7 +38,7 @@ def initialize_system(logging):
     else:
         Arch_Graph_Reports.draw_ag(ag, "AG")
     ####################################################################
-    Config.SetUpTurnsHealth()
+    Config.setup_turns_health()
     if Config.TestMode:
         SHMU_Test.test_shmu(ag)
     shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()

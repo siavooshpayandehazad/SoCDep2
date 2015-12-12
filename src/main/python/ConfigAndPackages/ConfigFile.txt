@@ -3,7 +3,7 @@
 #------------------------------------------------
 [TG_Config]
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile'
-TG_Type: Manual
+TG_Type: RandomDependent
 
 # For Random TG_Type:
 NumberOfTasks: 9
@@ -25,6 +25,31 @@ TG_Edge_Weight: 5, 9, 4, 7, 5, 3, 5, 1
 # you can use this one: http://express.ece.ucsb.edu/benchmark/jpeg/h2v2_smooth_downsample.html
 # as example...
 TG_DOT_Path: Something.dot
+
+#------------------------------------------------
+#               AG_Config
+#------------------------------------------------
+[AG_Config]
+# AG_Type can be : 'Generic','Manual'
+AG_Type: Generic
+# in case of Generic AG_type
+# available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
+NetworkTopology: 2DMesh
+Network_X_Size: 3
+Network_Y_Size: 4
+Network_Z_Size: 1
+
+#------------------------------------------------
+#               VL_Config
+#------------------------------------------------
+[VL_Config]
+FindOptimumAG: False
+# Available Choices: 'LocalSearch', 'IterativeLocalSearch'
+VL_OptAlg: LocalSearch
+AG_Opt_Iterations_ILS: 10
+AG_Opt_Iterations_LS: 10
+# Number of Vertical Links
+VerticalLinksNum: 20
 
 #------------------------------------------------
 #               PMCG_Config
