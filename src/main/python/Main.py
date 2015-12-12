@@ -3,15 +3,16 @@
 from Utilities import misc
 misc.CheckForDependencies()
 
-import sys, os, time
+import sys
+import os
+import time
 import logging
-from ConfigAndPackages import Config
+from ConfigAndPackages import Config, PackageFile
 from Utilities import Logger, Benchmark_Alg_Downloader
 import SystemInitialization
 from GUI_Util import GUI
 from pympler import tracker
 from Simulator import Simulator, FaultInjector
-
 
 if Config.MemoryProfiler:
     tr = tracker.SummaryTracker()
@@ -36,6 +37,8 @@ elif '-GUI' in sys.argv[1:]:
 elif '-UTEST' in sys.argv[1:]:
     os.system('python ../../unittest/Python/Unit_tests.py')
     sys.exit()
+elif '-CONF' in sys.argv[1:]:
+    misc.update_config("ConfigAndPackages/ConfigFile.txt")
 elif '-BENCHMARK' in sys.argv[1:]:
     benchmark = sys.argv[sys.argv.index('-BENCHMARK') + 1]
     print benchmark
@@ -44,14 +47,13 @@ elif '-BENCHMARK' in sys.argv[1:]:
     else:
         sys.exit()
 
-
 program_start_time = time.time()
 ##############################
 # Just for getting a copy of the current console
 sys.stdout = Logger.Logger()
 
 # preparing to setup Logging
-logging.basicConfig(filename=os.path.join(os.path.join(os.path.curdir, Config.LoGDirectory),
+logging.basicConfig(filename=os.path.join(os.path.join(os.path.curdir, PackageFile.LoGDirectory),
                     'Logging_Log_'+str(time.time())+'.log'), level=logging.DEBUG)
 logging.info('Starting logging...')
 ####################################################################

@@ -1,0 +1,62 @@
+#------------------------------------------------
+#               TG_Config
+#------------------------------------------------
+[TG_Config]
+# TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile'
+TG_Type: RandomDependent
+
+# For Random TG_Type:
+NumberOfTasks: 9
+NumberOfCriticalTasks: 0
+NumberOfEdges: 15
+WCET_Range: 15
+EdgeWeightRange: 7
+Release_Range: 5
+
+# The following is only for Manual TG_Type:
+# Note::    if you have High-critical tasks in your TG, make sure that you have checked partitioning options for the
+#           network.
+Task_List: 0, 1, 2, 3, 4, 5, 6, 7
+Task_WCET_List: 30, 30, 20, 40, 10, 5, 15, 20
+Task_Criticality_List: L, L, L, L, L, L, L, L
+TG_Edge_Weight: 5, 9, 4, 7, 5, 3, 5, 1
+
+# TG DOT FILE PATH
+# you can use this one: http://express.ece.ucsb.edu/benchmark/jpeg/h2v2_smooth_downsample.html
+# as example...
+TG_DOT_Path: Something.dot
+
+#------------------------------------------------
+#               AG_Config
+#------------------------------------------------
+[AG_Config]
+# AG_Type can be : 'Generic','Manual'
+AG_Type: Generic
+# in case of Generic AG_type
+# available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
+NetworkTopology: 2DMesh
+Network_X_Size: 3
+Network_Y_Size: 4
+Network_Z_Size: 1
+
+#------------------------------------------------
+#               VL_Config
+#------------------------------------------------
+[VL_Config]
+FindOptimumAG: False
+# Available Choices: 'LocalSearch', 'IterativeLocalSearch'
+VL_OptAlg: LocalSearch
+AG_Opt_Iterations_ILS: 10
+AG_Opt_Iterations_LS: 10
+# Number of Vertical Links
+VerticalLinksNum: 20
+
+#------------------------------------------------
+#               PMCG_Config
+#------------------------------------------------
+[PMCG_Config]
+GeneratePMCG : False
+OneStepDiagnosable : False
+TFaultDiagnosable
+NodeTestExeTime : 2
+NodeTestComWeight : 2

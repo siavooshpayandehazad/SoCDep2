@@ -7,12 +7,12 @@ import PackageFile
 ProgramRunTime = 9      # in seconds
 DebugInfo = True
 DebugDetails = False
-LoGDirectory = "LOGS"
+
 TestMode = True
 MemoryProfiler = False
 EventDrivenFaultInjection = True
 ################################################
-#          TG  Config
+#          TG Config
 ################################################
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile'
 TG_Type = 'Manual'
@@ -37,7 +37,7 @@ TG_Edge_Weight = [5, 9, 4, 7, 5, 3, 5, 1]
 # as example...
 TG_DOT_Path = 'Something.dot'
 ################################################
-#          AG  Config
+#          AG Config
 ################################################
 # AG_Type can be : 'Generic','Manual'
 AG_Type = 'Generic'
@@ -50,14 +50,6 @@ Network_X_Size = 3
 Network_Y_Size = 3
 Network_Z_Size = 1
 
-# Number of Vertical Links
-FindOptimumAG = False
-# Available Choices: 'LocalSearch', 'IterativeLocalSearch'
-VL_OptAlg = "LocalSearch"
-AG_Opt_Iterations_ILS = 10
-AG_Opt_Iterations_LS = 10
-VerticalLinksNum = 20
-
 # this is just for double check...
 if '2D' in NetworkTopology:
     Network_Z_Size = 1
@@ -67,8 +59,19 @@ PE_List = [0, 1, 2, 3]
 AG_Edge_List = [(0, 1), (0, 2), (1, 0), (1, 3), (2, 0), (2, 3), (3, 2), (3, 1)]
 # AG_Edge_Port_List shows which port of each router is connected to which port of the other on every link
 AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'), ('E', 'W'), ('W', 'E'), ('N', 'S')]
+
 ################################################
-#          Routing  Config
+#          VL Config
+################################################
+FindOptimumAG = False
+# Available Choices: 'LocalSearch', 'IterativeLocalSearch'
+VL_OptAlg = "LocalSearch"
+AG_Opt_Iterations_ILS = 10
+AG_Opt_Iterations_LS = 10
+# Number of Vertical Links
+VerticalLinksNum = 20
+################################################
+#          Routing Config
 ################################################
 # Todo: introduce more turn models
 # Available Turn Models :
@@ -88,10 +91,10 @@ DarkSiliconPercentage = 0
 ################################################
 #          SHM  Config
 ################################################
-
-
 # Do not change if you have conventional 2D NoC
-def SetUpTurnsHealth():
+
+
+def setup_turns_health():
     global TurnsHealth
     if '2D' in NetworkTopology:
         TurnsHealth = PackageFile.TurnsHealth_2DNetwork
@@ -110,7 +113,7 @@ def SetUpTurnsHealth():
     return None
 
 TurnsHealth = {}
-SetUpTurnsHealth()
+setup_turns_health()
 # ==========================
 # Number of Unreachable-Rectangles
 NumberOfRects = 5
@@ -171,8 +174,8 @@ CTG_CirculationLength = 3
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'SimulatedAnnealing'
-LocalSearchIteration = 1000
+Mapping_Function = 'LocalSearch'
+LocalSearchIteration = 100
 IterativeLocalSearchIterations = 5
 mapping_random_seed = 2000
 #######################
@@ -281,11 +284,14 @@ else:
 #           PMCG Config
 ###############################################
 GeneratePMCG = False
-OneStepDiagnosable = False     # set to False if you need Sequentially diagnosable PMCG
-TFaultDiagnosable = None        # one-step t-fault diagnosable system, if set to none, default value would be
+# set to False if you need Sequentially diagnosable PMCG
+OneStepDiagnosable = False
+# one-step t-fault diagnosable system, if set to None, default value would be
 #                                 (n-1)/2
+TFaultDiagnosable = None
 NodeTestExeTime = 2
 NodeTestComWeight = 2
+
 ###############################################
 #           VISUALIZATION Config
 ###############################################
