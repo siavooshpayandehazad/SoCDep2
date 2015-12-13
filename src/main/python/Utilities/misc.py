@@ -3,15 +3,24 @@ from ConfigAndPackages import Config, PackageFile
 import os
 import ConfigParser
 
-def DrawLogo():
-    print ("===================================================================================================================")
-    print ("  _________      .__               .___    .__             ____    ________                                   .___")
-    print (" /   _____/ ____ |  |__   ____   __| _/_ __|  |   ____    /  _ \   \______ \   ____ ______   ____   ____    __| _/")
-    print (" \_____  \_/ ___\|  |  \_/ __ \ / __ |  |  \  | _/ __ \   >  _ </\  |    |  \_/ __ \\\\____ \_/ __ \ /    \  / __ | ")
-    print (" _____/   \  \___|   Y  \  ___// /_/ |  |  /  |_\  ___/  /  <_\ \/  |    `   \  ___/|  |_> >  ___/|   |  \/ /_/ | ")
-    print ("/_______  /\___  >___|  /\___  >____ |____/|____/\___  > \_____\ \ /_______  /\___  >   __/ \___  >___|  /\____ | ")
-    print ("        \/     \/     \/     \/     \/               \/         \/         \/     \/|__|        \/     \/      \/ ")
-    print ("===================================================================================================================")
+
+def draw_logo():
+    print ("================================================================================================" +
+           "===================")
+    print ("  _________      .__               .___    .__             ____    ________                     " +
+           "              .___")
+    print (" /   _____/ ____ |  |__   ____   __| _/_ __|  |   ____    /  _ \   \______ \   ____ ______   ___" +
+           "_   ____    __| _/")
+    print (" \_____  \_/ ___\|  |  \_/ __ \ / __ |  |  \  | _/ __ \   >  _ </\  |    |  \_/ __ \\\\____ \_/ " +
+           "__ \ /    \  / __ | ")
+    print (" _____/   \  \___|   Y  \  ___// /_/ |  |  /  |_\  ___/  /  <_\ \/  |    `   \  ___/|  |_> >  __" +
+           "_/|   |  \/ /_/ | ")
+    print ("/_______  /\___  >___|  /\___  >____ |____/|____/\___  > \_____\ \ /_______  /\___  >   __/ \___" +
+           "  >___|  /\____ | ")
+    print ("        \/     \/     \/     \/     \/               \/         \/         \/     \/|__|        " +
+           "\/     \/      \/ ")
+    print ("================================================================================================" +
+           "===================")
     print ("AUTHOR:  SIAVOOSH PAYANDEH AZAD")
     print ("DATE:    MAY 2015")
     print ("THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME ")
@@ -23,41 +32,41 @@ def DrawLogo():
     return None
 
 
-def GenerateFileDirectories():
-    GraphDirectory = "GraphDrawings"
-    if not os.path.isdir(GraphDirectory):
-        os.makedirs(GraphDirectory)
+def generate_file_directories():
+    graph_directory = "GraphDrawings"
+    if not os.path.isdir(graph_directory):
+        os.makedirs(graph_directory)
 
-    filelist = [file for file in os.listdir(GraphDirectory) if file.endswith(".png")]
-    for file in filelist:
-        os.remove(GraphDirectory+'/'+file)
+    file_list = [png_file for png_file in os.listdir(graph_directory) if png_file.endswith(".png")]
+    for png_file in file_list:
+        os.remove(graph_directory+'/'+png_file)
 
-    AnimationDirectory = "GraphDrawings/Mapping_Animation_Material"
-    if not os.path.isdir(AnimationDirectory):
-        os.makedirs(AnimationDirectory)
+    animation_directory = "GraphDrawings/Mapping_Animation_Material"
+    if not os.path.isdir(animation_directory):
+        os.makedirs(animation_directory)
 
-    filelist = [file for file in os.listdir(AnimationDirectory) if file.endswith(".png")]
-    for file in filelist:
-        os.remove(AnimationDirectory+'/'+file)
+    file_list = [png_file for png_file in os.listdir(animation_directory) if png_file.endswith(".png")]
+    for png_file in file_list:
+        os.remove(animation_directory+'/'+png_file)
 
-    GeneratedFilesDirectory = "Generated_Files"
-    if not os.path.isdir(GeneratedFilesDirectory):
-        os.makedirs(GeneratedFilesDirectory)
+    generated_files_directory = "Generated_Files"
+    if not os.path.isdir(generated_files_directory):
+        os.makedirs(generated_files_directory)
 
-    filelist = [file for file in os.listdir(GeneratedFilesDirectory) if file.endswith(".txt")]
-    for file in filelist:
-        os.remove(GeneratedFilesDirectory+'/'+file)
+    file_list = [text_file for text_file in os.listdir(generated_files_directory) if text_file.endswith(".txt")]
+    for text_file in file_list:
+        os.remove(generated_files_directory+'/'+text_file)
 
-    InternalFilesDirectory = "Generated_Files/Internal"
-    if not os.path.isdir(InternalFilesDirectory):
-        os.makedirs(InternalFilesDirectory)
-    filelist = [file for file in os.listdir(InternalFilesDirectory) if file.endswith(".txt")]
-    for file in filelist:
-        os.remove(InternalFilesDirectory+'/'+file)
+    internal_files_directory = "Generated_Files/Internal"
+    if not os.path.isdir(internal_files_directory):
+        os.makedirs(internal_files_directory)
+    file_list = [text_file for text_file in os.listdir(internal_files_directory) if text_file.endswith(".txt")]
+    for text_file in file_list:
+        os.remove(internal_files_directory+'/'+text_file)
     return None
 
 
-def CheckForDependencies():
+def check_for_dependencies():
     for module in PackageFile.ImportModules:
         try:
             __import__(module)

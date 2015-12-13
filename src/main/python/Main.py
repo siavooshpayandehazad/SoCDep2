@@ -1,7 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
 from Utilities import misc
-misc.CheckForDependencies()
+misc.check_for_dependencies()
 
 import sys
 import os
@@ -61,8 +61,8 @@ logging.basicConfig(filename=os.path.join(os.path.join(os.path.curdir, PackageFi
                     'Logging_Log_'+str(time.time())+'.log'), level=logging.DEBUG)
 logging.info('Starting logging...')
 ####################################################################
-misc.GenerateFileDirectories()
-misc.DrawLogo()
+misc.generate_file_directories()
+misc.draw_logo()
 ####################################################################
 # Initialization of the system
 tg, ag, SHMU, NoCRG, CriticalRG, NonCriticalRG, PMCG = SystemInitialization.initialize_system(logging)

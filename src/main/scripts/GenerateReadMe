@@ -37,5 +37,5 @@ echo ===========================================================================
 echo ' \t '		FOR DOCUMENTATIONS PLEASE REFER TO WIKI!								>> $READMEFILE
 echo ===============================================================================	>> $READMEFILE
 echo Project Directory Map: '\n'														>> $READMEFILE
-tree -a ../../../src -I "*.log|*.png|*.pyc|.DS_Store|__init__.py" 						>> $READMEFILE
+tree -a ../../../src -I "*.log|*.png|*.pyc|results|configs|Generated_Files|.DS_Store|__init__.py" 	>> $READMEFILE
 echo ===============================================================================	>> $READMEFILE

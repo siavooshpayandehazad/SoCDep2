@@ -52,18 +52,11 @@ Project Directory Map:
 │   │   │   └── Clustering_Test.py
 │   │   ├── ConfigAndPackages
 │   │   │   ├── Config.py
+│   │   │   ├── ConfigFile.txt
 │   │   │   └── PackageFile.py
 │   │   ├── GUI_Util
 │   │   │   ├── Disclaimer
 │   │   │   └── GUI.py
-│   │   ├── Generated_Files
-│   │   │   ├── GSNoCTrafficTable.txt
-│   │   │   ├── GSNoC_RectangleFile.txt
-│   │   │   ├── Internal
-│   │   │   │   ├── LocalSearchMappingCost.txt
-│   │   │   │   └── MappingProcess.txt
-│   │   │   ├── NoximTrafficTable.txt
-│   │   │   └── ReachAbilityNodeReport.txt
 │   │   ├── GraphDrawings
 │   │   │   └── Mapping_Animation_Material
 │   │   ├── LOGS
@@ -98,11 +91,11 @@ Project Directory Map:
 │   │   │   └── TrafficTableGenerator.py
 │   │   ├── Simulator
 │   │   │   ├── FaultInjector.py
-│   │   │   ├── ML.py
 │   │   │   └── Simulator.py
 │   │   ├── SystemHealthMonitoring
 │   │   │   ├── FaultClassifier
-│   │   │   │   └── CounterThreshold.py
+│   │   │   │   ├── CounterThreshold.py
+│   │   │   │   └── ML.py
 │   │   │   ├── SHMU_Functions.py
 │   │   │   ├── SHMU_Reports.py
 │   │   │   ├── SHMU_Test.py
@@ -121,10 +114,11 @@ Project Directory Map:
 │   └── scripts
 │       ├── FindFuncWithoutDocString
 │       ├── GUI
-│       └── GenerateReadMe
+│       ├── GenerateReadMe
+│       └── run_multiple_configs
 └── unittest
     └── Python
         └── Unit_tests.py
 
-24 directories, 64 files
+22 directories, 60 files
 ===============================================================================
