@@ -68,7 +68,7 @@ def generate_random_tg(number_of_tasks, number_of_critical_tasks, number_of_edge
                                wcet_range, edge_weight_range):
     tg = networkx.DiGraph()
     print("PREPARING RANDOM TASK GRAPH (TG)...")
-
+    random.seed(Config.tg_random_seed)
     task_list = []
     task_criticality_list = []
     task_wcet_list = []
@@ -158,7 +158,7 @@ def generate_random_tg(number_of_tasks, number_of_critical_tasks, number_of_edge
 def generate_random_independent_tg(number_of_tasks, wcet_range, release_range):
     tg = networkx.DiGraph()
     print("PREPARING RANDOM TASK GRAPH (TG) WITH INDEPENDENT TASKS...")
-
+    random.seed(Config.tg_random_seed)
     task_list = []
     task_criticality_list = []
     task_wcet_list = []

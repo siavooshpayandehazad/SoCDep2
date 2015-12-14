@@ -23,6 +23,7 @@ NumberOfEdges = 15
 WCET_Range = 25
 EdgeWeightRange = 5
 Release_Range = 5      # task release time range
+tg_random_seed = 1000
 # The following is only for Manual TG_Type:
 # Note::    if you have High-critical tasks in your TG, make sure that you have checked partitioning options for the
 #           network.
