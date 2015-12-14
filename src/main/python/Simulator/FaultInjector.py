@@ -2,7 +2,8 @@
 
 
 from SystemHealthMonitoring import SHMU_Functions
-
+import random
+from ConfigAndPackages import Config
 ####################################################################
 #
 #                   Fault event handler
@@ -36,7 +37,10 @@ def fault_event(env, ag, SHMU, NoCRG, fault_time_list, counter_threshold, loggin
         if fault:
             fault_location, fault_type = SHMU_Functions.RandomFaultGeneration(SHMU.SHM)
             SHMU_Functions.apply_fault_event(ag, SHMU, NoCRG, fault_location, fault_type)
-            counter_threshold.increase_fault_counter(fault_location, logging)
+            if random.random() > Config.error_correction_rate:
+                counter_threshold.increase_fault_counter(fault_location, logging)
+            else:
+                counter_threshold.increase_intermittent_counter(fault_location, logging)
             fault = False
         yield env.timeout(0.1)
         pass

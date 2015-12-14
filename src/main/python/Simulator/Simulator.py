@@ -122,7 +122,8 @@ def run_simulator(runtime, AG, SHM, NoCRG, logging):
     print "STARTING SIMULATION..."
     env = simpy.Environment()
     counter_threshold = CounterThreshold.CounterThreshold(Config.fault_counter_threshold,
-                                                          Config.health_counter_threshold, 0)
+                                                          Config.health_counter_threshold,
+                                                          Config.intermittent_counter_threshold)
 
     fault_time_list = []
     fault_time = 0

@@ -29,6 +29,7 @@ def RandomFaultGeneration(shm):
     # Todo: fix the distribution of fault types
     # FaultTypes = ['T','T','T','T','T','P']
     FaultTypes = ['T']
+    random.seed(None)
     FaultType = random.choice(FaultTypes)
     if ChosenFault == 'Link':
         ChosenLink = random.choice(shm.edges())

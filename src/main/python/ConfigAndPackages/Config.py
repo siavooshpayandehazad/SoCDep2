@@ -250,8 +250,14 @@ Task_SlackCount = 0               # this is used for number of repetitions of th
 MTTF = None     # Mean time to failure in seconds have not used MTTF yet...
 MTBF = 2        # Mean time between failures in seconds
 SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal distribution
+# ------------------------
 health_counter_threshold = 20
 fault_counter_threshold = 4
+intermittent_counter_threshold = 4
+enable_link_counters = True
+enable_router_counters = True
+enable_pe_counters = True
+error_correction_rate = 0.2
 ################################################
 #           Network Partitioning
 ################################################
