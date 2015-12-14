@@ -15,13 +15,13 @@ EventDrivenFaultInjection = True
 #          TG Config
 ################################################
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile'
-TG_Type = 'Manual'
+TG_Type = 'RandomDependent'
 # For Random TG_Type:
-NumberOfTasks = 9
+NumberOfTasks = 10
 NumberOfCriticalTasks = 0
 NumberOfEdges = 15
-WCET_Range = 15
-EdgeWeightRange = 7
+WCET_Range = 25
+EdgeWeightRange = 5
 Release_Range = 5      # task release time range
 # The following is only for Manual TG_Type:
 # Note::    if you have High-critical tasks in your TG, make sure that you have checked partitioning options for the
@@ -175,7 +175,7 @@ CTG_CirculationLength = 3
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
 Mapping_Function = 'LocalSearch'
-LocalSearchIteration = 100
+LocalSearchIteration = 1000
 IterativeLocalSearchIterations = 5
 mapping_random_seed = 2000
 #######################
@@ -232,10 +232,13 @@ elif Mapping_Function == 'SimulatedAnnealing':
 ######################
 # here you can change the type of cost function used for mapping the available cost functions are:
 # 'SD' = Com_MakeSpan_SD + Node_MakeSpan_SD
+# 'Node_SD' = Node_MakeSpan_SD
+# 'Node_Util_SD' = node_util_sd
+# 'Link_SD' = Com_MakeSpan_SD
 # 'MAX' = MaxLinkMakeSpan + MaxNodeMakeSpan
 # 'SD+MAX' = Link_MakeSpan_SD + MaxLinkMakeSpan + Node_MakeSpan_SD + MaxNodeMakeSpan
 # 'CONSTANT' = 1   ---> can be used if user needs only distance
-Mapping_CostFunctionType = 'SD'
+Mapping_CostFunctionType = 'Node_Util_SD'
 # if 'DistanceBetweenMapping' is true => Cost += Hamming distance between the current
 # solution and the neighbour solution
 DistanceBetweenMapping = False
@@ -248,16 +251,16 @@ Task_SlackCount = 0               # this is used for number of repetitions of th
 #          System's Fault  Config
 ################################################
 MTTF = None     # Mean time to failure in seconds have not used MTTF yet...
-MTBF = 2        # Mean time between failures in seconds
+MTBF = 2        # Mean time between failures in clock cycles
 SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal distribution
 # ------------------------
 health_counter_threshold = 20
 fault_counter_threshold = 4
 intermittent_counter_threshold = 4
 enable_link_counters = True
-enable_router_counters = True
-enable_pe_counters = True
-error_correction_rate = 0.2
+enable_router_counters = False
+enable_pe_counters = False
+error_correction_rate = 0.5
 ################################################
 #           Network Partitioning
 ################################################

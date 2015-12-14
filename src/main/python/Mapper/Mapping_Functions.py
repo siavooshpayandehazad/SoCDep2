@@ -7,6 +7,7 @@ import random
 from math import ceil
 from Mapping_Reports import DrawMapping
 from RoutingAlgorithms import Routing
+from ArchGraphUtilities import AG_Functions
 
 
 def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritica_rg, report, logging, random_seed):
@@ -378,11 +379,11 @@ def clear_mapping(tg, ctg, ag):
     return True
 
 
-def mapping_cost_function(TG, AG, shm, report, initial_mapping_string=None):
+def mapping_cost_function(tg, ag, shm, report, initial_mapping_string=None):
     """
     Calculates the Costs of a mapping based on the configurations of Config file
-    :param TG: Task Graph
-    :param AG: Architecture Graph
+    :param tg: Task Graph
+    :param ag: Architecture Graph
     :param shm: System Health Map
     :param report: If true prints cost function report to Command-line
     :param initial_mapping_string: Initial mapping string used for calculating distance from the current mapping
@@ -390,19 +391,31 @@ def mapping_cost_function(TG, AG, shm, report, initial_mapping_string=None):
     """
     node_makspan_list = []
     link_makspan_list = []
-    for Node in AG.nodes():
-        if shm.node[Node]['NodeHealth'] and (not AG.node[Node]['PE'].Dark):
-            node_makspan_list.append(Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(TG, AG, Node, logging=None))
-    for link in AG.edges():
+    for node in ag.nodes():
+        if shm.node[node]['NodeHealth'] and (not ag.node[node]['PE'].Dark):
+            node_makspan_list.append(Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag, node, logging=None))
+    for link in ag.edges():
         if shm.edge[link[0]][link[1]]['LinkHealth']:
-            link_makspan_list.append(Scheduling_Functions_Links.FindLastAllocatedTimeOnLink(TG, AG, link, logging=None))
+            link_makspan_list.append(Scheduling_Functions_Links.FindLastAllocatedTimeOnLink(tg, ag, link, logging=None))
     node_makspan_sd = statistics.stdev(node_makspan_list)
     node_makspan_max = max(node_makspan_list)
     link_makspan_sd = statistics.stdev(link_makspan_list)
     link_makspan_max = max(link_makspan_list)
 
+    node_util_list = []
+    for node in ag.nodes():
+        if shm.node[node]['NodeHealth'] and (not ag.node[node]['PE'].Dark):
+            node_util_list.append(AG_Functions.return_node_util(tg, ag, node))
+    node_util_sd = statistics.stdev(node_util_list)
+
     if Config.Mapping_CostFunctionType == 'SD':
         cost = node_makspan_sd + link_makspan_sd
+    elif Config.Mapping_CostFunctionType == 'Node_SD':
+        cost = node_makspan_sd
+    elif Config.Mapping_CostFunctionType == 'Node_Util_SD':
+        cost = node_util_sd
+    elif Config.Mapping_CostFunctionType == 'Link_SD':
+        cost = link_makspan_sd
     elif Config.Mapping_CostFunctionType == 'SD+MAX':
         cost = node_makspan_max + node_makspan_sd + link_makspan_sd + link_makspan_max
     elif Config.Mapping_CostFunctionType == 'MAX':
@@ -414,7 +427,7 @@ def mapping_cost_function(TG, AG, shm, report, initial_mapping_string=None):
 
     distance = None
     if initial_mapping_string is not None:
-        distance = hamming_distance_of_mapping(initial_mapping_string, mapping_into_string(TG))
+        distance = hamming_distance_of_mapping(initial_mapping_string, mapping_into_string(tg))
         cost += distance
     if report:
         print ("===========================================")

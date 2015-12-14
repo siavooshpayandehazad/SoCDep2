@@ -368,6 +368,14 @@ def return_active_nodes(ag):
     return active_nodes
 
 
+def return_node_util(tg, ag, node):
+    util = 0
+    if len(ag.node[node]['PE'].MappedTasks) > 0:
+        for task in ag.node[node]['PE'].MappedTasks:
+            util += tg.node[task]['WCET']
+    return util
+
+
 def return_healthy_nodes(ag, system_health_map):
     """
     Returns Nodes in AG which are tagged Healthy in SHM

@@ -19,12 +19,15 @@ class CounterThreshold():
 
     def increase_health_counter(self, location, logging):
         if type(location) is dict:
+            # location is a router: {node_1: [turn]}
             # print location, str(location.keys()[0])+str(location[location.keys()[0]])
             location = "R"+str(location.keys()[0])
         elif type(location) is tuple:
+            # location is a link: (node1, node 2)
             # print location, location[0], location[1]
             location = str(location[0])+str(location[1])
         elif type(location) is int:
+            # location is a node
             # print location
             location = str(location)
         else:
@@ -32,8 +35,10 @@ class CounterThreshold():
             raise ValueError("location type is wrong!")
 
         if location in self.dead_components:
+            # do not increase the counter if component is dead
             return None
         if location not in self.fault_counters.keys():
+            # do not start the fault counter if there is no fault counter
             return None
 
         if location in self.health_counters.keys():
@@ -53,18 +58,21 @@ class CounterThreshold():
 
     def increase_intermittent_counter(self, location, logging):
         if type(location) is dict:
+            # location is a router: {node_1: [turn]}
             # print location, str(location.keys()[0])+str(location[location.keys()[0]])
             if Config.enable_router_counters:
                 location = "R"+str(location.keys()[0])
             else:
                 return None
         elif type(location) is tuple:
+            # location is a link: (node1, node 2)
             # print location, location[0], location[1]
             if Config.enable_link_counters:
                 location = str(location[0])+str(location[1])
             else:
                 return None
         elif type(location) is int:
+            # location is a node
             # print location
             if Config.enable_pe_counters:
                 location = str(location)
@@ -74,6 +82,7 @@ class CounterThreshold():
             print location, type(location)
             raise ValueError("location type is wrong!")
         if location in self.dead_components:
+            # do not increase the counter if component is dead
             return None
         if location in self.intermittent_counters.keys():
             self.intermittent_counters[location] += 1
@@ -93,18 +102,21 @@ class CounterThreshold():
 
     def increase_fault_counter(self, location, logging):
         if type(location) is dict:
+            # location is a router: {node_1: [turn]}
             # print location, str(location.keys()[0])+str(location[location.keys()[0]])
             if Config.enable_router_counters:
                 location = "R"+str(location.keys()[0])
             else:
                 return None
         elif type(location) is tuple:
+            # location is a link: (node1, node 2)
             # print location, location[0], location[1]
             if Config.enable_link_counters:
                 location = str(location[0])+str(location[1])
             else:
                 return None
         elif type(location) is int:
+            # location is a node
             # print location
             if Config.enable_pe_counters:
                 location = str(location)
@@ -114,6 +126,7 @@ class CounterThreshold():
             print location, type(location)
             raise ValueError("location type is wrong!")
         if location in self.dead_components:
+            # do not increase the counter if component is dead
             return None
         if location in self.fault_counters.keys():
             self.fault_counters[location] += 1
@@ -131,6 +144,11 @@ class CounterThreshold():
         return None
 
     def reset_counters(self, location):
+        """
+        resets the counters in a specific location
+        :param location: location of the counters to be reset
+        :return: None
+        """
         if location in self.fault_counters.keys():
             del self.fault_counters[location]
         else:
