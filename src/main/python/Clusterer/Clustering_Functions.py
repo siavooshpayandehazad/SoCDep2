@@ -149,24 +149,25 @@ def clear_clustering(tg, ctg):
     return None
 
 
-def ctg_opt_move(tg, ctg, logging):
+def ctg_opt_move(tg, ctg, iteration, logging):
     """
     Controls the Optimization moves for CTG optimization
     :param tg: Task Graph
     :param ctg: Clustered Task Graph
+    :param iteration: Iteration number that this move is happening in it.
     :param logging: logging file
     :return: None
     """
     if Config.ClusteringOptMove == 'RandomTaskMove':
-        random_task_move(tg, ctg, logging)
+        random_task_move(tg, ctg, iteration, logging)
     elif Config.ClusteringOptMove == 'Swap':
-        task_swap(tg, ctg, logging)
+        task_swap(tg, ctg, iteration, logging)
     elif Config.ClusteringOptMove == 'Circulate':
-        task_circulation(tg, ctg, Config.CTG_CirculationLength, logging)
+        task_circulation(tg, ctg, iteration, Config.CTG_CirculationLength, logging)
     return None
 
 
-def random_task_move(tg, ctg, logging):
+def random_task_move(tg, ctg, iteration, logging):
     """
     Randomly chooses one task from CTG and moves it from its cluster to another random cluster
     :param tg: Task Graph
@@ -174,6 +175,13 @@ def random_task_move(tg, ctg, logging):
     :param logging: logging file
     :return: None
     """
+    random_seed = Config.ctg_random_seed
+    random.seed(Config.mapping_random_seed)
+    for i in range(0, iteration):
+        random_seed = random.randint(1, 100000)
+    random.seed(random_seed)
+    logging.info("Moving to next solution: random_seed: "+str(random_seed)+"    iteration: "+str(iteration))
+
     random_task = random.choice(tg.nodes())
     random_task_cluster = tg.node[random_task]['Cluster']
     # remove it and all its connections from CTG
@@ -195,7 +203,7 @@ def random_task_move(tg, ctg, logging):
     return None
 
 
-def task_swap(tg, ctg, logging):
+def task_swap(tg, ctg, iteration, logging):
     """
     randomly chooses 2 tasks in CTG and swaps them.
     :param tg: Task Graph
@@ -203,6 +211,13 @@ def task_swap(tg, ctg, logging):
     :param logging: logging file
     :return: None
     """
+    random_seed = Config.ctg_random_seed
+    random.seed(Config.mapping_random_seed)
+    for i in range(0, iteration):
+        random_seed = random.randint(1, 100000)
+    random.seed(random_seed)
+    logging.info("Moving to next solution: random_seed: "+str(random_seed)+"    iteration: "+str(iteration))
+
     random_cluster1 = None
     random_cluster2 = None
 
@@ -258,7 +273,7 @@ def task_swap(tg, ctg, logging):
     return None
 
 
-def task_circulation(tg, ctg, circulation_length, logging):
+def task_circulation(tg, ctg, iteration, circulation_length, logging):
     # todo... Circulate N tasks...
     return None
 

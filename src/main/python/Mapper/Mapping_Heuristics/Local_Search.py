@@ -30,7 +30,6 @@ def mapping_opt_local_search(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, s
     best_ctg = copy.deepcopy(ctg)
     best_cost = Mapping_Functions.mapping_cost_function(tg, ag, shm, False)
     starting_cost = best_cost
-    random.seed(None)
     for iteration in range(0, iteration_num):
         logging.info("       ITERATION:"+str(iteration))
         cluster_to_move = random.choice(ctg.nodes())
@@ -157,7 +156,7 @@ def mapping_opt_iterative_local_search(tg, ctg, ag, noc_rg, critical_rg, noncrit
         Mapping_Functions.clear_mapping(tg, ctg, ag)
         counter = 0
         schedule = True
-        random_seed = None
+        random_seed = Config.mapping_random_seed
         random.seed(Config.mapping_random_seed)
         for i in range(0, Iteration):
             random_seed = random.randint(1, 100000)

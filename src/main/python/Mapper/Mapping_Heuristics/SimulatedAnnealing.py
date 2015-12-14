@@ -74,7 +74,7 @@ def optimize_mapping_sa(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg,
     i = 0
     while True:
         i += 1
-        new_tg, new_ctg, new_ag = move_to_next_solution(current_tg, current_ctg, current_ag,  noc_rg,
+        new_tg, new_ctg, new_ag = move_to_next_solution(i, current_tg, current_ctg, current_ag,  noc_rg,
                                                         shm, critical_rg, noncritical_rg, logging)
         Scheduling_Functions.ClearScheduling(new_ag, new_tg)
         Scheduler.schedule_all(new_tg, new_ag, shm, False, False, logging)
@@ -95,7 +95,12 @@ def optimize_mapping_sa(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg,
         prob = metropolis(current_cost, new_cost, temperature)
         # print ("prob:", prob)
         # throw the coin with probability P
-        random.seed(None)
+        random_seed = Config.mapping_random_seed
+        random.seed(Config.mapping_random_seed)
+        for j in range(0, i):
+            random_seed = random.randint(1, 100000)
+        random.seed(random_seed)
+        logging.info("Throwing Dice: random_seed: "+str(random_seed)+"    iteration: "+str(i))
         if prob > random.random():
             # accept the new solution
             move_accepted = True
@@ -286,8 +291,15 @@ def metropolis(current_cost, new_cost, temperature):
     return probability
 
 
-def move_to_next_solution(tg, ctg, ag, noc_rg, shm, critical_rg, noncritical_rg, logging):
-    random.seed(None)
+def move_to_next_solution(iteration, tg, ctg, ag, noc_rg, shm, critical_rg, noncritical_rg, logging):
+
+    random_seed = Config.mapping_random_seed
+    random.seed(Config.mapping_random_seed)
+    for i in range(0, iteration):
+        random_seed = random.randint(1, 100000)
+    random.seed(random_seed)
+    logging.info("Moving to next solution: random_seed: "+str(random_seed)+"    iteration: "+str(iteration))
+
     cluster_to_move = random.choice(ctg.nodes())
     current_node = ctg.node[cluster_to_move]['Node']
     Mapping_Functions.remove_cluster_from_node(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg,

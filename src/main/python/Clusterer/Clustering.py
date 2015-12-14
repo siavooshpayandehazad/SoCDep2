@@ -85,7 +85,7 @@ def ctg_opt_local_search(tg, ctg, num_of_iter, logging):
         if Config.TestMode:
             double_check_ctg(tg, ctg)
         # Make a move!
-        ctg_opt_move(tg, ctg, logging)
+        ctg_opt_move(tg, ctg, i, logging)
         new_cost = ctg_cost_function(ctg)
         clustering_cost_file.write(str(new_cost)+"\n")
         if new_cost <= cost:

@@ -184,7 +184,7 @@ SA_InitialTemp = 20
 SA_StopTemp = 1             # Stops annealing earlier if reaches this temp
 SA_ReportSolutions = False   # if True, it prints every accepted move to console
 # Available Annealing Schedule: 'Linear', 'Exponential', 'Adaptive', 'Markov', 'Logarithmic', 'Aart', 'Huang'
-SA_AnnealingSchedule = 'Linear'
+SA_AnnealingSchedule = 'Exponential'
 # Termination Criteria Could be either 'StopTemp' or 'IterationNum'
 TerminationCriteria = 'StopTemp'
 # --------------------------
@@ -192,7 +192,7 @@ TerminationCriteria = 'StopTemp'
 if SA_AnnealingSchedule == 'Linear':
     pass
 elif SA_AnnealingSchedule == 'Exponential':
-    SA_Alpha = 0.999
+    SA_Alpha = 0.9995
 elif SA_AnnealingSchedule == 'Logarithmic':
     LogCoolingConstant = 10       # c should be greater than or equal to the largest energy barrier in the problem
 elif SA_AnnealingSchedule == 'Adaptive':
