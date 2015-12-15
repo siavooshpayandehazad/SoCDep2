@@ -3,7 +3,6 @@ import networkx
 from ConfigAndPackages import Config
 import random
 from math import ceil
-import operator
 # todo: add virtual channel support AG...
 
 
@@ -193,7 +192,7 @@ def generate_ag(logging):
     """
     if Config.AG_Type == 'Generic':
         return generate_generic_topology_ag(Config.NetworkTopology, Config.Network_X_Size,
-                                                    Config.Network_Y_Size, Config.Network_Z_Size, logging)
+                                            Config.Network_Y_Size, Config.Network_Z_Size, logging)
     elif Config.AG_Type == 'Manual':
         return generate_manual_ag(Config.PE_List, Config.AG_Edge_List, Config.AG_Edge_Port_List)
     else:
@@ -369,11 +368,18 @@ def return_active_nodes(ag):
 
 
 def return_node_util(tg, ag, node):
-    util = 0
+    """
+    Returns the total utilization of mapped tasks on a given node.
+    :param tg: task graph
+    :param ag: architecture graph
+    :param node: node id in ag
+    :return: utilization
+    """
+    utilization = 0
     if len(ag.node[node]['PE'].MappedTasks) > 0:
         for task in ag.node[node]['PE'].MappedTasks:
-            util += tg.node[task]['WCET']
-    return util
+            utilization += tg.node[task]['WCET']
+    return utilization
 
 
 def return_healthy_nodes(ag, system_health_map):

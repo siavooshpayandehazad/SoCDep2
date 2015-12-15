@@ -117,10 +117,20 @@ def link_sim(env, link, schedule, fault_time_list, counter_threshold, logging):
             yield env.timeout(1)
 
 
-def run_simulator(runtime, AG, SHM, NoCRG, logging):
+def run_simulator(runtime, ag, shmu, noc_rg, logging):
+    """
+    prepares and runs the simulator
+    :param runtime: duration of which the user wants to run the program in cycles
+    :param ag: architecture graph
+    :param shmu: system health monitoring unit
+    :param noc_rg: noc routing graph
+    :param logging: logging file
+    :return: None
+    """
     print "==========================================="
-    print "STARTING SIMULATION..."
+    print "SETTING UP THE SIMULATOR..."
     env = simpy.Environment()
+    print "SETTING UP counter-threshold MODULE..."
     counter_threshold = CounterThreshold.CounterThreshold(Config.fault_counter_threshold,
                                                           Config.health_counter_threshold,
                                                           Config.intermittent_counter_threshold)
@@ -134,22 +144,37 @@ def run_simulator(runtime, AG, SHM, NoCRG, logging):
             fault_time_list.append(float("{0:.1f}".format(fault_time)))
             time_until_next_fault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
             fault_time += time_until_next_fault
-        print fault_time_list
-        env.process(fault_event(env, AG, SHM, NoCRG, fault_time_list, counter_threshold, logging))
 
-    for node in AG.nodes():
+        print "------------------------"
+        print "RANDOMLY GENERATED FAULT TIME LIST:",
+        for i in range(0, len(fault_time_list)):
+            if i % 10 == 0:
+                print ""
+                print "\t\t",
+            else:
+                print fault_time_list[i],", ",
+        print ""
+        print "-----------------------"
+
+        env.process(fault_event(env, ag, shmu, noc_rg, fault_time_list, counter_threshold, logging))
+
+    print "SETTING UP ROUTERS AND PES..."
+    for node in ag.nodes():
         # print node, AG.node[node]["Scheduling"]
-        env.process(processor_sim(env, node, AG.node[node]['PE'].Scheduling,
+        env.process(processor_sim(env, node, ag.node[node]['PE'].Scheduling,
                                   fault_time_list, counter_threshold, logging))
-        env.process(router_sim(env, node, AG.node[node]['Router'].Scheduling,
+        env.process(router_sim(env, node, ag.node[node]['Router'].Scheduling,
                                fault_time_list, counter_threshold, logging))
-    for link in AG.edges():
+
+    print "SETTING UP LINKS..."
+    for link in ag.edges():
         # print link, AG.edge[link[0]][link[1]]["Scheduling"]
-        env.process(link_sim(env, link, AG.edge[link[0]][link[1]]["Scheduling"],
+        env.process(link_sim(env, link, ag.edge[link[0]][link[1]]["Scheduling"],
                              fault_time_list, counter_threshold, logging))
 
+    print "STARTING SIMULATION..."
     env.run(until=runtime)
     print "SIMULATION FINISHED..."
-    counter_threshold.report(len(AG.nodes()))
-    Scheduling_Reports.report_scheduling_memory_usage(AG)
+    counter_threshold.report(len(ag.nodes()))
+    Scheduling_Reports.report_scheduling_memory_usage(ag)
     return None

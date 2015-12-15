@@ -5,7 +5,7 @@ from ConfigAndPackages import Config
 import statistics
 import random
 from math import ceil
-from Mapping_Reports import DrawMapping
+from Mapping_Reports import draw_mapping
 from RoutingAlgorithms import Routing
 from ArchGraphUtilities import AG_Functions
 
@@ -60,7 +60,7 @@ def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritica_rg, r
         iteration = 0
     if report:
         print ("INITIAL MAPPING READY... ")
-        DrawMapping(tg, ag, shm, "Mapping_init")
+        draw_mapping(tg, ag, shm, "Mapping_init")
     return True
 
 

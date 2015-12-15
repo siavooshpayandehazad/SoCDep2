@@ -92,9 +92,9 @@ def initialize_system(logging):
         del best_tg, best_ag
         # SHM.AddCurrentMappingToMPM(tg)
     if Config.Mapping_Dstr_Drawing:
-        Mapping_Reports.DrawMappingDistribution(ag, shmu)
+        Mapping_Reports.draw_mapping_distribution(ag, shmu)
     if Config.Mapping_Drawing:
-        Mapping_Reports.DrawMapping(tg, ag, shmu.SHM, "Mapping_post_opt")
+        Mapping_Reports.draw_mapping(tg, ag, shmu.SHM, "Mapping_post_opt")
     Scheduling_Reports.generate_gantt_charts(tg, ag, "SchedulingTG")
     ####################################################################
     # PMC-Graph

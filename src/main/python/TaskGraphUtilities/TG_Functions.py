@@ -7,14 +7,14 @@ import TG_File_Parser
 
 
 def generate_manual_tg(task_list, tg_edge_list, task_criticality_list,
-                               task_wcet_list, tg_edge_weight):
+                       task_wcet_list, tg_edge_weight):
     print("PREPARING TASK GRAPH (TG)...")
     tg = networkx.DiGraph()
     edge_criticality_list = []
     # IF both sender and receiver are critical then that transaction is critical
     for i in range(0, len(task_list)):
         tg.add_node(task_list[i], WCET=task_wcet_list[i], Criticality=task_criticality_list[i],
-                            Cluster=None, Node=None, Priority=None, Distance=None, Release=0, Type='App')
+                    Cluster=None, Node=None, Priority=None, Distance=None, Release=0, Type='App')
 
     print ("\tCALCULATING THE CRITICALITY OF LINKS...")
     gateway_edges = []
@@ -28,11 +28,11 @@ def generate_manual_tg(task_list, tg_edge_list, task_criticality_list,
             # gateway to Low
             gateway_number = len(task_list)+gateway_counter
             tg.add_node(gateway_number, WCET=1, Criticality='GNH', Cluster=None, Node=None, Priority=None,
-                                Distance=None, Release=0, Type='App')
+                        Distance=None, Release=0, Type='App')
             tg.add_edge(edge[0], gateway_number, Criticality='H', Link=[],
-                                ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
+                        ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
             tg.add_edge(gateway_number, edge[1], Criticality='L', Link=[],
-                                ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
+                        ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
             gateway_edges.append(edge)
             gateway_counter += 1
 
@@ -41,11 +41,11 @@ def generate_manual_tg(task_list, tg_edge_list, task_criticality_list,
             # gateway to high
             gateway_number = len(task_list)+gateway_counter
             tg.add_node(gateway_number, WCET=1, Criticality='GH',
-                                Cluster=None, Node=None, Priority=None, Distance=None, Release=0, Type='App')
+                        Cluster=None, Node=None, Priority=None, Distance=None, Release=0, Type='App')
             tg.add_edge(edge[0], gateway_number, Criticality='L', Link=[],
-                                ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
+                        ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
             tg.add_edge(gateway_number, edge[1], Criticality='H', Link=[],
-                                ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
+                        ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
             gateway_edges.append(edge)
             gateway_counter += 1
         else:
@@ -57,15 +57,15 @@ def generate_manual_tg(task_list, tg_edge_list, task_criticality_list,
 
     for i in range(0, len(tg_edge_list)):
         tg.add_edge(tg_edge_list[i][0], tg_edge_list[i][1],
-                            Criticality=edge_criticality_list[i], Link=[],
-                            ComWeight=tg_edge_weight[i])  # Communication weight
+                    Criticality=edge_criticality_list[i], Link=[],
+                    ComWeight=tg_edge_weight[i])  # Communication weight
     assign_distance(tg)
     print("TASK GRAPH (TG) IS READY...")
     return tg
 
 
 def generate_random_tg(number_of_tasks, number_of_critical_tasks, number_of_edges,
-                               wcet_range, edge_weight_range):
+                       wcet_range, edge_weight_range):
     tg = networkx.DiGraph()
     print("PREPARING RANDOM TASK GRAPH (TG)...")
     random.seed(Config.tg_random_seed)
@@ -100,7 +100,7 @@ def generate_random_tg(number_of_tasks, number_of_critical_tasks, number_of_edge
 
     for i in range(0, len(task_list)):
         tg.add_node(task_list[i], WCET=task_wcet_list[i], Criticality=task_criticality_list[i],
-                            Cluster=None, Node=None, Priority=None, Distance=None, Release=0, Type='App')
+                    Cluster=None, Node=None, Priority=None, Distance=None, Release=0, Type='App')
 
     print ("\tCALCULATING THE CRITICALITY OF LINKS...")
     gateway_edges = []
@@ -114,13 +114,13 @@ def generate_random_tg(number_of_tasks, number_of_critical_tasks, number_of_edge
             # gateway to Low
             gateway_number = len(task_list) + gateway_counter
             tg.add_node(gateway_number, WCET=1, Criticality='GNH', Cluster=None, Node=None, Priority=None,
-                                Distance=None, Release=0, Type='App')
+                        Distance=None, Release=0, Type='App')
             if not networkx.has_path(tg, gateway_number, edge[0]):
                 tg.add_edge(edge[0], gateway_number, Criticality='H', Link=[],
-                                    ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
+                            ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
             if not networkx.has_path(tg, edge[1], gateway_number):
                 tg.add_edge(gateway_number, edge[1], Criticality='L', Link=[],
-                                    ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
+                            ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
             gateway_edges.append(edge)
             gateway_counter += 1
         elif task_criticality_list[task_list.index(edge[0])] == 'L' and \
@@ -128,13 +128,13 @@ def generate_random_tg(number_of_tasks, number_of_critical_tasks, number_of_edge
             # gateway to high
             gateway_number = len(task_list)+gateway_counter
             tg.add_node(gateway_number, WCET=1, Criticality='GH', Cluster=None, Node=None, Priority=None,
-                                Distance=None, Release=0, Type='App')
+                        Distance=None, Release=0, Type='App')
             if not networkx.has_path(tg, gateway_number, edge[0]):
                 tg.add_edge(edge[0], gateway_number, Criticality='L', Link=[],
-                                    ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
+                            ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
             if not networkx.has_path(tg, edge[1], gateway_number):
                 tg.add_edge(gateway_number, edge[1], Criticality='H', Link=[],
-                                    ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
+                            ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
             gateway_edges.append(edge)
             gateway_counter += 1
         else:
@@ -148,8 +148,8 @@ def generate_random_tg(number_of_tasks, number_of_critical_tasks, number_of_edge
         # making sure that the graph is still acyclic
         if not networkx.has_path(tg, tg_edge_list[i][1], tg_edge_list[i][0]):
             tg.add_edge(tg_edge_list[i][0], tg_edge_list[i][1],
-                                Criticality=edge_criticality_list[i], Link=[],
-                                ComWeight=tg_edge_weight[i])  # Communication weight
+                        Criticality=edge_criticality_list[i], Link=[],
+                        ComWeight=tg_edge_weight[i])  # Communication weight
     assign_distance(tg)
     print("TASK GRAPH (TG) IS READY...")
     return tg
@@ -176,8 +176,8 @@ def generate_random_independent_tg(number_of_tasks, wcet_range, release_range):
         tg_release_list.append(random.randrange(0, release_range))
     for i in range(0, len(task_list)):
         tg.add_node(task_list[i], WCET=task_wcet_list[i], Criticality=task_criticality_list[i],
-                            Cluster=None, Node=None, Priority=None, Distance=None, Release=tg_release_list[i],
-                            Type='App')
+                    Cluster=None, Node=None, Priority=None, Distance=None, Release=tg_release_list[i],
+                    Type='App')
 
     print("RANDOM TASK GRAPH (TG) WITH INDEPENDENT TASKS IS READY...")
     return tg
@@ -219,12 +219,12 @@ def assign_distance(tg):
 def generate_tg():
     if Config.TG_Type == 'RandomDependent':
         return generate_random_tg(Config.NumberOfTasks, Config.NumberOfCriticalTasks, Config.NumberOfEdges,
-                                          Config.WCET_Range, Config.EdgeWeightRange)
+                                  Config.WCET_Range, Config.EdgeWeightRange)
     elif Config.TG_Type == 'RandomIndependent':
         return generate_random_independent_tg(Config.NumberOfTasks, Config.WCET_Range, Config.Release_Range)
     elif Config.TG_Type == 'Manual':
         return generate_manual_tg(Config.Task_List, Config.TG_Edge_List,
-                                          Config.Task_Criticality_List, Config.Task_WCET_List, Config.TG_Edge_Weight)
+                                  Config.Task_Criticality_List, Config.Task_WCET_List, Config.TG_Edge_Weight)
     elif Config.TG_Type == 'FromDOTFile':
         return TG_File_Parser.generate_tg_from_dot(Config.TG_DOT_Path)
     else:

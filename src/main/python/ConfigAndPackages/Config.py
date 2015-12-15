@@ -176,7 +176,7 @@ CTG_CirculationLength = 3
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
 Mapping_Function = 'LocalSearch'
-LocalSearchIteration = 1000
+LocalSearchIteration = 10
 IterativeLocalSearchIterations = 5
 mapping_random_seed = 2000
 #######################
@@ -252,16 +252,16 @@ Task_SlackCount = 0               # this is used for number of repetitions of th
 #          System's Fault  Config
 ################################################
 MTTF = None     # Mean time to failure in seconds have not used MTTF yet...
-MTBF = 2        # Mean time between failures in clock cycles
+MTBF = 1        # Mean time between failures in clock cycles
 SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal distribution
 # ------------------------
 health_counter_threshold = 20
 fault_counter_threshold = 4
 intermittent_counter_threshold = 4
 enable_link_counters = True
-enable_router_counters = False
-enable_pe_counters = False
-error_correction_rate = 0.5
+enable_router_counters = True
+enable_pe_counters = True
+error_correction_rate = 0.4
 ################################################
 #           Network Partitioning
 ################################################

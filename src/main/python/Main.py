@@ -12,8 +12,10 @@ from Utilities import Logger, Benchmark_Alg_Downloader
 import SystemInitialization
 from GUI_Util import GUI
 from pympler import tracker
-from Simulator import Simulator, FaultInjector
+from Simulator import Simulator
+# from Simulator import FaultInjector
 
+tr = None
 if Config.MemoryProfiler:
     tr = tracker.SummaryTracker()
 
@@ -65,7 +67,7 @@ misc.generate_file_directories()
 misc.draw_logo()
 ####################################################################
 # Initialization of the system
-tg, ag, SHMU, NoCRG, CriticalRG, NonCriticalRG, PMCG = SystemInitialization.initialize_system(logging)
+tg, ag, shmu, noc_rg, CriticalRG, NonCriticalRG, pmcg = SystemInitialization.initialize_system(logging)
 
 
 # just to have a sense of how much time we are spending in each section
@@ -73,8 +75,8 @@ print ("===========================================")
 system_starting_time = time.time()
 print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:"+str(round(system_starting_time-program_start_time)) +
        " SECONDS AFTER PROGRAM START...")
-Simulator.run_simulator(100, ag, SHMU, NoCRG, logging)
-# FaultInjector.FaultInjector(system_starting_time, AG, SHM, NoCRG)
+Simulator.run_simulator(100, ag, shmu, noc_rg, logging)
+# FaultInjector.FaultInjector(system_starting_time, ag, shmu, noc_rg)
 logging.info('Logging finished...')
 
 if Config.MemoryProfiler:

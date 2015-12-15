@@ -25,7 +25,7 @@ class CounterThreshold():
         elif type(location) is tuple:
             # location is a link: (node1, node 2)
             # print location, location[0], location[1]
-            location = str(location[0])+str(location[1])
+            location = "L"+str(location[0])+str(location[1])
         elif type(location) is int:
             # location is a node
             # print location
@@ -68,7 +68,7 @@ class CounterThreshold():
             # location is a link: (node1, node 2)
             # print location, location[0], location[1]
             if Config.enable_link_counters:
-                location = str(location[0])+str(location[1])
+                location = "L"+str(location[0])+str(location[1])
             else:
                 return None
         elif type(location) is int:
@@ -112,7 +112,7 @@ class CounterThreshold():
             # location is a link: (node1, node 2)
             # print location, location[0], location[1]
             if Config.enable_link_counters:
-                location = str(location[0])+str(location[1])
+                location = "L"+str(location[0])+str(location[1])
             else:
                 return None
         elif type(location) is int:

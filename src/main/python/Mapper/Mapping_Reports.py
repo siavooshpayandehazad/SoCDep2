@@ -3,12 +3,14 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from ConfigAndPackages import Config
 from ArchGraphUtilities import AG_Functions
-import random, networkx
+import random
+import networkx
 
-def ReportMapping(ag, logging):
+
+def report_mapping(ag, logging):
     """
     Reports mapping into log file
-    :param AG: Architecture Graph
+    :param ag: Architecture Graph
     :param logging: logging file
     :return: None
     """
@@ -23,7 +25,7 @@ def ReportMapping(ag, logging):
     return None
 
 
-def DrawMappingDistribution(ag, shum):
+def draw_mapping_distribution(ag, shum):
     """
     Draws mapping Task Number and Utilization Distribution
     :param ag: Architecture Graph
@@ -83,7 +85,7 @@ def DrawMappingDistribution(ag, shum):
     return None
 
 
-def DrawMapping(tg, ag, shm, mapping_file_name):
+def draw_mapping(tg, ag, shm, mapping_file_name):
     """
     This function draws the tasks on tiles of network. this would be very useful to check how our
     mapping optimization is acting...
@@ -180,7 +182,7 @@ def DrawMapping(tg, ag, shm, mapping_file_name):
     return None
 
 
-def VizMappingOpt(cost_file_name):
+def viz_mapping_opt(cost_file_name):
     """
     Visualizes the cost of solutions during local search mapping optimization process
     :param cost_file_name: Name of the Cost File (Holds values of cost function for different mapping steps)
@@ -190,14 +192,13 @@ def VizMappingOpt(cost_file_name):
     print ("GENERATING MAPPING OPTIMIZATION VISUALIZATIONS...")
 
     fig, ax1 = plt.subplots()
-
+    solution_num = None
     try:
         mapping_cost_file = open('Generated_Files/Internal/'+cost_file_name+'.txt', 'r')
         cost = []
         line = mapping_cost_file.readline()
         min_cost = float(line)
-        min_cost_list = []
-        min_cost_list.append(min_cost)
+        min_cost_list = [min_cost]
         cost.append(float(line))
         while line != "":
             cost.append(float(line))
@@ -247,7 +248,7 @@ def VizMappingOpt(cost_file_name):
     return None
 
 
-def Vizcost_slope():
+def viz_cost_slope():
     """
     Visualises the mapping Cost slope for Simulated Annealing. This is like derivative of the cost graph.
     :return: None
@@ -278,7 +279,7 @@ def Vizcost_slope():
     return None
 
 
-def VizHuangRace():
+def viz_huang_race():
     """
     Visualizes The progress of Huang's cooling scheduling counters progress
     :return:    None

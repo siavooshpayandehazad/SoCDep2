@@ -1,6 +1,7 @@
 # Copyright (C) Siavoosh Payandeh Azad
 import unittest
-import sys,os
+import sys
+import os
 import re
 
 # Setting up the python path to import the functions

@@ -90,7 +90,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                 else:
                     init_mapping_string = None
 
-                Mapping_Reports.ReportMapping(ag, logging)
+                Mapping_Reports.report_mapping(ag, logging)
                 # Schedule all tasks
                 Scheduling_Functions.ClearScheduling(ag, tg)
                 Scheduler.schedule_all(tg, ag, shm, Config.DebugInfo, Config.DebugDetails, logging)
@@ -115,7 +115,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                     tg = copy.deepcopy(best_tg)
                     ag = copy.deepcopy(best_ag)
                     del best_tg, best_ctg, best_ag
-                    Mapping_Reports.VizMappingOpt('LocalSearchMappingCost')
+                    Mapping_Reports.viz_mapping_opt('LocalSearchMappingCost')
                 elif Config.Mapping_Function == 'IterativeLocalSearch':
                     (best_tg, best_ctg, best_ag) = \
                         Local_Search.mapping_opt_iterative_local_search(tg, ctg, ag, noc_rg, critical_rg,
@@ -127,17 +127,17 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                     tg = copy.deepcopy(best_tg)
                     ag = copy.deepcopy(best_ag)
                     del best_tg, best_ctg, best_ag
-                    Mapping_Reports.VizMappingOpt('LocalSearchMappingCost')
+                    Mapping_Reports.viz_mapping_opt('LocalSearchMappingCost')
                 elif Config.Mapping_Function == 'SimulatedAnnealing':
                     (best_tg, best_ctg, best_ag) = SimulatedAnnealing.optimize_mapping_sa(tg, ctg, ag, noc_rg,
                                                                                           critical_rg, non_critical_rg,
                                                                                           shm, 'SA_MappingCost',
                                                                                           logging)
-                    Mapping_Reports.VizMappingOpt('SA_MappingCost')
+                    Mapping_Reports.viz_mapping_opt('SA_MappingCost')
                     if Config.SA_AnnealingSchedule == 'Adaptive':
-                        Mapping_Reports.Vizcost_slope()
+                        Mapping_Reports.viz_cost_slope()
                     elif Config.SA_AnnealingSchedule == 'Huang':
-                        Mapping_Reports.VizHuangRace()
+                        Mapping_Reports.viz_huang_race()
                     tg = copy.deepcopy(best_tg)
                     ag = copy.deepcopy(best_ag)
                     del best_tg, best_ctg, best_ag
@@ -145,14 +145,14 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                 print ("\033[92mTIME::\033[0m MAPPING AND OPTIMIZATION TOOK: "
                        + str(round(time.time()-mapping_start_time))+" SECONDS")
 
-                Mapping_Reports.ReportMapping(ag, logging)
+                Mapping_Reports.report_mapping(ag, logging)
                 Scheduling_Functions.ClearScheduling(ag, tg)
                 Scheduler.schedule_all(tg, ag, shm, False, False, logging)
                 Scheduling_Reports.report_mapped_tasks(ag, logging)
                 Mapping_Functions.mapping_cost_function(tg, ag, shm, True,  initial_mapping_string=init_mapping_string)
                 return tg, ag
             else:
-                Mapping_Reports.ReportMapping(ag, logging)
+                Mapping_Reports.report_mapping(ag, logging)
                 print ("===========================================")
                 raise ValueError("INITIAL MAPPING FAILED...")
         else:
