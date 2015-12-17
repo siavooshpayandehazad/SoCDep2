@@ -22,8 +22,8 @@ XYZ_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'S2U', 'S2D', 'N2U', 'N2D', 'W2U', 
 
 # based on description in "Turn model based router design for 3D network on chip" by Chemli and Zitouni
 NegativeFirst3D_TurnModel = ['E2N', 'E2S', 'W2N', 'S2E', 'N2W', 'N2E',
-                           'N2U', 'N2D', 'S2U', 'W2U', 'E2U', 'E2D',
-                           'U2N', 'U2S', 'U2E', 'U2W', 'D2N', 'D2E']
+                             'N2U', 'N2D', 'S2U', 'W2U', 'E2U', 'E2D',
+                             'U2N', 'U2S', 'U2E', 'U2W', 'D2N', 'D2E']
 ################################################
 #          SHM Sets
 ################################################

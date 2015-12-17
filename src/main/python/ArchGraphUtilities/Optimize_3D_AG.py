@@ -1,9 +1,10 @@
 # Copyright (C) Siavoosh Payandeh Azad
 
-from  ConfigAndPackages import Config
+from ConfigAndPackages import Config
 from AG_Functions import return_node_number, return_node_location
 from RoutingAlgorithms import Routing, Calculate_Reachability, RoutingGraph_Reports
-import random, copy
+import random
+import copy
 
 
 def optimize_ag_vertical_links(ag, shm, logging):
@@ -22,8 +23,7 @@ def opt_ag_vertical_link_iterative_local_search(ag, shm, logging):
     starting_cost = None
     for j in range(0, Config.AG_Opt_Iterations_ILS):
         remove_all_vertical_links(shm, ag)
-        vertical_link_list_init = copy.deepcopy(find_feasible_ag_vertical_link_placement(ag,
-                                                                                                 shm))
+        vertical_link_list_init = copy.deepcopy(find_feasible_ag_vertical_link_placement(ag, shm))
         routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shm,
                                                                     Config.UsedTurnModel, False, False))
         cost = Calculate_Reachability.ReachabilityMetric(ag, routing_graph, False)

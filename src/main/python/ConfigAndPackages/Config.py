@@ -175,8 +175,8 @@ CTG_CirculationLength = 3
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'LocalSearch'
-LocalSearchIteration = 10
+Mapping_Function = 'IterativeLocalSearch'
+LocalSearchIteration = 200
 IterativeLocalSearchIterations = 5
 mapping_random_seed = 2000
 #######################
@@ -303,11 +303,11 @@ NodeTestComWeight = 2
 ###############################################
 #           VISUALIZATION Config
 ###############################################
-RG_Draw = False
-PMCG_Drawing = False
-TTG_Drawing = False
+RG_Draw = True
+PMCG_Drawing = True
+TTG_Drawing = True
 Mapping_Dstr_Drawing = True
 Mapping_Drawing = True
-SHM_Drawing = False          # if True generates SHM Drawing
+SHM_Drawing = True          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks

@@ -152,7 +152,7 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
                 print ""
                 print "\t\t",
             else:
-                print fault_time_list[i],", ",
+                print fault_time_list[i], ", ",
         print ""
         print "-----------------------"
 

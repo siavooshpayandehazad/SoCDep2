@@ -31,10 +31,10 @@ if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("")
     sys.exit()
 elif '-GUI' in sys.argv[1:]:
-    app = GUI.ConfigAppp(None)
+    app = GUI.ConfigApp(None)
     app.title('Schedule And Depend')
     app.mainloop()
-    if not app.Apply_Button:
+    if not app.apply_button:
         sys.exit()
 elif '-UTEST' in sys.argv[1:]:
     os.system('python ../../unittest/Python/Unit_tests.py')
