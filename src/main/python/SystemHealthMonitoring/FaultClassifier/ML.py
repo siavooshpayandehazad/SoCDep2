@@ -10,7 +10,8 @@ from sklearn.tree import DecisionTreeClassifier
 import matplotlib.animation as animation
 
 def updatefig(*args):
-    global index, new_data, in_data, dmb_bad, dmb_good, classifierSVM, classifierKNN, classifierDTree, axsvm, axknn, axdtr
+    global index, new_data, in_data, dmb_bad, dmb_good, classifierSVM, classifierKNN, classifierDTree, linesvm, \
+        axsvm, axknn, axdtr, axdmb, lineknn, linedtr, linedmb, learn_labels_names
     arr = []
     if index < len(in_data) - 5:
         dmb = "good"

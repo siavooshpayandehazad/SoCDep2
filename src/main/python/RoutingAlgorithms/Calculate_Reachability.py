@@ -148,10 +148,10 @@ def MergeRectangleWithNode(Rect_ll, Rect_ur, Node):
     return MergedX1, MergedY1, MergedZ1, MergedX2, MergedY2, MergedZ2
 
 
-def ClearReachabilityCalculations(AG):
-    for Node in AG.nodes():
-        for Port in AG.node[Node]['Router'].Unreachable:
-            AG.node[Node]['Router'].Unreachable[Port] = {}
+def ClearReachabilityCalculations(ag):
+    for node in ag.nodes():
+        for port in ag.node[node]['Router'].Unreachable:
+            ag.node[node]['Router'].Unreachable[port] = {}
     return None
 
 
@@ -219,15 +219,25 @@ def calculate_reachability_with_regions(AG, SHMU):
 
 
 
-def ReachabilityMetric(AG, NoCRG, Report):
-    if Report:print ("=====================================")
-    if Report:print ("CALCULATING REACH-ABILITY METRIC OF THE CURRENT ROUTING ALGORITHM UNDER CURRENT FAULT CONFIG")
-    ReachabilityCounter = 0
-    for SourceNode in AG.nodes():
-        for DestinationNode in AG.nodes():
-            if SourceNode != DestinationNode:
-                if IsDestReachableFromSource(NoCRG,SourceNode,DestinationNode):
-                    ReachabilityCounter += 1
-    ReachabilityMetric = float(ReachabilityCounter)
-    if Report:print ("REACH-ABILITY METRIC: "+str(ReachabilityMetric))
-    return ReachabilityMetric
+def ReachabilityMetric(ag, noc_rg, report):
+    """
+    returns the ratio of sum of number of number of paths
+    to each nodes for each node to all possible reachable case (where each node can reach all other nodes)
+    :param ag: architecture graph
+    :param noc_rg: NoC routing graph
+    :param report: report switch
+    :return: reachability metric
+    """
+    if report:
+        print ("=====================================")
+        print ("CALCULATING REACH-ABILITY METRIC OF THE CURRENT ROUTING ALGORITHM UNDER CURRENT FAULT CONFIG")
+    reachability_counter = 0
+    for source_node in ag.nodes():
+        for destination_node in ag.nodes():
+            if source_node != destination_node:
+                if IsDestReachableFromSource(noc_rg, source_node, destination_node):
+                    reachability_counter += 1
+    r_metric = float(reachability_counter)
+    if report:
+        print ("REACH-ABILITY METRIC: "+str(r_metric))
+    return r_metric
