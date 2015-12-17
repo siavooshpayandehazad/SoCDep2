@@ -37,7 +37,9 @@ class CounterThreshold():
         if location in self.dead_components:
             # do not increase the counter if component is dead
             return None
-        if location not in self.fault_counters.keys():
+        if location in self.fault_counters.keys() or location in self.intermittent_counters.keys():
+            pass
+        else:
             # do not start the fault counter if there is no fault counter
             return None
 

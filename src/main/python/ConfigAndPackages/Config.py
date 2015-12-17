@@ -151,7 +151,7 @@ MaxTemp = 100
 #          Clustering Function  Config
 ################################################
 Clustering_Optimization = True     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
-ClusteringIteration = 500
+ClusteringIteration = 100
 ctg_random_seed = 100
 Clustering_Report = False
 Clustering_DetailedReport = False
@@ -175,8 +175,8 @@ CTG_CirculationLength = 3
 ################################################
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'IterativeLocalSearch'
-LocalSearchIteration = 200
+Mapping_Function = 'LocalSearch'
+LocalSearchIteration = 10
 IterativeLocalSearchIterations = 5
 mapping_random_seed = 2000
 #######################
@@ -259,8 +259,8 @@ health_counter_threshold = 20
 fault_counter_threshold = 4
 intermittent_counter_threshold = 4
 enable_link_counters = True
-enable_router_counters = True
-enable_pe_counters = True
+enable_router_counters = False
+enable_pe_counters = False
 error_correction_rate = 0.4
 ################################################
 #           Network Partitioning
@@ -303,11 +303,11 @@ NodeTestComWeight = 2
 ###############################################
 #           VISUALIZATION Config
 ###############################################
-RG_Draw = True
-PMCG_Drawing = True
-TTG_Drawing = True
+RG_Draw = False
+PMCG_Drawing = False
+TTG_Drawing = False
 Mapping_Dstr_Drawing = True
 Mapping_Drawing = True
-SHM_Drawing = True          # if True generates SHM Drawing
+SHM_Drawing = False          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks
