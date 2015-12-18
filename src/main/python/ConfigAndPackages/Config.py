@@ -17,9 +17,9 @@ EventDrivenFaultInjection = True
 # TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile'
 TG_Type = 'RandomDependent'
 # For Random TG_Type:
-NumberOfTasks = 10
+NumberOfTasks = 25
 NumberOfCriticalTasks = 0
-NumberOfEdges = 15
+NumberOfEdges = 35
 WCET_Range = 25
 EdgeWeightRange = 5
 Release_Range = 5      # task release time range
@@ -151,7 +151,7 @@ MaxTemp = 100
 #          Clustering Function  Config
 ################################################
 Clustering_Optimization = True     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
-ClusteringIteration = 100
+ClusteringIteration = 70
 ctg_random_seed = 100
 Clustering_Report = False
 Clustering_DetailedReport = False
@@ -176,7 +176,7 @@ CTG_CirculationLength = 3
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
 Mapping_Function = 'LocalSearch'
-LocalSearchIteration = 10
+LocalSearchIteration = 70
 IterativeLocalSearchIterations = 5
 mapping_random_seed = 2000
 #######################
@@ -259,8 +259,8 @@ health_counter_threshold = 20
 fault_counter_threshold = 4
 intermittent_counter_threshold = 4
 enable_link_counters = True
-enable_router_counters = False
-enable_pe_counters = False
+enable_router_counters = True
+enable_pe_counters = True
 error_correction_rate = 0.4
 ################################################
 #           Network Partitioning
