@@ -25,7 +25,15 @@ def RandomFaultGeneration(shm):
     :param shm: System Health Map
     :return:
     """
-    ChosenFault = random.choice(['Link', 'Turn', 'Node'])
+    location_choices = []
+    if Config.enable_link_counters:
+        location_choices.append('Link')
+    if Config.enable_pe_counters:
+        location_choices.append('Node')
+    if Config.enable_router_counters:
+        location_choices.append('Turn')
+
+    ChosenFault = random.choice(location_choices)
     # Todo: fix the distribution of fault types
     # FaultTypes = ['T','T','T','T','T','P']
     FaultTypes = ['T']

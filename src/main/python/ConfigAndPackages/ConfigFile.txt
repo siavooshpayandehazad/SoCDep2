@@ -12,6 +12,7 @@ NumberOfEdges: 15
 WCET_Range: 15
 EdgeWeightRange: 7
 Release_Range: 5
+tg_random_seed: 100
 
 # The following is only for Manual TG_Type:
 # Note::    if you have High-critical tasks in your TG, make sure that you have checked partitioning options for the
@@ -53,12 +54,6 @@ AG_Opt_Iterations_LS: 10
 VerticalLinksNum: 20
 
 #------------------------------------------------
-#               Dark_Sil_Config
-#------------------------------------------------
-[Dark_Sil_Config]
-DarkSiliconPercentage: 0
-
-#------------------------------------------------
 #               Routing_Config
 #------------------------------------------------
 [Routing_Config]
@@ -69,6 +64,24 @@ RoutingFilePath: User_Inputs/RoutingFile.txt
 SetRoutingFromFile: False
 # Flow control switch can be: "StoreAndForward" or "Wormhole"
 FlowControl: Wormhole
+
+#------------------------------------------------
+#               Dark_Sil_Config
+#------------------------------------------------
+[Dark_Sil_Config]
+
+DarkSiliconPercentage: 0
+
+#------------------------------------------------
+#               SHM_Config
+#------------------------------------------------
+[SHM_Config]
+
+NumberOfRects: 5
+# ListOfBrokenLinks:
+# ListOfBrokenTurns:
+MaxTemp: 100
+
 
 #------------------------------------------------
 #               CTG_Config
@@ -96,13 +109,92 @@ Clustering_CostFunctionType: MAX
 # Circulate: randomly chooses a N tasks from N clusters and Circulates them (is not implemented yet)
 ClusteringOptMove: RandomTaskMove
 CTG_CirculationLength: 3
+#------------------------------------------------
+#               Mapping_Config
+#------------------------------------------------
+[Mapping_Config]
+
+Mapping_Function: LocalSearch
+LocalSearchIteration: 70
+IterativeLocalSearchIterations: 5
+mapping_random_seed: 2000
+
+SimulatedAnnealingIteration: 1000
+SA_InitialTemp: 20
+SA_StopTemp: 1
+SA_ReportSolutions: False
+
+SA_AnnealingSchedule: 'Exponential'
+TerminationCriteria: 'StopTemp'
+
+# SA_Alpha: 0.9995
+LogCoolingConstant: 10
+CostMonitorQueSize: 2000
+# SlopeRangeForCooling: 0.02
+MaxSteadyState: 30000
+MarkovNum: 2000
+# MarkovTempStep = 1.0
+# Delta = 0.05
+# HuangAlpha = 0.5
+HuangN: 30
+HuangTargetValue1: 45
+HuangTargetValue2: 45
+
+Mapping_CostFunctionType: Node_Util_SD
+DistanceBetweenMapping: False
+#------------------------------------------------
+#               Scheduling_Config
+#------------------------------------------------
+[Scheduling_Config]
+
+Communication_SlackCount: 0
+Task_SlackCount: 0
+
+#------------------------------------------------
+#               Fault_Config
+#------------------------------------------------
+[Fault_Config]
+
+# MTTF = None
+MTBF = 1
+# SD4MTBF = 0.1
+#---------------
+health_counter_threshold:  4
+fault_counter_threshold: 2
+intermittent_counter_threshold: 2
+enable_link_counters: True
+enable_router_counters: False
+enable_pe_counters: False
+# error_correction_rate: 0.4
+
+#------------------------------------------------
+#           Network_Partitioning
+#------------------------------------------------
+[Network_Partitioning]
+
+EnablePartitioning: False
 
 #------------------------------------------------
 #               PMCG_Config
 #------------------------------------------------
 [PMCG_Config]
+
 GeneratePMCG : False
 OneStepDiagnosable : False
 TFaultDiagnosable
 NodeTestExeTime : 2
 NodeTestComWeight : 2
+
+#------------------------------------------------
+#               Viz_Config
+#------------------------------------------------
+[Viz_Config]
+
+RG_Draw: False
+PMCG_Drawing: False
+TTG_Drawing: False
+Mapping_Dstr_Drawing: True
+Mapping_Drawing: True
+SHM_Drawing: False
+GenMappingFrames: False
+FrameResolution: 20

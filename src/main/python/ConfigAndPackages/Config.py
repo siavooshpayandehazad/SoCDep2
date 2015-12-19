@@ -206,7 +206,7 @@ elif SA_AnnealingSchedule == 'Adaptive':
     SA_Alpha = 0.9999
 elif SA_AnnealingSchedule == 'Markov':
     MarkovNum = 2000
-    MarkovTempStep = 1          # this is the amount of Temp decrease that the system would have after MarkovNum Steps
+    MarkovTempStep = 1.0        # this is the amount of Temp decrease that the system would have after MarkovNum Steps
 elif SA_AnnealingSchedule == 'Aart':
     # The number K in Aart's cooling schedule is determined by CostMonitorQueSize
     CostMonitorQueSize = 2000
@@ -252,15 +252,15 @@ Task_SlackCount = 0               # this is used for number of repetitions of th
 #          System's Fault  Config
 ################################################
 MTTF = None     # Mean time to failure in seconds have not used MTTF yet...
-MTBF = 1        # Mean time between failures in clock cycles
+MTBF = 0.4        # Mean time between failures in clock cycles
 SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal distribution
 # ------------------------
-health_counter_threshold = 20
-fault_counter_threshold = 4
-intermittent_counter_threshold = 4
+health_counter_threshold = 4
+fault_counter_threshold = 2
+intermittent_counter_threshold = 2
 enable_link_counters = True
-enable_router_counters = True
-enable_pe_counters = True
+enable_router_counters = False
+enable_pe_counters = False
 error_correction_rate = 0.4
 ################################################
 #           Network Partitioning
