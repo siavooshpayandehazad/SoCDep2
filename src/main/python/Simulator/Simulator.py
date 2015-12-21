@@ -7,8 +7,8 @@ import numpy
 from ConfigAndPackages import Config
 from FaultInjector import fault_event
 from Scheduler import Scheduling_Reports
-from SystemHealthMonitoring.FaultClassifier import CounterThreshold
-
+#from SystemHealthMonitoring.FaultClassifier import CounterThreshold #Rene's addition
+from SystemHealthMonitoring.FaultClassifier import MachineLearning #Rene's addition
 
 def processor_sim(env, node, schedule, fault_time_list, counter_threshold, logging):
     """
@@ -131,9 +131,11 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
     print "SETTING UP THE SIMULATOR..."
     env = simpy.Environment()
     print "SETTING UP counter-threshold MODULE..."
-    counter_threshold = CounterThreshold.CounterThreshold(Config.fault_counter_threshold,
-                                                          Config.health_counter_threshold,
-                                                          Config.intermittent_counter_threshold)
+    #counter_threshold = CounterThreshold.CounterThreshold(Config.fault_counter_threshold,
+    #                                                      Config.health_counter_threshold,
+    #                                                      Config.intermittent_counter_threshold) #Needs to be added
+    counter_threshold = MachineLearning.MachineLearning(Config.fault_counter_threshold, #Rene's addition
+                                                          Config.health_counter_threshold)
 
     fault_time_list = []
     fault_time = 0
