@@ -4,6 +4,7 @@ import copy
 import time
 from ConfigAndPackages import Config
 from Mapper import Mapping, Mapping_Reports, Mapping_Animation
+from Mapper import Mapping_Functions
 from Scheduler import Scheduling_Reports, TrafficTableGenerator, Scheduler
 from SystemHealthMonitoring import SystemHealthMonitoringUnit, SHMU_Reports, \
     SHMU_Functions, TestSchedulingUnit, SHMU_Test
@@ -95,6 +96,7 @@ def initialize_system(logging):
         Mapping_Reports.draw_mapping_distribution(ag, shmu)
     if Config.Mapping_Drawing:
         Mapping_Reports.draw_mapping(tg, ag, shmu.SHM, "Mapping_post_opt")
+    Mapping_Functions.write_mapping_to_file(ag, "mapping_report")
     Scheduling_Reports.generate_gantt_charts(tg, ag, "SchedulingTG")
     ####################################################################
     # PMC-Graph
@@ -131,4 +133,4 @@ def initialize_system(logging):
     TrafficTableGenerator.generate_gsnoc_traffic_table(ag, tg)
     if Config.GenMappingFrames:
         Mapping_Animation.generate_frames(tg, ag, shmu.SHM)
-    return tg, ag, shmu, noc_rg, critical_rg, nonnritical_rg, pmcg
+    return ag, shmu, noc_rg, critical_rg, nonnritical_rg, pmcg

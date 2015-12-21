@@ -252,7 +252,7 @@ Task_SlackCount = 0               # this is used for number of repetitions of th
 #          System's Fault  Config
 ################################################
 MTTF = None     # Mean time to failure in seconds have not used MTTF yet...
-MTBF = 0.4        # Mean time between failures in clock cycles
+MTBF = 1        # Mean time between failures in clock cycles
 SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal distribution
 # ------------------------
 health_counter_threshold = 4
@@ -303,7 +303,7 @@ NodeTestComWeight = 2
 ###############################################
 #           VISUALIZATION Config
 ###############################################
-RG_Draw = True
+RG_Draw = False
 PMCG_Drawing = False
 TTG_Drawing = False
 Mapping_Dstr_Drawing = True
