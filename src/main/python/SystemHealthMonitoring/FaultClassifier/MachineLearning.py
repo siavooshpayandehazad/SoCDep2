@@ -11,16 +11,17 @@ from sklearn.tree       import DecisionTreeClassifier
 
 class MachineLearning():
     
-    def __init__(self, fault_threshold, health_threshold):
+    def __init__(self, fault_threshold, health_threshold):#, intermittent_threshold):
         #include previous counter_threshold stuff
         #self.counter_threshold = CounterThreshold.CounterThreshold(fault_threshold, health_threshold)
-        self.machine_learning_buffer    = {}
-        self.machine_learning_counter   = {}
+        self.machine_learning_buffer        = {}
+        self.machine_learning_counter       = {}
         self.machine_learning_counter_total = 0
-        self.fault_counters     = {}
-        self.health_counters    = {}
-        self.fault_threshold    = fault_threshold
-        self.health_threshold   = health_threshold
+        self.fault_counters         = {}
+        self.health_counters        = {}
+        self.fault_threshold        = fault_threshold
+        #self.intermittent_threshold = intermittent_threshold
+        self.health_threshold       = health_threshold#+intermittent_threshold
         self.dead_components    = []
         self.ml_methods         = {}
         self.training           = []
@@ -106,7 +107,7 @@ class MachineLearning():
             location = "R"+str(location.keys()[0])
         elif type(location) is tuple:
             # print location, location[0], location[1]
-            location = str(location[0])+str(location[1])
+            location = "L"+str(location[0])+str(location[1])
         elif type(location) is int:
             # print location
             location = str(location)
@@ -194,7 +195,7 @@ class MachineLearning():
             location = "R"+str(location.keys()[0])
         elif type(location) is tuple:
             # print location, location[0], location[1]
-            location = str(location[0])+str(location[1])
+            location = "L"+str(location[0])+str(location[1])
         elif type(location) is int:
             # print location
             location = str(location)
