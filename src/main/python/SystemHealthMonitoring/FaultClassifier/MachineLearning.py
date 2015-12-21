@@ -269,7 +269,7 @@ class MachineLearning():
         print "VEG: Total number of healthy/faulty events: " +str(self.machine_learning_counter_total)
         for i in self.machine_learning_counter.keys():
             print "VEG: " +i+ ": " + str(self.machine_learning_counter[i])
-        #print "DEAD Components:", self.dead_components
+        print "DEAD Components:", self.dead_components
         #print "MAX MEMORY USAGE:", self.memory_counter
         #print "AVERAGE COUNTER PER Node: ", float(self.memory_counter)/number_of_nodes
         return None
