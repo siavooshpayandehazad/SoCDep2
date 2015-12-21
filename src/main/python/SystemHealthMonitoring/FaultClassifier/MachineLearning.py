@@ -246,6 +246,10 @@ class MachineLearning():
         #if current_memory_usage > self.memory_counter:
         #    self.memory_counter = current_memory_usage
         return None
+    
+    def increase_intermittent_counter(self, location, logging):
+        self.increase_fault_counter(location, logging)
+        return None
 
     def reset_counters(self, location):
         #if location in self.fault_counters.keys():
