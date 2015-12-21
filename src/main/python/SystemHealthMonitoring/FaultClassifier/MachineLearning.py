@@ -13,7 +13,7 @@ class MachineLearning():
     
     def __init__(self, fault_threshold, health_threshold):
         #include previous counter_threshold stuff
-        self.counter_threshold = CounterThreshold.CounterThreshold(fault_threshold, health_threshold)
+        #self.counter_threshold = CounterThreshold.CounterThreshold(fault_threshold, health_threshold)
         self.machine_learning_buffer    = {}
         self.machine_learning_counter   = {}
         self.machine_learning_counter_total = 0
@@ -95,7 +95,7 @@ class MachineLearning():
     
     def increase_health_counter(self, location, logging):
         #include previous counter_threshold stuff
-        self.counter_threshold.increase_health_counter(location, logging)
+        #self.counter_threshold.increase_health_counter(location, logging)
         
         this_collection = collections.deque(maxlen=self.fault_threshold+self.health_threshold-1)
         
@@ -183,7 +183,7 @@ class MachineLearning():
 
     def increase_fault_counter(self, location, logging):
         #include previous counter_threshold stuff
-        self.counter_threshold.increase_fault_counter(location, logging)
+        #self.counter_threshold.increase_fault_counter(location, logging)
         
         this_collection = collections.deque(maxlen=self.fault_threshold+self.health_threshold-1)
         
