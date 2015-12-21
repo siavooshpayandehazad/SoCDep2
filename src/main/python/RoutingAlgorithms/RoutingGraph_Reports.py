@@ -8,96 +8,96 @@ from ConfigAndPackages import Config
 import matplotlib.patches as patches
 
 
-def DrawRG(RoutingGraph):
+def draw_rg(rg):
     print ("===========================================")
     print ("GENERATING ROUTING GRAPH VISUALIZATION...")
-    POS = {}
-    ColorList = []
+    pos = {}
+    color_list = []
     plt.figure(figsize=(10*Config.Network_X_Size, 10*Config.Network_Y_Size))
     distance = 100*Config.Network_Z_Size
     step = (distance*0.8)/Config.Network_Z_Size
-    for node in RoutingGraph.nodes():
-        Node = int(re.search(r'\d+', node).group())
-        Location = AG_Functions.return_node_location(Node)
-        circle1 = plt.Circle((Location[0]*distance+step*Location[2], Location[1]*distance+step*Location[2]),
+    for node in rg.nodes():
+        chosen_node = int(re.search(r'\d+', node).group())
+        location = AG_Functions.return_node_location(chosen_node)
+        circle1 = plt.Circle((location[0]*distance+step*location[2], location[1]*distance+step*location[2]),
                              radius=35, color='#8ABDFF', fill=False)
         plt.gca().add_patch(circle1)
 
-        circle2 = plt.Circle((Location[0]*distance+step*Location[2]+45, Location[1]*distance+step*Location[2]-50),
+        circle2 = plt.Circle((location[0]*distance+step*location[2]+45, location[1]*distance+step*location[2]-50),
                              radius=10, color='#FF878B', fill=False)
         plt.gca().add_patch(circle2)
 
-        plt.text(Location[0]*distance+step*Location[2]-30, Location[1]*distance+step*Location[2]+30,
-                 str(Node), fontsize=15)
+        plt.text(location[0]*distance+step*location[2]-30, location[1]*distance+step*location[2]+30,
+                 str(chosen_node), fontsize=15)
 
-        OffsetX = 0
-        OffsetY = 0
+        offset_x = 0
+        offset_y = 0
 
         if 'N' in node:
-            OffsetY += 30
+            offset_y += 30
             if 'I'in node:
-                ColorList.append('#CFECFF')
-                OffsetX += 12
+                color_list.append('#CFECFF')
+                offset_x += 12
             else:
-                ColorList.append('#FF878B')
-                OffsetX -= 12
+                color_list.append('#FF878B')
+                offset_x -= 12
         elif 'S' in node:
-            OffsetY -= 30
+            offset_y -= 30
             if 'I'in node:
-                ColorList.append('#CFECFF')
-                OffsetX -= 12
+                color_list.append('#CFECFF')
+                offset_x -= 12
             else:
-                ColorList.append('#FF878B')
-                OffsetX += 12
+                color_list.append('#FF878B')
+                offset_x += 12
         elif 'W' in node:
-            OffsetX -= 30
+            offset_x -= 30
             if 'I'in node:
-                ColorList.append('#CFECFF')
-                OffsetY += 12
+                color_list.append('#CFECFF')
+                offset_y += 12
             else:
-                ColorList.append('#FF878B')
-                OffsetY -= 12
+                color_list.append('#FF878B')
+                offset_y -= 12
 
         elif 'E' in node:
-            OffsetX += 30
+            offset_x += 30
             if 'I'in node:
-                ColorList.append('#CFECFF')
-                OffsetY -= 12
+                color_list.append('#CFECFF')
+                offset_y -= 12
             else:
-                ColorList.append('#FF878B')
-                OffsetY += 12
+                color_list.append('#FF878B')
+                offset_y += 12
 
         if 'L' in node:
             if 'I'in node:
-                ColorList.append('#CFECFF')
-                OffsetX += 44
-                OffsetY -= 56
+                color_list.append('#CFECFF')
+                offset_x += 44
+                offset_y -= 56
             else:
-                ColorList.append('#FF878B')
-                OffsetX += 48
-                OffsetY -= 48
+                color_list.append('#FF878B')
+                offset_x += 48
+                offset_y -= 48
 
         if 'U' in node:
-            OffsetY = 16
+            offset_y = 16
             if 'I'in node:
-                ColorList.append('#CFECFF')
-                OffsetX -= 15
+                color_list.append('#CFECFF')
+                offset_x -= 15
             else:
-                ColorList.append('#FF878B')
-                OffsetX += 15
+                color_list.append('#FF878B')
+                offset_x += 15
 
         if 'D' in node:
-            OffsetY = -16
+            offset_y = -16
             if 'I'in node:
-                ColorList.append('#CFECFF')
-                OffsetX -= 15
+                color_list.append('#CFECFF')
+                offset_x -= 15
             else:
-                ColorList.append('#FF878B')
-                OffsetX += 15
+                color_list.append('#FF878B')
+                offset_x += 15
 
-        POS[node] = [Location[0]*distance+OffsetX+step*Location[2], Location[1]*distance+OffsetY+step*Location[2]]
+        pos[node] = [location[0]*distance+offset_x+step*location[2], location[1]*distance+offset_y+step*location[2]]
 
-    networkx.draw(RoutingGraph, POS, with_labels=False, arrows=False, node_size=30, node_color=ColorList)
+    networkx.draw(rg, pos, with_labels=False, arrows=False, node_size=30, node_color=color_list)
 
     plt.text(0, -100, 'X', fontsize=15)
     plt.text(-100, 0, 'Y', fontsize=15)

@@ -603,3 +603,16 @@ def hamming_distance_of_mapping(mapping_string1, mapping_string2):
             raise ValueError("Mapping strings are from different length")
     else:
         raise ValueError("The input mapping strings are of wrong types")
+
+
+def write_mapping_to_file(ag, file_path):
+    # todo
+    return None
+
+
+def read_mapping_from_file(ag, file_path):
+    # todo
+    for node in ag:
+        # print ag.node[node]['PE'].MappedTasks
+        pass
+    return None

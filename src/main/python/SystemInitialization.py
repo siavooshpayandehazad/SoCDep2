@@ -69,7 +69,7 @@ def initialize_system(logging):
         Calculate_Reachability.ReachabilityMetric(ag, noc_rg, True)
     # Some visualization...
     if Config.RG_Draw:
-        RoutingGraph_Reports.DrawRG(noc_rg)
+        RoutingGraph_Reports.draw_rg(noc_rg)
     ####################################################################
     # in case of partitioning, we have to route based on different Route-graphs
     if Config.EnablePartitioning:

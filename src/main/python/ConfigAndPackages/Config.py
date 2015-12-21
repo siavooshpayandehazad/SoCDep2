@@ -303,7 +303,7 @@ NodeTestComWeight = 2
 ###############################################
 #           VISUALIZATION Config
 ###############################################
-RG_Draw = False
+RG_Draw = True
 PMCG_Drawing = False
 TTG_Drawing = False
 Mapping_Dstr_Drawing = True
