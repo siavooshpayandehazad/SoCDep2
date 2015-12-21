@@ -135,8 +135,8 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
     #                                                      Config.health_counter_threshold,
     #                                                      Config.intermittent_counter_threshold) #Needs to be added
     counter_threshold = MachineLearning.MachineLearning(Config.fault_counter_threshold, #Rene's addition
-                                                          Config.health_counter_threshold+Config.intermittent_counter_threshold)#,
-    #                                                      Config.intermittent_counter_threshold)
+                                                          Config.health_counter_threshold*3,
+                                                          Config.intermittent_counter_threshold)
 
     fault_time_list = []
     fault_time = 0
