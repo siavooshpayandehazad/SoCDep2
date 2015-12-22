@@ -660,7 +660,8 @@ def read_mapping_from_file(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, fil
         mapping_file = open(file_path, 'r')
         mapping_file.close()
     except IOError:
-        print ('CAN NOT OPEN mapping_file')
+        raise ValueError('CAN NOT OPEN mapping_file')
+
     print("===========================================")
     print("READING MAPPING FROM FILE...")
     print "FILE LOCATED AT:", file_path
