@@ -1,0 +1,37 @@
+#!/bin/bash
+
+if [ ! -d "../results" ]; then
+mkdir ../results/
+else
+rm -rf ../results/*
+fi
+
+
+CONFFILES=CounterThresholdExp/ConfigFile.txt
+counter=1
+while [  $counter -lt 10 ]; do
+   rm ../python/LOGS/*
+
+   cd ../python
+   #echo ../scripts/$conffile
+   python Main.py -CONF ../scripts/CounterThresholdExp/ConfigFile.txt
+   cd ../scripts
+
+   FILES=../python/GraphDrawings/*.png
+   DEST_FOLDER=../results/config_$counter
+   mkdir $DEST_FOLDER
+   for f in $FILES
+   do
+      #echo “copying $f to $DEST_FOLDER”  
+      cp $f $DEST_FOLDER
+   done
+
+   FILES=../python/LOGS/*
+   for f in $FILES
+   do
+      #echo “copying $f to $DEST_FOLDER”  
+      cp $f $DEST_FOLDER
+   done
+   counter=`expr $counter + 1`
+done
+
