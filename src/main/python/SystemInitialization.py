@@ -74,30 +74,36 @@ def initialize_system(logging):
     ####################################################################
     # in case of partitioning, we have to route based on different Route-graphs
     if Config.EnablePartitioning:
-        critical_rg, nonnritical_rg = Calculate_Reachability.calculate_reachability_with_regions(ag, shmu)
+        critical_rg, noncritical_rg = Calculate_Reachability.calculate_reachability_with_regions(ag, shmu)
         ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(ag)
     else:
         if Config.TestMode:
             Reachability_Test.ReachabilityTest()
-        critical_rg, nonnritical_rg = None, None
+        critical_rg, noncritical_rg = None, None
         Calculate_Reachability.calculate_reachability(ag, noc_rg)
         Calculate_Reachability.OptimizeReachabilityRectangles(ag, Config.NumberOfRects)
         # ReachabilityReports.ReportReachability(ag)
         ReachabilityReports.ReportReachabilityInFile(ag, "ReachAbilityNodeReport")
         ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(ag)
     ####################################################################
-    best_tg, best_ag = Mapping.mapping(tg, ag, noc_rg, critical_rg, nonnritical_rg, shmu.SHM, logging)
-    if best_ag is not None and best_tg is not None:
-        tg = copy.deepcopy(best_tg)
-        ag = copy.deepcopy(best_ag)
-        del best_tg, best_ag
-        # SHM.AddCurrentMappingToMPM(tg)
+    if Config.read_mapping_from_file:
+        Mapping_Functions.read_mapping_from_file(tg, ag, shmu.SHM, noc_rg, critical_rg, noncritical_rg,
+                                                 Config.mapping_file_path, logging)
+        Scheduler.schedule_all(tg, ag, shmu.SHM, False, False, logging)
+    else:
+        best_tg, best_ag = Mapping.mapping(tg, ag, noc_rg, critical_rg, noncritical_rg, shmu.SHM, logging)
+        if best_ag is not None and best_tg is not None:
+            tg = copy.deepcopy(best_tg)
+            ag = copy.deepcopy(best_ag)
+            del best_tg, best_ag
+            # SHM.AddCurrentMappingToMPM(tg)
+            Mapping_Functions.write_mapping_to_file(ag, "mapping_report")
     if Config.Mapping_Dstr_Drawing:
         Mapping_Reports.draw_mapping_distribution(ag, shmu)
     if Config.Mapping_Drawing:
         Mapping_Reports.draw_mapping(tg, ag, shmu.SHM, "Mapping_post_opt")
-    Mapping_Functions.write_mapping_to_file(ag, "mapping_report")
-    Scheduling_Reports.generate_gantt_charts(tg, ag, "SchedulingTG")
+    if Config.Scheduling_Drawing:
+        Scheduling_Reports.generate_gantt_charts(tg, ag, "SchedulingTG")
     ####################################################################
     # PMC-Graph
     # at this point we assume that the system health map knows about the initial faults from
@@ -133,4 +139,4 @@ def initialize_system(logging):
     TrafficTableGenerator.generate_gsnoc_traffic_table(ag, tg)
     if Config.GenMappingFrames:
         Mapping_Animation.generate_frames(tg, ag, shmu.SHM)
-    return ag, shmu, noc_rg, critical_rg, nonnritical_rg, pmcg
+    return ag, shmu, noc_rg, critical_rg, noncritical_rg, pmcg

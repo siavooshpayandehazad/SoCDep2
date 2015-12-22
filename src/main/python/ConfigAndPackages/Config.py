@@ -8,7 +8,7 @@ ProgramRunTime = 9      # in seconds
 DebugInfo = True
 DebugDetails = False
 
-TestMode = True
+TestMode = False
 MemoryProfiler = False
 EventDrivenFaultInjection = True
 ################################################
@@ -173,6 +173,8 @@ CTG_CirculationLength = 3
 ################################################
 #          Mapping Function  Config
 ################################################
+read_mapping_from_file = True
+mapping_file_path = "mapping_report.txt"
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
 Mapping_Function = 'LocalSearch'
@@ -308,6 +310,7 @@ PMCG_Drawing = False
 TTG_Drawing = False
 Mapping_Dstr_Drawing = True
 Mapping_Drawing = True
+Scheduling_Drawing = True
 SHM_Drawing = False          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks

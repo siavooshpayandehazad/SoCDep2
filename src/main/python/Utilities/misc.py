@@ -179,6 +179,9 @@ def update_config(config_file_path):
     # ------------------------------------------------
     #               Mapping_Config
     # ------------------------------------------------
+    Config.read_mapping_from_file = config.getboolean("Mapping_Config", "read_mapping_from_file")
+    Config.mapping_file_path = config.get("Mapping_Config", "mapping_file_path")
+
     Config.Mapping_Function = config.get("Mapping_Config", "Mapping_Function")
     Config.LocalSearchIteration = config.getint("Mapping_Config", "LocalSearchIteration")
     Config.IterativeLocalSearchIterations = config.getint("Mapping_Config", "IterativeLocalSearchIterations")
@@ -248,6 +251,7 @@ def update_config(config_file_path):
     Config.TTG_Drawing = config.getboolean("Viz_Config", "TTG_Drawing")
     Config.Mapping_Dstr_Drawing = config.getboolean("Viz_Config", "Mapping_Dstr_Drawing")
     Config.Mapping_Drawing = config.getboolean("Viz_Config", "Mapping_Drawing")
+    Config.Scheduling_Drawing = config.getboolean("Viz_Config","Scheduling_Drawing")
     Config.SHM_Drawing = config.getboolean("Viz_Config", "SHM_Drawing")
     Config.GenMappingFrames = config.getboolean("Viz_Config", "GenMappingFrames")
     Config.FrameResolution = config.getint("Viz_Config", "FrameResolution")

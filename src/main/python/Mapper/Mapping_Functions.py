@@ -9,7 +9,6 @@ from Mapping_Reports import draw_mapping
 from RoutingAlgorithms import Routing
 from ArchGraphUtilities import AG_Functions
 import ConfigParser
-import ast
 
 
 def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritica_rg, report, logging, random_seed):
@@ -631,23 +630,30 @@ def write_mapping_to_file(ag, file_name):
             counter += 1
         mapping_file.write(string_to_write)
 
-    mapping_file.write("\n[routers]\n")
-    for node in ag.nodes():
-        mapping_file.write("router_"+str(node)+": "+str(ag.node[node]['Router'].MappedTasks)+"\n")
+    # this section is not necessary
+    # mapping_file.write("\n[routers]\n")
+    # for node in ag.nodes():
+    #     mapping_file.write("router_"+str(node)+": "+str(ag.node[node]['Router'].MappedTasks)+"\n")
 
-    mapping_file.write("\n[links]\n")
-    for link in ag.edges():
-        mapping_file.write("link_"+str(link[0])+"_"+str(link[1])+": " +
-                           str(ag.edge[link[0]][link[1]]['MappedTasks'])+"\n")
+    # mapping_file.write("\n[links]\n")
+    # for link in ag.edges():
+    #    mapping_file.write("link_"+str(link[0])+"_"+str(link[1])+": " +
+    #                       str(ag.edge[link[0]][link[1]]['MappedTasks'])+"\n")
     return None
 
 
-def read_mapping_from_file(ag, file_path):
+def read_mapping_from_file(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, file_path, logging):
     """
     gets an Architecture graph which doesnt have any tasks mapped on it, and reads the mapping from file
     and fills the map.
+    :param tg: task graph
     :param ag: architecture graph
-    :param file_path: path to the mapping file
+    :param shm: system health map
+    :param noc_rg: noc routing graph
+    :param critical_rg: noc_rg for critical region
+    :param noncritical_rg: noc_rg for non-critical region
+    :param file_path: path to mapping file
+    :param logging: logging file
     :return: None
     """
     try:
@@ -655,17 +661,18 @@ def read_mapping_from_file(ag, file_path):
         mapping_file.close()
     except IOError:
         print ('CAN NOT OPEN mapping_file')
-
+    print("===========================================")
+    print("READING MAPPING FROM FILE...")
+    print "FILE LOCATED AT:", file_path
     mapping = ConfigParser.ConfigParser(allow_no_value=True)
     mapping.read(file_path)
 
+    mapping_dict = {}
     for node in ag.nodes():
-        ag.node[node]['PE'].MappedTasks = map(int, mapping.get("nodes", "node_"+str(node)).split(","))
+        mapping_dict[node] = map(int, mapping.get("nodes", "node_"+str(node)).split(","))
 
-    for node in ag.nodes():
-        ag.node[node]["Router"].MappedTasks = ast.literal_eval(mapping.get("routers", "router_"+str(node)))
+    for node in mapping_dict.keys():
+        for task in mapping_dict[node]:
+            map_task_to_node(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, task, node, logging)
 
-    for link in ag.edges():
-        ag.edge[link[0]][link[1]]["MappedTasks"] = ast.literal_eval(mapping.get("links",
-                                                                                "link_"+str(link[0])+"_"+str(link[1])))
     return None
