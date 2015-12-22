@@ -99,9 +99,9 @@ def update_config(config_file_path):
     Config.Release_Range = config.getint("TG_Config", "Release_Range")      # task release time range
     Config.tg_random_seed = config.getint("TG_Config", "tg_random_seed")
 
-    Config.Task_List = map(int, config.get("TG_Config", "Task_List").split(","))
-    Config.Task_WCET_List = map(int, config.get("TG_Config", "Task_WCET_List").split(","))
-    Config.Task_Criticality_List = config.get("TG_Config", "Task_Criticality_List").split(",")
+    # Config.Task_List = map(int, config.get("TG_Config", "Task_List").split(","))
+    # Config.Task_WCET_List = map(int, config.get("TG_Config", "Task_WCET_List").split(","))
+    # Config.Task_Criticality_List = config.get("TG_Config", "Task_Criticality_List").split(",")
     # TG_Edge_List
     # TG_Edge_Weight
     # TG_DOT_Path
@@ -115,7 +115,7 @@ def update_config(config_file_path):
     Config.Network_X_Size = config.getint("AG_Config", "Network_X_Size")
     Config.Network_Y_Size = config.getint("AG_Config", "Network_Y_Size")
     Config.Network_Z_Size = config.getint("AG_Config", "Network_Z_Size")
-    Config.PE_List = map(int, config.get("AG_Config", "PE_List").split(","))
+    # Config.PE_List = map(int, config.get("AG_Config", "PE_List").split(","))
     # AG_Edge_List
     # AG_Edge_Port_List
 
@@ -251,7 +251,29 @@ def update_config(config_file_path):
     Config.TTG_Drawing = config.getboolean("Viz_Config", "TTG_Drawing")
     Config.Mapping_Dstr_Drawing = config.getboolean("Viz_Config", "Mapping_Dstr_Drawing")
     Config.Mapping_Drawing = config.getboolean("Viz_Config", "Mapping_Drawing")
-    Config.Scheduling_Drawing = config.getboolean("Viz_Config","Scheduling_Drawing")
+    Config.Scheduling_Drawing = config.getboolean("Viz_Config", "Scheduling_Drawing")
     Config.SHM_Drawing = config.getboolean("Viz_Config", "SHM_Drawing")
     Config.GenMappingFrames = config.getboolean("Viz_Config", "GenMappingFrames")
     Config.FrameResolution = config.getint("Viz_Config", "FrameResolution")
+    return None
+
+
+def generate_configfile():
+    cfg_file = open('Generated_Files/ConfigFile.txt', 'w')
+    cnfgpars = ConfigParser.ConfigParser(allow_no_value=True)
+    cnfgpars.add_section('TG_Config')
+    cnfgpars.set('TG_Config', 'TG_Type', Config.TG_Type)
+    cnfgpars.set('TG_Config', 'NumberOfTasks', Config.NumberOfTasks)
+    cnfgpars.set('TG_Config', 'NumberOfCriticalTasks', Config.NumberOfCriticalTasks)
+    cnfgpars.set('TG_Config', 'NumberOfEdges', Config.NumberOfEdges)
+    cnfgpars.set('TG_Config', 'WCET_Range', Config.WCET_Range)
+    cnfgpars.set('TG_Config', 'EdgeWeightRange', Config.EdgeWeightRange)
+    cnfgpars.set('TG_Config', 'Release_Range', Config.Release_Range)
+    cnfgpars.set('TG_Config', 'tg_random_seed', Config.tg_random_seed)
+
+    cnfgpars.add_section('Viz_Config')
+
+    cnfgpars.write(cfg_file)
+    cfg_file.close()
+
+    return None

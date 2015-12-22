@@ -173,7 +173,7 @@ CTG_CirculationLength = 3
 ################################################
 #          Mapping Function  Config
 ################################################
-read_mapping_from_file = True
+read_mapping_from_file = False
 mapping_file_path = "mapping_report.txt"
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'

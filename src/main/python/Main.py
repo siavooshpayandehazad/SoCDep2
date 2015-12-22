@@ -65,6 +65,7 @@ logging.info('Starting logging...')
 ####################################################################
 misc.generate_file_directories()
 misc.draw_logo()
+misc.generate_configfile()
 ####################################################################
 # Initialization of the system
 
