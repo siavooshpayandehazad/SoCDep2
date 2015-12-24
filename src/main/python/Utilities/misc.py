@@ -194,16 +194,17 @@ def update_config(config_file_path):
 
     Config.SA_AnnealingSchedule = config.get("Mapping_Config", "SA_AnnealingSchedule")
     Config.TerminationCriteria = config.get("Mapping_Config", "TerminationCriteria")
+    Config.MarkovNum = config.getfloat("Mapping_Config", "SA_Alpha")
 
-    # Config.SA_Alpha = 0.9995
     Config.LogCoolingConstant = config.getint("Mapping_Config", "LogCoolingConstant")
     Config.CostMonitorQueSize = config.getint("Mapping_Config", "CostMonitorQueSize")
-    # Config.SlopeRangeForCooling = 0.02
+    Config.MarkovNum = config.getfloat("Mapping_Config", "SlopeRangeForCooling")
     Config.MaxSteadyState = config.getint("Mapping_Config", "MaxSteadyState")
     Config.MarkovNum = config.getint("Mapping_Config", "MarkovNum")
-    # Config.MarkovTempStep = 1.0
-    # Config.Delta = 0.05
-    # Config.HuangAlpha = 0.5
+    Config.MarkovNum = config.getfloat("Mapping_Config", "MarkovTempStep")
+    Config.MarkovNum = config.getfloat("Mapping_Config", "Delta")
+    Config.MarkovNum = config.getfloat("Mapping_Config", "HuangAlpha")
+
     Config.HuangN = config.getint("Mapping_Config", "HuangN")
     Config.HuangTargetValue1 = config.getint("Mapping_Config", "HuangTargetValue1")
     Config.HuangTargetValue2 = config.getint("Mapping_Config", "HuangTargetValue2")
@@ -261,6 +262,9 @@ def update_config(config_file_path):
 def generate_configfile():
     cfg_file = open('Generated_Files/ConfigFile.txt', 'w')
     cnfgpars = ConfigParser.ConfigParser(allow_no_value=True)
+    # ------------------------------------------------
+    #               TG_Config
+    # ------------------------------------------------
     cnfgpars.add_section('TG_Config')
     cnfgpars.set('TG_Config', 'TG_Type', Config.TG_Type)
     cnfgpars.set('TG_Config', 'NumberOfTasks', Config.NumberOfTasks)
@@ -271,7 +275,91 @@ def generate_configfile():
     cnfgpars.set('TG_Config', 'Release_Range', Config.Release_Range)
     cnfgpars.set('TG_Config', 'tg_random_seed', Config.tg_random_seed)
 
+    cnfgpars.add_section('AG_Config')
+    cnfgpars.add_section('VL_Config')
+    cnfgpars.add_section('Routing_Config')
+    cnfgpars.add_section('Dark_Sil_Config')
+    cnfgpars.add_section('SHM_Config')
+    cnfgpars.add_section('CTG_Config')
+
+    # ------------------------------------------------
+    #               Mapping_Config
+    # ------------------------------------------------
+    cnfgpars.add_section('Mapping_Config')
+    cnfgpars.set('Mapping_Config', 'read_mapping_from_file', Config.read_mapping_from_file)
+    cnfgpars.set('Mapping_Config', 'mapping_file_path', Config.mapping_file_path)
+    cnfgpars.set('Mapping_Config', 'Mapping_Function', Config.Mapping_Function)
+    cnfgpars.set('Mapping_Config', 'LocalSearchIteration', Config.LocalSearchIteration)
+    cnfgpars.set('Mapping_Config', 'LocalSearchIteration', Config.IterativeLocalSearchIterations)
+    cnfgpars.set('Mapping_Config', 'mapping_random_seed', Config.mapping_random_seed)
+    cnfgpars.set('Mapping_Config', 'SimulatedAnnealingIteration', Config.SimulatedAnnealingIteration)
+    cnfgpars.set('Mapping_Config', 'SA_InitialTemp', Config.SA_InitialTemp)
+    cnfgpars.set('Mapping_Config', 'SA_StopTemp', Config.SA_StopTemp)
+    cnfgpars.set('Mapping_Config', 'SA_ReportSolutions', Config.SA_ReportSolutions)
+    cnfgpars.set('Mapping_Config', 'SA_ReportSolutions', Config.SA_AnnealingSchedule)
+    cnfgpars.set('Mapping_Config', 'TerminationCriteria', Config.TerminationCriteria)
+    cnfgpars.set('Mapping_Config', 'LogCoolingConstant', Config.LogCoolingConstant)
+    cnfgpars.set('Mapping_Config', 'CostMonitorQueSize', Config.CostMonitorQueSize)
+    cnfgpars.set('Mapping_Config', 'MaxSteadyState', Config.MaxSteadyState)
+    cnfgpars.set('Mapping_Config', 'MarkovNum', Config.MarkovNum)
+    cnfgpars.set('Mapping_Config', 'HuangN', Config.HuangN)
+    cnfgpars.set('Mapping_Config', 'HuangTargetValue1', Config.HuangTargetValue1)
+    cnfgpars.set('Mapping_Config', 'HuangTargetValue2', Config.HuangTargetValue2)
+    cnfgpars.set('Mapping_Config', 'Mapping_CostFunctionType', Config.Mapping_CostFunctionType)
+    cnfgpars.set('Mapping_Config', 'DistanceBetweenMapping', Config.DistanceBetweenMapping)
+
+    # Config.SA_Alpha = 0.9995
+    # Config.SlopeRangeForCooling = 0.02
+    # Config.MarkovTempStep = 1.0
+    # Config.Delta = 0.05
+    # Config.HuangAlpha = 0.5
+
+    # ------------------------------------------------
+    #               Scheduling_Config
+    # ------------------------------------------------
+    cnfgpars.add_section('Scheduling_Config')
+    cnfgpars.set('Scheduling_Config', 'Communication_SlackCount', Config.Communication_SlackCount)
+    cnfgpars.set('Scheduling_Config', 'Task_SlackCount', Config.Task_SlackCount)
+    # ------------------------------------------------
+    #               Fault_Config
+    # ------------------------------------------------
+    cnfgpars.add_section('Fault_Config')
+    cnfgpars.set('Fault_Config', 'health_counter_threshold', Config.health_counter_threshold)
+    cnfgpars.set('Fault_Config', 'fault_counter_threshold', Config.fault_counter_threshold)
+    cnfgpars.set('Fault_Config', 'intermittent_counter_threshold', Config.intermittent_counter_threshold)
+    cnfgpars.set('Fault_Config', 'enable_link_counters', Config.enable_link_counters)
+    cnfgpars.set('Fault_Config', 'enable_router_counters', Config.enable_router_counters)
+    cnfgpars.set('Fault_Config', 'enable_pe_counters', Config.enable_pe_counters)
+
+    # ------------------------------------------------
+    #           Network_Partitioning
+    # ------------------------------------------------
+    cnfgpars.add_section('Network_Partitioning')
+    cnfgpars.set('Network_Partitioning', 'EnablePartitioning', Config.EnablePartitioning)
+    # ------------------------------------------------
+    #               PMCG_Config
+    # ------------------------------------------------
+    cnfgpars.add_section('PMCG_Config')
+    cnfgpars.set('PMCG_Config', 'GeneratePMCG', Config.GeneratePMCG)
+    cnfgpars.set('PMCG_Config', 'OneStepDiagnosable', Config.OneStepDiagnosable)
+    cnfgpars.set('PMCG_Config', 'TFaultDiagnosable', Config.TFaultDiagnosable)
+    cnfgpars.set('PMCG_Config', 'NodeTestExeTime', Config.NodeTestExeTime)
+    cnfgpars.set('PMCG_Config', 'NodeTestComWeight', Config.NodeTestComWeight)
+    # ------------------------------------------------
+    #               Viz_Config
+    # ------------------------------------------------
     cnfgpars.add_section('Viz_Config')
+    cnfgpars.set('Viz_Config', 'RG_Draw', Config.RG_Draw)
+    cnfgpars.set('Viz_Config', 'PMCG_Drawing', Config.PMCG_Drawing)
+    cnfgpars.set('Viz_Config', 'TTG_Drawing', Config.TTG_Drawing)
+    cnfgpars.set('Viz_Config', 'Mapping_Dstr_Drawing', Config.Mapping_Dstr_Drawing)
+    cnfgpars.set('Viz_Config', 'Mapping_Drawing', Config.Mapping_Drawing)
+    cnfgpars.set('Viz_Config', 'Scheduling_Drawing', Config.Scheduling_Drawing)
+    cnfgpars.set('Viz_Config', 'SHM_Drawing', Config.SHM_Drawing)
+    cnfgpars.set('Viz_Config', 'GenMappingFrames', Config.GenMappingFrames)
+    cnfgpars.set('Viz_Config', 'FrameResolution', Config.FrameResolution)
+
+
 
     cnfgpars.write(cfg_file)
     cfg_file.close()
