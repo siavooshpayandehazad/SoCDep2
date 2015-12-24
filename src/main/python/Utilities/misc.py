@@ -161,7 +161,7 @@ def update_config(config_file_path):
     # ------------------------------------------------
     Config.NumberOfRects = config.getint("SHM_Config", "NumberOfRects")
     # ListOfBrokenLinks:
-    ListOfBrokenTurns = ast.literal_eval( config.get("SHM_Config", "ListOfBrokenTurns"))
+    Config.ListOfBrokenTurns = ast.literal_eval(config.get("SHM_Config", "ListOfBrokenTurns"))
     Config.MaxTemp = config.getint("SHM_Config", "MaxTemp")
 
     # ------------------------------------------------
