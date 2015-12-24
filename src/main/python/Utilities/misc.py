@@ -2,7 +2,7 @@
 from ConfigAndPackages import Config, PackageFile
 import os
 import ConfigParser
-
+import ast
 
 def draw_logo():
     print ("================================================================================================" +
@@ -161,7 +161,7 @@ def update_config(config_file_path):
     # ------------------------------------------------
     Config.NumberOfRects = config.getint("SHM_Config", "NumberOfRects")
     # ListOfBrokenLinks:
-    # ListOfBrokenTurns:
+    ListOfBrokenTurns = ast.literal_eval( config.get("SHM_Config", "ListOfBrokenTurns"))
     Config.MaxTemp = config.getint("SHM_Config", "MaxTemp")
 
     # ------------------------------------------------
@@ -275,13 +275,82 @@ def generate_configfile():
     cnfgpars.set('TG_Config', 'Release_Range', Config.Release_Range)
     cnfgpars.set('TG_Config', 'tg_random_seed', Config.tg_random_seed)
 
+    # ------------------------------------------------
+    #               AG_Config
+    # ------------------------------------------------
     cnfgpars.add_section('AG_Config')
-    cnfgpars.add_section('VL_Config')
-    cnfgpars.add_section('Routing_Config')
-    cnfgpars.add_section('Dark_Sil_Config')
-    cnfgpars.add_section('SHM_Config')
-    cnfgpars.add_section('CTG_Config')
 
+    cnfgpars.set('AG_Config', 'AG_Type', Config.AG_Type)
+    cnfgpars.set('AG_Config', 'NetworkTopology', Config.NetworkTopology)
+    cnfgpars.set('AG_Config', 'Network_X_Size', Config.Network_X_Size)
+    cnfgpars.set('AG_Config', 'Network_Y_Size', Config.Network_Y_Size)
+    cnfgpars.set('AG_Config', 'Network_Z_Size', Config.Network_Z_Size)
+    # VirtualChannelNum
+    # Config.PE_List = map(int, config.get("AG_Config", "PE_List").split(","))
+    # AG_Edge_List
+    # AG_Edge_Port_List
+
+    # ------------------------------------------------
+    #               VL_Config
+    # ------------------------------------------------
+    cnfgpars.add_section('VL_Config')
+    cnfgpars.set('VL_Config', 'FindOptimumAG', Config.FindOptimumAG)
+    cnfgpars.set('VL_Config', 'VL_OptAlg', Config.VL_OptAlg)
+    cnfgpars.set('VL_Config', 'AG_Opt_Iterations_ILS', Config.AG_Opt_Iterations_ILS)
+    cnfgpars.set('VL_Config', 'AG_Opt_Iterations_LS', Config.AG_Opt_Iterations_LS)
+    cnfgpars.set('VL_Config', 'VerticalLinksNum', Config.VerticalLinksNum)
+    # ------------------------------------------------
+    #               Routing_Config
+    # ------------------------------------------------
+    cnfgpars.add_section('Routing_Config')
+    cnfgpars.set('Routing_Config', 'UsedTurnModel', Config.UsedTurnModel)
+
+    if Config.UsedTurnModel == PackageFile.XY_TurnModel:
+        cnfgpars.set('Routing_Config', 'UsedTurnModel', "XY_TurnModel")
+    elif Config.UsedTurnModel == PackageFile.WestFirst_TurnModel:
+        cnfgpars.set('Routing_Config', 'UsedTurnModel', "WestFirst_TurnModel")
+    elif Config.UsedTurnModel == PackageFile.NorthLast_TurnModel:
+        cnfgpars.set('Routing_Config', 'UsedTurnModel', "NorthLast_TurnModel")
+    elif Config.UsedTurnModel == PackageFile.NorthLast_TurnModel:
+        cnfgpars.set('Routing_Config', 'UsedTurnModel', "NorthLast_TurnModel")
+    elif Config.UsedTurnModel == PackageFile.NegativeFirst2D_TurnModel:
+        cnfgpars.set('Routing_Config', 'UsedTurnModel', "NegativeFirst2D_TurnModel")
+    elif Config.UsedTurnModel == PackageFile.XYZ_TurnModel:
+        cnfgpars.set('Routing_Config', 'UsedTurnModel', "XYZ_TurnModel")
+    elif Config.UsedTurnModel == PackageFile.NegativeFirst3D_TurnModel:
+        cnfgpars.set('Routing_Config', 'UsedTurnModel', "NegativeFirst3D_TurnModel")
+    else:
+        raise ValueError("Turn Model not Available")
+
+    cnfgpars.set('Routing_Config', 'RotingType', Config.RotingType)
+    cnfgpars.set('Routing_Config', 'RoutingFilePath', Config.RoutingFilePath)
+    cnfgpars.set('Routing_Config', 'SetRoutingFromFile', Config.SetRoutingFromFile)
+    cnfgpars.set('Routing_Config', 'FlowControl', Config.FlowControl)
+    # ------------------------------------------------
+    #               Dark_Sil_Config
+    # ------------------------------------------------
+    cnfgpars.add_section('Dark_Sil_Config')
+    cnfgpars.set('Dark_Sil_Config', 'DarkSiliconPercentage', Config.DarkSiliconPercentage)
+    # ------------------------------------------------
+    #               SHM_Config
+    # ------------------------------------------------
+    cnfgpars.add_section('SHM_Config')
+    cnfgpars.set('SHM_Config', 'NumberOfRects', Config.NumberOfRects)
+    # ListOfBrokenLinks
+    cnfgpars.set('SHM_Config', 'ListOfBrokenTurns', Config.ListOfBrokenTurns)
+    cnfgpars.set('SHM_Config', 'MaxTemp', Config.MaxTemp)
+    # ------------------------------------------------
+    #               CTG_Config
+    # ------------------------------------------------
+    cnfgpars.add_section('CTG_Config')
+    cnfgpars.set('CTG_Config', 'Clustering_Optimization', Config.Clustering_Optimization)
+    cnfgpars.set('CTG_Config', 'ClusteringIteration', Config.ClusteringIteration)
+    cnfgpars.set('CTG_Config', 'ctg_random_seed', Config.ctg_random_seed)
+    cnfgpars.set('CTG_Config', 'Clustering_Report', Config.Clustering_Report)
+    cnfgpars.set('CTG_Config', 'Clustering_DetailedReport', Config.Clustering_DetailedReport)
+    cnfgpars.set('CTG_Config', 'Clustering_CostFunctionType', Config.Clustering_CostFunctionType)
+    cnfgpars.set('CTG_Config', 'ClusteringOptMove', Config.ClusteringOptMove)
+    cnfgpars.set('CTG_Config', 'CTG_CirculationLength', Config.CTG_CirculationLength)
     # ------------------------------------------------
     #               Mapping_Config
     # ------------------------------------------------
@@ -290,30 +359,40 @@ def generate_configfile():
     cnfgpars.set('Mapping_Config', 'mapping_file_path', Config.mapping_file_path)
     cnfgpars.set('Mapping_Config', 'Mapping_Function', Config.Mapping_Function)
     cnfgpars.set('Mapping_Config', 'LocalSearchIteration', Config.LocalSearchIteration)
-    cnfgpars.set('Mapping_Config', 'LocalSearchIteration', Config.IterativeLocalSearchIterations)
+    cnfgpars.set('Mapping_Config', 'iterativelocalsearchiterations', Config.IterativeLocalSearchIterations)
     cnfgpars.set('Mapping_Config', 'mapping_random_seed', Config.mapping_random_seed)
     cnfgpars.set('Mapping_Config', 'SimulatedAnnealingIteration', Config.SimulatedAnnealingIteration)
     cnfgpars.set('Mapping_Config', 'SA_InitialTemp', Config.SA_InitialTemp)
     cnfgpars.set('Mapping_Config', 'SA_StopTemp', Config.SA_StopTemp)
     cnfgpars.set('Mapping_Config', 'SA_ReportSolutions', Config.SA_ReportSolutions)
-    cnfgpars.set('Mapping_Config', 'SA_ReportSolutions', Config.SA_AnnealingSchedule)
+    cnfgpars.set('Mapping_Config', 'SA_AnnealingSchedule', Config.SA_AnnealingSchedule)
     cnfgpars.set('Mapping_Config', 'TerminationCriteria', Config.TerminationCriteria)
-    cnfgpars.set('Mapping_Config', 'LogCoolingConstant', Config.LogCoolingConstant)
-    cnfgpars.set('Mapping_Config', 'CostMonitorQueSize', Config.CostMonitorQueSize)
-    cnfgpars.set('Mapping_Config', 'MaxSteadyState', Config.MaxSteadyState)
-    cnfgpars.set('Mapping_Config', 'MarkovNum', Config.MarkovNum)
-    cnfgpars.set('Mapping_Config', 'HuangN', Config.HuangN)
-    cnfgpars.set('Mapping_Config', 'HuangTargetValue1', Config.HuangTargetValue1)
-    cnfgpars.set('Mapping_Config', 'HuangTargetValue2', Config.HuangTargetValue2)
+    cnfgpars.set('Mapping_Config', 'LogCoolingConstant',
+                 Config.LogCoolingConstant if hasattr(Config, 'LogCoolingConstant') else 0)
+    cnfgpars.set('Mapping_Config', 'CostMonitorQueSize',
+                 Config.CostMonitorQueSize if hasattr(Config, 'CostMonitorQueSize') else 0)
+    cnfgpars.set('Mapping_Config', 'MaxSteadyState',
+                 Config.MaxSteadyState if hasattr(Config, 'MaxSteadyState') else 0)
+    cnfgpars.set('Mapping_Config', 'MarkovNum',
+                 Config.MarkovNum if hasattr(Config, 'MarkovNum') else 0)
+    cnfgpars.set('Mapping_Config', 'HuangN',
+                 Config.HuangN if hasattr(Config, 'HuangN') else 0)
+    cnfgpars.set('Mapping_Config', 'HuangTargetValue1',
+                 Config.HuangTargetValue1 if hasattr(Config, 'HuangTargetValue1') else 0)
+    cnfgpars.set('Mapping_Config', 'HuangTargetValue2',
+                 Config.HuangTargetValue2 if hasattr(Config, 'HuangTargetValue2') else 0)
+    cnfgpars.set('Mapping_Config', 'SA_Alpha',
+                 Config.SA_Alpha if hasattr(Config, 'SA_Alpha') else 0)
+    cnfgpars.set('Mapping_Config', 'SlopeRangeForCooling',
+                 Config.SlopeRangeForCooling if hasattr(Config, 'SlopeRangeForCooling') else 0)
+    cnfgpars.set('Mapping_Config', 'MarkovTempStep',
+                 Config.MarkovTempStep if hasattr(Config, 'MarkovTempStep') else 0)
+    cnfgpars.set('Mapping_Config', 'Delta',
+                 Config.Delta if hasattr(Config, 'Delta') else 0)
+    cnfgpars.set('Mapping_Config', 'HuangAlpha',
+                 Config.HuangAlpha if hasattr(Config, 'HuangAlpha') else 0)
     cnfgpars.set('Mapping_Config', 'Mapping_CostFunctionType', Config.Mapping_CostFunctionType)
     cnfgpars.set('Mapping_Config', 'DistanceBetweenMapping', Config.DistanceBetweenMapping)
-
-    # Config.SA_Alpha = 0.9995
-    # Config.SlopeRangeForCooling = 0.02
-    # Config.MarkovTempStep = 1.0
-    # Config.Delta = 0.05
-    # Config.HuangAlpha = 0.5
-
     # ------------------------------------------------
     #               Scheduling_Config
     # ------------------------------------------------
@@ -324,6 +403,7 @@ def generate_configfile():
     #               Fault_Config
     # ------------------------------------------------
     cnfgpars.add_section('Fault_Config')
+    cnfgpars.set('Fault_Config', 'MTBF', Config.MTBF)
     cnfgpars.set('Fault_Config', 'health_counter_threshold', Config.health_counter_threshold)
     cnfgpars.set('Fault_Config', 'fault_counter_threshold', Config.fault_counter_threshold)
     cnfgpars.set('Fault_Config', 'intermittent_counter_threshold', Config.intermittent_counter_threshold)
