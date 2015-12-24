@@ -4,6 +4,7 @@ import os
 import ConfigParser
 import ast
 
+
 def draw_logo():
     print ("================================================================================================" +
            "===================")
@@ -194,16 +195,16 @@ def update_config(config_file_path):
 
     Config.SA_AnnealingSchedule = config.get("Mapping_Config", "SA_AnnealingSchedule")
     Config.TerminationCriteria = config.get("Mapping_Config", "TerminationCriteria")
-    Config.MarkovNum = config.getfloat("Mapping_Config", "SA_Alpha")
+    Config.SA_Alpha = config.getfloat("Mapping_Config", "SA_Alpha")
 
     Config.LogCoolingConstant = config.getint("Mapping_Config", "LogCoolingConstant")
     Config.CostMonitorQueSize = config.getint("Mapping_Config", "CostMonitorQueSize")
-    Config.MarkovNum = config.getfloat("Mapping_Config", "SlopeRangeForCooling")
+    Config.SlopeRangeForCooling = config.getfloat("Mapping_Config", "SlopeRangeForCooling")
     Config.MaxSteadyState = config.getint("Mapping_Config", "MaxSteadyState")
-    Config.MarkovNum = config.getint("Mapping_Config", "MarkovNum")
-    Config.MarkovNum = config.getfloat("Mapping_Config", "MarkovTempStep")
-    Config.MarkovNum = config.getfloat("Mapping_Config", "Delta")
-    Config.MarkovNum = config.getfloat("Mapping_Config", "HuangAlpha")
+    Config.MarkovNum = config.getfloat("Mapping_Config", "MarkovNum")
+    Config.MarkovTempStep = config.getfloat("Mapping_Config", "MarkovTempStep")
+    Config.Delta = config.getfloat("Mapping_Config", "Delta")
+    Config.HuangAlpha = config.getfloat("Mapping_Config", "HuangAlpha")
 
     Config.HuangN = config.getint("Mapping_Config", "HuangN")
     Config.HuangTargetValue1 = config.getint("Mapping_Config", "HuangTargetValue1")
@@ -220,7 +221,7 @@ def update_config(config_file_path):
     # ------------------------------------------------
     #               Fault_Config
     # ------------------------------------------------
-    Config.MTBF = config.getint("Fault_Config", "MTBF")
+    Config.MTBF = config.getfloat("Fault_Config", "MTBF")
     # Config.SD4MTBF = 0.2
     Config.health_counter_threshold = config.getint("Fault_Config", "health_counter_threshold")
     Config.fault_counter_threshold = config.getint("Fault_Config", "fault_counter_threshold")
@@ -438,8 +439,6 @@ def generate_configfile():
     cnfgpars.set('Viz_Config', 'SHM_Drawing', Config.SHM_Drawing)
     cnfgpars.set('Viz_Config', 'GenMappingFrames', Config.GenMappingFrames)
     cnfgpars.set('Viz_Config', 'FrameResolution', Config.FrameResolution)
-
-
 
     cnfgpars.write(cfg_file)
     cfg_file.close()
