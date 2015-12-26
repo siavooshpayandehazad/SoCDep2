@@ -43,7 +43,6 @@ done
 cd ../results/CounterThresholdExp
 for diectory in *; do
     cd $diectory
-
     for var in $(find * -name "Cons*"); do
         grep -F "DEAD Components" $var >> result.txt
         grep -F "Intermittent Components" $var >> result.txt

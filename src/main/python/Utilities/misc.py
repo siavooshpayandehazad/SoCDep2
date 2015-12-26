@@ -22,13 +22,17 @@ def draw_logo():
            "\/     \/      \/ ")
     print ("================================================================================================" +
            "===================")
-    print ("AUTHOR:  SIAVOOSH PAYANDEH AZAD")
+    print ("AUTHORS:")
+    print ("          SIAVOOSH PAYANDEH AZAD")
+    print ("          RENE PIHLAK")
+    print ("          BEHRAD NIAZMAND")
     print ("DATE:    MAY 2015")
     print ("THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME ")
-    print ("DEPENDABILITY STUFF ON DIFFERENT ARCHITECTURES....")
+    print ("DEPENDABILITY MECHANISMS ON DIFFERENT ARCHITECTURES....")
+    print ("Copyright (C) 2015-2016 as collective work done by Siavoosh Payandeh Azad, Rene Pihlak and Behrad Niazmand")
     print ("================================================================================")
-    print ("DEBUG DETAILS:"+str(Config.DebugDetails))
-    print ("DEBUG INFO:"+str(Config.DebugInfo))
+    print ("DEBUG DETAILS: "+str(Config.DebugDetails))
+    print ("DEBUG INFO: "+str(Config.DebugInfo))
     print ("===========================================")
     return None
 

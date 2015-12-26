@@ -5,7 +5,7 @@ import PackageFile
 #          Program  Config
 ################################################
 ProgramRunTime = 9      # in seconds
-DebugInfo = True
+DebugInfo = False
 DebugDetails = False
 
 TestMode = False
