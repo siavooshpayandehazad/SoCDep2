@@ -16,7 +16,7 @@ do
     counter=0
     while [  $counter -lt 5 ]; do
         rm ../python/LOGS/*
-        echo "../scripts/$conffile"
+        #echo "../scripts/$conffile"
         cd ../python
         python Main.py -CONF ../scripts/$conffile
         cd ../scripts
@@ -38,4 +38,18 @@ do
         done
         counter=`expr $counter + 1`
    done
+done
+
+cd ../results/CounterThresholdExp
+for diectory in *; do
+    cd $diectory
+
+    for var in $(find * -name "Cons*"); do
+        grep -F "DEAD Components" $var >> result.txt
+        grep -F "Intermittent Components" $var >> result.txt
+        grep -F "MAX MEMORY USAGE" $var >> result.txt
+        grep -F "AVERAGE COUNTER PER Node" $var >> result.txt
+        echo "-----------------------------">> result.txt
+    done
+    cd ..
 done

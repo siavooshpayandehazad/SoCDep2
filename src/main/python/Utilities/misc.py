@@ -229,7 +229,7 @@ def update_config(config_file_path):
     Config.enable_link_counters = config.getboolean("Fault_Config", "enable_link_counters")
     Config.enable_router_counters = config.getboolean("Fault_Config", "enable_router_counters")
     Config.enable_pe_counters = config.getboolean("Fault_Config", "enable_pe_counters")
-    # Config.error_correction_rate = 0.4
+    Config.error_correction_rate = config.getfloat("Fault_Config", "error_correction_rate")
 
     # ------------------------------------------------
     #           Network_Partitioning
@@ -411,6 +411,7 @@ def generate_configfile():
     cnfgpars.set('Fault_Config', 'enable_link_counters', Config.enable_link_counters)
     cnfgpars.set('Fault_Config', 'enable_router_counters', Config.enable_router_counters)
     cnfgpars.set('Fault_Config', 'enable_pe_counters', Config.enable_pe_counters)
+    cnfgpars.set('Fault_Config', 'error_correction_rate', Config.error_correction_rate)
 
     # ------------------------------------------------
     #           Network_Partitioning

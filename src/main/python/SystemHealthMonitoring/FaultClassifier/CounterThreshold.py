@@ -138,6 +138,8 @@ class CounterThreshold():
         if self.fault_counters[location] == self.fault_threshold:
             logging.info("Declaring component: "+location+" dead!")
             self.dead_components.append(location)
+            if location in self.intermittent_components:
+                self.intermittent_components.remove(location)
             self.reset_counters(location)
 
         current_memory_usage = self.return_allocated_memory()
