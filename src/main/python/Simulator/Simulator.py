@@ -175,6 +175,6 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
     print "STARTING SIMULATION..."
     env.run(until=runtime)
     print "SIMULATION FINISHED..."
-    counter_threshold.report(len(ag.nodes()))
+    counter_threshold.report(len(ag.nodes()), len(ag.edges()))
     Scheduling_Reports.report_scheduling_memory_usage(ag)
     return None

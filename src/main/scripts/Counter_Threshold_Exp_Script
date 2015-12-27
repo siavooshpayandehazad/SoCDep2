@@ -46,8 +46,13 @@ for diectory in *; do
     for var in $(find * -name "Cons*"); do
         grep -F "DEAD Components" $var >> result.txt
         grep -F "Intermittent Components" $var >> result.txt
+        grep -F "MAX NUMBER OF COUNTERS" $var >> result.txt
+        grep -F "NUMBER OF BITS FOR ADDRESS FOR EACH COUNTER" $var >> result.txt
+        grep -F "MAX NUMBER OF BITS FOR EACH COUNTER" $var >> result.txt
+        grep -F "TOTAL BITS PER COUNTER: 8.0" $var >> result.txt
         grep -F "MAX MEMORY USAGE" $var >> result.txt
         grep -F "AVERAGE COUNTER PER Node" $var >> result.txt
+        grep -F "AVERAGE BITS PER Node" $var >> result.txt
         echo "-----------------------------">> result.txt
     done
     cd ..
