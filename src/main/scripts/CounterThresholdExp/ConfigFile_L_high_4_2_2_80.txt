@@ -87,7 +87,7 @@ intermittent_counter_threshold = 2
 enable_link_counters = True
 enable_router_counters = False
 enable_pe_counters = False
-error_correction_rate = 0.4
+error_correction_rate = 0.8
 
 [Network_Partitioning]
 enablepartitioning = False
