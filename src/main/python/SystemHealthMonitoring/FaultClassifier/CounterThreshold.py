@@ -16,6 +16,7 @@ class CounterThreshold():
         self.dead_components = []
         self.intermittent_components = []
         self.memory_counter = 0
+        self.number_of_faults = 0
 
     def increase_health_counter(self, location, logging):
         if type(location) is dict:
@@ -40,7 +41,7 @@ class CounterThreshold():
         if location in self.fault_counters.keys() or location in self.intermittent_counters.keys():
             pass
         else:
-            # do not start the fault counter if there is no fault counter
+            # do not start the health counter if there is no fault counter
             return None
 
         if location in self.health_counters.keys():
@@ -86,6 +87,7 @@ class CounterThreshold():
         if location in self.dead_components:
             # do not increase the counter if component is dead
             return None
+        self.number_of_faults += 1
         if location in self.intermittent_counters.keys():
             self.intermittent_counters[location] += 1
         else:
@@ -130,6 +132,7 @@ class CounterThreshold():
         if location in self.dead_components:
             # do not increase the counter if component is dead
             return None
+        self.number_of_faults += 1
         if location in self.fault_counters.keys():
             self.fault_counters[location] += 1
         else:
@@ -191,4 +194,5 @@ class CounterThreshold():
         print "MAX MEM USAGE:", self.memory_counter * counter_total_bits, " BITS"
         print "AVERAGE COUNTER PER Node: ", float(self.memory_counter)/number_of_nodes
         print "AVERAGE BITS PER Node: ", float(self.memory_counter * counter_total_bits)/number_of_nodes
+        print "NUMBER OF FAULTS:", self.number_of_faults
         return None

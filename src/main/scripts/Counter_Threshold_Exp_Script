@@ -53,6 +53,7 @@ for diectory in *; do
         grep -F "MAX MEMORY USAGE" $var >> result.txt
         grep -F "AVERAGE COUNTER PER Node" $var >> result.txt
         grep -F "AVERAGE BITS PER Node" $var >> result.txt
+        grep -F "NUMBER OF FAULTS" $var >> result.txt
         echo "-----------------------------">> result.txt
     done
     cd ..
