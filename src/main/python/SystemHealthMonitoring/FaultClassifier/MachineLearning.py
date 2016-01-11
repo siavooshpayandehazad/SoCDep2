@@ -23,6 +23,8 @@ class MachineLearning():
         self.fault_counters             = {}
         self.health_counters            = {}
         
+        self.memory_max                 = {}
+        
         self.fault_threshold            = fault_threshold
         self.intermittent_threshold     = intermittent_threshold
         self.health_threshold           = health_threshold#+intermittent_threshold
@@ -327,6 +329,9 @@ class MachineLearning():
         #current_memory_usage = self.return_allocated_memory()
         #if current_memory_usage > self.memory_counter:
         #    self.memory_counter = current_memory_usage
+        
+        self.check_max_memory('fault')
+        
         return None
     
     def increase_intermittent_counter(self, location, logging):
@@ -393,6 +398,9 @@ class MachineLearning():
                 logging.info("VEG: ML: Declaring component: "+location+" intermittent!")
                 if location not in self.intermittent_components:
                     self.intermittent_components.append(location)
+        
+        self.check_max_memory('intermittent')      
+        
         return None
 
     def reset_counters(self, location):
@@ -405,6 +413,22 @@ class MachineLearning():
         #else:
         #    pass
         return None
+    
+    def return_allocated_memory(self, mem):
+        if mem == 'intermittent':
+            return len(self.machine_learning_buffer_inter)*self.intermittent_threshold
+        elif mem == 'fault':
+            return len(self.machine_learning_buffer)*self.fault_threshold
+        else:
+            return -1 #error
+    
+    def check_max_memory(self, mem):
+        if mem in self.memory_max.keys():
+            if self.memory_max[mem] < self.return_allocated_memory(mem):
+                self.memory_max[mem] = self.return_allocated_memory(mem)
+        else:
+            self.memory_max[mem] = self.return_allocated_memory(mem)
+        return None
 
     #def return_allocated_memory(self):
     #    return len(self.health_counters) + len(self.fault_counters)
@@ -416,6 +440,11 @@ class MachineLearning():
         print "VEG: TODO"
         print "VEG: DEAD Components:", self.dead_components
         print "VEG: INTERMITTENT Components:", self.intermittent_components
+        for mem in self.memory_max.keys():
+            print "VEG: MAX memory (in bits) use of", mem, "::", self.memory_max[mem]
+        for mem in {'intermediate', 'fault'}:
+            if self.return_allocated_memory(mem) is not -1:
+                print "VEG: END memory (in bits) use of", mem, "::", self.return_allocated_memory(mem)
         #print "MAX MEMORY USAGE:", self.memory_counter
         #print "AVERAGE COUNTER PER Node: ", float(self.memory_counter)/number_of_nodes
         return None
