@@ -179,7 +179,14 @@ class MachineLearning():
         
         this_collection         = collections.deque(maxlen=self.fault_threshold+self.health_threshold-1)
         this_collection_inter   = collections.deque(maxlen=self.intermittent_threshold+self.health_threshold-1)
-                
+        
+        this_bufs           = {}
+        this_global_bufs    = {}
+        this_bufs['faults']                = this_collection
+        this_bufs['intermittent']          = this_collection_inter
+        this_global_bufs['faults']         = self.machine_learning_buffer
+        this_global_bufs['intermittent']   = self.machine_learning_buffer_inter
+        
         if type(location) is dict:
             # print location, str(location.keys()[0])+str(location[location.keys()[0]])
             location = "R"+str(location.keys()[0])
@@ -197,64 +204,91 @@ class MachineLearning():
             return None
         #if location not in self.fault_counters.keys():
         #    return None
-        
-        if location in self.machine_learning_buffer.keys():
-            logging.info("VEG: ML TODO: healthy part")
-            self.machine_learning_buffer[location].append(0)# += 1
-            logging.info("VEG: Increasing health in fault counter at location: "+location)
-            logging.info("VEG: "+location+": Buffer: "+str(self.machine_learning_buffer[location]))
-            for i in range(0, len(self.machine_learning_buffer[location])-1):
-                this_collection.append(list(self.machine_learning_buffer[location])[i])
-            #this_collection.append(self.machine_learning_buffer[location][:-1])
-            while True:
-                if this_collection.count(1) == 0:
-                    break
-                elif this_collection[-1] == 0:
-                    this_collection.appendleft(0)
+        for cur_buf in this_bufs.keys():
+            if location in this_global_bufs[cur_buf].keys():
+                this_global_bufs[cur_buf][location].append(0)
+                logging.info("VEG: Increasing health in " + cur_buf + "counter at location: "+location)
+                logging.info("VEG: "+location+": Buffer: "+str(this_global_bufs[cur_buf][location]))
+                for i in range(0, len(this_global_bufs[cur_buf][location])-1):
+                    this_bufs[cur_buf].append(list(this_global_bufs[cur_buf][location])[i])
+                while True:
+                    if this_bufs[cur_buf].count(1) == 0:
+                        break
+                    elif this_bufs[cur_buf][-1] == 0:
+                        this_bufs[cur_buf].appendleft(0)
+                    else:
+                        this_bufs[cur_buf].appendleft(0)
+                        break
+                logging.info("VEG: ML TODO: " + cur_buf + " buffer: "+str(this_bufs[cur_buf]))
+                if this_global_bufs[cur_buf][location].count(1) == 0:
+                    del this_global_bufs[cur_buf][location]
+                    logging.info("VEG: Deleted health counter at location: "+location)
+                    logging.info("VEG: " + cur_buf + " buffer: ML("+location+") -> perfect")
                 else:
-                    this_collection.appendleft(0)
-                    break
-            logging.info("VEG: ML TODO: fault buffer: "+str(this_collection))
-            
-            if self.machine_learning_buffer[location].count(1) == 0:
-                del self.machine_learning_buffer[location]
-                logging.info("VEG: Deleted health counter at location: "+location)
-                logging.info("VEG: fault buffer: ML("+location+") -> perfect")
+                    for i in self.ml_methods.keys():
+                        ml_value = self.ml_methods[i].predict(this_bufs[cur_buf])
+                        logging.info("VEG: fault buffer: ML("+str(i)+") "+location+" -> "+str(ml_value))
             else:
-                for i in self.ml_methods.keys():
-                    ml_value = self.ml_methods[i].predict(this_collection)
-                    logging.info("VEG: fault buffer: ML("+str(i)+") "+location+" -> "+str(ml_value))
-        else:
-            logging.info("VEG: Ignored fault health counter at location: "+location)
-            logging.info("VEG: ML("+location+") -> perfect")
-            
-        if location in self.machine_learning_buffer_inter.keys():
-            logging.info("VEG: ML TODO: healthy part")
-            self.machine_learning_buffer_inter[location].append(0)# += 1
-            logging.info("VEG: Increasing health in intermittent counter at location: "+location)
-            logging.info("VEG: "+location+": Buffer: "+str(self.machine_learning_buffer_inter[location]))
-            for i in range(0, len(self.machine_learning_buffer_inter[location])-1):
-                this_collection_inter.append(list(self.machine_learning_buffer_inter[location])[i])
-            while True:
-                if this_collection_inter.count(1) == 0:
-                    break
-                elif this_collection_inter[-1] == 0:
-                    this_collection_inter.appendleft(0)
-                else:
-                    this_collection_inter.appendleft(0)
-                    break
-            logging.info("VEG: ML TODO: intermittent buffer: "+str(this_collection_inter))
-            if self.machine_learning_buffer_inter[location].count(1) == 0:
-                del self.machine_learning_buffer_inter[location]
-                logging.info("VEG: Deleted health counter at location: "+location)
-                logging.info("VEG: intermittent buffer: ML("+location+") -> perfect")
-            else:
-                for i in self.ml_methods_inter.keys():
-                    ml_value = self.ml_methods_inter[i].predict(this_collection_inter)
-                    logging.info("VEG: intermittent buffer: ML("+str(i)+") "+location+" -> "+str(ml_value))
-        else:
-            logging.info("VEG: Ignored intermittent health counter at location: "+location)
-            logging.info("VEG: ML("+location+") -> perfect")
+                logging.info("VEG: Ignored " + cur_buf + " health counter at location: "+location)
+                logging.info("VEG: ML("+location+") -> perfect")
+                    
+#         if location in self.machine_learning_buffer.keys():
+#             logging.info("VEG: ML TODO: healthy part")
+#             self.machine_learning_buffer[location].append(0)# += 1
+#             logging.info("VEG: Increasing health in fault counter at location: "+location)
+#             logging.info("VEG: "+location+": Buffer: "+str(self.machine_learning_buffer[location]))
+#             for i in range(0, len(self.machine_learning_buffer[location])-1):
+#                 this_collection.append(list(self.machine_learning_buffer[location])[i])
+#             #this_collection.append(self.machine_learning_buffer[location][:-1])
+#             while True:
+#                 if this_collection.count(1) == 0:
+#                     break
+#                 elif this_collection[-1] == 0:
+#                     this_collection.appendleft(0)
+#                 else:
+#                     this_collection.appendleft(0)
+#                     break
+#             logging.info("VEG: ML TODO: fault buffer: "+str(this_collection))
+#             
+#             if self.machine_learning_buffer[location].count(1) == 0:
+#                 del self.machine_learning_buffer[location]
+#                 logging.info("VEG: Deleted health counter at location: "+location)
+#                 logging.info("VEG: fault buffer: ML("+location+") -> perfect")
+#             else:
+#                 for i in self.ml_methods.keys():
+#                     ml_value = self.ml_methods[i].predict(this_collection)
+#                     logging.info("VEG: fault buffer: ML("+str(i)+") "+location+" -> "+str(ml_value))
+#         else:
+#             logging.info("VEG: Ignored fault health counter at location: "+location)
+#             logging.info("VEG: ML("+location+") -> perfect")
+#             
+#         if location in self.machine_learning_buffer_inter.keys():
+#             logging.info("VEG: ML TODO: healthy part")
+#             self.machine_learning_buffer_inter[location].append(0)# += 1
+#             logging.info("VEG: Increasing health in intermittent counter at location: "+location)
+#             logging.info("VEG: "+location+": Buffer: "+str(self.machine_learning_buffer_inter[location]))
+#             for i in range(0, len(self.machine_learning_buffer_inter[location])-1):
+#                 this_collection_inter.append(list(self.machine_learning_buffer_inter[location])[i])
+#             while True:
+#                 if this_collection_inter.count(1) == 0:
+#                     break
+#                 elif this_collection_inter[-1] == 0:
+#                     this_collection_inter.appendleft(0)
+#                 else:
+#                     this_collection_inter.appendleft(0)
+#                     break
+#             logging.info("VEG: ML TODO: intermittent buffer: "+str(this_collection_inter))
+#             if self.machine_learning_buffer_inter[location].count(1) == 0:
+#                 del self.machine_learning_buffer_inter[location]
+#                 logging.info("VEG: Deleted health counter at location: "+location)
+#                 logging.info("VEG: intermittent buffer: ML("+location+") -> perfect")
+#             else:
+#                 for i in self.ml_methods_inter.keys():
+#                     ml_value = self.ml_methods_inter[i].predict(this_collection_inter)
+#                     logging.info("VEG: intermittent buffer: ML("+str(i)+") "+location+" -> "+str(ml_value))
+#         else:
+#             logging.info("VEG: Ignored intermittent health counter at location: "+location)
+#             logging.info("VEG: ML("+location+") -> perfect")
         return None
 
     def increase_fault_counter(self, location, logging):
