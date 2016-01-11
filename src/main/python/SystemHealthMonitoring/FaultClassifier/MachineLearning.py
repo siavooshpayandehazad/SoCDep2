@@ -353,6 +353,7 @@ class MachineLearning():
                 logging.info("VEG: ML: Declaring component: "+location+" dead!")
                 if location not in self.dead_components:
                     self.dead_components.append(location)
+                    del self.machine_learning_buffer[location]
         ######
         
         #if self.fault_counters[location] == self.fault_threshold:
@@ -432,7 +433,8 @@ class MachineLearning():
                 logging.info("VEG: ML: Declaring component: "+location+" intermittent!")
                 if location not in self.intermittent_components:
                     self.intermittent_components.append(location)
-        
+                    del self.machine_learning_buffer_inter[location]
+
         self.check_max_memory('intermittent')      
         
         return None
@@ -451,18 +453,32 @@ class MachineLearning():
     def return_allocated_memory(self, mem):
         memsize = 0
         memlen  = 0
-        if mem == 'intermittent':
-            memlen = len(self.machine_learning_buffer_inter)
-            if memlen is not 0:
-                for curKey in self.machine_learning_buffer_inter.keys():
-                    memsize = self.machine_learning_buffer_inter[curKey].maxlen
-                    break
-        elif mem == 'fault':
-            memlen = len(self.machine_learning_buffer)
-            if memlen is not 0:
-                for curKey in self.machine_learning_buffer.keys():
-                    memsize = self.machine_learning_buffer[curKey].maxlen
-                    break
+        
+        this_global_bufs                   = {}
+        this_global_bufs['fault']         = self.machine_learning_buffer
+        this_global_bufs['intermittent']   = self.machine_learning_buffer_inter
+        
+        for buf in this_global_bufs.keys():
+            if mem == buf:
+                memlen = len(this_global_bufs[buf])
+                if memlen is not 0:
+                    for curKey in this_global_bufs[buf].keys():
+                        memsize = this_global_bufs[buf][curKey].maxlen
+                        break
+                break
+        
+#         if mem == 'intermittent':
+#             memlen = len(self.machine_learning_buffer_inter)
+#             if memlen is not 0:
+#                 for curKey in self.machine_learning_buffer_inter.keys():
+#                     memsize = self.machine_learning_buffer_inter[curKey].maxlen
+#                     break
+#         elif mem == 'fault':
+#             memlen = len(self.machine_learning_buffer)
+#             if memlen is not 0:
+#                 for curKey in self.machine_learning_buffer.keys():
+#                     memsize = self.machine_learning_buffer[curKey].maxlen
+#                     break
         if memsize is not 0:
             return memsize*memlen
         else:
