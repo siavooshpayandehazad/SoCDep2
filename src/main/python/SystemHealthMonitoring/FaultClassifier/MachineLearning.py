@@ -429,7 +429,6 @@ class MachineLearning():
                 for curKey in self.machine_learning_buffer.keys():
                     memsize = self.machine_learning_buffer[curKey].maxlen
                     break
-            return len(self.machine_learning_buffer)*self.fault_threshold
         if memsize is not 0:
             return memsize*memlen
         else:
