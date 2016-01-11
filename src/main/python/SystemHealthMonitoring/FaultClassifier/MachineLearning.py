@@ -415,10 +415,23 @@ class MachineLearning():
         return None
     
     def return_allocated_memory(self, mem):
+        memsize = 0
+        memlen  = 0
         if mem == 'intermittent':
-            return len(self.machine_learning_buffer_inter)*self.intermittent_threshold
+            memlen = len(self.machine_learning_buffer_inter)
+            if memlen is not 0:
+                for curKey in self.machine_learning_buffer_inter.keys():
+                    memsize = self.machine_learning_buffer_inter[curKey].maxlen
+                    break
         elif mem == 'fault':
+            memlen = len(self.machine_learning_buffer)
+            if memlen is not 0:
+                for curKey in self.machine_learning_buffer.keys():
+                    memsize = self.machine_learning_buffer[curKey].maxlen
+                    break
             return len(self.machine_learning_buffer)*self.fault_threshold
+        if memsize is not 0:
+            return memsize*memlen
         else:
             return -1 #error
     
