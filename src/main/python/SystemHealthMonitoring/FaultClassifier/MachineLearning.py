@@ -503,7 +503,8 @@ class MachineLearning():
         print "VEG: DEAD Components:", self.dead_components
         print "VEG: INTERMITTENT Components:", self.intermittent_components
         for mem in self.memory_max.keys():
-            print "VEG: MAX memory (in bits) use of", mem, "::", self.memory_max[mem]
+            if self.memory_max[mem] is not -1:
+                print "VEG: MAX memory (in bits) use of", mem, "::", self.memory_max[mem]
         for mem in {'intermediate', 'fault'}:
             if self.return_allocated_memory(mem) is not -1:
                 print "VEG: END memory (in bits) use of", mem, "::", self.return_allocated_memory(mem)
