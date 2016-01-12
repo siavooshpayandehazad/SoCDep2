@@ -1,0 +1,60 @@
+#!/bin/bash
+
+if [ ! -d "../results" ]; then
+mkdir ../results/
+else
+rm -rf ../results/*
+fi
+
+
+CONFFILES=CounterThresholdExp/ConfigFile*
+mkdir ../results/CounterThresholdExp
+for conffile in $CONFFILES
+do
+    #echo ${conffile%????}
+    mkdir ../results/${conffile%????}
+    counter=0
+    while [  $counter -lt 5 ]; do
+        rm ../python/LOGS/*
+        #echo "../scripts/$conffile"
+        cd ../python
+        python Main.py -CONF ../scripts/$conffile
+        cd ../scripts
+
+        FILES=../python/GraphDrawings/*.png
+        DEST_FOLDER=../results/${conffile%????}/$counter
+        mkdir $DEST_FOLDER
+        for f in $FILES
+        do
+            #echo “copying $f to” $DEST_FOLDER
+            cp $f $DEST_FOLDER
+        done
+
+        FILES=../python/LOGS/*
+        for f in $FILES
+        do
+            #echo “copying $f to” $DEST_FOLDER
+            cp $f $DEST_FOLDER
+        done
+        counter=`expr $counter + 1`
+   done
+done
+
+cd ../results/CounterThresholdExp
+for diectory in *; do
+    cd $diectory
+    for var in $(find * -name "Cons*"); do
+        grep -F "DEAD Components" $var >> result.txt
+        grep -F "Intermittent Components" $var >> result.txt
+        grep -F "MAX NUMBER OF COUNTERS" $var >> result.txt
+        grep -F "NUMBER OF BITS FOR ADDRESS FOR EACH COUNTER" $var >> result.txt
+        grep -F "MAX NUMBER OF BITS FOR EACH COUNTER" $var >> result.txt
+        grep -F "TOTAL BITS PER COUNTER: 8.0" $var >> result.txt
+        grep -F "MAX MEMORY USAGE" $var >> result.txt
+        grep -F "AVERAGE COUNTER PER Node" $var >> result.txt
+        grep -F "AVERAGE BITS PER Node" $var >> result.txt
+        grep -F "NUMBER OF FAULTS" $var >> result.txt
+        echo "-----------------------------">> result.txt
+    done
+    cd ..
+done

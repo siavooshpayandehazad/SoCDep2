@@ -2,6 +2,6 @@ OLDIFS=$IFS
 IFS='
 '
 
-grep -r -A 1 'def ' ../python > Results.txt
+grep -r -A 1 'def ' ../python > ../results/FunctionsWithoutDocString.txt
 
 IFS=$OLDIFS

@@ -8,6 +8,7 @@ from math import ceil
 from Mapping_Reports import draw_mapping
 from RoutingAlgorithms import Routing
 from ArchGraphUtilities import AG_Functions
+import ConfigParser
 
 
 def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritica_rg, report, logging, random_seed):
@@ -389,18 +390,20 @@ def mapping_cost_function(tg, ag, shm, report, initial_mapping_string=None):
     :param initial_mapping_string: Initial mapping string used for calculating distance from the current mapping
     :return: cost of the mapping
     """
-    node_makspan_list = []
-    link_makspan_list = []
+    node_makespan_list = []
+    link_makespan_list = []
     for node in ag.nodes():
         if shm.node[node]['NodeHealth'] and (not ag.node[node]['PE'].Dark):
-            node_makspan_list.append(Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag, node, logging=None))
+            node_makespan_list.append(Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag,
+                                                                                             node, logging=None))
     for link in ag.edges():
         if shm.edge[link[0]][link[1]]['LinkHealth']:
-            link_makspan_list.append(Scheduling_Functions_Links.FindLastAllocatedTimeOnLink(tg, ag, link, logging=None))
-    node_makspan_sd = statistics.stdev(node_makspan_list)
-    node_makspan_max = max(node_makspan_list)
-    link_makspan_sd = statistics.stdev(link_makspan_list)
-    link_makspan_max = max(link_makspan_list)
+            link_makespan_list.append(Scheduling_Functions_Links.FindLastAllocatedTimeOnLink(tg, ag,
+                                                                                            link, logging=None))
+    node_makspan_sd = statistics.stdev(node_makespan_list)
+    node_makspan_max = max(node_makespan_list)
+    link_makspan_sd = statistics.stdev(link_makespan_list)
+    link_makspan_max = max(link_makespan_list)
 
     node_util_list = []
     for node in ag.nodes():
@@ -605,14 +608,72 @@ def hamming_distance_of_mapping(mapping_string1, mapping_string2):
         raise ValueError("The input mapping strings are of wrong types")
 
 
-def write_mapping_to_file(ag, file_path):
-    # todo
+def write_mapping_to_file(ag, file_name):
+    """
+    Writes the mapping configuration of the architecture graph into a file located at Generated Files
+    :param ag: architecture graph
+    :param file_name: name of the file
+    :return: None
+    """
+    print("===========================================")
+    print("WRITING MAPPING TO FILE...")
+    mapping_file = open('Generated_Files/'+file_name+".txt", 'w')
+    mapping_file.write("[nodes]\n")
+    for node in ag.nodes():
+        string_to_write = "node_"+str(node)+": "
+        counter = 0
+        for task in ag.node[node]['PE'].MappedTasks:
+            if counter < len(ag.node[node]['PE'].MappedTasks)-1:
+                string_to_write += str(task)+","
+            else:
+                string_to_write += str(task)+"\n"
+            counter += 1
+        mapping_file.write(string_to_write)
+
+    # this section is not necessary
+    # mapping_file.write("\n[routers]\n")
+    # for node in ag.nodes():
+    #     mapping_file.write("router_"+str(node)+": "+str(ag.node[node]['Router'].MappedTasks)+"\n")
+
+    # mapping_file.write("\n[links]\n")
+    # for link in ag.edges():
+    #    mapping_file.write("link_"+str(link[0])+"_"+str(link[1])+": " +
+    #                       str(ag.edge[link[0]][link[1]]['MappedTasks'])+"\n")
     return None
 
 
-def read_mapping_from_file(ag, file_path):
-    # todo
-    for node in ag:
-        # print ag.node[node]['PE'].MappedTasks
-        pass
+def read_mapping_from_file(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, file_path, logging):
+    """
+    gets an Architecture graph which doesnt have any tasks mapped on it, and reads the mapping from file
+    and fills the map.
+    :param tg: task graph
+    :param ag: architecture graph
+    :param shm: system health map
+    :param noc_rg: noc routing graph
+    :param critical_rg: noc_rg for critical region
+    :param noncritical_rg: noc_rg for non-critical region
+    :param file_path: path to mapping file
+    :param logging: logging file
+    :return: None
+    """
+    try:
+        mapping_file = open(file_path, 'r')
+        mapping_file.close()
+    except IOError:
+        raise ValueError('CAN NOT OPEN mapping_file')
+
+    print("===========================================")
+    print("READING MAPPING FROM FILE...")
+    print "FILE LOCATED AT:", file_path
+    mapping = ConfigParser.ConfigParser(allow_no_value=True)
+    mapping.read(file_path)
+
+    mapping_dict = {}
+    for node in ag.nodes():
+        mapping_dict[node] = map(int, mapping.get("nodes", "node_"+str(node)).split(","))
+
+    for node in mapping_dict.keys():
+        for task in mapping_dict[node]:
+            map_task_to_node(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, task, node, logging)
+
     return None

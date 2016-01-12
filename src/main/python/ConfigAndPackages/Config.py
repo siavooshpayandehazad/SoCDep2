@@ -4,11 +4,11 @@ import PackageFile
 ################################################
 #          Program  Config
 ################################################
-ProgramRunTime = 9      # in seconds
-DebugInfo = True
+ProgramRunTime = 900      # in seconds
+DebugInfo = False
 DebugDetails = False
 
-TestMode = True
+TestMode = False
 MemoryProfiler = False
 EventDrivenFaultInjection = True
 ################################################
@@ -173,6 +173,8 @@ CTG_CirculationLength = 3
 ################################################
 #          Mapping Function  Config
 ################################################
+read_mapping_from_file = False
+mapping_file_path = "mapping_report.txt"
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
 Mapping_Function = 'LocalSearch'
@@ -252,7 +254,7 @@ Task_SlackCount = 0               # this is used for number of repetitions of th
 #          System's Fault  Config
 ################################################
 MTTF = None     # Mean time to failure in seconds have not used MTTF yet...
-MTBF = 0.4        # Mean time between failures in clock cycles
+MTBF = 1        # Mean time between failures in clock cycles
 SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal distribution
 # ------------------------
 health_counter_threshold = 4
@@ -303,11 +305,12 @@ NodeTestComWeight = 2
 ###############################################
 #           VISUALIZATION Config
 ###############################################
-RG_Draw = True
+RG_Draw = False
 PMCG_Drawing = False
 TTG_Drawing = False
-Mapping_Dstr_Drawing = True
+Mapping_Dstr_Drawing = False
 Mapping_Drawing = True
+Scheduling_Drawing = True
 SHM_Drawing = False          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks

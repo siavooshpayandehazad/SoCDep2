@@ -65,17 +65,19 @@ logging.info('Starting logging...')
 ####################################################################
 misc.generate_file_directories()
 misc.draw_logo()
+misc.generate_configfile()
 ####################################################################
 # Initialization of the system
-tg, ag, shmu, noc_rg, CriticalRG, NonCriticalRG, pmcg = SystemInitialization.initialize_system(logging)
 
+ag, shmu, noc_rg, CriticalRG, NonCriticalRG, pmcg = SystemInitialization.initialize_system(logging)
 
 # just to have a sense of how much time we are spending in each section
 print ("===========================================")
 system_starting_time = time.time()
 print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:"+str(round(system_starting_time-program_start_time)) +
        " SECONDS AFTER PROGRAM START...")
-Simulator.run_simulator(100, ag, shmu, noc_rg, logging)
+
+Simulator.run_simulator(Config.ProgramRunTime, ag, shmu, noc_rg, logging)
 # FaultInjector.FaultInjector(system_starting_time, ag, shmu, noc_rg)
 logging.info('Logging finished...')
 

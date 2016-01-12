@@ -1,0 +1,112 @@
+[TG_Config]
+tg_type = RandomDependent
+numberoftasks = 25
+numberofcriticaltasks = 0
+numberofedges = 35
+wcet_range = 25
+edgeweightrange = 5
+release_range = 5
+tg_random_seed = 1000
+
+[AG_Config]
+ag_type = Generic
+networktopology = 2DMesh
+network_x_size = 3
+network_y_size = 3
+network_z_size = 1
+
+[VL_Config]
+findoptimumag = False
+vl_optalg = LocalSearch
+ag_opt_iterations_ils = 10
+ag_opt_iterations_ls = 10
+verticallinksnum = 20
+
+[Routing_Config]
+usedturnmodel = XY_TurnModel
+rotingtype = MinimalPath
+routingfilepath = User_Inputs/RoutingFile.txt
+setroutingfromfile = False
+flowcontrol = Wormhole
+
+[Dark_Sil_Config]
+darksiliconpercentage = 0
+
+[SHM_Config]
+numberofrects = 5
+listofbrokenturns = {}
+maxtemp = 100
+
+[CTG_Config]
+clustering_optimization = True
+clusteringiteration = 70
+ctg_random_seed = 100
+clustering_report = False
+clustering_detailedreport = False
+clustering_costfunctiontype = MAX
+clusteringoptmove = RandomTaskMove
+ctg_circulationlength = 3
+
+[Mapping_Config]
+read_mapping_from_file = True
+mapping_file_path = ../scripts/CounterThresholdExp/mapping_report.txt
+mapping_function = LocalSearch
+localsearchiteration = 70
+iterativelocalsearchiterations = 5
+mapping_random_seed = 2000
+simulatedannealingiteration = 1000
+sa_initialtemp = 20
+sa_stoptemp = 1
+sa_reportsolutions = False
+sa_annealingschedule = Exponential
+terminationcriteria = StopTemp
+logcoolingconstant = 0
+costmonitorquesize = 0
+maxsteadystate = 0
+markovnum = 0.0
+huangn = 0
+huangtargetvalue1 = 0
+huangtargetvalue2 = 0
+sa_alpha = 0.9995
+sloperangeforcooling = 0
+markovtempstep = 0
+delta = 0
+huangalpha = 0
+mapping_costfunctiontype = Node_Util_SD
+distancebetweenmapping = False
+
+[Scheduling_Config]
+communication_slackcount = 0
+task_slackcount = 0
+
+[Fault_Config]
+mtbf = 0.1
+health_counter_threshold = 4
+fault_counter_threshold = 2
+intermittent_counter_threshold = 2
+enable_link_counters = True
+enable_router_counters = False
+enable_pe_counters = False
+error_correction_rate = 0.8
+
+[Network_Partitioning]
+enablepartitioning = False
+
+[PMCG_Config]
+generatepmcg = False
+onestepdiagnosable = False
+tfaultdiagnosable
+nodetestexetime = 2
+nodetestcomweight = 2
+
+[Viz_Config]
+rg_draw = False
+pmcg_drawing = False
+ttg_drawing = False
+mapping_dstr_drawing = False
+mapping_drawing = True
+scheduling_drawing = False
+shm_drawing = False
+genmappingframes = False
+frameresolution = 20
+

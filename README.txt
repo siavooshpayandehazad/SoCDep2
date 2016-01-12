@@ -27,7 +27,7 @@ LICENSE: GNU GENERAL PUBLIC LICENSE Version 2
 PYTHON VER: 2.7.6
 THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME DEPENDABILITY
 MECHANISMS ON DIFFERENT ARCHITECTURES....
-Copyright (C) 2015 as collective work done Siavoosh Payandeh Azad, Behrad Niazmand and René Pihlak
+Copyright (C) 2015-2016 as collective work done by Siavoosh Payandeh Azad, René Pihlak and Behrad Niazmand
 ===============================================================================
  	  IN CASE YOU WANT SOMETHING TO BE IMPLEMENTED,
  	  PLEASE CONTACT: siavoosh[AT]ati[DOT]ttu[DOT]ee
@@ -112,6 +112,15 @@ Project Directory Map:
 │   │       ├── Logger.py
 │   │       └── misc.py
 │   └── scripts
+│       ├── CounterThresholdExp
+│       │   ├── ConfigFile_L_high_4_2_2_40.txt
+│       │   ├── ConfigFile_L_low_4_2_2_40.txt
+│       │   ├── ConfigFile_PE_high_4_2_2_40.txt
+│       │   ├── ConfigFile_PE_low_4_2_2_40.txt
+│       │   ├── ConfigFile_R_high_4_2_2_40.txt
+│       │   ├── ConfigFile_R_low_4_2_2_40.txt
+│       │   └── mapping_report.txt
+│       ├── Counter_Threshold_Exp_Script
 │       ├── FindFuncWithoutDocString
 │       ├── GUI
 │       ├── GenerateReadMe
@@ -120,5 +129,5 @@ Project Directory Map:
     └── Python
         └── Unit_tests.py
 
-22 directories, 60 files
+23 directories, 68 files
 ===============================================================================

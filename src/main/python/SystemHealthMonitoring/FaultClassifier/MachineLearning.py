@@ -495,7 +495,7 @@ class MachineLearning():
     #def return_allocated_memory(self):
     #    return len(self.health_counters) + len(self.fault_counters)
 
-    def report(self, number_of_nodes):
+    def report(self, number_of_nodes, number_of_links):
         print "VEG: ==========================================="
         print "VEG:         MACHINE LEARNING REPORT"
         print "VEG: ==========================================="
