@@ -8,57 +8,57 @@ from Scheduler import Scheduling_Reports
 
 import collections
 
-from sklearn            import svm
-from sklearn.neighbors  import KNeighborsClassifier
-from sklearn.tree       import DecisionTreeClassifier
+from sklearn import svm
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
 
 class MachineLearning():
     
     def __init__(self, fault_threshold, health_threshold, intermittent_threshold):
-        #include previous counter_threshold stuff
+        # include previous counter_threshold stuff
         self.counter_threshold = CounterThreshold.CounterThreshold(fault_threshold, health_threshold, intermittent_threshold)
-        self.machine_learning_buffer        = {}
-        self.machine_learning_buffer_inter  = {}
+        self.machine_learning_buffer = {}
+        self.machine_learning_buffer_inter = {}
         
-        self.fault_counters             = {}
-        self.health_counters            = {}
+        self.fault_counters = {}
+        self.health_counters = {}
         
-        self.memory_max                 = {}
+        self.memory_max = {}
         
-        self.fault_threshold            = fault_threshold
-        self.intermittent_threshold     = intermittent_threshold
-        self.health_threshold           = health_threshold#+intermittent_threshold
+        self.fault_threshold = fault_threshold
+        self.intermittent_threshold = intermittent_threshold
+        self.health_threshold = health_threshold # +intermittent_threshold
         
-        self.dead_components            = []
-        self.intermittent_components    = []
+        self.dead_components = []
+        self.intermittent_components = []
         
-        self.ml_methods                 = {}
-        self.training                   = []
-        self.training_val               = []
-        self.training_names             = []
-        self.training_dict              = {}
+        self.ml_methods = {}
+        self.training = []
+        self.training_val = []
+        self.training_names = []
+        self.training_dict = {}
         
-        self.ml_methods_inter           = {}
-        self.training_inter             = []
-        self.training_val_inter         = []
-        self.training_names_inter       = []
-        self.training_dict_inter        = {}
+        self.ml_methods_inter = {}
+        self.training_inter = []
+        self.training_val_inter = []
+        self.training_names_inter = []
+        self.training_dict_inter = {}
         
-        self.ml_methods["svm"]          = svm.SVC(gamma=0.001)
-        self.ml_methods["knn"]          = KNeighborsClassifier(fault_threshold+1)
-        self.ml_methods["dtc"]          = DecisionTreeClassifier(max_depth=fault_threshold+2)
+        self.ml_methods["svm"] = svm.SVC(gamma=0.001)
+        self.ml_methods["knn"] = KNeighborsClassifier(fault_threshold+1)
+        self.ml_methods["dtc"] = DecisionTreeClassifier(max_depth=fault_threshold+2)
         
-        self.ml_methods_inter["svm"]    = svm.SVC(gamma=0.001)
-        self.ml_methods_inter["knn"]    = KNeighborsClassifier(intermittent_threshold+1)
-        self.ml_methods_inter["dtc"]    = DecisionTreeClassifier(max_depth=intermittent_threshold+2)
+        self.ml_methods_inter["svm"] = svm.SVC(gamma=0.001)
+        self.ml_methods_inter["knn"] = KNeighborsClassifier(intermittent_threshold+1)
+        self.ml_methods_inter["dtc"] = DecisionTreeClassifier(max_depth=intermittent_threshold+2)
         
-        self.stat_names         = 0
-        self.stat_names_inter   = 0
+        self.stat_names = 0
+        self.stat_names_inter = 0
         
-        #TODO: Add status names such as
-        #self.stat_names = ["dead", "excellent"]
+        # TODO: Add status names such as
+        # self.stat_names = ["dead", "excellent"]
         
-        #Normal faults
+        # Normal faults
         if self.fault_threshold is 4:
             self.stat_names = ["good", "bad", "dying", "dead"]
         my_ml = mlp.MLTrainingSet(self.health_threshold+self.fault_threshold, self.fault_threshold, self.stat_names)
@@ -111,7 +111,7 @@ class MachineLearning():
                     if my_hit == 3:
                         break
         
-        #Intermittent faults
+        # Intermittent faults
         if self.intermittent_threshold is 4:
             self.stat_names_inter = ["good", "bad", "becoming intermittent", "intermittent"]
         my_ml_inter = mlp.MLTrainingSet(self.health_threshold+self.intermittent_threshold, self.intermittent_threshold, self.stat_names_inter)
@@ -171,21 +171,21 @@ class MachineLearning():
         self.ml_methods_inter["svm"].fit(self.training_inter, self.training_val_inter)
         self.ml_methods_inter["knn"].fit(self.training_inter, self.training_val_inter)
         self.ml_methods_inter["dtc"].fit(self.training_inter, self.training_val_inter)
-        #self.memory_counter = 0
+        # self.memory_counter = 0
     
     def increase_health_counter(self, location, logging):
-        #include previous counter_threshold stuff
+        # include previous counter_threshold stuff
         self.counter_threshold.increase_health_counter(location, logging)
         
-        this_collection         = collections.deque(maxlen=self.fault_threshold+self.health_threshold-1)
-        this_collection_inter   = collections.deque(maxlen=self.intermittent_threshold+self.health_threshold-1)
+        this_collection = collections.deque(maxlen=self.fault_threshold+self.health_threshold-1)
+        this_collection_inter = collections.deque(maxlen=self.intermittent_threshold+self.health_threshold-1)
         
-        this_bufs           = {}
-        this_global_bufs    = {}
-        this_bufs['faults']                = this_collection
-        this_bufs['intermittent']          = this_collection_inter
-        this_global_bufs['faults']         = self.machine_learning_buffer
-        this_global_bufs['intermittent']   = self.machine_learning_buffer_inter
+        this_bufs = {}
+        this_global_bufs = {}
+        this_bufs['faults'] = this_collection
+        this_bufs['intermittent'] = this_collection_inter
+        this_global_bufs['faults'] = self.machine_learning_buffer
+        this_global_bufs['intermittent'] = self.machine_learning_buffer_inter
         
         if type(location) is dict:
             # print location, str(location.keys()[0])+str(location[location.keys()[0]])
@@ -202,7 +202,7 @@ class MachineLearning():
 
         if location in self.dead_components:
             return None
-        #if location not in self.fault_counters.keys():
+        # if location not in self.fault_counters.keys():
         #    return None
         for cur_buf in this_bufs.keys():
             if location in this_global_bufs[cur_buf].keys():
@@ -219,7 +219,7 @@ class MachineLearning():
                     else:
                         this_bufs[cur_buf].appendleft(0)
                         break
-                logging.info("VEG: ML TODO: " + cur_buf + " buffer: "+str(this_bufs[cur_buf]))
+#                 logging.info("VEG: ML TODO: " + cur_buf + " buffer: "+str(this_bufs[cur_buf]))
                 if this_global_bufs[cur_buf][location].count(1) == 0:
                     del this_global_bufs[cur_buf][location]
                     logging.info("VEG: Deleted health counter at location: "+location)
@@ -292,7 +292,7 @@ class MachineLearning():
         return None
 
     def increase_fault_counter(self, location, logging):
-        #include previous counter_threshold stuff
+        # include previous counter_threshold stuff
         self.counter_threshold.increase_fault_counter(location, logging)
         
         this_collection = collections.deque(maxlen=self.fault_threshold+self.health_threshold-1)
@@ -329,10 +329,10 @@ class MachineLearning():
         
         if location in self.machine_learning_buffer.keys():
             self.machine_learning_buffer[location].append(1)# += 1
-            #if self.machine_learning_buffer[location].count(1) == self.fault_threshold:
-                #logging.info("VEG: ML: Declaring component: "+location+" dead!")
-                #self.dead_components.append(location)
-                #return None
+            # if self.machine_learning_buffer[location].count(1) == self.fault_threshold:
+                # logging.info("VEG: ML: Declaring component: "+location+" dead!")
+                # self.dead_components.append(location)
+                # return None
         else:
             self.machine_learning_buffer[location] = collections.deque(maxlen=self.fault_threshold+self.health_threshold)
             for i in range(0, self.fault_threshold+self.health_threshold):
@@ -342,21 +342,21 @@ class MachineLearning():
         logging.info("VEG: "+location+": Buffer: "+str(self.machine_learning_buffer[location]))
         for i in range(0, len(self.machine_learning_buffer[location])-1):
                 this_collection.append(list(self.machine_learning_buffer[location])[i])
-        #this_collection.append(list(self.machine_learning_buffer[location])[:-1])
-        #this_collection = list(self.machine_learning_buffer[location])[:-1]
-        logging.info("VEG: ML TODO: "+str(this_collection))
-        ########
+        # this_collection.append(list(self.machine_learning_buffer[location])[:-1])
+        # this_collection = list(self.machine_learning_buffer[location])[:-1]
+#         logging.info("VEG: ML TODO: "+str(this_collection))
+        # #######
         for i in self.ml_methods.keys():
             ml_value = self.ml_methods[i].predict(this_collection)
-            logging.info("VEG: ML("+str(i)+") "+location+" -> "+str(ml_value))#+" : "+str(self.training_dict[str(ml_value)]))
+            logging.info("VEG: ML("+str(i)+") "+location+" -> "+str(ml_value)) # +" : "+str(self.training_dict[str(ml_value)]))
             if ml_value == self.fault_threshold:
                 logging.info("VEG: ML: Declaring component: "+location+" dead!")
                 if location not in self.dead_components:
                     self.dead_components.append(location)
                     del self.machine_learning_buffer[location]
-        ######
+        # #####
         
-        #if self.fault_counters[location] == self.fault_threshold:
+        # if self.fault_counters[location] == self.fault_threshold:
         #    logging.info("Declaring component: "+location+" dead!")
         #    self.dead_components.append(location)
         #    self.reset_counters(location)
@@ -370,7 +370,7 @@ class MachineLearning():
         return None
     
     def increase_intermittent_counter(self, location, logging):
-        #include previous counter_threshold stuff
+        # include previous counter_threshold stuff
         self.counter_threshold.increase_intermittent_counter(location, logging)
         
         this_collection = collections.deque(maxlen=self.intermittent_threshold+self.health_threshold-1)
@@ -408,10 +408,10 @@ class MachineLearning():
         
         if location in self.machine_learning_buffer_inter.keys():
             self.machine_learning_buffer_inter[location].append(1)# += 1
-            #if self.machine_learning_buffer[location].count(1) == self.fault_threshold:
-                #logging.info("VEG: ML: Declaring component: "+location+" dead!")
-                #self.dead_components.append(location)
-                #return None
+            # if self.machine_learning_buffer[location].count(1) == self.fault_threshold:
+                # logging.info("VEG: ML: Declaring component: "+location+" dead!")
+                # self.dead_components.append(location)
+                # return None
         else:
             self.machine_learning_buffer_inter[location] = collections.deque(maxlen=self.intermittent_threshold+self.health_threshold)
             for i in range(0, self.intermittent_threshold+self.health_threshold):
@@ -419,16 +419,16 @@ class MachineLearning():
             self.machine_learning_buffer_inter[location].append(1)
         logging.info("VEG: Increasing intermittent fault counter at location: "+location)
         logging.info("VEG: "+location+": Buffer: "+str(self.machine_learning_buffer_inter[location]))
-        #print self.intermittent_threshold+self.health_threshold-1
-        #print len(self.machine_learning_buffer_inter[location])-1
+        # print self.intermittent_threshold+self.health_threshold-1
+        # print len(self.machine_learning_buffer_inter[location])-1
         for i in range(0, len(self.machine_learning_buffer_inter[location])-1):
                 this_collection.append(list(self.machine_learning_buffer_inter[location])[i])
-        #this_collection.append(list(self.machine_learning_buffer_inter[location])[:-1])
-        #this_collection = list(self.machine_learning_buffer[location])[:-1]
-        logging.info("VEG: ML TODO: "+str(this_collection))
+        # this_collection.append(list(self.machine_learning_buffer_inter[location])[:-1])
+        # this_collection = list(self.machine_learning_buffer[location])[:-1]
+#         logging.info("VEG: ML TODO: "+str(this_collection))
         for i in self.ml_methods_inter.keys():
             ml_value = self.ml_methods_inter[i].predict(this_collection)
-            logging.info("VEG: ML("+str(i)+") "+location+" -> "+str(ml_value))#+" : "+str(self.training_dict[str(ml_value)]))
+            logging.info("VEG: ML("+str(i)+") "+location+" -> "+str(ml_value)) # +" : "+str(self.training_dict[str(ml_value)]))
             if ml_value == self.intermittent_threshold:
                 logging.info("VEG: ML: Declaring component: "+location+" intermittent!")
                 if location not in self.intermittent_components:
@@ -440,23 +440,23 @@ class MachineLearning():
         return None
 
     def reset_counters(self, location):
-        #if location in self.fault_counters.keys():
+        # if location in self.fault_counters.keys():
         #    del self.fault_counters[location]
-        #else:
+        # else:
         #    pass
-        #if location in self.health_counters.keys():
+        # if location in self.health_counters.keys():
         #    del self.health_counters[location]
-        #else:
+        # else:
         #    pass
         return None
     
     def return_allocated_memory(self, mem):
         memsize = 0
-        memlen  = 0
+        memlen = 0
         
-        this_global_bufs                   = {}
-        this_global_bufs['fault']         = self.machine_learning_buffer
-        this_global_bufs['intermittent']   = self.machine_learning_buffer_inter
+        this_global_bufs = {}
+        this_global_bufs['fault'] = self.machine_learning_buffer
+        this_global_bufs['intermittent'] = self.machine_learning_buffer_inter
         
         for buf in this_global_bufs.keys():
             if mem == buf:
@@ -482,7 +482,7 @@ class MachineLearning():
         if memsize is not 0:
             return memsize*memlen
         else:
-            return -1 #error
+            return -1 # error
     
     def check_max_memory(self, mem):
         if mem in self.memory_max.keys():
@@ -492,7 +492,7 @@ class MachineLearning():
             self.memory_max[mem] = self.return_allocated_memory(mem)
         return None
 
-    #def return_allocated_memory(self):
+    # def return_allocated_memory(self):
     #    return len(self.health_counters) + len(self.fault_counters)
 
     def report(self, number_of_nodes, number_of_links):
@@ -508,6 +508,6 @@ class MachineLearning():
         for mem in {'intermediate', 'fault'}:
             if self.return_allocated_memory(mem) is not -1:
                 print "VEG: END memory (in bits) use of", mem, "::", self.return_allocated_memory(mem)
-        #print "MAX MEMORY USAGE:", self.memory_counter
-        #print "AVERAGE COUNTER PER Node: ", float(self.memory_counter)/number_of_nodes
+        # print "MAX MEMORY USAGE:", self.memory_counter
+        # print "AVERAGE COUNTER PER Node: ", float(self.memory_counter)/number_of_nodes
         return None

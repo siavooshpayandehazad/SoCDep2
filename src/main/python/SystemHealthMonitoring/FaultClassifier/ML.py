@@ -1,6 +1,6 @@
 # Copyright (C) 2015 Rene Pihlak
 
-#import numpy as np
+# import numpy as np
 
 import collections
 import matplotlib.pyplot as plt
@@ -24,10 +24,10 @@ def updatefig(*args):
             for i in range(0, 5):
                 dmb_good.append(0)
                 dmb_bad.append(0)
-        #elif dmb_bad[4] == 1:
-            #dmb = "bad"
-            #for i in range(0, 5):
-                #dmb_good.append(0)
+        # elif dmb_bad[4] == 1:
+            # dmb = "bad"
+            # for i in range(0, 5):
+                # dmb_good.append(0)
         if sum(dmb_bad) == 5:
             dmb = "bad"
         predictedSVM = classifierSVM.predict(new_data)
@@ -51,7 +51,7 @@ def updatefig(*args):
         axknn.set_xlim(index - 0.5, index + len(arr) - 0.5)
         axdtr.set_xlim(index - 0.5, index + len(arr) - 0.5)
         axdmb.set_xlim(index - 0.5, index + len(arr) - 0.5)
-        #print(learn_labels_names[predictedSVM[0]])
+        # print(learn_labels_names[predictedSVM[0]])
         axsvm.set_title("SVM: %s" % learn_labels_names[predictedSVM[0]])
         axknn.set_title("KNN: %s" % learn_labels_names[predictedKNN[0]])
         axdtr.set_title("DTree: %s" % learn_labels_names[predictedDTree[0]])
@@ -66,10 +66,10 @@ def updatefig(*args):
 
 def ML():
     figure = plt.figure(figsize=(27, 9))
-    #fig, ax = plt.subplots()
-    #line, = ax.step([], [], lw=2)
-    #ax.grid()
-    #xdata, ydata = [], []
+    # fig, ax = plt.subplots()
+    # line, = ax.step([], [], lw=2)
+    # ax.grid()
+    # xdata, ydata = [], []
 
     axsvm = plt.subplot(2, 4, 5)
     linesvm, = axsvm.step([], [], lw=2)
@@ -92,8 +92,8 @@ def ML():
     xdatadmb, ydatadmb = [], []
 
 
-    #MUST HAVE EQUAL NUMBER OF ALL TYPES,
-    #i.e., if n classified groups, then learning set size = n x m
+    # MUST HAVE EQUAL NUMBER OF ALL TYPES,
+    # i.e., if n classified groups, then learning set size = n x m
     learn_data = [
              [1, 1, 1, 1, 1],
              [1, 1, 1, 0, 0],
@@ -116,9 +116,7 @@ def ML():
              [0, 0, 0, 0, 1],
              [0, 0, 0, 0, 0]]
     learn_labels = [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3]
-    learn_labels_names = ["dead", "dying", "ok", "perfect", "dead", "dying", "ok", "perfect",
-                          "dead", "dying", "ok", "perfect", "dead", "dying", "ok", "perfect",
-                          "dead", "dying", "ok", "perfect"]
+    learn_labels_names = ["dead", "dying", "ok", "perfect", "dead", "dying", "ok", "perfect", "dead", "dying", "ok", "perfect", "dead", "dying", "ok", "perfect", "dead", "dying", "ok", "perfect"]
 
     print("LEARNING DATA:")
     for index in range(0, len(learn_data)):
@@ -140,9 +138,7 @@ def ML():
     # plt.title("Learned: %s" % (learn_labels_names[10]))
     # plt.draw()
 
-    in_data = [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1,
-               0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0,
-               1, 1, 1]
+    in_data = [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1]
 
     new_data = collections.deque(maxlen=5)
     dmb_good = collections.deque(maxlen=5)
