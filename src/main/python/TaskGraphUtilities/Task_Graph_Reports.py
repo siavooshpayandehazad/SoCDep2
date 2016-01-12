@@ -26,6 +26,11 @@ def report_task_graph(tg, logging):
                   str(tg.edge[Edge[0]][Edge[1]]['Link'])+"\tCOM WEIGHTt: "+str(tg.edge[Edge[0]][Edge[1]]['ComWeight'])
         logging.info(massage)
         print (massage)
+    number_of_flits = 0
+    for Edge in tg.edges():
+        number_of_flits += tg.edge[Edge[0]][Edge[1]]['ComWeight']
+    print "# OF FLITS:", number_of_flits
+    print "# OF PACKETS:", len(tg.edges())
     return None
 
 

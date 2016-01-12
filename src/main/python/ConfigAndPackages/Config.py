@@ -4,8 +4,8 @@ import PackageFile
 ################################################
 #          Program  Config
 ################################################
-ProgramRunTime = 9      # in seconds
-DebugInfo = True
+ProgramRunTime = 900      # in seconds
+DebugInfo = False
 DebugDetails = False
 
 TestMode = False
@@ -308,7 +308,7 @@ NodeTestComWeight = 2
 RG_Draw = False
 PMCG_Drawing = False
 TTG_Drawing = False
-Mapping_Dstr_Drawing = True
+Mapping_Dstr_Drawing = False
 Mapping_Drawing = True
 Scheduling_Drawing = True
 SHM_Drawing = False          # if True generates SHM Drawing

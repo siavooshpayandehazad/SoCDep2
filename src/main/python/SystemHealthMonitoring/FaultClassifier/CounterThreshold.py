@@ -1,6 +1,6 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 from ConfigAndPackages import Config
-
+from math import ceil, log
 
 class CounterThreshold():
 
@@ -16,6 +16,7 @@ class CounterThreshold():
         self.dead_components = []
         self.intermittent_components = []
         self.memory_counter = 0
+        self.number_of_faults = 0
 
     def increase_health_counter(self, location, logging):
         if type(location) is dict:
@@ -40,7 +41,7 @@ class CounterThreshold():
         if location in self.fault_counters.keys() or location in self.intermittent_counters.keys():
             pass
         else:
-            # do not start the fault counter if there is no fault counter
+            # do not start the health counter if there is no fault counter
             return None
 
         if location in self.health_counters.keys():
@@ -86,6 +87,7 @@ class CounterThreshold():
         if location in self.dead_components:
             # do not increase the counter if component is dead
             return None
+        self.number_of_faults += 1
         if location in self.intermittent_counters.keys():
             self.intermittent_counters[location] += 1
         else:
@@ -130,6 +132,7 @@ class CounterThreshold():
         if location in self.dead_components:
             # do not increase the counter if component is dead
             return None
+        self.number_of_faults += 1
         if location in self.fault_counters.keys():
             self.fault_counters[location] += 1
         else:
@@ -138,6 +141,8 @@ class CounterThreshold():
         if self.fault_counters[location] == self.fault_threshold:
             logging.info("Declaring component: "+location+" dead!")
             self.dead_components.append(location)
+            if location in self.intermittent_components:
+                self.intermittent_components.remove(location)
             self.reset_counters(location)
 
         current_memory_usage = self.return_allocated_memory()
@@ -168,12 +173,26 @@ class CounterThreshold():
     def return_allocated_memory(self):
         return len(self.health_counters) + len(self.fault_counters) + len(self.intermittent_counters)
 
-    def report(self, number_of_nodes):
+    def report(self, number_of_nodes, number_of_links):
         print "==========================================="
         print "        COUNTER-THRESHOLD REPORT"
         print "==========================================="
         print "DEAD Components:", self.dead_components
         print "Intermittent Components:", self.intermittent_components
-        print "MAX MEMORY USAGE:", self.memory_counter
+        # number of links + number of routers + number of PEs
+        number_of_components = number_of_links + 2 * number_of_nodes
+        bits_required_for_address = ceil(log(number_of_components, 2))
+
+        print "MAX NUMBER OF COUNTERS:", self.memory_counter
+        print "\t| NUMBER OF BITS FOR ADDRESS FOR EACH COUNTER:", bits_required_for_address
+        max_counter_bits = max(ceil(log(Config.fault_counter_threshold)), ceil(log(Config.health_counter_threshold))
+                               , ceil(log(Config.intermittent_counter_threshold)))
+        print "\t| MAX NUMBER OF BITS FOR EACH COUNTER:", max_counter_bits
+        counter_total_bits = max_counter_bits + bits_required_for_address
+        print "\t| TOTAL BITS PER COUNTER:", counter_total_bits
+
+        print "MAX MEM USAGE:", self.memory_counter * counter_total_bits, " BITS"
         print "AVERAGE COUNTER PER Node: ", float(self.memory_counter)/number_of_nodes
+        print "AVERAGE BITS PER Node: ", float(self.memory_counter * counter_total_bits)/number_of_nodes
+        print "NUMBER OF FAULTS:", self.number_of_faults
         return None

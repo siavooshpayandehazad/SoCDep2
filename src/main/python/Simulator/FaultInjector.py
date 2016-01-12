@@ -11,7 +11,7 @@ from ConfigAndPackages import Config
 ####################################################################
 
 
-def fault_event(env, ag, shmu, noc_rg, fault_time_list, counter_threshold, logging):
+def fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_list, counter_threshold, logging):
     """
     Injects rand fault events (random location and type of fault) at times taken from fault_time_list
     :param env: Simulator Environment
@@ -41,7 +41,7 @@ def fault_event(env, ag, shmu, noc_rg, fault_time_list, counter_threshold, loggi
                 for scheduling_item in ag.node[fault_location]['PE'].Scheduling:
                     start_time = ag.node[fault_location]['PE'].Scheduling[scheduling_item][0]
                     end_time = ag.node[fault_location]['PE'].Scheduling[scheduling_item][1]
-                    if start_time < env.now < end_time:
+                    if start_time < env.now % schedule_length < end_time:
                         SHMU_Functions.apply_fault_event(ag, shmu, noc_rg, fault_location, fault_type)
                         if random.random() > Config.error_correction_rate:
                             counter_threshold.increase_fault_counter(fault_location, logging)
@@ -52,7 +52,7 @@ def fault_event(env, ag, shmu, noc_rg, fault_time_list, counter_threshold, loggi
                 for scheduling_item in ag.edge[fault_location[0]][fault_location[1]]["Scheduling"]:
                     start_time = ag.edge[fault_location[0]][fault_location[1]]["Scheduling"][scheduling_item][0][0]
                     end_time = ag.edge[fault_location[0]][fault_location[1]]["Scheduling"][scheduling_item][0][1]
-                    if start_time < env.now < end_time:
+                    if start_time < env.now % schedule_length < end_time:
                         SHMU_Functions.apply_fault_event(ag, shmu, noc_rg, fault_location, fault_type)
                         if random.random() > Config.error_correction_rate:
                             counter_threshold.increase_fault_counter(fault_location, logging)
@@ -63,7 +63,7 @@ def fault_event(env, ag, shmu, noc_rg, fault_time_list, counter_threshold, loggi
                 for scheduling_item in ag.node[fault_location.keys()[0]]['Router'].Scheduling:
                     start_time = ag.node[fault_location.keys()[0]]['Router'].Scheduling[scheduling_item][0][0]
                     end_time = ag.node[fault_location.keys()[0]]['Router'].Scheduling[scheduling_item][0][1]
-                    if start_time < env.now < end_time:
+                    if start_time < env.now % schedule_length < end_time:
                         SHMU_Functions.apply_fault_event(ag, shmu, noc_rg, fault_location, fault_type)
                         if random.random() > Config.error_correction_rate:
                             counter_threshold.increase_fault_counter(fault_location, logging)

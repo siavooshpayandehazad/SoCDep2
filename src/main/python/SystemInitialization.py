@@ -22,7 +22,8 @@ def initialize_system(logging):
     :return:  tg, ag, shmu, noc_rg, critical_rg, nonnritical_rg, pmcg
     """
     tg = copy.deepcopy(TG_Functions.generate_tg())
-    Task_Graph_Reports.report_task_graph(tg, logging)
+    if Config.DebugInfo:
+        Task_Graph_Reports.report_task_graph(tg, logging)
     Task_Graph_Reports.draw_task_graph(tg)
     if Config.TestMode:
         TG_Test.CheckAcyclic(tg, logging)
