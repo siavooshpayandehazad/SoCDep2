@@ -6,8 +6,11 @@ import numpy
 
 from ConfigAndPackages import Config
 from FaultInjector import fault_event
+from Scheduler import Scheduling_Reports
+from SystemHealthMonitoring.FaultClassifier import CounterThreshold #Rene's addition
+from SystemHealthMonitoring.FaultClassifier import MachineLearning #Rene's addition
 from Scheduler import Scheduling_Reports, Scheduling_Functions
-from SystemHealthMonitoring.FaultClassifier import CounterThreshold
+
 
 
 def processor_sim(env, node, schedule, schedule_length, fault_time_list, counter_threshold, logging):
@@ -131,8 +134,11 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
     print "SETTING UP THE SIMULATOR..."
     env = simpy.Environment()
     print "SETTING UP counter-threshold MODULE..."
-    counter_threshold = CounterThreshold.CounterThreshold(Config.fault_counter_threshold,
-                                                          Config.health_counter_threshold,
+    #counter_threshold = CounterThreshold.CounterThreshold(Config.fault_counter_threshold,
+    #                                                      Config.health_counter_threshold,
+    #                                                      Config.intermittent_counter_threshold) #Needs to be added
+    counter_threshold = MachineLearning.MachineLearning(Config.fault_counter_threshold, #Rene's addition
+                                                          Config.health_counter_threshold*3,
                                                           Config.intermittent_counter_threshold)
 
     fault_time_list = []
@@ -157,7 +163,7 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
         print ""
         print "-----------------------"
 
-        env.process(fault_event(env, ag, shmu, noc_rg, schedule_length,fault_time_list, counter_threshold, logging))
+        env.process(fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_list, counter_threshold, logging))
 
     print "SETTING UP ROUTERS AND PES..."
     for node in ag.nodes():
