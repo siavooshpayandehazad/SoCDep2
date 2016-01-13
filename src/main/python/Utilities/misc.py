@@ -227,6 +227,7 @@ def update_config(config_file_path):
     # ------------------------------------------------
     Config.MTBF = config.getfloat("Fault_Config", "MTBF")
     # Config.SD4MTBF = 0.2
+    Config.classification_method = config.get("Fault_Config", "classification_method")
     Config.health_counter_threshold = config.getint("Fault_Config", "health_counter_threshold")
     Config.fault_counter_threshold = config.getint("Fault_Config", "fault_counter_threshold")
     Config.intermittent_counter_threshold = config.getint("Fault_Config", "intermittent_counter_threshold")
@@ -409,6 +410,7 @@ def generate_configfile():
     # ------------------------------------------------
     cnfgpars.add_section('Fault_Config')
     cnfgpars.set('Fault_Config', 'MTBF', Config.MTBF)
+    cnfgpars.set('Fault_Config', 'classification_method', Config.classification_method)
     cnfgpars.set('Fault_Config', 'health_counter_threshold', Config.health_counter_threshold)
     cnfgpars.set('Fault_Config', 'fault_counter_threshold', Config.fault_counter_threshold)
     cnfgpars.set('Fault_Config', 'intermittent_counter_threshold', Config.intermittent_counter_threshold)

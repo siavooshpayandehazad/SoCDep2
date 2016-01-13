@@ -52,6 +52,9 @@ class CounterThreshold():
                      " Counter: "+str(self.health_counters[location]))
         if self.health_counters[location] == self.health_threshold:
             logging.info("resetting component: "+location+" counters")
+            # heal the intermittent component
+            if location in self.intermittent_components:
+                self.intermittent_components.remove(location)
             self.reset_counters(location)
 
         current_memory_usage = self.return_allocated_memory()
@@ -84,9 +87,11 @@ class CounterThreshold():
         else:
             print location, type(location)
             raise ValueError("location type is wrong!")
+
         if location in self.dead_components:
             # do not increase the counter if component is dead
             return None
+
         self.number_of_faults += 1
         if location in self.intermittent_counters.keys():
             self.intermittent_counters[location] += 1
@@ -96,7 +101,8 @@ class CounterThreshold():
                      str(self.intermittent_counters[location]))
         if self.intermittent_counters[location] == self.fault_threshold:
             logging.info("Declaring component: "+location+" intermittent!")
-            self.intermittent_components.append(location)
+            if location not in self.intermittent_components:
+                self.intermittent_components.append(location)
             self.reset_counters(location)
 
         current_memory_usage = self.return_allocated_memory()

@@ -134,12 +134,17 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
     print "SETTING UP THE SIMULATOR..."
     env = simpy.Environment()
     print "SETTING UP counter-threshold MODULE..."
-    #counter_threshold = CounterThreshold.CounterThreshold(Config.fault_counter_threshold,
-    #                                                      Config.health_counter_threshold,
-    #                                                      Config.intermittent_counter_threshold) #Needs to be added
-    counter_threshold = MachineLearning.MachineLearning(Config.fault_counter_threshold, #Rene's addition
-                                                          Config.health_counter_threshold*3,
-                                                          Config.intermittent_counter_threshold)
+    if Config.classification_method == "counter_threshold":
+
+        counter_threshold = CounterThreshold.CounterThreshold(Config.fault_counter_threshold,
+                                                              Config.health_counter_threshold,
+                                                              Config.intermittent_counter_threshold)
+    elif Config.classification_method == "machine_learning":
+        counter_threshold = MachineLearning.MachineLearning(Config.fault_counter_threshold, #Rene's addition
+                                                            Config.health_counter_threshold*3,
+                                                            Config.intermittent_counter_threshold)
+    else:
+        raise ValueError("Unknown Classification Method!! Check config file")
 
     fault_time_list = []
     fault_time = 0
@@ -152,16 +157,16 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
             time_until_next_fault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
             fault_time += time_until_next_fault
 
-        print "------------------------"
-        print "RANDOMLY GENERATED FAULT TIME LIST:",
-        for i in range(0, len(fault_time_list)):
-            if i % 10 == 0:
-                print ""
-                print "\t\t",
-            else:
-                print fault_time_list[i], ", ",
-        print ""
-        print "-----------------------"
+        # print "------------------------"
+        # print "RANDOMLY GENERATED FAULT TIME LIST:",
+        # for i in range(0, len(fault_time_list)):
+        #     if i % 10 == 0:
+        #         print ""
+        #         print "\t\t",
+        #     else:
+        #         print fault_time_list[i], ", ",
+        # print ""
+        # print "-----------------------"
 
         env.process(fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_list, counter_threshold, logging))
 

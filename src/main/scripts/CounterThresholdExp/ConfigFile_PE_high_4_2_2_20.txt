@@ -81,6 +81,7 @@ task_slackcount = 0
 
 [Fault_Config]
 mtbf = 0.1
+classification_method = counter_threshold
 health_counter_threshold = 4
 fault_counter_threshold = 2
 intermittent_counter_threshold = 2
