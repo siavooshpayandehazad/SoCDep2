@@ -6,16 +6,24 @@ from math import ceil, log
 class CounterThreshold():
 
     def __init__(self, fault_threshold, health_threshold, intermittent_threshold):
+        # These dictionaries keep the values of the counters where the key is the location!
+        # locations are either Processing Elements which are represented by their number (1,2,...)
+        # or are Routers which are represented like R0, R1,...
+        # or links which are represented like L01 which describes the link from node 0 to node 1
         self.fault_counters = {}
         self.intermittent_counters = {}
         self.health_counters = {}
 
+        # these values are the threshold used by the system for deciding about components health and reseting them
         self.fault_threshold = fault_threshold
         self.intermittent_threshold = intermittent_threshold
         self.health_threshold = health_threshold
 
+        # these lists keep the location of intermittent or permanently damaged components.
         self.dead_components = []
         self.intermittent_components = []
+
+        # used for reports
         self.memory_counter = 0
         self.number_of_faults = 0
 
@@ -42,15 +50,18 @@ class CounterThreshold():
         if location in self.fault_counters.keys() or location in self.intermittent_counters.keys():
             pass
         else:
-            # do not start the health counter if there is no fault counter
+            # do not start the health counter if there is no fault or intermittent counter
             return None
 
+        # increase the health counter
         if location in self.health_counters.keys():
             self.health_counters[location] += 1
         else:
             self.health_counters[location] = 1
         logging.info("Increasing health counter at location: "+location +
                      " Counter: "+str(self.health_counters[location]))
+
+        # check for reaching the threshold
         if self.health_counters[location] == self.health_threshold:
             logging.info("resetting component: "+location+" counters")
             # heal the intermittent component
@@ -93,6 +104,7 @@ class CounterThreshold():
             # do not increase the counter if component is dead
             return None
 
+        # Increase the intermittent counter for the specified location
         self.number_of_faults += 1
         if location in self.intermittent_counters.keys():
             self.intermittent_counters[location] += 1
@@ -100,6 +112,8 @@ class CounterThreshold():
             self.intermittent_counters[location] = 1
         logging.info("Increasing intermittent counter at location: "+location+" Counter: " +
                      str(self.intermittent_counters[location]))
+
+        # Check for reaching Threshold
         if self.intermittent_counters[location] == self.fault_threshold:
             logging.info("Declaring component: "+location+" intermittent!")
             if location not in self.intermittent_components:
@@ -136,15 +150,21 @@ class CounterThreshold():
         else:
             print location, type(location)
             raise ValueError("location type is wrong!")
+
         if location in self.dead_components:
             # do not increase the counter if component is dead
             return None
+
         self.number_of_faults += 1
+
+        # increase the fault location
         if location in self.fault_counters.keys():
             self.fault_counters[location] += 1
         else:
             self.fault_counters[location] = 1
         logging.info("Increasing counter at location: "+location+" Counter: "+str(self.fault_counters[location]))
+
+        # Check for reaching threshold
         if self.fault_counters[location] == self.fault_threshold:
             logging.info("Declaring component: "+location+" dead!")
             self.dead_components.append(location)
@@ -159,7 +179,7 @@ class CounterThreshold():
 
     def reset_counters(self, location):
         """
-        resets the counters in a specific location
+        resets the counters in a specific location and releases the memory
         :param location: location of the counters to be reset
         :return: None
         """

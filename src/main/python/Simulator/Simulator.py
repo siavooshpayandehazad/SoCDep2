@@ -6,7 +6,6 @@ import numpy
 
 from ConfigAndPackages import Config
 from FaultInjector import fault_event
-from Scheduler import Scheduling_Reports
 from SystemHealthMonitoring.FaultClassifier import CounterThreshold     # Rene's addition
 from SystemHealthMonitoring.FaultClassifier import MachineLearning      # Rene's addition
 from Scheduler import Scheduling_Reports, Scheduling_Functions
@@ -28,12 +27,14 @@ def processor_sim(env, node, schedule, schedule_length, fault_time_list, counter
     length = 0
     while True:
         for key in schedule.keys():
+            # checks if there is a task that starts at this time!
             if env.now % schedule_length == schedule[key][0]:
                 print float("{0:.1f}".format(env.now)), "\tNODE:: Found Task", key, " to run on Node:", node
                 length = schedule[key][1]-schedule[key][0]
                 found = True
                 task_num = key
                 break
+        # found a task that starts at this time!
         if found:
             print float("{0:.1f}".format(env.now)), "\tNODE:: Starting Task", task_num, "on Node:", node
             for fault_time in fault_time_list:
@@ -65,12 +66,14 @@ def router_sim(env, node, schedule, schedule_length, fault_time_list, counter_th
     while True:
 
         for key in schedule.keys():
+            # checks if there is a task that starts at this time!
             if env.now % schedule_length == schedule[key][0][0]:
                 print float("{0:.1f}".format(env.now)), "\tRouter:: Found Task", key, " to run on Router:", node
                 length = schedule[key][0][1]-schedule[key][0][0]
                 found = True
                 task_num = key
                 break
+        # found a task that starts at this time!
         if found:
             print float("{0:.1f}".format(env.now)), "\tRouter:: Starting Task", task_num, "on Router:", node
             location_dict = {node: "R"}
@@ -101,11 +104,13 @@ def link_sim(env, link, schedule, schedule_length, fault_time_list, counter_thre
     length = 0
     while True:
         for key in schedule.keys():
+            # checks if there is a task that starts at this time!
             if env.now % schedule_length == schedule[key][0][0]:
                 print float("{0:.1f}".format(env.now)), "\tLINK:: Found Task", key, " to run on Link:", link
                 length = schedule[key][0][1]-schedule[key][0][0]
                 found = True
                 task_num = key
+        # found a task that starts at this time!
         if found:
             print float("{0:.1f}".format(env.now)), "\tLINK:: Starting Task", task_num, "on Link:", link
             for fault_time in fault_time_list:
