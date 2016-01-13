@@ -2,21 +2,19 @@
 
 import CounterThreshold
 import MLTrainingSet as mlp
-
 from ConfigAndPackages import Config
-from Scheduler import Scheduling_Reports
-
 import collections
-
 from sklearn import svm
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
+
 
 class MachineLearning():
     
     def __init__(self, fault_threshold, health_threshold, intermittent_threshold):
         # include previous counter_threshold stuff
-        self.counter_threshold = CounterThreshold.CounterThreshold(fault_threshold, health_threshold, intermittent_threshold)
+        self.counter_threshold = CounterThreshold.CounterThreshold(fault_threshold, health_threshold,
+                                                                   intermittent_threshold)
         self.machine_learning_buffer = {}
         self.machine_learning_buffer_inter = {}
         
@@ -27,7 +25,7 @@ class MachineLearning():
         
         self.fault_threshold = fault_threshold
         self.intermittent_threshold = intermittent_threshold
-        self.health_threshold = health_threshold # +intermittent_threshold
+        self.health_threshold = health_threshold    # +intermittent_threshold
         
         self.dead_components = []
         self.intermittent_components = []
@@ -114,7 +112,8 @@ class MachineLearning():
         # Intermittent faults
         if self.intermittent_threshold is 4:
             self.stat_names_inter = ["good", "bad", "becoming intermittent", "intermittent"]
-        my_ml_inter = mlp.MLTrainingSet(self.health_threshold+self.intermittent_threshold, self.intermittent_threshold, self.stat_names_inter)
+        my_ml_inter = mlp.MLTrainingSet(self.health_threshold+self.intermittent_threshold, self.intermittent_threshold,
+                                        self.stat_names_inter)
         self.training_inter, self.training_val_inter, self.training_names_inter = my_ml_inter.getLearningSet()
         for i in range(0, len(self.training_val_inter)):
             self.training_dict_inter[self.training_val_inter[i]] = self.training_names_inter[i]
@@ -328,11 +327,11 @@ class MachineLearning():
             return None
         
         if location in self.machine_learning_buffer.keys():
-            self.machine_learning_buffer[location].append(1)# += 1
+            self.machine_learning_buffer[location].append(1)    # += 1
             # if self.machine_learning_buffer[location].count(1) == self.fault_threshold:
-                # logging.info("VEG: ML: Declaring component: "+location+" dead!")
-                # self.dead_components.append(location)
-                # return None
+            #     logging.info("VEG: ML: Declaring component: "+location+" dead!")
+            #     self.dead_components.append(location)
+            #     return None
         else:
             self.machine_learning_buffer[location] = collections.deque(maxlen=self.fault_threshold+self.health_threshold)
             for i in range(0, self.fault_threshold+self.health_threshold):
@@ -348,7 +347,7 @@ class MachineLearning():
         # #######
         for i in self.ml_methods.keys():
             ml_value = self.ml_methods[i].predict(this_collection)
-            logging.info("VEG: ML("+str(i)+") "+location+" -> "+str(ml_value)) # +" : "+str(self.training_dict[str(ml_value)]))
+            logging.info("VEG: ML("+str(i)+") "+location+" -> "+str(ml_value))  # +" : "+str(self.training_dict[str(ml_value)]))
             if ml_value == self.fault_threshold:
                 logging.info("VEG: ML: Declaring component: "+location+" dead!")
                 if location not in self.dead_components:
@@ -361,8 +360,8 @@ class MachineLearning():
         #    self.dead_components.append(location)
         #    self.reset_counters(location)
 
-        #current_memory_usage = self.return_allocated_memory()
-        #if current_memory_usage > self.memory_counter:
+        # current_memory_usage = self.return_allocated_memory()
+        # if current_memory_usage > self.memory_counter:
         #    self.memory_counter = current_memory_usage
         
         self.check_max_memory('fault')
@@ -407,11 +406,11 @@ class MachineLearning():
             return None
         
         if location in self.machine_learning_buffer_inter.keys():
-            self.machine_learning_buffer_inter[location].append(1)# += 1
+            self.machine_learning_buffer_inter[location].append(1)  # += 1
             # if self.machine_learning_buffer[location].count(1) == self.fault_threshold:
-                # logging.info("VEG: ML: Declaring component: "+location+" dead!")
-                # self.dead_components.append(location)
-                # return None
+            #     logging.info("VEG: ML: Declaring component: "+location+" dead!")
+            #     self.dead_components.append(location)
+            #     return None
         else:
             self.machine_learning_buffer_inter[location] = collections.deque(maxlen=self.intermittent_threshold+self.health_threshold)
             for i in range(0, self.intermittent_threshold+self.health_threshold):
@@ -428,7 +427,7 @@ class MachineLearning():
 #         logging.info("VEG: ML TODO: "+str(this_collection))
         for i in self.ml_methods_inter.keys():
             ml_value = self.ml_methods_inter[i].predict(this_collection)
-            logging.info("VEG: ML("+str(i)+") "+location+" -> "+str(ml_value)) # +" : "+str(self.training_dict[str(ml_value)]))
+            logging.info("VEG: ML("+str(i)+") "+location+" -> "+str(ml_value))  # +" : "+str(self.training_dict[str(ml_value)]))
             if ml_value == self.intermittent_threshold:
                 logging.info("VEG: ML: Declaring component: "+location+" intermittent!")
                 if location not in self.intermittent_components:
@@ -482,7 +481,7 @@ class MachineLearning():
         if memsize is not 0:
             return memsize*memlen
         else:
-            return -1 # error
+            return -1   # error
     
     def check_max_memory(self, mem):
         if mem in self.memory_max.keys():

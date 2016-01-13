@@ -7,8 +7,8 @@ import numpy
 from ConfigAndPackages import Config
 from FaultInjector import fault_event
 from Scheduler import Scheduling_Reports
-from SystemHealthMonitoring.FaultClassifier import CounterThreshold #Rene's addition
-from SystemHealthMonitoring.FaultClassifier import MachineLearning #Rene's addition
+from SystemHealthMonitoring.FaultClassifier import CounterThreshold     # Rene's addition
+from SystemHealthMonitoring.FaultClassifier import MachineLearning      # Rene's addition
 from Scheduler import Scheduling_Reports, Scheduling_Functions
 
 
@@ -140,7 +140,7 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
                                                               Config.health_counter_threshold,
                                                               Config.intermittent_counter_threshold)
     elif Config.classification_method == "machine_learning":
-        counter_threshold = MachineLearning.MachineLearning(Config.fault_counter_threshold, #Rene's addition
+        counter_threshold = MachineLearning.MachineLearning(Config.fault_counter_threshold,     # Rene's addition
                                                             Config.health_counter_threshold*3,
                                                             Config.intermittent_counter_threshold)
     else:

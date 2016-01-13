@@ -2,6 +2,7 @@
 from ConfigAndPackages import Config
 from math import ceil, log
 
+
 class CounterThreshold():
 
     def __init__(self, fault_threshold, health_threshold, intermittent_threshold):
@@ -191,8 +192,8 @@ class CounterThreshold():
 
         print "MAX NUMBER OF COUNTERS:", self.memory_counter
         print "\t| NUMBER OF BITS FOR ADDRESS FOR EACH COUNTER:", bits_required_for_address
-        max_counter_bits = max(ceil(log(Config.fault_counter_threshold)), ceil(log(Config.health_counter_threshold))
-                               , ceil(log(Config.intermittent_counter_threshold)))
+        max_counter_bits = max(ceil(log(Config.fault_counter_threshold)), ceil(log(Config.health_counter_threshold)),
+                               ceil(log(Config.intermittent_counter_threshold)))
         print "\t| MAX NUMBER OF BITS FOR EACH COUNTER:", max_counter_bits
         counter_total_bits = max_counter_bits + bits_required_for_address
         print "\t| TOTAL BITS PER COUNTER:", counter_total_bits
