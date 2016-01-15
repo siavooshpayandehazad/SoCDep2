@@ -11,8 +11,7 @@ from SystemHealthMonitoring.FaultClassifier import MachineLearning      # Rene's
 from Scheduler import Scheduling_Reports, Scheduling_Functions
 
 
-
-def processor_sim(env, node, schedule, schedule_length, fault_time_list, counter_threshold, logging):
+def processor_sim(env, node, schedule, schedule_length, counter_threshold, logging):
     """
     Runs tasks on each node
     :param env: simulation environment
@@ -29,27 +28,26 @@ def processor_sim(env, node, schedule, schedule_length, fault_time_list, counter
         for key in schedule.keys():
             # checks if there is a task that starts at this time!
             if env.now % schedule_length == schedule[key][0]:
-                print float("{0:.1f}".format(env.now)), "\tNODE:: Found Task", key, " to run on Node:", node
                 length = schedule[key][1]-schedule[key][0]
+                print float("{0:.1f}".format(env.now)), "\tNODE:: Found Task", key, " to run on Node:", node, "For:", \
+                    length, "Cycles"
                 found = True
                 task_num = key
                 break
         # found a task that starts at this time!
         if found:
             print float("{0:.1f}".format(env.now)), "\tNODE:: Starting Task", task_num, "on Node:", node
-            for fault_time in fault_time_list:
-                if env.now <= fault_time <= env.now+length:
-                    pass
-                else:
-                    counter_threshold.increase_health_counter(node, logging)
-            yield env.timeout(length)
+            for i in range(0, int(length)):
+                yield env.timeout(1)
+                counter_threshold.increase_health_counter(node, logging)
+
             print float("{0:.1f}".format(env.now)), "\tNODE:: Task", task_num, "execution finished on Node", node
             found = False
         else:
             yield env.timeout(1)
 
 
-def router_sim(env, node, schedule, schedule_length, fault_time_list, counter_threshold, logging):
+def router_sim(env, node, schedule, schedule_length, counter_threshold, logging):
     """
     runs tasks on the routers
     :param env: simulation environment
@@ -68,8 +66,9 @@ def router_sim(env, node, schedule, schedule_length, fault_time_list, counter_th
         for key in schedule.keys():
             # checks if there is a task that starts at this time!
             if env.now % schedule_length == schedule[key][0][0]:
-                print float("{0:.1f}".format(env.now)), "\tRouter:: Found Task", key, " to run on Router:", node
                 length = schedule[key][0][1]-schedule[key][0][0]
+                print float("{0:.1f}".format(env.now)), "\tRouter:: Found Task", key, " to run on Router:", node,\
+                    "For:", length, "Cycles"
                 found = True
                 task_num = key
                 break
@@ -77,19 +76,16 @@ def router_sim(env, node, schedule, schedule_length, fault_time_list, counter_th
         if found:
             print float("{0:.1f}".format(env.now)), "\tRouter:: Starting Task", task_num, "on Router:", node
             location_dict = {node: "R"}
-            for fault_time in fault_time_list:
-                if env.now <= fault_time <= env.now+length:
-                    pass
-                else:
-                    counter_threshold.increase_health_counter(location_dict, logging)
-            yield env.timeout(length)
+            for i in range(0, int(length)):
+                yield env.timeout(1)
+                counter_threshold.increase_health_counter(location_dict, logging)
             print float("{0:.1f}".format(env.now)), "\tRouter:: Task", task_num, "execution finished on Router", node
             found = False
         else:
             yield env.timeout(1)
 
 
-def link_sim(env, link, schedule, schedule_length, fault_time_list, counter_threshold, logging):
+def link_sim(env, link, schedule, schedule_length, counter_threshold, logging):
     """
     Runs tasks on each link
     :param env: simulation environment
@@ -106,18 +102,17 @@ def link_sim(env, link, schedule, schedule_length, fault_time_list, counter_thre
         for key in schedule.keys():
             # checks if there is a task that starts at this time!
             if env.now % schedule_length == schedule[key][0][0]:
-                print float("{0:.1f}".format(env.now)), "\tLINK:: Found Task", key, " to run on Link:", link
                 length = schedule[key][0][1]-schedule[key][0][0]
+                print float("{0:.1f}".format(env.now)), "\tLINK:: Found Task", key, " to run on Link:", link, \
+                    "For:", length, "Cycles"
                 found = True
                 task_num = key
         # found a task that starts at this time!
         if found:
             print float("{0:.1f}".format(env.now)), "\tLINK:: Starting Task", task_num, "on Link:", link
-            for fault_time in fault_time_list:
-                if env.now <= fault_time <= env.now+length:
-                    pass
-                else:
-                    counter_threshold.increase_health_counter(link, logging)
+            for i in range(0, int(length)):
+                yield env.timeout(1)
+                counter_threshold.increase_health_counter(link, logging)
             yield env.timeout(length)
             print float("{0:.1f}".format(env.now)), "\tLINK:: Task", task_num, "execution finished on Link", link
             found = False
@@ -179,15 +174,15 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
     for node in ag.nodes():
         # print node, AG.node[node]["Scheduling"]
         env.process(processor_sim(env, node, ag.node[node]['PE'].Scheduling, schedule_length,
-                                  fault_time_list, counter_threshold, logging))
+                                  counter_threshold, logging))
         env.process(router_sim(env, node, ag.node[node]['Router'].Scheduling, schedule_length,
-                               fault_time_list, counter_threshold, logging))
+                               counter_threshold, logging))
 
     print "SETTING UP LINKS..."
     for link in ag.edges():
         # print link, AG.edge[link[0]][link[1]]["Scheduling"]
         env.process(link_sim(env, link, ag.edge[link[0]][link[1]]["Scheduling"], schedule_length,
-                             fault_time_list, counter_threshold, logging))
+                             counter_threshold, logging))
 
     print "STARTING SIMULATION..."
     env.run(until=runtime)

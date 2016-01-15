@@ -104,8 +104,13 @@ class CounterThreshold():
             # do not increase the counter if component is dead
             return None
 
-        # Increase the intermittent counter for the specified location
         self.number_of_faults += 1
+        # Decrease the Health Counter since we are increasing it for every flit that is going through
+        if location in self.health_counters.keys():
+            self.health_counters[location]-=1
+        else:
+            self.health_counters[location]=-1
+        # Increase the intermittent counter for the specified location
         if location in self.intermittent_counters.keys():
             self.intermittent_counters[location] += 1
         else:
@@ -156,8 +161,12 @@ class CounterThreshold():
             return None
 
         self.number_of_faults += 1
-
-        # increase the fault location
+        # Decrease the Health Counter since we are increasing it for every flit that is going through
+        if location in self.health_counters.keys():
+            self.health_counters[location]-=1
+        else:
+            self.health_counters[location]=-1
+        # increase the fault Counter
         if location in self.fault_counters.keys():
             self.fault_counters[location] += 1
         else:

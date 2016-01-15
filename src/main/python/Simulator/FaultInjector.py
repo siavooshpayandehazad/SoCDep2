@@ -69,7 +69,6 @@ def fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_list, counter
                             counter_threshold.increase_fault_counter(fault_location, logging)
                         else:
                             counter_threshold.increase_intermittent_counter(fault_location, logging)
-
             fault = False
         yield env.timeout(0.1)
         pass
