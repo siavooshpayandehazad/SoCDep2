@@ -3,7 +3,7 @@
 # starting to write the simulator with SimPy...
 import simpy
 import numpy
-
+from SystemHealthMonitoring import SHMU_Functions
 from ConfigAndPackages import Config
 from FaultInjector import fault_event
 from SystemHealthMonitoring.FaultClassifier import CounterThreshold     # Rene's addition
@@ -11,12 +11,13 @@ from SystemHealthMonitoring.FaultClassifier import MachineLearning      # Rene's
 from Scheduler import Scheduling_Reports, Scheduling_Functions
 
 
-def processor_sim(env, node, schedule, schedule_length, counter_threshold, logging):
+def processor_sim(env, node, schedule, schedule_length, fault_time_dict, counter_threshold, logging):
     """
     Runs tasks on each node
     :param env: simulation environment
     :param node: Node ID number
     :param schedule: schedule of the tasks on the Node
+    :param fault_time_dict: Dictionary with Fault time as key and (Location, Type) tuple as value
     :param counter_threshold: counter threshold object
     :param logging: logging file
     :return:
@@ -38,21 +39,27 @@ def processor_sim(env, node, schedule, schedule_length, counter_threshold, loggi
         if found:
             print float("{0:.1f}".format(env.now)), "\tNODE:: Starting Task", task_num, "on Node:", node
             for i in range(0, int(length)):
+                if float("{0:.1f}".format(env.now)) in fault_time_dict.keys():
+                    if fault_time_dict[float("{0:.1f}".format(env.now))][0] == node:
+                        pass
+                    else:
+                        counter_threshold.increase_health_counter(node, logging)
+                else:
+                    counter_threshold.increase_health_counter(node, logging)
                 yield env.timeout(1)
-                counter_threshold.increase_health_counter(node, logging)
-
             print float("{0:.1f}".format(env.now)), "\tNODE:: Task", task_num, "execution finished on Node", node
             found = False
         else:
             yield env.timeout(1)
 
 
-def router_sim(env, node, schedule, schedule_length, counter_threshold, logging):
+def router_sim(env, node, schedule, schedule_length, fault_time_dict, counter_threshold, logging):
     """
     runs tasks on the routers
     :param env: simulation environment
     :param node: ID of the node to be simulated
     :param schedule: schedule of the tasks on the Router
+    :param fault_time_dict: Dictionary with Fault time as key and (Location, Type) tuple as value
     :param counter_threshold: counter threshold object
     :param logging: logging file
     :return:
@@ -77,20 +84,28 @@ def router_sim(env, node, schedule, schedule_length, counter_threshold, logging)
             print float("{0:.1f}".format(env.now)), "\tRouter:: Starting Task", task_num, "on Router:", node
             location_dict = {node: "R"}
             for i in range(0, int(length)):
+                if float("{0:.1f}".format(env.now)) in fault_time_dict.keys():
+                    if fault_time_dict[float("{0:.1f}".format(env.now))][0] == location_dict:
+                        pass
+                    else:
+                        counter_threshold.increase_health_counter(location_dict, logging)
+                else:
+                    counter_threshold.increase_health_counter(location_dict, logging)
                 yield env.timeout(1)
-                counter_threshold.increase_health_counter(location_dict, logging)
+
             print float("{0:.1f}".format(env.now)), "\tRouter:: Task", task_num, "execution finished on Router", node
             found = False
         else:
             yield env.timeout(1)
 
 
-def link_sim(env, link, schedule, schedule_length, counter_threshold, logging):
+def link_sim(env, link, schedule, schedule_length, fault_time_dict, counter_threshold, logging):
     """
     Runs tasks on each link
     :param env: simulation environment
     :param link: link number
     :param schedule: schedule of the tasks on the link
+    :param fault_time_dict: Dictionary with Fault time as key and (Location, Type) tuple as value
     :param counter_threshold: counter threshold object
     :param logging: logging file
     :return:
@@ -111,8 +126,14 @@ def link_sim(env, link, schedule, schedule_length, counter_threshold, logging):
         if found:
             print float("{0:.1f}".format(env.now)), "\tLINK:: Starting Task", task_num, "on Link:", link
             for i in range(0, int(length)):
+                if float("{0:.1f}".format(env.now)) in fault_time_dict.keys():
+                    if fault_time_dict[float("{0:.1f}".format(env.now))][0] == link:
+                        pass
+                    else:
+                        counter_threshold.increase_health_counter(link, logging)
+                else:
+                    counter_threshold.increase_health_counter(link, logging)
                 yield env.timeout(1)
-                counter_threshold.increase_health_counter(link, logging)
             yield env.timeout(length)
             print float("{0:.1f}".format(env.now)), "\tLINK:: Task", task_num, "execution finished on Link", link
             found = False
@@ -146,43 +167,33 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
     else:
         raise ValueError("Unknown Classification Method!! Check config file")
 
-    fault_time_list = []
+    fault_time_dict = {}
     fault_time = 0
     schedule_length = Scheduling_Functions.FindScheduleMakeSpan(ag)
     if Config.EventDrivenFaultInjection:
         time_until_next_fault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
         fault_time += time_until_next_fault
         while fault_time < runtime:
-            fault_time_list.append(float("{0:.1f}".format(fault_time)))
+            fault_location, fault_type = SHMU_Functions.RandomFaultGeneration(shmu.SHM)
+            fault_time_dict[float("{0:.1f}".format(fault_time))]=(fault_location, fault_type)
             time_until_next_fault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
             fault_time += time_until_next_fault
 
-        # print "------------------------"
-        # print "RANDOMLY GENERATED FAULT TIME LIST:",
-        # for i in range(0, len(fault_time_list)):
-        #     if i % 10 == 0:
-        #         print ""
-        #         print "\t\t",
-        #     else:
-        #         print fault_time_list[i], ", ",
-        # print ""
-        # print "-----------------------"
-
-        env.process(fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_list, counter_threshold, logging))
+        env.process(fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict, counter_threshold, logging))
 
     print "SETTING UP ROUTERS AND PES..."
     for node in ag.nodes():
         # print node, AG.node[node]["Scheduling"]
         env.process(processor_sim(env, node, ag.node[node]['PE'].Scheduling, schedule_length,
-                                  counter_threshold, logging))
+                                  fault_time_dict, counter_threshold, logging))
         env.process(router_sim(env, node, ag.node[node]['Router'].Scheduling, schedule_length,
-                               counter_threshold, logging))
+                               fault_time_dict, counter_threshold, logging))
 
     print "SETTING UP LINKS..."
     for link in ag.edges():
         # print link, AG.edge[link[0]][link[1]]["Scheduling"]
         env.process(link_sim(env, link, ag.edge[link[0]][link[1]]["Scheduling"], schedule_length,
-                             counter_threshold, logging))
+                             fault_time_dict, counter_threshold, logging))
 
     print "STARTING SIMULATION..."
     env.run(until=runtime)

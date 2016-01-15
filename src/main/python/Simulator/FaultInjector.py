@@ -11,23 +11,24 @@ from ConfigAndPackages import Config
 ####################################################################
 
 
-def fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_list, counter_threshold, logging):
+def fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict, counter_threshold, logging):
     """
     Injects rand fault events (random location and type of fault) at times taken from fault_time_list
     :param env: Simulator Environment
     :param ag: Architecture Graph
     :param shmu: System health Monitoring Unit
     :param noc_rg: NoC routing Graph
-    :param fault_time_list: List of faults to happen in future
+    :param fault_time_dict: Dictionary with Fault time as key and (Location, Type) tuple as value
     :param counter_threshold: counter threshold object
     :param logging: logging file
     :return:
     """
     fault = False
     while True:
-        for fault_time in fault_time_list:
+        for fault_time in fault_time_dict.keys():
             # print env.now, fault_time
             if float("{0:.1f}".format(env.now)) == fault_time:
+                fault_location, fault_type = fault_time_dict[fault_time]
                 fault = True
                 # print "Fault Location:", FaultLocation, "Type:", FaultType
                 pass
@@ -35,8 +36,6 @@ def fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_list, counter
                 # print env.now, FaultTime
                 pass
         if fault:
-            fault_location, fault_type = SHMU_Functions.RandomFaultGeneration(shmu.SHM)
-
             if type(fault_location) is int:
                 for scheduling_item in ag.node[fault_location]['PE'].Scheduling:
                     start_time = ag.node[fault_location]['PE'].Scheduling[scheduling_item][0]
