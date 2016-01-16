@@ -26,6 +26,9 @@ class CounterThreshold():
         # used for reports
         self.memory_counter = 0
         self.number_of_faults = 0
+        self.counters_f_report = {}
+        self.counters_i_report = {}
+        self.counters_h_report = {}
 
     def increase_health_counter(self, location, logging):
         if type(location) is dict:
@@ -60,7 +63,6 @@ class CounterThreshold():
             self.health_counters[location] = 1
         logging.info("Increasing health counter at location: "+location +
                      " Counter: "+str(self.health_counters[location]))
-
         # check for reaching the threshold
         if self.health_counters[location] == self.health_threshold:
             logging.info("resetting component: "+location+" counters")
@@ -104,12 +106,13 @@ class CounterThreshold():
             # do not increase the counter if component is dead
             return None
 
+        if location not in self.health_counters:
+            self.generate_counters(location)
+
         self.number_of_faults += 1
         # Increase the intermittent counter for the specified location
         if location in self.intermittent_counters.keys():
             self.intermittent_counters[location] += 1
-        else:
-            self.intermittent_counters[location] = 1
         logging.info("Increasing intermittent counter at location: "+location+" Counter: " +
                      str(self.intermittent_counters[location]))
 
@@ -155,12 +158,12 @@ class CounterThreshold():
             # do not increase the counter if component is dead
             return None
 
+        if location not in self.health_counters:
+            self.generate_counters(location)
         self.number_of_faults += 1
         # increase the fault Counter
         if location in self.fault_counters.keys():
             self.fault_counters[location] += 1
-        else:
-            self.fault_counters[location] = 1
         logging.info("Increasing counter at location: "+location+" Counter: "+str(self.fault_counters[location]))
 
         # Check for reaching threshold
@@ -184,16 +187,16 @@ class CounterThreshold():
         """
         if location in self.fault_counters.keys():
             del self.fault_counters[location]
-        else:
-            pass
         if location in self.intermittent_counters.keys():
             del self.intermittent_counters[location]
-        else:
-            pass
         if location in self.health_counters.keys():
             del self.health_counters[location]
-        else:
-            pass
+        return None
+
+    def generate_counters(self, location):
+        self.fault_counters[location] = 0
+        self.intermittent_counters[location] = 0
+        self.health_counters[location] = 0
         return None
 
     def return_allocated_memory(self):

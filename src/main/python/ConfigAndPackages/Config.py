@@ -262,8 +262,8 @@ health_counter_threshold = 4
 fault_counter_threshold = 2
 intermittent_counter_threshold = 2
 enable_link_counters = True
-enable_router_counters = False
-enable_pe_counters = False
+enable_router_counters = True
+enable_pe_counters = True
 error_correction_rate = 0.8
 ################################################
 #           Network Partitioning

@@ -11,6 +11,57 @@ from SystemHealthMonitoring.FaultClassifier import MachineLearning      # Rene's
 from Scheduler import Scheduling_Reports, Scheduling_Functions
 
 
+def sim_report(env, ag, counter_threshold):
+    while True:
+        for node in ag.nodes():
+            location = node
+            # print location
+            if location not in counter_threshold.counters_f_report.keys():
+                counter_threshold.counters_f_report[location] = []
+                counter_threshold.counters_h_report[location] = []
+                counter_threshold.counters_i_report[location] = []
+            if location in counter_threshold.fault_counters.keys():
+                counter_threshold.counters_f_report[location].append(counter_threshold.fault_counters[location])
+                counter_threshold.counters_i_report[location].append(counter_threshold.intermittent_counters[location])
+                counter_threshold.counters_h_report[location].append(counter_threshold.health_counters[location])
+            else:
+                counter_threshold.counters_f_report[location].append(0)
+                counter_threshold.counters_i_report[location].append(0)
+                counter_threshold.counters_h_report[location].append(0)
+
+            location = "R"+str(node)
+            if location not in counter_threshold.counters_f_report.keys():
+                counter_threshold.counters_f_report[location] = []
+                counter_threshold.counters_h_report[location] = []
+                counter_threshold.counters_i_report[location] = []
+            if location in counter_threshold.fault_counters.keys():
+                counter_threshold.counters_f_report[location].append(counter_threshold.fault_counters[location])
+                counter_threshold.counters_i_report[location].append(counter_threshold.intermittent_counters[location])
+                counter_threshold.counters_h_report[location].append(counter_threshold.health_counters[location])
+            else:
+                counter_threshold.counters_f_report[location].append(0)
+                counter_threshold.counters_i_report[location].append(0)
+                counter_threshold.counters_h_report[location].append(0)
+
+        for link in ag.edges():
+            location = "L"+str(link[0])+str(link[1])
+            # print location
+            if location not in counter_threshold.counters_f_report.keys():
+                counter_threshold.counters_f_report[location] = []
+                counter_threshold.counters_h_report[location] = []
+                counter_threshold.counters_i_report[location] = []
+            if location in counter_threshold.fault_counters.keys():
+                counter_threshold.counters_f_report[location].append(counter_threshold.fault_counters[location])
+                counter_threshold.counters_i_report[location].append(counter_threshold.intermittent_counters[location])
+                counter_threshold.counters_h_report[location].append(counter_threshold.health_counters[location])
+            else:
+                counter_threshold.counters_f_report[location].append(0)
+                counter_threshold.counters_i_report[location].append(0)
+                counter_threshold.counters_h_report[location].append(0)
+
+        yield env.timeout(1)
+
+
 def processor_sim(env, node, schedule, schedule_length, fault_time_dict, counter_threshold, logging):
     """
     Runs tasks on each node
@@ -175,7 +226,7 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
         fault_time += time_until_next_fault
         while fault_time < runtime:
             fault_location, fault_type = SHMU_Functions.RandomFaultGeneration(shmu.SHM)
-            fault_time_dict[float("{0:.1f}".format(fault_time))]=(fault_location, fault_type)
+            fault_time_dict[float("{0:.1f}".format(fault_time))] = (fault_location, fault_type)
             time_until_next_fault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
             fault_time += time_until_next_fault
 
@@ -195,6 +246,7 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
         env.process(link_sim(env, link, ag.edge[link[0]][link[1]]["Scheduling"], schedule_length,
                              fault_time_dict, counter_threshold, logging))
 
+    env.process(sim_report(env, ag, counter_threshold))
     print "STARTING SIMULATION..."
     env.run(until=runtime)
     print "SIMULATION FINISHED..."
