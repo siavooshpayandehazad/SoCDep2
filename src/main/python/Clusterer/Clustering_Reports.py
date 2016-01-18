@@ -53,7 +53,6 @@ def viz_clustering_opt():
             line = clustering_cost_file.readline()
         solution_num = range(0, len(cost))
         clustering_cost_file.close()
-
         plt.plot(solution_num, cost, '#5095FD', solution_num, min_cost_list, 'r')
         plt.savefig("GraphDrawings/CTG_Opt_Process.png", dpi=300)
         plt.clf()

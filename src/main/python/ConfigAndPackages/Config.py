@@ -14,8 +14,11 @@ EventDrivenFaultInjection = True
 ################################################
 #          TG Config
 ################################################
-# TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile'
+# TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile', 'GenericTraffic'
 TG_Type = 'RandomDependent'
+# For Generic Traffic:
+generic_traffic = 'random_uniform'
+injection_rate = 1
 # For Random TG_Type:
 NumberOfTasks = 25
 NumberOfCriticalTasks = 0
@@ -309,9 +312,9 @@ NodeTestComWeight = 2
 RG_Draw = False
 PMCG_Drawing = False
 TTG_Drawing = False
-Mapping_Dstr_Drawing = True
-Mapping_Drawing = True
-Scheduling_Drawing = True
+Mapping_Dstr_Drawing = False
+Mapping_Drawing = False
+Scheduling_Drawing = False
 SHM_Drawing = False          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks

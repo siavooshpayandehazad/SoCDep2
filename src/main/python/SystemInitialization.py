@@ -19,7 +19,7 @@ def initialize_system(logging):
     Generates the Task graph, Architecture Graph, System Health Monitoring Unit, NoC routing graph(s) and
     Test Task Graphs and does the mapping and scheduling and returns to the user the initial system
     :param logging: logging file
-    :return:  tg, ag, shmu, noc_rg, critical_rg, nonnritical_rg, pmcg
+    :return:  tg, ag, shmu, noc_rg, critical_rg, noncritical_rg, pmcg
     """
     tg = copy.deepcopy(TG_Functions.generate_tg())
     if Config.DebugInfo:

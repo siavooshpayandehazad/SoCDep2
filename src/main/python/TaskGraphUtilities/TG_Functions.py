@@ -155,6 +155,19 @@ def generate_random_tg(number_of_tasks, number_of_critical_tasks, number_of_edge
     return tg
 
 
+def generate_generic_tg():
+    tg = networkx.DiGraph()
+    # Todo: we have to make some sort of way to make a Task Graph that if i run it repeatedly, i can get the traffic
+    print("PREPARING UNIFORM TASK GRAPH (TG)...")
+    if Config.generic_traffic == "random_uniform":
+        # for each 2 nodes we make two pair of tasks:
+        #           node 1 ----> node 2
+        #           node 2 ----> node 1
+
+        pass
+    return tg
+
+
 def generate_random_independent_tg(number_of_tasks, wcet_range, release_range):
     tg = networkx.DiGraph()
     print("PREPARING RANDOM TASK GRAPH (TG) WITH INDEPENDENT TASKS...")
@@ -227,6 +240,8 @@ def generate_tg():
                                   Config.Task_Criticality_List, Config.Task_WCET_List, Config.TG_Edge_Weight)
     elif Config.TG_Type == 'FromDOTFile':
         return TG_File_Parser.generate_tg_from_dot(Config.TG_DOT_Path)
+    elif Config.TG_Type == 'GenericTraffic':
+        return generate_generic_tg()
     else:
         raise ValueError('TG TYPE DOESNT EXIST...!!!')
 

@@ -61,7 +61,8 @@ def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritica_rg, r
         iteration = 0
     if report:
         print ("INITIAL MAPPING READY... ")
-        draw_mapping(tg, ag, shm, "Mapping_init")
+        if Config.Mapping_Drawing:
+            draw_mapping(tg, ag, shm, "Mapping_init")
     return True
 
 

@@ -195,6 +195,8 @@ def add_pe_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, rou
                         ax1.text((start_time+end_time)/2 - len(str(task))/2, 0.01, str(task), fontsize=5)
             ax1.yaxis.set_label_coords(-0.08, 0)
             ax1.set_ylabel(r'PE'+str(node), size=14, rotation=0)
+            # removes the extra white space at the end of the graph
+            ax1.set_xlim(0, max_time+1)
             count += 1
     return count, ax1
 
@@ -350,6 +352,8 @@ def add_routers_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter
 
             ax1.yaxis.set_label_coords(-0.08, 0)
             ax1.set_ylabel(r'R'+str(node), size=14, rotation=0)
+            # removes the extra white space at the end of the graph
+            ax1.set_xlim(0, max_time+1)
             count += 1
     return count, ax1
 
@@ -494,5 +498,7 @@ def add_links_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, 
 
             ax1.yaxis.set_label_coords(-0.08, 0)
             ax1.set_ylabel(r'L'+str(Link), size=14, rotation=0)
+            # removes the extra white space at the end of the graph
+            ax1.set_xlim(0, max_time+1)
             count += 1
     return count, ax1

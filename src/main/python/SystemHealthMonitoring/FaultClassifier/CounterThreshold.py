@@ -30,6 +30,7 @@ class CounterThreshold():
         self.counters_f_report = {}
         self.counters_i_report = {}
         self.counters_h_report = {}
+        self.viz_counter_list = {}
 
     def increase_health_counter(self, ag, location, logging):
         if type(location) is dict:
@@ -227,14 +228,69 @@ class CounterThreshold():
             self.counters_f_report[location] = []
             self.counters_h_report[location] = []
             self.counters_i_report[location] = []
+            self.viz_counter_list[location] = []
         if location in self.fault_counters.keys():
-            self.counters_f_report[location].append(self.fault_counters[location])
-            self.counters_i_report[location].append(self.intermittent_counters[location])
-            self.counters_h_report[location].append(self.health_counters[location])
+
+            if self.fault_counters[location] > self.counters_f_report[location][-1]:
+                self.counters_f_report[location].append(self.counters_f_report[location][-1])
+                self.counters_i_report[location].append(self.intermittent_counters[location])
+                self.counters_h_report[location].append(self.health_counters[location])
+                self.viz_counter_list[location].append(self.viz_counter_list[location][-1]+1)
+
+                self.counters_f_report[location].append(self.fault_counters[location])
+                self.counters_i_report[location].append(self.intermittent_counters[location])
+                self.counters_h_report[location].append(self.health_counters[location])
+                self.viz_counter_list[location].append(self.viz_counter_list[location][-1])
+
+            elif self.intermittent_counters[location] > self.counters_i_report[location][-1]:
+                self.counters_f_report[location].append(self.fault_counters[location])
+                self.counters_i_report[location].append(self.counters_i_report[location][-1])
+                self.counters_h_report[location].append(self.health_counters[location])
+                self.viz_counter_list[location].append(self.viz_counter_list[location][-1]+1)
+
+                self.counters_f_report[location].append(self.fault_counters[location])
+                self.counters_i_report[location].append(self.intermittent_counters[location])
+                self.counters_h_report[location].append(self.health_counters[location])
+                self.viz_counter_list[location].append(self.viz_counter_list[location][-1])
+
+            elif self.health_counters[location] > self.counters_h_report[location][-1]:
+                self.counters_f_report[location].append(self.fault_counters[location])
+                self.counters_i_report[location].append(self.intermittent_counters[location])
+                self.counters_h_report[location].append(self.counters_h_report[location][-1])
+                self.viz_counter_list[location].append(self.viz_counter_list[location][-1]+1)
+
+                self.counters_f_report[location].append(self.fault_counters[location])
+                self.counters_i_report[location].append(self.intermittent_counters[location])
+                self.counters_h_report[location].append(self.health_counters[location])
+                self.viz_counter_list[location].append(self.viz_counter_list[location][-1])
+            else:
+                self.counters_f_report[location].append(self.fault_counters[location])
+                self.counters_i_report[location].append(self.intermittent_counters[location])
+                self.counters_h_report[location].append(self.health_counters[location])
+                if len(self.viz_counter_list[location]) == 0:
+                    self.viz_counter_list[location].append(0)
+                else:
+                    self.viz_counter_list[location].append(self.viz_counter_list[location][-1]+1)
+
+            if self.fault_counters[location] == self.fault_threshold or \
+               self.intermittent_counters[location] == self.intermittent_threshold or\
+               self.health_counters[location] == self.health_threshold:
+
+                self.counters_f_report[location].append(0)
+                self.counters_i_report[location].append(0)
+                self.counters_h_report[location].append(0)
+                if len(self.viz_counter_list[location]) == 0:
+                    self.viz_counter_list[location].append(0)
+                else:
+                    self.viz_counter_list[location].append(self.viz_counter_list[location][-1])
         else:
             self.counters_f_report[location].append(0)
             self.counters_i_report[location].append(0)
             self.counters_h_report[location].append(0)
+            if len(self.viz_counter_list[location]) == 0:
+                self.viz_counter_list[location].append(0)
+            else:
+                self.viz_counter_list[location].append(self.viz_counter_list[location][-1]+1)
         return None
 
     def return_allocated_memory(self):
