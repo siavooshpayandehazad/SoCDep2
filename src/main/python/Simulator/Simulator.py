@@ -6,60 +6,19 @@ import numpy
 from SystemHealthMonitoring import SHMU_Functions
 from ConfigAndPackages import Config
 from FaultInjector import fault_event
-from SystemHealthMonitoring.FaultClassifier import CounterThreshold     # Rene's addition
+from SystemHealthMonitoring.FaultClassifier import CounterThreshold, Counter_Threshold_Viz     # Rene's addition
 from SystemHealthMonitoring.FaultClassifier import MachineLearning      # Rene's addition
 from Scheduler import Scheduling_Reports, Scheduling_Functions
 
 
 def sim_report(env, ag, counter_threshold):
     while True:
-        for node in ag.nodes():
-            location = node
-            # print location
-            if location not in counter_threshold.counters_f_report.keys():
-                counter_threshold.counters_f_report[location] = []
-                counter_threshold.counters_h_report[location] = []
-                counter_threshold.counters_i_report[location] = []
-            if location in counter_threshold.fault_counters.keys():
-                counter_threshold.counters_f_report[location].append(counter_threshold.fault_counters[location])
-                counter_threshold.counters_i_report[location].append(counter_threshold.intermittent_counters[location])
-                counter_threshold.counters_h_report[location].append(counter_threshold.health_counters[location])
-            else:
-                counter_threshold.counters_f_report[location].append(0)
-                counter_threshold.counters_i_report[location].append(0)
-                counter_threshold.counters_h_report[location].append(0)
-
-            location = "R"+str(node)
-            if location not in counter_threshold.counters_f_report.keys():
-                counter_threshold.counters_f_report[location] = []
-                counter_threshold.counters_h_report[location] = []
-                counter_threshold.counters_i_report[location] = []
-            if location in counter_threshold.fault_counters.keys():
-                counter_threshold.counters_f_report[location].append(counter_threshold.fault_counters[location])
-                counter_threshold.counters_i_report[location].append(counter_threshold.intermittent_counters[location])
-                counter_threshold.counters_h_report[location].append(counter_threshold.health_counters[location])
-            else:
-                counter_threshold.counters_f_report[location].append(0)
-                counter_threshold.counters_i_report[location].append(0)
-                counter_threshold.counters_h_report[location].append(0)
-
-        for link in ag.edges():
-            location = "L"+str(link[0])+str(link[1])
-            # print location
-            if location not in counter_threshold.counters_f_report.keys():
-                counter_threshold.counters_f_report[location] = []
-                counter_threshold.counters_h_report[location] = []
-                counter_threshold.counters_i_report[location] = []
-            if location in counter_threshold.fault_counters.keys():
-                counter_threshold.counters_f_report[location].append(counter_threshold.fault_counters[location])
-                counter_threshold.counters_i_report[location].append(counter_threshold.intermittent_counters[location])
-                counter_threshold.counters_h_report[location].append(counter_threshold.health_counters[location])
-            else:
-                counter_threshold.counters_f_report[location].append(0)
-                counter_threshold.counters_i_report[location].append(0)
-                counter_threshold.counters_h_report[location].append(0)
-
-        yield env.timeout(1)
+        counter_threshold.update_report_dict(ag)
+        yield env.timeout(0.35)
+        counter_threshold.update_report_dict(ag)
+        yield env.timeout(0.35)
+        counter_threshold.update_report_dict(ag)
+        yield env.timeout(0.30)
 
 
 def processor_sim(env, node, schedule, schedule_length, fault_time_dict, counter_threshold, logging):
@@ -251,5 +210,6 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
     env.run(until=runtime)
     print "SIMULATION FINISHED..."
     counter_threshold.report(len(ag.nodes()), len(ag.edges()))
+    Counter_Threshold_Viz.counter_threshold_viz(ag, counter_threshold)
     Scheduling_Reports.report_scheduling_memory_usage(ag)
     return None

@@ -22,10 +22,11 @@ class CounterThreshold():
         # these lists keep the location of intermittent or permanently damaged components.
         self.dead_components = []
         self.intermittent_components = []
-
+        self.comp_of_interest = []
         # used for reports
         self.memory_counter = 0
         self.number_of_faults = 0
+        self.max_comp_of_interest = 0
         self.counters_f_report = {}
         self.counters_i_report = {}
         self.counters_h_report = {}
@@ -74,6 +75,8 @@ class CounterThreshold():
         current_memory_usage = self.return_allocated_memory()
         if current_memory_usage > self.memory_counter:
             self.memory_counter = current_memory_usage
+        if len(self.comp_of_interest) > self.max_comp_of_interest:
+            self.max_comp_of_interest = len(self.comp_of_interest)
         return None
 
     def increase_intermittent_counter(self, location, logging):
@@ -126,6 +129,8 @@ class CounterThreshold():
         current_memory_usage = self.return_allocated_memory()
         if current_memory_usage > self.memory_counter:
             self.memory_counter = current_memory_usage
+        if len(self.comp_of_interest) > self.max_comp_of_interest:
+            self.max_comp_of_interest = len(self.comp_of_interest)
         return None
 
     def increase_fault_counter(self, location, logging):
@@ -177,6 +182,8 @@ class CounterThreshold():
         current_memory_usage = self.return_allocated_memory()
         if current_memory_usage > self.memory_counter:
             self.memory_counter = current_memory_usage
+        if len(self.comp_of_interest) > self.max_comp_of_interest:
+            self.max_comp_of_interest = len(self.comp_of_interest)
         return None
 
     def reset_counters(self, location):
@@ -191,12 +198,40 @@ class CounterThreshold():
             del self.intermittent_counters[location]
         if location in self.health_counters.keys():
             del self.health_counters[location]
+        if location in self.comp_of_interest:
+            self.comp_of_interest.remove(location)
         return None
 
     def generate_counters(self, location):
         self.fault_counters[location] = 0
         self.intermittent_counters[location] = 0
         self.health_counters[location] = 0
+        self.comp_of_interest.append(location)
+        return None
+
+    def update_report_dict(self, ag):
+        for node in ag.nodes():
+            location = str(node)
+            self.update_report_list(location)
+            location = "R"+str(node)
+            self.update_report_list(location)
+        for link in ag.edges():
+            location = "L"+str(link[0])+str(link[1])
+            self.update_report_list(location)
+
+    def update_report_list(self, location):
+        if location not in self.counters_f_report.keys():
+            self.counters_f_report[location] = []
+            self.counters_h_report[location] = []
+            self.counters_i_report[location] = []
+        if location in self.fault_counters.keys():
+            self.counters_f_report[location].append(self.fault_counters[location])
+            self.counters_i_report[location].append(self.intermittent_counters[location])
+            self.counters_h_report[location].append(self.health_counters[location])
+        else:
+            self.counters_f_report[location].append(0)
+            self.counters_i_report[location].append(0)
+            self.counters_h_report[location].append(0)
         return None
 
     def return_allocated_memory(self):
@@ -219,6 +254,8 @@ class CounterThreshold():
         print "\t| MAX NUMBER OF BITS FOR EACH COUNTER:", max_counter_bits
         counter_total_bits = max_counter_bits + bits_required_for_address
         print "\t| TOTAL BITS PER COUNTER:", counter_total_bits
+
+        print "\t| MAX LEN OF COMP OF INTEREST:", self.max_comp_of_interest
 
         print "MAX MEM USAGE:", self.memory_counter * counter_total_bits, " BITS"
         print "AVERAGE COUNTER PER Node: ", float(self.memory_counter)/number_of_nodes

@@ -4,7 +4,7 @@ import PackageFile
 ################################################
 #          Program  Config
 ################################################
-ProgramRunTime = 900      # in seconds
+ProgramRunTime = 100      # in seconds
 DebugInfo = False
 DebugDetails = False
 
@@ -254,11 +254,11 @@ Task_SlackCount = 0               # this is used for number of repetitions of th
 #          System's Fault  Config
 ################################################
 MTTF = None     # Mean time to failure in seconds have not used MTTF yet...
-MTBF = 0.5        # Mean time between failures in clock cycles
+MTBF = 0.1        # Mean time between failures in clock cycles
 SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal distribution
 # ------------------------
 classification_method = "counter_threshold"     # can be "counter_threshold" or "machine_learning"
-health_counter_threshold = 4
+health_counter_threshold = 10
 fault_counter_threshold = 2
 intermittent_counter_threshold = 2
 enable_link_counters = True
