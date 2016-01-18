@@ -31,7 +31,7 @@ class CounterThreshold():
         self.counters_i_report = {}
         self.counters_h_report = {}
 
-    def increase_health_counter(self, location, logging):
+    def increase_health_counter(self, ag, location, logging):
         if type(location) is dict:
             # location is a router: {node_1: [turn]}
             # print location, str(location.keys()[0])+str(location[location.keys()[0]])
@@ -62,6 +62,7 @@ class CounterThreshold():
             self.health_counters[location] += 1
         else:
             self.health_counters[location] = 1
+        self.update_report_dict(ag)
         logging.info("Increasing health counter at location: "+location +
                      " Counter: "+str(self.health_counters[location]))
         # check for reaching the threshold
@@ -79,7 +80,7 @@ class CounterThreshold():
             self.max_comp_of_interest = len(self.comp_of_interest)
         return None
 
-    def increase_intermittent_counter(self, location, logging):
+    def increase_intermittent_counter(self, ag, location, logging):
         if type(location) is dict:
             # location is a router: {node_1: [turn]}
             # print location, str(location.keys()[0])+str(location[location.keys()[0]])
@@ -116,6 +117,7 @@ class CounterThreshold():
         # Increase the intermittent counter for the specified location
         if location in self.intermittent_counters.keys():
             self.intermittent_counters[location] += 1
+        self.update_report_dict(ag)
         logging.info("Increasing intermittent counter at location: "+location+" Counter: " +
                      str(self.intermittent_counters[location]))
 
@@ -133,7 +135,7 @@ class CounterThreshold():
             self.max_comp_of_interest = len(self.comp_of_interest)
         return None
 
-    def increase_fault_counter(self, location, logging):
+    def increase_fault_counter(self, ag, location, logging):
         if type(location) is dict:
             # location is a router: {node_1: [turn]}
             # print location, str(location.keys()[0])+str(location[location.keys()[0]])
@@ -169,6 +171,7 @@ class CounterThreshold():
         # increase the fault Counter
         if location in self.fault_counters.keys():
             self.fault_counters[location] += 1
+        self.update_report_dict(ag)
         logging.info("Increasing counter at location: "+location+" Counter: "+str(self.fault_counters[location]))
 
         # Check for reaching threshold

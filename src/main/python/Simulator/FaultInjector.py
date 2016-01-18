@@ -43,9 +43,9 @@ def fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict, counter
                     if start_time < env.now % schedule_length < end_time:
                         SHMU_Functions.apply_fault_event(ag, shmu, noc_rg, fault_location, fault_type)
                         if random.random() > Config.error_correction_rate:
-                            counter_threshold.increase_fault_counter(fault_location, logging)
+                            counter_threshold.increase_fault_counter(ag, fault_location, logging)
                         else:
-                            counter_threshold.increase_intermittent_counter(fault_location, logging)
+                            counter_threshold.increase_intermittent_counter(ag, fault_location, logging)
 
             elif type(fault_location) is tuple:
                 for scheduling_item in ag.edge[fault_location[0]][fault_location[1]]["Scheduling"]:
@@ -54,9 +54,9 @@ def fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict, counter
                     if start_time < env.now % schedule_length < end_time:
                         SHMU_Functions.apply_fault_event(ag, shmu, noc_rg, fault_location, fault_type)
                         if random.random() > Config.error_correction_rate:
-                            counter_threshold.increase_fault_counter(fault_location, logging)
+                            counter_threshold.increase_fault_counter(ag, fault_location, logging)
                         else:
-                            counter_threshold.increase_intermittent_counter(fault_location, logging)
+                            counter_threshold.increase_intermittent_counter(ag, fault_location, logging)
 
             elif type(fault_location) is dict:
                 for scheduling_item in ag.node[fault_location.keys()[0]]['Router'].Scheduling:
@@ -65,9 +65,9 @@ def fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict, counter
                     if start_time < env.now % schedule_length < end_time:
                         SHMU_Functions.apply_fault_event(ag, shmu, noc_rg, fault_location, fault_type)
                         if random.random() > Config.error_correction_rate:
-                            counter_threshold.increase_fault_counter(fault_location, logging)
+                            counter_threshold.increase_fault_counter(ag, fault_location, logging)
                         else:
-                            counter_threshold.increase_intermittent_counter(fault_location, logging)
+                            counter_threshold.increase_intermittent_counter(ag, fault_location, logging)
             fault = False
         yield env.timeout(0.1)
         pass

@@ -95,9 +95,9 @@ def draw_task_graph(tg, ttg=None):
     # networkx.draw_networkx_edge_labels(TG, pos, edge_labels=dict(zip(tg_edge_list, tg_edge_weight)),
     #                                    font_size=10, label_pos=0.7)
     if ttg is None:
-        plt.savefig("GraphDrawings/TG.png", dpi=200)
+        plt.savefig("GraphDrawings/TG.png", dpi=200, bbox_inches='tight')
     else:
-        plt.savefig("GraphDrawings/TG_And_TTG.png", dpi=200)
+        plt.savefig("GraphDrawings/TG_And_TTG.png", dpi=200, bbox_inches='tight')
     plt.clf()
     print ("\033[35m* VIZ::\033[0mTASK GRAPH DRAWINGS CREATED AT: GraphDrawings/TG.png")
     return None

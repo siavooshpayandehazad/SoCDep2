@@ -74,8 +74,8 @@ def draw_mapping_distribution(ag, shum):
 
     fig_num.text(0.25, 0.03, 'Distribution of number of the tasks on the network', fontsize=15)
     fig_util.text(0.25, 0.03, 'Distribution of utilization of network nodes', fontsize=15)
-    fig_num.savefig("GraphDrawings/Mapping_Num.png")
-    fig_util.savefig("GraphDrawings/Mapping_Util.png")
+    fig_num.savefig("GraphDrawings/Mapping_Num.png", bbox_inches='tight')
+    fig_util.savefig("GraphDrawings/Mapping_Util.png", bbox_inches='tight')
     fig_num.clf()
     fig_util.clf()
     plt.close(fig_num)
@@ -165,7 +165,7 @@ def draw_mapping(tg, ag, shm, mapping_file_name):
             task_count += 1
     task_size = 800/Config.Network_Z_Size
     networkx.draw(tg, position, with_labels=True, node_size=task_size, node_color=color_list, width=0, alpha=0.5)
-    fig.text(0.25, 0.02, 'Mapping visualization for network nodes', fontsize=15)
+    fig.text(0.35, 0.1, 'Mapping visualization for network nodes', fontsize=15)
 
     plt.text(0, -node_size*2/3, 'X', fontsize=15)
     plt.text(-node_size*2/3, 0, 'Y', fontsize=15)
@@ -175,7 +175,7 @@ def draw_mapping(tg, ag, shm, mapping_file_name):
     plt.gca().add_patch(patches.Arrow(-node_size*2/3, -node_size*2/3, node_size/3, node_size/3, width=node_size/10))
     plt.gca().add_patch(patches.Arrow(-node_size*2/3, -node_size*2/3, 0, node_size, width=node_size/10))
 
-    fig.savefig("GraphDrawings/"+mapping_file_name+".png")
+    fig.savefig("GraphDrawings/"+mapping_file_name+".png", bbox_inches='tight')
     plt.clf()
     plt.close(fig)
     print ("\033[35m* VIZ::\033[0mMAPPING DRAWING CREATED AT: GraphDrawings/Mapping.png")

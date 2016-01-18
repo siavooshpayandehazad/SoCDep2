@@ -100,7 +100,7 @@ def generate_gantt_charts(tg, ag, file_name):
     if link_counter+node_counter+router_counter > 0:
         if ax1 is not None:
             ax1.xaxis.set_ticks_position('bottom')
-    plt.savefig("GraphDrawings/"+file_name+".png", dpi=200)
+    plt.savefig("GraphDrawings/"+file_name+".png", dpi=200, bbox_inches='tight')
     plt.clf()
     plt.close(fig)
     print ("\033[35m* VIZ::\033[0mSCHEDULING GANTT CHARTS CREATED AT: GraphDrawings/Scheduling.png")
