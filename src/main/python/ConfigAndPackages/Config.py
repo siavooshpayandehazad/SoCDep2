@@ -4,7 +4,7 @@ import PackageFile
 ################################################
 #          Program  Config
 ################################################
-ProgramRunTime = 100      # in seconds
+ProgramRunTime = 100      # in cycles
 DebugInfo = False
 DebugDetails = False
 

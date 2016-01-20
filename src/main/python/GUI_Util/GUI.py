@@ -1013,7 +1013,7 @@ class ConfigApp(Tkinter.Tk):
                 self.SA_Iterations.grid_forget()
                 self.SA_IterLabel.grid_forget()
 
-            if self.Annealing.get() in ['Exponential','Adaptive','Aart', 'Huang']:
+            if self.Annealing.get() in ['Exponential', 'Adaptive', 'Aart', 'Huang']:
                 self.SA_Alpha.delete(0, 'end')
                 self.SA_Alpha.insert(0, '0.999')
                 self.SA_Alpha_Label.grid(column=self.Mapping_OptStartCol, row=self.Mapping_OptStartRow+7)
@@ -1156,7 +1156,7 @@ class ConfigApp(Tkinter.Tk):
                 self.ErrorMessage.config(text="Please Select Routing Type!")
                 return False
             else:
-                self.ErrorMessage.config(text ="")
+                self.ErrorMessage.config(text="")
                 return True
         elif self.RoutingAlg.get() == 'From File':
             if self.RoutingBrowse.get() == 'Routing File Path...':

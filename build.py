@@ -13,7 +13,11 @@ default_task = "publish"
 def initialize(project):
     
     project.version = "0.1.1"
-    
-    project.build_depends_on('Tkinter', 'ttk', 'networkx')
-    project.build_depends_on('scipy', 'PIL')
-    project.build_depends_on('pympler', 'simpy', 'sklearn')
+    project.build_depends_on('networkx')
+    project.build_depends_on('Tkinter')
+    project.build_depends_on('ttk')
+    project.build_depends_on('scipy')
+    project.build_depends_on('PIL', url='https://github.com/python-pillow/Pillow/archive/master.zip')
+    project.build_depends_on('pympler')
+    project.build_depends_on('simpy')
+    project.build_depends_on('sklearn')
