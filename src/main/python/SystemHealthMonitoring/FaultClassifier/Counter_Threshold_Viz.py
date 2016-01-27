@@ -10,7 +10,8 @@ def counter_threshold_viz(ag, counter_threshold):
     :param counter_threshold: counter_threshold object
     :return: None
     """
-    width = len(counter_threshold.viz_counter_list["0"])+2
+    width = len(counter_threshold.viz_counter_list["0"])
+
     number_of_plots = len(counter_threshold.viz_counter_list)
     fig = plt.figure(figsize=(width/10, 20))
     plt.subplots_adjust(hspace=0.01)
@@ -42,7 +43,7 @@ def counter_threshold_viz(ag, counter_threshold):
         ax1.yaxis.set_label_coords(-0.01, 0)
         ax1.set_ylabel(r'PE'+str(node), size=14, rotation=0)
         # removes the extra white space at the end of the graph
-        ax1.set_xlim(0, width)
+        ax1.set_xlim(0, last_number+1)
 
     # For Routers
     for node in ag.nodes():
@@ -66,7 +67,7 @@ def counter_threshold_viz(ag, counter_threshold):
         # move the y labels away
         ax1.yaxis.set_label_coords(-0.01, 0)
         # removes the extra white space at the end of the graph
-        ax1.set_xlim(0, width)
+        ax1.set_xlim(0, last_number+1)
 
     # for physical links
     link_counter = 0
@@ -86,13 +87,14 @@ def counter_threshold_viz(ag, counter_threshold):
         ax1.fill_between(counter_threshold.viz_counter_list[location]+[last_number, last_number],
                          counter_threshold.counters_i_report[location]+[0, max_threshold_value], 0, edgecolor='k')
         # disable x and y axis ticks
-        plt.setp(ax1.get_yticklabels(), visible=False)
+        # if link_counter != len(ag.edges()):
         plt.setp(ax1.get_xticklabels(), visible=False)
+        plt.setp(ax1.get_yticklabels(), visible=False)
         # move the y labels away
         ax1.yaxis.set_label_coords(-0.01, 0)
         ax1.set_ylabel(location, size=14, rotation=0)
         # removes the extra white space at the end of the graph
-        ax1.set_xlim(0, width)
+        ax1.set_xlim(0, last_number+1)
 
     plt.savefig("GraphDrawings/Counter_Threshold_Viz.png", dpi=120, bbox_inches='tight')
     plt.clf()

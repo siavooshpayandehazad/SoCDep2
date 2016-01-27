@@ -4,7 +4,7 @@ import PackageFile
 ################################################
 #          Program  Config
 ################################################
-ProgramRunTime = 100      # in cycles
+ProgramRunTime = 135      # in cycles
 DebugInfo = False
 DebugDetails = False
 
@@ -314,7 +314,7 @@ PMCG_Drawing = False
 TTG_Drawing = False
 Mapping_Dstr_Drawing = False
 Mapping_Drawing = False
-Scheduling_Drawing = False
+Scheduling_Drawing = True
 SHM_Drawing = False          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks
