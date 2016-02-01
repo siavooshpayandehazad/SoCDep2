@@ -4,7 +4,7 @@ import PackageFile
 ################################################
 #          Program  Config
 ################################################
-ProgramRunTime = 135      # in cycles
+ProgramRunTime = 900      # in cycles
 DebugInfo = False
 DebugDetails = False
 
@@ -257,7 +257,7 @@ Task_SlackCount = 0               # this is used for number of repetitions of th
 #          System's Fault  Config
 ################################################
 MTTF = None     # Mean time to failure in seconds have not used MTTF yet...
-MTBF = 0.1        # Mean time between failures in clock cycles
+MTBF = 1       # Mean time between failures in clock cycles
 SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal distribution
 # ------------------------
 classification_method = "counter_threshold"     # can be "counter_threshold" or "machine_learning"
@@ -265,8 +265,8 @@ health_counter_threshold = 4
 fault_counter_threshold = 2
 intermittent_counter_threshold = 2
 enable_link_counters = True
-enable_router_counters = True
-enable_pe_counters = True
+enable_router_counters = False
+enable_pe_counters = False
 error_correction_rate = 0.8
 ################################################
 #           Network Partitioning
@@ -314,7 +314,7 @@ PMCG_Drawing = False
 TTG_Drawing = False
 Mapping_Dstr_Drawing = False
 Mapping_Drawing = False
-Scheduling_Drawing = True
+Scheduling_Drawing = False
 SHM_Drawing = False          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks

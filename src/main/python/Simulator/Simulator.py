@@ -21,8 +21,10 @@ def processor_sim(env, ag, node, schedule, schedule_length, fault_time_dict, cou
     """
     Runs tasks on each node
     :param env: simulation environment
+    :param ag: architecture graph
     :param node: Node ID number
     :param schedule: schedule of the tasks on the Node
+    :param schedule_length: schedule makespan
     :param fault_time_dict: Dictionary with Fault time as key and (Location, Type) tuple as value
     :param counter_threshold: counter threshold object
     :param logging: logging file
@@ -63,8 +65,10 @@ def router_sim(env, ag, node, schedule, schedule_length, fault_time_dict, counte
     """
     runs tasks on the routers
     :param env: simulation environment
+    :param ag: architecture graph
     :param node: ID of the node to be simulated
     :param schedule: schedule of the tasks on the Router
+    :param schedule_length: schedule makespan
     :param fault_time_dict: Dictionary with Fault time as key and (Location, Type) tuple as value
     :param counter_threshold: counter threshold object
     :param logging: logging file
@@ -109,8 +113,10 @@ def link_sim(env, ag, link, schedule, schedule_length, fault_time_dict, counter_
     """
     Runs tasks on each link
     :param env: simulation environment
+    :param ag: architecture graph
     :param link: link number
     :param schedule: schedule of the tasks on the link
+    :param schedule_length: schedule makespan
     :param fault_time_dict: Dictionary with Fault time as key and (Location, Type) tuple as value
     :param counter_threshold: counter threshold object
     :param logging: logging file

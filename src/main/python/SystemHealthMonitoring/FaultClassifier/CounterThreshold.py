@@ -1,4 +1,8 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
+
+# This approach is based on the following paper: "A Fault Prediction Module for a Fault Tolerant NoC Operation"
+# by Silveira, J.; Bodin, M.; Ferreira, J.M.; Cadore Pinheiro, A.; Webber, T.; Marcon, C.
+
 from ConfigAndPackages import Config
 from math import ceil, log
 
