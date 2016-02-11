@@ -3,11 +3,11 @@
 from math import ceil
 import Scheduling_Functions_Tasks
 
-def Add_TG_TaskToNode(TG, AG, Task, Node, StartTime, EndTime, logging):
+def Add_TG_TaskToNode(tg, ag, Task, Node, StartTime, EndTime, logging=None):
     """
     Adds a Task from Task Graph with specific Start time and end time to mapped node in architecture graph
-    :param TG: Task Graph
-    :param AG: Architecture Graph
+    :param tg: Task Graph
+    :param ag: Architecture Graph
     :param Task: Task ID
     :param Node: Node ID
     :param StartTime: Scheduling time for Task
@@ -17,8 +17,8 @@ def Add_TG_TaskToNode(TG, AG, Task, Node, StartTime, EndTime, logging):
     """
     # logging.info ("\t\tADDING TASK: "+str(Task)+" TO NODE: "+str(Node))
     # logging.info ("\t\tSTARTING TIME: "+str(StartTime)+" ENDING TIME:"+str(EndTime))
-    AG.node[Node]['PE'].Scheduling[Task] = [StartTime, EndTime]
-    TG.node[Task]['Node'] = Node
+    ag.node[Node]['PE'].Scheduling[Task] = [StartTime, EndTime]
+    tg.node[Task]['Node'] = Node
     return True
 
 
@@ -47,7 +47,7 @@ def FindLastAllocatedTimeOnNode(TG, AG, Node, logging=None):
     return LastAllocatedTime
 
 
-def FindFirstEmptySlotForTaskOnNode(TG, AG, SHM, Node, Task, PredecessorEndTime, logging):
+def FindFirstEmptySlotForTaskOnNode(TG, AG, SHM, Node, Task, PredecessorEndTime, logging=None):
     """
 
     :param TG:

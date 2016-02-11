@@ -3,7 +3,7 @@
 import Scheduling_Functions_Links, Scheduling_Functions_Routers
 from ConfigAndPackages import Config
 
-def FindEdge_ASAP_Scheduling_Link(TG, AG, Edge, Link, batch, Prob, Report, logging):
+def FindEdge_ASAP_Scheduling_Link(TG, AG, Edge, Link, batch, Prob, Report, logging=None):
     """
     Finds the earliest start and finish time for scheduling Edge from TG on Link from AG.
     :param TG: Task Graph
@@ -17,7 +17,7 @@ def FindEdge_ASAP_Scheduling_Link(TG, AG, Edge, Link, batch, Prob, Report, loggi
     :return: Start Time and Stop Time
     """
     StartTime = max(Scheduling_Functions_Links.FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge,
-                                                                                  Prob, logging=None),
+                                                                                  Prob, logging),
                     FindEdgePredecessorsFinishTime(TG, AG, Edge, batch))
     EdgeExecutionOnLink = TG.edge[Edge[0]][Edge[1]]['ComWeight']
     if TG.edge[Edge[0]][Edge[1]]['Criticality'] == 'H':
@@ -27,7 +27,7 @@ def FindEdge_ASAP_Scheduling_Link(TG, AG, Edge, Link, batch, Prob, Report, loggi
     return StartTime, EndTime
 
 
-def FindEdge_ASAP_Scheduling_Router(TG, AG, Edge, Node, batch, Prob, Report, logging):
+def FindEdge_ASAP_Scheduling_Router(TG, AG, Edge, Node, batch, Prob, Report, logging=None):
     """
     Calculates the start time and end time for ASAP scheduling of an Edge on a Router
     :param TG: Task Graph
@@ -41,7 +41,7 @@ def FindEdge_ASAP_Scheduling_Router(TG, AG, Edge, Node, batch, Prob, Report, log
     :return: Start Time and End time
     """
     StartTime = max(Scheduling_Functions_Routers.FindLastAllocatedTimeOnRouterForTask(TG, AG, Node, Edge,
-                                                                                  Prob, logging),
+                                                                                      Prob, logging),
                     FindEdgePredecessorsFinishTime(TG, AG, Edge, batch))
     EdgeExecutionOnLink = TG.edge[Edge[0]][Edge[1]]['ComWeight']
     if TG.edge[Edge[0]][Edge[1]]['Criticality'] == 'H':
@@ -51,27 +51,27 @@ def FindEdge_ASAP_Scheduling_Router(TG, AG, Edge, Node, batch, Prob, Report, log
     return StartTime, EndTime
 
 
-def FindTestEdge_ASAP_Scheduling(TG, AG, Edge, Link, batch, Prob, Report, logging):
+def FindTestEdge_ASAP_Scheduling(tg, ag, edge, link, batch, prob, report, logging=None):
     """
     Finds the start and end time for ASAP scheduling of a Test Edge on a link.
     Important note is that the Edge should be coming from "Test" type in TG.
-    :param TG: Task Graph
-    :param AG: Architecture Graph
-    :param Edge: Test Edge to be mapped
-    :param Link: Link ID for Scheduling the TestEdge
+    :param tg: Task Graph
+    :param ag: Architecture Graph
+    :param edge: Test Edge to be mapped
+    :param link: Link ID for Scheduling the TestEdge
     :param batch: Batch of the mapped Edge
-    :param Prob: probability of Edge actually passing through Link
-    :param Report: Report Switch
+    :param prob: probability of Edge actually passing through Link
+    :param report: Report Switch
     :param logging: logging File
     :return: Start Time and End Time
     """
-    StartTime = max(Scheduling_Functions_Links.FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge,
-                                                                                  Prob, logging=None),
-                    FindEdgePredecessorsFinishTime(TG, AG, Edge, batch))
-    EdgeExecutionOnLink = TG.edge[Edge[0]][Edge[1]]['ComWeight']
-    EndTime = StartTime+EdgeExecutionOnLink
+    start_time = max(Scheduling_Functions_Links.FindLastAllocatedTimeOnLinkForTask(tg, ag, link, edge,
+                                                                                  prob, logging),
+                    FindEdgePredecessorsFinishTime(tg, ag, edge, batch))
+    edge_execution_on_link = tg.edge[edge[0]][edge[1]]['ComWeight']
+    end_time = start_time+edge_execution_on_link
 
-    return StartTime, EndTime
+    return start_time, end_time
 
 
 

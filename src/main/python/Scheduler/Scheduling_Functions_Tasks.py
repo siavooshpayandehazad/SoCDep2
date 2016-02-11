@@ -5,7 +5,7 @@ from math import ceil
 from ConfigAndPackages import Config
 
 
-def find_task_asap_scheduling(tg, ag, shm, task, node, logging):
+def find_task_asap_scheduling(tg, ag, shm, task, node, logging=None):
     """
 
     :param tg:
@@ -13,11 +13,11 @@ def find_task_asap_scheduling(tg, ag, shm, task, node, logging):
     :param shm: System Health Map
     :param task:
     :param node:
-    :param logging:
+    :param logging: logging file
     :return:
     """
     criticality_level = tg.node[task]['Criticality']
-    start_time = max(Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag, node, logging=None),
+    start_time = max(Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag, node, logging),
                      task_predecessors_finish_time(tg, ag, task, criticality_level),
                      tg.node[task]['Release'])
     # This includes the aging and lower frequency of the nodes of graph...
@@ -31,7 +31,7 @@ def find_task_asap_scheduling(tg, ag, shm, task, node, logging):
     return start_time, end_time
 
 
-def find_test_task_asap_scheduling(tg, ag, shm, task, node, logging):
+def find_test_task_asap_scheduling(tg, ag, shm, task, node, logging=None):
     """
 
     :param tg:
@@ -55,7 +55,7 @@ def find_test_task_asap_scheduling(tg, ag, shm, task, node, logging):
     return start_time, end_time
 
 
-def find_task_alap_scheduling(tg, ag, task, node, logging):
+def find_task_alap_scheduling(tg, ag, task, node, logging=None):
     # todo: Implement ALAP
     return None
 

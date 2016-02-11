@@ -1,9 +1,10 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
 
-def Add_TG_EdgeTo_Router(TG, AG, Edge, Node, batch, Prob, StartTime, EndTime, logging):
-    logging.info ("\t\tADDING EDGE: "+str(Edge)+" FROM BATCH: "+str(batch)+" TO Router: "+str(Node))
-    logging.info ("\t\tSTARTING TIME: "+str(StartTime)+" ENDING TIME: "+str(EndTime))
+def Add_TG_EdgeTo_Router(TG, AG, Edge, Node, batch, Prob, StartTime, EndTime, logging=None):
+    if logging is not None:
+        logging.info ("\t\tADDING EDGE: "+str(Edge)+" FROM BATCH: "+str(batch)+" TO Router: "+str(Node))
+        logging.info ("\t\tSTARTING TIME: "+str(StartTime)+" ENDING TIME: "+str(EndTime))
     if Edge in AG.node[Node]['Router'].Scheduling:
         AG.node[Node]['Router'].Scheduling[Edge].append([StartTime, EndTime, batch, Prob])
     else:
@@ -34,9 +35,11 @@ def FindLastAllocatedTimeOnRouter(TG, AG, Node, logging=None):
     return LastAllocatedTime
 
 
-def FindLastAllocatedTimeOnRouterForTask(TG, AG, Node, Edge, Prob, logging):
-    # logging.info("\t-------------------------")
-    # logging.info("\tFINDING LAST ALLOCATED TIME ON Router "+str(Node)+"\tFOR EDGE: "+str(Edge)+" WITH PROB: "+str(Prob))
+def FindLastAllocatedTimeOnRouterForTask(TG, AG, Node, Edge, Prob, logging=None):
+    if logging is not None:
+        logging.info("\t-------------------------")
+        logging.info("\tFINDING LAST ALLOCATED TIME ON Router "+str(Node)+"\tFOR EDGE: " +
+                     str(Edge)+" WITH PROB: "+str(Prob))
     LastAllocatedTime = 0
     if len(AG.node[Node]['Router'].MappedTasks) > 0:
         for Task in AG.node[Node]['Router'].MappedTasks.keys():
@@ -46,29 +49,37 @@ def FindLastAllocatedTimeOnRouterForTask(TG, AG, Node, Edge, Prob, logging):
                     EndTime = ScheduleAndBatch[1]
                     TaskProb = ScheduleAndBatch[3]
                     if StartTime is not None and EndTime is not None:
-                        # logging.info("\t\tTASK "+str(Task)+" STARTS AT: " + str(StartTime) +
-                        #              "AND ENDS AT: " + str(EndTime) + " PROB: " + str(TaskProb))
+                        if logging is not None:
+                            logging.info("\t\tTASK "+str(Task)+" STARTS AT: " + str(StartTime) +
+                                         "AND ENDS AT: " + str(EndTime) + " PROB: " + str(TaskProb))
                         SumOfProb = 0
                         if Task != Edge:
-                            # logging.info("\t\tEndTime:"+str(EndTime))
-                            # logging.info("\t\t\tStart  Stop  Prob          SumProb")
+                            if logging is not None:
+                                logging.info("\t\tEndTime:"+str(EndTime))
+                                logging.info("\t\t\tStart  Stop  Prob          SumProb")
                             for OtherTask in AG.node[Node]['Router'].Scheduling:
                                 for Schedule in AG.node[Node]['Router'].Scheduling[Task]:
                                     if OtherTask != Edge:
-                                        # logging.info("Picked other task: "+str(OtherTask)+" With Schedule: "+str(Schedule))
+                                        if logging is not None:
+                                            logging.info("Picked other task: "+str(OtherTask) +
+                                                         " With Schedule: "+str(Schedule))
                                         if Schedule[0] < EndTime <= Schedule[1]:
                                             SumOfProb += Schedule[3]
-                                            # logging.info("\t\t\t"+str(Schedule[0])+"   "+str(Schedule[1])+"   "
-                                            #             +str(Schedule[3])+"   "+str(SumOfProb))
+                                            if logging is not None:
+                                                logging.info("\t\t\t"+str(Schedule[0])+"   "+str(Schedule[1])+"   "
+                                                             +str(Schedule[3])+"   "+str(SumOfProb))
                                     if SumOfProb + Prob > 1:
                                         break
                                 if SumOfProb + Prob > 1:
                                         break
                             if SumOfProb + Prob > 1:
                                 LastAllocatedTime = max(LastAllocatedTime, EndTime)
-                                # logging.info("\t\tAllocated Time Shifted to:"+str(LastAllocatedTime))
+                                if logging is not None:
+                                    logging.info("\t\tAllocated Time Shifted to:"+str(LastAllocatedTime))
     else:
-        # logging.info("\t\t\tNO SCHEDULED TASK FOUND")
+        if logging is not None:
+            logging.info("\t\t\tNO SCHEDULED TASK FOUND")
         return 0
-    # logging.info("\tLAST ALLOCATED TIME:"+str(LastAllocatedTime))
+    if logging is not None:
+        logging.info("\tLAST ALLOCATED TIME:"+str(LastAllocatedTime))
     return LastAllocatedTime

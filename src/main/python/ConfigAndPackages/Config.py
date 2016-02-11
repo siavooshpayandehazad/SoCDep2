@@ -180,7 +180,7 @@ read_mapping_from_file = False
 mapping_file_path = "mapping_report.txt"
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'LocalSearch'
+Mapping_Function = 'SimulatedAnnealing'
 LocalSearchIteration = 150
 IterativeLocalSearchIterations = 5
 mapping_random_seed = 2000

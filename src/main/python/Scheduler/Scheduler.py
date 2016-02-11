@@ -23,15 +23,15 @@ def schedule_all(tg, ag, shm, report, detailed_report, logging):
     """
     logging.info("===========================================")
     logging.info("STARTING SCHEDULING PROCESS...")
-    asap_scheduling(tg, ag, shm, report, logging)
+    asap_scheduling(tg, ag, shm, report, logging=None)
     makespan = FindScheduleMakeSpan(ag)
     logging.info("SCHEDULING MAKESPAN:"+str(makespan))
-    alap_scheduling(tg, ag, shm, makespan, report, logging)
+    alap_scheduling(tg, ag, shm, makespan, report, logging=None)
     logging.info("DONE SCHEDULING...")
     return None
 
 
-def asap_scheduling(tg, ag, shm, report, logging):
+def asap_scheduling(tg, ag, shm, report, logging=None):
     """
 
     :param tg:  Task Graph
@@ -41,7 +41,8 @@ def asap_scheduling(tg, ag, shm, report, logging):
     :param logging: logging file
     :return: None
     """
-    logging.info("STARTING ASAP SCHEDULING ...")
+    if logging is not None:
+        logging.info("STARTING ASAP SCHEDULING ...")
     max_distance = TG_Functions.calculate_max_distance(tg) + 1
     for distance in range(0, max_distance):
         for task in tg.nodes():
@@ -82,11 +83,12 @@ def asap_scheduling(tg, ag, shm, report, logging):
                                                                                                  report, logging)
                                         Add_TG_EdgeTo_Router(tg, ag, edge, link[1], batch, probability, start_time,
                                                              end_time, logging)
-    logging.info("DONE ASAP SCHEDULING...")
+    if logging is not None:
+        logging.info("DONE ASAP SCHEDULING...")
     return None
 
 
-def alap_scheduling(tg, ag, shm, makespan, report, logging):
+def alap_scheduling(tg, ag, shm, makespan, report, logging=None):
     """
 
     :param tg:  Task Graph
@@ -97,9 +99,11 @@ def alap_scheduling(tg, ag, shm, makespan, report, logging):
     :param logging: logging File
     :return: None
     """
-    logging.info("STARTING ALAP SCHEDULING ...")
+    if logging is not None:
+        logging.info("STARTING ALAP SCHEDULING ...")
 
-    logging.info("DONE ALAP SCHEDULING...")
+    if logging is not None:
+        logging.info("DONE ALAP SCHEDULING...")
     return None
 
 
