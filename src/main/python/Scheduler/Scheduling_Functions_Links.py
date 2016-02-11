@@ -35,9 +35,9 @@ def FindLastAllocatedTimeOnLink(TG, AG, Link, logging=None):
 
 
 ################################################################
-def FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Prob, logging):
-    logging.info("\t-------------------------")
-    logging.info("\tFINDING LAST ALLOCATED TIME ON LINK "+str(Link)+"\tFOR EDGE: "+str(Edge)+" WITH PROB: "+str(Prob))
+def FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Prob, logging=None):
+    # logging.info("\t-------------------------")
+    # logging.info("\tFINDING LAST ALLOCATED TIME ON LINK "+str(Link)+"\tFOR EDGE: "+str(Edge)+" WITH PROB: "+str(Prob))
     LastAllocatedTime = 0
     if len(AG.edge[Link[0]][Link[1]]['MappedTasks']) > 0:
         for Task in AG.edge[Link[0]][Link[1]]['MappedTasks'].keys():
@@ -47,29 +47,29 @@ def FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge, Prob, logging):
                     EndTime = ScheduleAndBatch[1]
                     TaskProb = ScheduleAndBatch[3]
                     if StartTime is not None and EndTime is not None:
-                        logging.info("\t\tTASK "+str(Task)+" STARTS AT: " + str(StartTime) +
-                                     "AND ENDS AT: " + str(EndTime) + " PROB: " + str(TaskProb))
+                        # logging.info("\t\tTASK "+str(Task)+" STARTS AT: " + str(StartTime) +
+                        #             "AND ENDS AT: " + str(EndTime) + " PROB: " + str(TaskProb))
                         SumOfProb = 0
                         if Task != Edge:
-                            logging.info("\t\tEndTime:"+str(EndTime))
-                            logging.info("\t\t\tStart  Stop  Prob          SumProb")
+                            # logging.info("\t\tEndTime:"+str(EndTime))
+                            # logging.info("\t\t\tStart  Stop  Prob          SumProb")
                             for OtherTask in AG.edge[Link[0]][Link[1]]['Scheduling']:
                                 for Schedule in AG.edge[Link[0]][Link[1]]['Scheduling'][Task]:
                                     if OtherTask != Edge:
                                         # logging.info("Picked other task: "+str(OtherTask)+" With Schedule: "+str(Schedule))
                                         if Schedule[0] < EndTime <= Schedule[1]:
                                             SumOfProb += Schedule[3]
-                                            logging.info("\t\t\t"+str(Schedule[0])+"   "+str(Schedule[1])+"   "
-                                                         +str(Schedule[3])+"   "+str(SumOfProb))
+                                            # logging.info("\t\t\t"+str(Schedule[0])+"   "+str(Schedule[1])+"   "
+                                            #             +str(Schedule[3])+"   "+str(SumOfProb))
                                     if SumOfProb + Prob > 1:
                                         break
                                 if SumOfProb + Prob > 1:
                                         break
                             if SumOfProb + Prob > 1:
                                 LastAllocatedTime = max(LastAllocatedTime, EndTime)
-                                logging.info("\t\tAllocated Time Shifted to:"+str(LastAllocatedTime))
+                                # logging.info("\t\tAllocated Time Shifted to:"+str(LastAllocatedTime))
     else:
-        logging.info("\t\t\tNO SCHEDULED TASK FOUND")
+        # logging.info("\t\t\tNO SCHEDULED TASK FOUND")
         return 0
-    logging.info("\tLAST ALLOCATED TIME:"+str(LastAllocatedTime))
+    # logging.info("\tLAST ALLOCATED TIME:"+str(LastAllocatedTime))
     return LastAllocatedTime

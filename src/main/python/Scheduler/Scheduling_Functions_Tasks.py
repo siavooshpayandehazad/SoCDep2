@@ -17,7 +17,7 @@ def find_task_asap_scheduling(tg, ag, shm, task, node, logging):
     :return:
     """
     criticality_level = tg.node[task]['Criticality']
-    start_time = max(Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag, node, logging),
+    start_time = max(Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag, node, logging=None),
                      task_predecessors_finish_time(tg, ag, task, criticality_level),
                      tg.node[task]['Release'])
     # This includes the aging and lower frequency of the nodes of graph...

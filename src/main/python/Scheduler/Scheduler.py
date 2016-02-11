@@ -48,7 +48,7 @@ def asap_scheduling(tg, ag, shm, report, logging):
             if tg.node[task]['Type'] == 'App':
                 if tg.node[task]['Distance'] == distance:
                     node = tg.node[task]['Node']
-                    logging.info("\tSCHEDULING TASK "+str(task)+" ON NODE:"+str(node))
+                    # logging.info("\tSCHEDULING TASK "+str(task)+" ON NODE:"+str(node))
                     (start_time, end_time) = find_task_asap_scheduling(tg, ag, shm, task, node, logging)
                     Add_TG_TaskToNode(tg, ag, task, node, start_time, end_time, logging)
                     for edge in tg.edges():
@@ -59,15 +59,15 @@ def asap_scheduling(tg, ag, shm, report, logging):
                                     batch = batch_and_link[0]
                                     link = batch_and_link[1]
                                     probability = batch_and_link[2]
-                                    logging.info("\tSCHEDULING EDGE "+str(edge)+" ON Router: "+str(link) +
-                                                 " FROM BATCH: "+str(batch))
+                                    # logging.info("\tSCHEDULING EDGE "+str(edge)+" ON Router: "+str(link) +
+                                    #             " FROM BATCH: "+str(batch))
                                     (start_time, end_time) = FindEdge_ASAP_Scheduling_Router(tg, ag, edge, link[0],
                                                                                              batch, probability,
                                                                                              report, logging)
                                     Add_TG_EdgeTo_Router(tg, ag, edge, link[0], batch, probability, start_time,
                                                          end_time, logging)
-                                    logging.info("\tSCHEDULING EDGE "+str(edge)+" ON LINK: "+str(link) +
-                                                 " FROM BATCH: "+str(batch))
+                                    # logging.info("\tSCHEDULING EDGE "+str(edge)+" ON LINK: "+str(link) +
+                                    #             " FROM BATCH: "+str(batch))
                                     (start_time, end_time) = FindEdge_ASAP_Scheduling_Link(tg, ag, edge, link, batch,
                                                                                            probability, report,
                                                                                            logging)
@@ -75,8 +75,8 @@ def asap_scheduling(tg, ag, shm, report, logging):
                                                        logging)
 
                                     if destination_node == link[1]:
-                                        logging.info("\tSCHEDULING EDGE "+str(edge)+" ON Router: "+str(link) +
-                                                     " FROM BATCH: "+str(batch))
+                                        # logging.info("\tSCHEDULING EDGE "+str(edge)+" ON Router: "+str(link) +
+                                        #             " FROM BATCH: "+str(batch))
                                         (start_time, end_time) = FindEdge_ASAP_Scheduling_Router(tg, ag, edge, link[1],
                                                                                                  batch, probability,
                                                                                                  report, logging)
@@ -120,7 +120,7 @@ def schedule_test_in_tg(tg, ag, shm, report, logging):
             if tg.node[Task]['Type'] == 'Test':
                 if tg.node[Task]['Distance'] == distance:
                     node = tg.node[Task]['Node']
-                    logging.info("\tSCHEDULING TASK "+str(Task)+" ON NODE:"+str(node))
+                    # logging.info("\tSCHEDULING TASK "+str(Task)+" ON NODE:"+str(node))
                     (start_time, end_time) = find_test_task_asap_scheduling(tg, ag, shm, Task, node, logging)
                     Add_TG_TaskToNode(tg, ag, Task, node, start_time, end_time, logging)
                     for edge in tg.edges():
@@ -131,22 +131,22 @@ def schedule_test_in_tg(tg, ag, shm, report, logging):
                                     link = batch_and_link[1]
                                     batch = batch_and_link[0]
                                     probability = batch_and_link[2]
-                                    logging.info("\tSCHEDULING EDGE "+str(edge)+" ON Router: "+str(link) +
-                                                 " FROM BATCH: "+str(batch))
+                                    # logging.info("\tSCHEDULING EDGE "+str(edge)+" ON Router: "+str(link) +
+                                    #             " FROM BATCH: "+str(batch))
                                     (start_time, end_time) = FindEdge_ASAP_Scheduling_Router(tg, ag, edge, link[0],
                                                                                              batch, probability,
                                                                                              report, logging)
                                     Add_TG_EdgeTo_Router(tg, ag, edge, link[0], batch, probability, start_time,
                                                          end_time, logging)
-                                    logging.info("\tSCHEDULING EDGE "+str(edge)+" ON LINK: "+str(link) +
-                                                 " FROM BATCH: "+str(batch))
+                                    # logging.info("\tSCHEDULING EDGE "+str(edge)+" ON LINK: "+str(link) +
+                                    #             " FROM BATCH: "+str(batch))
                                     (start_time, end_time) = FindTestEdge_ASAP_Scheduling(tg, ag, edge, link, batch,
                                                                                           probability, report, logging)
                                     Add_TG_EdgeTo_link(tg, ag, edge, link, batch, probability, start_time, end_time,
                                                        logging)
                                     if destination_node == link[1]:
-                                        logging.info("\tSCHEDULING EDGE "+str(edge)+" ON Router: "+str(link) +
-                                                     " FROM BATCH: "+str(batch))
+                                        # logging.info("\tSCHEDULING EDGE "+str(edge)+" ON Router: "+str(link) +
+                                        #              " FROM BATCH: "+str(batch))
                                         (start_time, end_time) = FindEdge_ASAP_Scheduling_Router(tg, ag, edge, link[1],
                                                                                                  batch, probability,
                                                                                                  report, logging)

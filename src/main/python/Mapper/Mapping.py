@@ -111,7 +111,8 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                                                               non_critical_rg, shm,
                                                               Config.LocalSearchIteration,
                                                               Config.DebugInfo, Config.DebugDetails, logging,
-                                                              "LocalSearchMappingCost", "MappingProcess")
+                                                              "LocalSearchMappingCost", "MappingProcess",
+                                                              Config.mapping_random_seed)
                     tg = copy.deepcopy(best_tg)
                     ag = copy.deepcopy(best_ag)
                     del best_tg, best_ctg, best_ag

@@ -9,7 +9,8 @@ from ConfigAndPackages import Config
 
 def mapping_opt_local_search(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, shm,
                              iteration_num, report, detailed_report, logging,
-                             cost_data_file_name, mapping_process_file_name):
+                             cost_data_file_name, mapping_process_file_name, random_seed):
+    random.seed(random_seed)
     if report:
         print ("===========================================")
         print ("STARTING MAPPING OPTIMIZATION...USING LOCAL SEARCH...")
@@ -131,11 +132,15 @@ def mapping_opt_iterative_local_search(tg, ctg, ag, noc_rg, critical_rg, noncrit
     mapping_process_file.close()
     for Iteration in range(0, iteration_num):
         logging.info("        ITERATION:"+str(Iteration))
+        random_seed = Config.mapping_random_seed
+        random.seed(Config.mapping_random_seed)
+        for i in range(0, Iteration):
+            random_seed = random.randint(1, 100000)
         (current_tg, current_ctg, current_ag) = mapping_opt_local_search(tg, ctg, ag, noc_rg, critical_rg,
                                                                          noncritical_rg, shm, sub_iteration,
                                                                          False, detailed_report, logging,
                                                                          "LocalSearchMappingCost",
-                                                                         "mapping_process_file_name")
+                                                                         "mapping_process_file_name",random_seed)
         if current_tg is not False:
             current_cost = Mapping_Functions.mapping_cost_function(current_tg, current_ag, shm, False)
             if current_cost <= best_cost:

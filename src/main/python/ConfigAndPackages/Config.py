@@ -181,7 +181,7 @@ mapping_file_path = "mapping_report.txt"
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
 Mapping_Function = 'LocalSearch'
-LocalSearchIteration = 70
+LocalSearchIteration = 150
 IterativeLocalSearchIterations = 5
 mapping_random_seed = 2000
 #######################
@@ -190,7 +190,7 @@ SA_InitialTemp = 20
 SA_StopTemp = 1             # Stops annealing earlier if reaches this temp
 SA_ReportSolutions = False   # if True, it prints every accepted move to console
 # Available Annealing Schedule: 'Linear', 'Exponential', 'Adaptive', 'Markov', 'Logarithmic', 'Aart', 'Huang'
-SA_AnnealingSchedule = 'Exponential'
+SA_AnnealingSchedule = 'Adaptive'
 # Termination Criteria Could be either 'StopTemp' or 'IterationNum'
 TerminationCriteria = 'StopTemp'
 # --------------------------

@@ -400,7 +400,7 @@ def mapping_cost_function(tg, ag, shm, report, initial_mapping_string=None):
     for link in ag.edges():
         if shm.edge[link[0]][link[1]]['LinkHealth']:
             link_makespan_list.append(Scheduling_Functions_Links.FindLastAllocatedTimeOnLink(tg, ag,
-                                                                                            link, logging=None))
+                                                                                             link, logging=None))
     node_makspan_sd = statistics.stdev(node_makespan_list)
     node_makspan_max = max(node_makespan_list)
     link_makspan_sd = statistics.stdev(link_makespan_list)
@@ -520,7 +520,8 @@ def nodes_with_smallest_ct(ag, tg, shm, task):
         random_node = random.choice(ag.nodes())
     node_speed_down = 1+((100.0-shm.node[random_node]['NodeSpeed'])/100)
     task_execution_on_node = tg.node[task]['WCET']*node_speed_down
-    last_allocated_time_on_node = Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag, random_node, None)
+    last_allocated_time_on_node = Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag, random_node,
+                                                                                         logging=None)
     if last_allocated_time_on_node < tg.node[task]['Release']:
         smallest_completion_time = tg.node[task]['Release'] + task_execution_on_node
     else:
@@ -529,7 +530,8 @@ def nodes_with_smallest_ct(ag, tg, shm, task):
         if shm.node[node]['NodeHealth'] and (not ag.node[random_node]['PE'].Dark):
             node_speed_down = 1+((100.0-shm.node[node]['NodeSpeed'])/100)
             task_execution_on_node = tg.node[task]['WCET']*node_speed_down
-            last_allocated_time_on_node = Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag, node, None)
+            last_allocated_time_on_node = Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag, node,
+                                                                                                 logging=None)
             if last_allocated_time_on_node < tg.node[task]['Release']:
                 completion_on_node = tg.node[task]['Release'] + task_execution_on_node
             else:
@@ -540,7 +542,8 @@ def nodes_with_smallest_ct(ag, tg, shm, task):
     for node in ag.nodes():
         if shm.node[node]['NodeHealth'] and (not ag.node[random_node]['PE'].Dark):
             node_speed_down = 1+((100.0-shm.node[node]['NodeSpeed'])/100)
-            last_allocated_time_on_node = Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag, node, None)
+            last_allocated_time_on_node = Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag, node,
+                                                                                                 logging=None)
             task_execution_on_node = tg.node[task]['WCET']*node_speed_down
             if last_allocated_time_on_node < tg.node[task]['Release']:
                 completion_on_node = tg.node[task]['Release']+task_execution_on_node

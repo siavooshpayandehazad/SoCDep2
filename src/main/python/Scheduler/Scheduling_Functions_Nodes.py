@@ -15,8 +15,8 @@ def Add_TG_TaskToNode(TG, AG, Task, Node, StartTime, EndTime, logging):
     :param logging: logging file
     :return: True
     """
-    logging.info ("\t\tADDING TASK: "+str(Task)+" TO NODE: "+str(Node))
-    logging.info ("\t\tSTARTING TIME: "+str(StartTime)+" ENDING TIME:"+str(EndTime))
+    # logging.info ("\t\tADDING TASK: "+str(Task)+" TO NODE: "+str(Node))
+    # logging.info ("\t\tSTARTING TIME: "+str(StartTime)+" ENDING TIME:"+str(EndTime))
     AG.node[Node]['PE'].Scheduling[Task] = [StartTime, EndTime]
     TG.node[Task]['Node'] = Node
     return True
@@ -81,5 +81,7 @@ def FindFirstEmptySlotForTaskOnNode(TG, AG, SHM, Node, Task, PredecessorEndTime,
                 Found = True
                 break
     if Found == False:
-        FirstPossibleMappingTime = max(FirstPossibleMappingTime, Scheduling_Functions_Tasks.FindTask_ASAP_Scheduling(TG, AG, SHM, Task, Node, logging)[0])
+        FirstPossibleMappingTime = max(FirstPossibleMappingTime,
+                                       Scheduling_Functions_Tasks.find_task_asap_scheduling(TG, AG, SHM,
+                                                                                            Task, Node, logging)[0])
     return FirstPossibleMappingTime

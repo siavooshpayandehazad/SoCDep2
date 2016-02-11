@@ -17,7 +17,7 @@ def FindEdge_ASAP_Scheduling_Link(TG, AG, Edge, Link, batch, Prob, Report, loggi
     :return: Start Time and Stop Time
     """
     StartTime = max(Scheduling_Functions_Links.FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge,
-                                                                                  Prob, logging),
+                                                                                  Prob, logging=None),
                     FindEdgePredecessorsFinishTime(TG, AG, Edge, batch))
     EdgeExecutionOnLink = TG.edge[Edge[0]][Edge[1]]['ComWeight']
     if TG.edge[Edge[0]][Edge[1]]['Criticality'] == 'H':
@@ -66,7 +66,7 @@ def FindTestEdge_ASAP_Scheduling(TG, AG, Edge, Link, batch, Prob, Report, loggin
     :return: Start Time and End Time
     """
     StartTime = max(Scheduling_Functions_Links.FindLastAllocatedTimeOnLinkForTask(TG, AG, Link, Edge,
-                                                                                  Prob, logging),
+                                                                                  Prob, logging=None),
                     FindEdgePredecessorsFinishTime(TG, AG, Edge, batch))
     EdgeExecutionOnLink = TG.edge[Edge[0]][Edge[1]]['ComWeight']
     EndTime = StartTime+EdgeExecutionOnLink
