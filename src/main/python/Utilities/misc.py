@@ -90,7 +90,17 @@ def update_config(config_file_path):
 
     config = ConfigParser.ConfigParser(allow_no_value=True)
     config.read(config_file_path)
+    # ------------------------------------------------
+    #               Program_Config
+    # ------------------------------------------------
+    Config.enable_simulator = config.getboolean("Program_Config", "enable_simulator")
+    Config.ProgramRunTime = config.getint("Program_Config", "ProgramRunTime")
+    Config.DebugInfo = config.getboolean("Program_Config", "DebugInfo")
+    Config.DebugDetails = config.getboolean("Program_Config", "DebugDetails")
 
+    Config.TestMode = config.getboolean("Program_Config", "TestMode")
+    Config.MemoryProfiler = config.getboolean("Program_Config", "MemoryProfiler")
+    Config.EventDrivenFaultInjection = config.getboolean("Program_Config", "EventDrivenFaultInjection")
     # ------------------------------------------------
     #               TG_Config
     # ------------------------------------------------
@@ -268,6 +278,18 @@ def update_config(config_file_path):
 def generate_configfile():
     cfg_file = open('Generated_Files/ConfigFile.txt', 'w')
     cnfgpars = ConfigParser.ConfigParser(allow_no_value=True)
+    # ------------------------------------------------
+    #               Program_Config
+    # ------------------------------------------------
+    cnfgpars.add_section('Program_Config')
+    cnfgpars.set('Program_Config', 'enable_simulator', Config.enable_simulator)
+    cnfgpars.set('Program_Config', 'ProgramRunTime', Config.ProgramRunTime)
+    cnfgpars.set('Program_Config', 'DebugInfo', Config.DebugInfo)
+    cnfgpars.set('Program_Config', 'DebugDetails', Config.DebugDetails)
+
+    cnfgpars.set('Program_Config', 'TestMode', Config.TestMode)
+    cnfgpars.set('Program_Config', 'MemoryProfiler', Config.MemoryProfiler)
+    cnfgpars.set('Program_Config', 'EventDrivenFaultInjection', Config.EventDrivenFaultInjection)
     # ------------------------------------------------
     #               TG_Config
     # ------------------------------------------------
