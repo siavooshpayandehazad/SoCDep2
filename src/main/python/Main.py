@@ -77,8 +77,9 @@ system_starting_time = time.time()
 print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:"+str(round(system_starting_time-program_start_time)) +
        " SECONDS AFTER PROGRAM START...")
 
-Simulator.run_simulator(Config.ProgramRunTime, ag, shmu, noc_rg, logging)
-# FaultInjector.FaultInjector(system_starting_time, ag, shmu, noc_rg)
+if Config.enable_simulator:
+    Simulator.run_simulator(Config.ProgramRunTime, ag, shmu, noc_rg, logging)
+    # FaultInjector.FaultInjector(system_starting_time, ag, shmu, noc_rg)
 logging.info('Logging finished...')
 
 if Config.MemoryProfiler:

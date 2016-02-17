@@ -4,6 +4,7 @@ import PackageFile
 ################################################
 #          Program  Config
 ################################################
+enable_simulator = False
 ProgramRunTime = 900      # in cycles
 DebugInfo = False
 DebugDetails = False
@@ -180,8 +181,8 @@ read_mapping_from_file = False
 mapping_file_path = "mapping_report.txt"
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'SimulatedAnnealing'
-LocalSearchIteration = 150
+Mapping_Function = 'LocalSearch'
+LocalSearchIteration = 10
 IterativeLocalSearchIterations = 5
 mapping_random_seed = 2000
 #######################
@@ -190,7 +191,7 @@ SA_InitialTemp = 20
 SA_StopTemp = 1             # Stops annealing earlier if reaches this temp
 SA_ReportSolutions = False   # if True, it prints every accepted move to console
 # Available Annealing Schedule: 'Linear', 'Exponential', 'Adaptive', 'Markov', 'Logarithmic', 'Aart', 'Huang'
-SA_AnnealingSchedule = 'Adaptive'
+SA_AnnealingSchedule = 'Huang'
 # Termination Criteria Could be either 'StopTemp' or 'IterationNum'
 TerminationCriteria = 'StopTemp'
 # --------------------------
@@ -313,7 +314,7 @@ RG_Draw = False
 PMCG_Drawing = False
 TTG_Drawing = False
 Mapping_Dstr_Drawing = False
-Mapping_Drawing = False
+Mapping_Drawing = True
 Scheduling_Drawing = False
 SHM_Drawing = False          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
