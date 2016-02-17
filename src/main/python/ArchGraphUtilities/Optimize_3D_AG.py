@@ -5,26 +5,27 @@ from AG_Functions import return_node_number, return_node_location
 from RoutingAlgorithms import Routing, Calculate_Reachability, RoutingGraph_Reports
 import random
 import copy
+from Arch_Graph_Reports import draw_ag
 
 
-def optimize_ag_vertical_links(ag, shm, logging):
+def optimize_ag_vertical_links(ag, shmu, logging):
     if Config.Network_Z_Size < 2:
         raise ValueError("Can not optimize VL placement with 1 layer... (NOC is still 2D)")
     if Config.VL_OptAlg == "LocalSearch":
-        return opt_ag_vertical_link_local_search(ag, shm, logging)
+        return opt_ag_vertical_link_local_search(ag, shmu, logging)
     elif Config.VL_OptAlg == "IterativeLocalSearch":
-        return opt_ag_vertical_link_iterative_local_search(ag, shm, logging)
+        return opt_ag_vertical_link_iterative_local_search(ag, shmu, logging)
     else:
         raise ValueError("VL_OptAlg parameter is not valid")
 
 
-def opt_ag_vertical_link_iterative_local_search(ag, shm, logging):
+def opt_ag_vertical_link_iterative_local_search(ag, shmu, logging):
     best_vertical_link_list = []
     starting_cost = None
     for j in range(0, Config.AG_Opt_Iterations_ILS):
-        remove_all_vertical_links(shm, ag)
-        vertical_link_list_init = copy.deepcopy(find_feasible_ag_vertical_link_placement(ag, shm))
-        routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shm,
+        remove_all_vertical_links(shmu, ag)
+        vertical_link_list_init = copy.deepcopy(find_feasible_ag_vertical_link_placement(ag, shmu))
+        routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu,
                                                                     Config.UsedTurnModel, False, False))
         cost = Calculate_Reachability.ReachabilityMetric(ag, routing_graph, False)
         current_best_cost = cost
@@ -37,6 +38,10 @@ def opt_ag_vertical_link_iterative_local_search(ag, shm, logging):
             starting_cost = cost
             best_cost = cost
             best_vertical_link_list = vertical_link_list_init[:]
+            ag_temp = copy.deepcopy(ag)
+            cleanup_ag(ag_temp, shmu)
+            draw_ag(ag_temp, "AG_VLOpt_init")
+            del ag_temp
         else:
             print ("\033[33m* NOTE::\033[0m STARITNG NEW ROUND: "+str(j+1)+"\t STARTING COST:"+str(cost))
             if cost > best_cost:
@@ -46,9 +51,9 @@ def opt_ag_vertical_link_iterative_local_search(ag, shm, logging):
                        str(cost) + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS))
         vertical_link_list = vertical_link_list_init[:]
         for i in range(0, Config.AG_Opt_Iterations_LS):
-            new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(ag, shm,
+            new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(ag, shmu,
                                                                                            vertical_link_list))
-            new_routing_graph = Routing.GenerateNoCRouteGraph(ag, shm, Config.UsedTurnModel,
+            new_routing_graph = Routing.GenerateNoCRouteGraph(ag, shmu, Config.UsedTurnModel,
                                                               False, False)
             cost = Calculate_Reachability.ReachabilityMetric(ag, new_routing_graph, False)
 
@@ -59,7 +64,7 @@ def opt_ag_vertical_link_iterative_local_search(ag, shm, logging):
                     print ("\t \tMOVED TO SOLUTION WITH COST:" + str(cost)
                            + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS+i))
             else:
-                return_to_solution(ag, shm, vertical_link_list)
+                return_to_solution(ag, shmu, vertical_link_list)
 
             if cost > best_cost:
                 best_vertical_link_list = vertical_link_list[:]
@@ -67,17 +72,17 @@ def opt_ag_vertical_link_iterative_local_search(ag, shm, logging):
                 print ("\033[32m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:" +
                        str(cost) + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS+i))
 
-    return_to_solution(ag, shm, best_vertical_link_list)
+    return_to_solution(ag, shmu, best_vertical_link_list)
     print ("-------------------------------------")
     print ("STARTING COST:"+str(starting_cost)+"\tFINAL COST:"+str(best_cost))
     print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(best_cost-starting_cost)/starting_cost))+" %")
-    return shm
+    return shmu
 
 
-def opt_ag_vertical_link_local_search(ag, shm, logging):
-    remove_all_vertical_links(shm, ag)
-    vertical_link_list = find_feasible_ag_vertical_link_placement(ag, shm)
-    routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shm, Config.UsedTurnModel,
+def opt_ag_vertical_link_local_search(ag, shmu, logging):
+    remove_all_vertical_links(shmu, ag)
+    vertical_link_list = find_feasible_ag_vertical_link_placement(ag, shmu)
+    routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu, Config.UsedTurnModel,
                                                                 Config.DebugInfo, Config.DebugDetails))
     cost = Calculate_Reachability.ReachabilityMetric(ag, routing_graph, False)
     print ("=====================================")
@@ -87,10 +92,14 @@ def opt_ag_vertical_link_local_search(ag, shm, logging):
     print ("INITIAL REACHABILITY METRIC: "+str(cost))
     starting_cost = cost
     best_cost = cost
+    ag_temp = copy.deepcopy(ag)
+    cleanup_ag(ag_temp, shmu)
+    draw_ag(ag_temp, "AG_VLOpt_init")
+    del ag_temp
     for i in range(0, Config.AG_Opt_Iterations_LS):
-        new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(ag, shm,
+        new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(ag, shmu,
                                                                                        vertical_link_list))
-        new_routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shm,
+        new_routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu,
                                                                         Config.UsedTurnModel, False, False))
         cost = Calculate_Reachability.ReachabilityMetric(ag, new_routing_graph, False)
         if cost >= best_cost:
@@ -102,12 +111,12 @@ def opt_ag_vertical_link_local_search(ag, shm, logging):
                 # print ("\033[33m* NOTE::\033[0mMOVED TO SOLUTION WITH COST:" + str(Cost) + "\t ITERATION: "+str(i))
                 pass
         else:
-            return_to_solution(ag, shm, vertical_link_list)
+            return_to_solution(ag, shmu, vertical_link_list)
             vertical_link_list = copy.deepcopy(vertical_link_list)
     print ("-------------------------------------")
     print ("STARTING COST:"+str(starting_cost)+"\tFINAL COST:"+str(best_cost))
     print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(best_cost-starting_cost)/starting_cost))+" %")
-    return shm
+    return shmu
 
 
 def find_all_vertical_links(ag):

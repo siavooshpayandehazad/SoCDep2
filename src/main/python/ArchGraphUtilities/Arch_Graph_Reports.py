@@ -22,8 +22,8 @@ def draw_ag(ag, file_name):
     node_distance_x = (6 * node_size * Config.Network_X_Size * (number_of_layers+1))
     node_distance_y = (6 * node_size * Config.Network_Y_Size * (number_of_layers+1))
 
-    offset_x = (4 * node_size * Config.Network_X_Size)
-    offset_y = (4 * node_size * Config.Network_Y_Size)
+    offset_x = (6 * node_size * Config.Network_X_Size)
+    offset_y = (6 * node_size * Config.Network_Y_Size)
 
     for Node in ag.nodes():
         x, y, z = return_node_location(Node)
