@@ -41,9 +41,12 @@ def RandomFaultGeneration(shm):
     FaultType = random.choice(FaultTypes)
     if ChosenFault == 'Link':
         ChosenLink = random.choice(shm.edges())
+        while not shm.edge[ChosenLink[0]][ChosenLink[1]]['LinkHealth']:
+            ChosenLink = random.choice(shm.edges())
         return ChosenLink, FaultType
+
     elif ChosenFault == 'Turn':
-        ChosenNode = random.choice(shm.nodes())
+        ChosenNode = random.choice(shm.nodesx())
         ChosenTurn = random.choice(shm.node[ChosenNode]['TurnsHealth'].keys())
         while not ChosenTurn in Config.UsedTurnModel:
             ChosenTurn = random.choice(shm.node[ChosenNode]['TurnsHealth'].keys())
