@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# if you run this script, the results would be generated in your result folder 
+# at: ScheduleAndDepend/src/main/results 
+# The results contain the log files and also all the drawings!
+# enjoy!
+
+
+if [ ! -d "../results" ]; then
+mkdir ../results/
+else
+rm -rf ../results/*
+fi
+
+
+CONFFILES=MappingExperiments/ConfigFile*
+counter=1
+for conffile in $CONFFILES
+do 
+   rm ../python/LOGS/*
+
+   cd ../python
+   echo ../scripts/$conffile
+   python Main.py -CONF ../scripts/$conffile
+   cd ../scripts
+
+   FILES=../python/GraphDrawings/*.png
+   DEST_FOLDER=../results/config_$counter
+   mkdir $DEST_FOLDER
+   for f in $FILES
+   do
+      #echo “copying $f to $DEST_FOLDER”  
+      cp $f $DEST_FOLDER
+   done
+
+   FILES=../python/LOGS/*
+   for f in $FILES
+   do
+      #echo “copying $f to $DEST_FOLDER”  
+      cp $f $DEST_FOLDER
+   done
+   counter=`expr $counter + 1`
+done
+
