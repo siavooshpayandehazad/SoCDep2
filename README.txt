@@ -147,3 +147,5 @@ Project Directory Map:
 
 24 directories, 83 files
 ===============================================================================
+
+Join the chat at https://gitter.im/siavooshpayandehazad/ScheduleAndDepend
