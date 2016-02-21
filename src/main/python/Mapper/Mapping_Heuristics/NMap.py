@@ -6,24 +6,24 @@
 # On November 13th 2015, the following sections were added by Behrad Niazmand
 # Swapping phase of NMAP algorithm
 
-import copy, random
+import copy
+import random
 from TaskGraphUtilities import TG_Functions
 from ArchGraphUtilities import AG_Functions
 from Scheduler import Scheduler
 from Mapper import Mapping_Functions
 from RoutingAlgorithms import Calculate_Reachability
-from networkx.classes.function import edges
 
 
-def NMap(tg, ag, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
+def NMap(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
     """
     Performs NMap Mapping algorithm
     :param tg: Task Graph
     :param AG: Architecture Graph
-    :param NoCRG: NoC Routing Graph
-    :param CriticalRG: NoC Routing Graph for Critical Region
-    :param NonCriticalRG: NoC Routing Graph for Non-Critical Region
-    :param SHM: System Health Map
+    :param noc_rg: NoC Routing Graph
+    :param critical_rg: NoC Routing Graph for Critical Region
+    :param non_critical_rg: NoC Routing Graph for Non-Critical Region
+    :param shm: System Health Map
     :param logging: logging File
     :return: TG and AG
     """
@@ -35,12 +35,12 @@ def NMap(tg, ag, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
 
     mapped_tasks = []
     unmapped_tasks = copy.deepcopy(tg.nodes())
-    allocated_nodes =[]
+    allocated_nodes = []
     unallocated_nodes = copy.deepcopy(ag.nodes())
 
     # remove all broken nodes from unallocated_nodes list
     for node in unallocated_nodes:
-        if not SHM.node[node]['NodeHealth']:
+        if not shm.node[node]['NodeHealth']:
             unallocated_nodes.remove(node)
             print ("REMOVED BROKEN NODE "+str(node)+" FROM UN-ALLOCATED NODES")
 
@@ -60,7 +60,7 @@ def NMap(tg, ag, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
 
     print ("------------------")
     print ("STEP 2:")
-    node_neighbors_dict = AG_Functions.node_neighbors(ag, SHM)
+    node_neighbors_dict = AG_Functions.node_neighbors(ag, shm)
     sorted_node_neighbors = sorted(node_neighbors_dict, key=node_neighbors_dict.get, reverse=True)
     max_neighbors_node = AG_Functions.max_node_neighbors(node_neighbors_dict, sorted_node_neighbors)
     print ("\t SORTED NODES BY NUMBER OF NEIGHBOURS:\n"+"\t "+str(sorted_node_neighbors))
@@ -74,8 +74,8 @@ def NMap(tg, ag, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
     unallocated_nodes.remove(chosen_node)
     print ("\t REMOVED NODE "+str(chosen_node)+" FROM UN-ALLOCATED NODES LIST")
     # Map Chosen Task on Chosen Node...
-    if Mapping_Functions.map_task_to_node(tg, ag, SHM, NoCRG, CriticalRG,
-                                       NonCriticalRG, chosen_task, chosen_node, logging):
+    if Mapping_Functions.map_task_to_node(tg, ag, shm, noc_rg, critical_rg,
+                                          non_critical_rg, chosen_task, chosen_node, logging):
         print ("\t \033[32m* NOTE::\033[0mTASK "+str(chosen_task)+" MAPPED ON NODE "+str(chosen_node))
     else:
         raise ValueError("Mapping task on node failed...")
@@ -148,7 +148,8 @@ def NMap(tg, ag, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                     com_weight += tg.edge[chosen_task][mapped_task]["ComWeight"]
                     destination_node = tg.node[mapped_task]['Node']
                     # here we check if this node is even reachable from the chosen node?
-                    if Calculate_Reachability.IsDestReachableFromSource(NoCRG, unallocated_node, destination_node):
+                    if Calculate_Reachability.is_destination_reachable_from_source(noc_rg, unallocated_node,
+                                                                                   destination_node):
                         manhatan_distance = AG_Functions.manhattan_distance(unallocated_node, destination_node)
                         cost += manhatan_distance * com_weight
                     else:
@@ -158,7 +159,8 @@ def NMap(tg, ag, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
                     com_weight += tg.edge[mapped_task][chosen_task]["ComWeight"]
                     destination_node = tg.node[mapped_task]['Node']
                     # here we check if this node is even reachable from the chosen node?
-                    if Calculate_Reachability.IsDestReachableFromSource(NoCRG, destination_node, unallocated_node):
+                    if Calculate_Reachability.is_destination_reachable_from_source(noc_rg, destination_node,
+                                                                                   unallocated_node):
                         manhatan_distance = AG_Functions.manhattan_distance(unallocated_node, destination_node)
                         cost += manhatan_distance * com_weight
                     else:
@@ -194,8 +196,8 @@ def NMap(tg, ag, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
         unallocated_nodes.remove(chosen_node)
         print ("\t REMOVED NODE "+str(chosen_node)+" FROM UN-ALLOCATED NODES LIST")
 
-        if Mapping_Functions.map_task_to_node(tg, ag, SHM, NoCRG, CriticalRG,
-                                           NonCriticalRG, chosen_task, chosen_node, logging):
+        if Mapping_Functions.map_task_to_node(tg, ag, shm, noc_rg, critical_rg,
+                                              non_critical_rg, chosen_task, chosen_node, logging):
             print ("\t \033[32m* NOTE::\033[0mTASK "+str(chosen_task)+" MAPPED ON NODE "+str(chosen_node))
         else:
             raise ValueError("Mapping task on node failed...")
@@ -212,7 +214,7 @@ def NMap(tg, ag, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
             comm_cost = calculate_com_cost(tg)
 
             # Swap (node_id_1 , node_id_2)
-            swap_nodes(tg, ag, SHM, NoCRG, CriticalRG, NonCriticalRG, node_id_1, node_id_2, logging)
+            swap_nodes(tg, ag, shm, noc_rg, critical_rg, non_critical_rg, node_id_1, node_id_2, logging)
             # Check and calculate communication cost for all communication flows in the task graph
             #   (which is equal to the total number of edges in the application graph
             #   starting from the communication flow with the largest communication volume first
@@ -226,13 +228,13 @@ def NMap(tg, ag, NoCRG, CriticalRG, NonCriticalRG, SHM, logging):
             else:
                 pass
                 # print "Reverting to old solution"
-                swap_nodes(tg, ag, SHM, NoCRG, CriticalRG, NonCriticalRG,
+                swap_nodes(tg, ag, shm, noc_rg, critical_rg, non_critical_rg,
                            node_id_2, node_id_1, logging)
             # Reset the comm_cost after each swapping
 
     # End of Swapping phase
     print "SWAP PROCESS FINISHED..."
-    Scheduler.schedule_all(tg, ag, SHM, True, False, logging)
+    Scheduler.schedule_all(tg, ag, shm, True, False, logging)
     return tg, ag
 
 
@@ -254,14 +256,14 @@ def calculate_com_cost(tg):
     return cost
 
 
-def swap_nodes(tg, ag, SHM, NoCRG, critical_routing_graph,
+def swap_nodes(tg, ag, shm, noc_rg, critical_routing_graph,
                non_critical_routing_graph, node_1, node_2, logging):
     """
     Swaps tasks of two nodes with each other!
     :param tg:  Task Graph
     :param ag:  Architecture Graph
-    :param SHM: System Health Map
-    :param NoCRG: NoC Routing Graph
+    :param shm: System Health Map
+    :param noc_rg: NoC Routing Graph
     :param critical_routing_graph: NoC Routing Graph of Critical Region
     :param non_critical_routing_graph: NoC routing Graph of NonCritical Region
     :param node_1: first chosen node for swapping
@@ -274,14 +276,14 @@ def swap_nodes(tg, ag, SHM, NoCRG, critical_routing_graph,
 
     task_1 = ag.node[node_1]['PE'].MappedTasks[0]
     task_2 = ag.node[node_2]['PE'].MappedTasks[0]
-    Mapping_Functions.remove_task_from_node(tg, ag, NoCRG, critical_routing_graph,
-                                         non_critical_routing_graph, task_1, node_1, logging)
-    Mapping_Functions.remove_task_from_node(tg, ag, NoCRG, critical_routing_graph,
-                                         non_critical_routing_graph, task_2, node_2, logging)
-    if not Mapping_Functions.map_task_to_node(tg, ag, SHM, NoCRG, critical_routing_graph,
-                                           non_critical_routing_graph, task_1, node_2, logging):
+    Mapping_Functions.remove_task_from_node(tg, ag, noc_rg, critical_routing_graph,
+                                            non_critical_routing_graph, task_1, node_1, logging)
+    Mapping_Functions.remove_task_from_node(tg, ag, noc_rg, critical_routing_graph,
+                                            non_critical_routing_graph, task_2, node_2, logging)
+    if not Mapping_Functions.map_task_to_node(tg, ag, shm, noc_rg, critical_routing_graph,
+                                              non_critical_routing_graph, task_1, node_2, logging):
         raise ValueError("swap_nodes FAILED WHILE TYING TO MAP FIRST CHOSEN TASK ON SECOND NODE ")
-    if not Mapping_Functions.map_task_to_node(tg, ag, SHM, NoCRG, critical_routing_graph,
-                                           non_critical_routing_graph, task_2, node_1, logging):
+    if not Mapping_Functions.map_task_to_node(tg, ag, shm, noc_rg, critical_routing_graph,
+                                              non_critical_routing_graph, task_2, node_1, logging):
         raise ValueError("swap_nodes FAILED WHILE TYING TO MAP SECOND CHOSEN TASK ON FIRST NODE ")
     return True

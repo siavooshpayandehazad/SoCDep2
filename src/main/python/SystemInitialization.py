@@ -82,7 +82,7 @@ def initialize_system(logging):
             Reachability_Test.ReachabilityTest()
         critical_rg, noncritical_rg = None, None
         Calculate_Reachability.calculate_reachability(ag, noc_rg)
-        Calculate_Reachability.OptimizeReachabilityRectangles(ag, Config.NumberOfRects)
+        Calculate_Reachability.optimize_reachability_rectangles(ag, Config.NumberOfRects)
         # ReachabilityReports.ReportReachability(ag)
         ReachabilityReports.ReportReachabilityInFile(ag, "ReachAbilityNodeReport")
         ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(ag)

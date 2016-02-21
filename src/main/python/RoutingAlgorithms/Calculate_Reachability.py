@@ -3,12 +3,14 @@
 # NoCDepend: A flexible and scalable Dependability Technique for 3D Networks-on-Chip
 # how ever, at the moment we only implemented a 2D version of it.
 
-import networkx,re,copy
+import networkx
+import copy
 from ConfigAndPackages import Config
 import Routing
 from ArchGraphUtilities import AG_Functions
 
-def calculate_reachability(ag, NoCRG):
+
+def calculate_reachability(ag, noc_rg):
     if '3D' in Config.NetworkTopology:
         port_list = ['U', 'N', 'E', 'W', 'S', 'D']
     else:
@@ -20,12 +22,12 @@ def calculate_reachability(ag, NoCRG):
         for destination_node in ag.nodes():
             # if SourceNode != DestinationNode:
                 for port in port_list:
-                    if not IsDestinationReachableViaPort(NoCRG, source_node, port, destination_node, False, False):
+                    if not is_destination_reachable_via_port(noc_rg, source_node, port, destination_node, False):
                         # print ("No Path From", SourceNode,Port,"To",DestinationNode)
                         ag.node[source_node]['Router'].Unreachable[port].append(destination_node)
 
 
-def IsDestinationReachableViaPort(noc_rg, source_node, port, destination_node, return_all_paths, report):
+def is_destination_reachable_via_port(noc_rg, source_node, port, destination_node, report):
 
     # the Source port should be output port since this is output of router to other routers
     source = str(source_node)+str(port)+str('O')
@@ -35,11 +37,12 @@ def IsDestinationReachableViaPort(noc_rg, source_node, port, destination_node, r
     if networkx.has_path(noc_rg, source, destination):
         return True
     else:
-        if report:print ("\t\tNO PATH FOUND FROM: ", source, "TO:", destination)
+        if report:
+            print ("\t\tNO PATH FOUND FROM: ", source, "TO:", destination)
         return False
 
 
-def IsDestReachableFromSource(noc_rg, source_node, destination_node):
+def is_destination_reachable_from_source(noc_rg, source_node, destination_node):
 
     # the Source port should be input port since this is input of router
     # (which will be connected to PE's output port)
@@ -53,7 +56,7 @@ def IsDestReachableFromSource(noc_rg, source_node, destination_node):
         return False
 
 
-def HowManyPathsFromSource(noc_rg, source_node, destination_node):
+def how_many_paths_from_source(noc_rg, source_node, destination_node):
     source = str(source_node)+str('L')+str('I')
     destination = str(destination_node)+str('L')+str('O')
     if networkx.has_path(noc_rg, source, destination):
@@ -63,7 +66,7 @@ def HowManyPathsFromSource(noc_rg, source_node, destination_node):
         return 0
 
 
-def OptimizeReachabilityRectangles(ag, number_of_rectangles):
+def optimize_reachability_rectangles(ag, number_of_rectangles):
     # the idea of merging is that we make a rectangle with representing 2 vertex of it,
     # namely north-west and south-east vertex.
     # Then we try to generate optimal rectangle set that covers all of the nodes...
@@ -77,14 +80,14 @@ def OptimizeReachabilityRectangles(ag, number_of_rectangles):
             if len(ag.node[node]['Router'].Unreachable[port]) == Config.Network_X_Size*Config.Network_Y_Size:
                 rectangle_list[0] = (0, Config.Network_X_Size*Config.Network_Y_Size-1)
             else:
-                rectangle_list = copy.deepcopy(MergeNodeWithRectangles(rectangle_list,
-                                                                      ag.node[node]['Router'].Unreachable[port]))
+                rectangle_list = copy.deepcopy(merge_node_with_rectangles(rectangle_list,
+                                                                          ag.node[node]['Router'].Unreachable[port]))
             ag.node[node]['Router'].Unreachable[port] = rectangle_list
     print ("RECTANGLE OPTIMIZATION FINISHED...")
     return None
 
 
-def MergeNodeWithRectangles(rectangle_list, unreachable_node_list):
+def merge_node_with_rectangles(rectangle_list, unreachable_node_list):
     # todo: in this function if we can not perform any loss-less merge, we terminate the process...
     # which is bad... we need to make sure that this node is covered
     for unreachable_node in unreachable_node_list:
@@ -117,8 +120,8 @@ def MergeNodeWithRectangles(rectangle_list, unreachable_node_list):
                     # if we are not losing any Node, we perform Merge...
                     if loss_less_merge:
                         #                                            merged X      Merged Y       Merged Z
-                        merged_1 = AG_Functions.return_node_number(location_1[0],location_1[1], location_1[2])
-                        merged_2 = AG_Functions.return_node_number(location_2[0],location_2[1], location_2[2])
+                        merged_1 = AG_Functions.return_node_number(location_1[0], location_1[1], location_1[2])
+                        merged_2 = AG_Functions.return_node_number(location_2[0], location_2[1], location_2[2])
                         rectangle_list[rectangle] = copy.deepcopy((merged_1, merged_2))
                         covered = True
                         break
@@ -129,11 +132,11 @@ def MergeNodeWithRectangles(rectangle_list, unreachable_node_list):
     return rectangle_list
 
 
-def is_node_inside_rectangle(Rect,Node):
-    r1x, r1y, r1z = AG_Functions.return_node_location(Rect[0])
-    r2x, r2y, r2z = AG_Functions.return_node_location(Rect[1])
-    NodeX, NodeY, NodeZ = AG_Functions.return_node_location(Node)
-    if r1x <= NodeX <= r2x and r1y <= NodeY <= r2y and r1z <= NodeZ <= r2z:
+def is_node_inside_rectangle(rect, node):
+    r1x, r1y, r1z = AG_Functions.return_node_location(rect[0])
+    r2x, r2y, r2z = AG_Functions.return_node_location(rect[1])
+    node_x, node_y, node_z = AG_Functions.return_node_location(node)
+    if r1x <= node_x <= r2x and r1y <= node_y <= r2y and r1z <= node_z <= r2z:
         return True
     else:
         return False
@@ -154,75 +157,74 @@ def merge_rectangle_with_node(rect_ll, rect_ur, node):
     return location_1, location_2
 
 
-def ClearReachabilityCalculations(ag):
+def clear_reachability_calculations(ag):
     for node in ag.nodes():
         for port in ag.node[node]['Router'].Unreachable:
             ag.node[node]['Router'].Unreachable[port] = {}
     return None
 
 
-def calculate_reachability_with_regions(AG, SHMU):
+def calculate_reachability_with_regions(ag, shmu):
     # first Add the VirtualBrokenLinksForNonCritical
-    AlreadyBrokenLinks= []
-    for VirtualBrokenLink in Config.VirtualBrokenLinksForNonCritical:
-        if SHMU.SHM.edge[VirtualBrokenLink[0]][VirtualBrokenLink[1]]['LinkHealth']:
-            SHMU.break_link(VirtualBrokenLink,True)
+    already_broken_links = []
+    for virtual_broken_link in Config.VirtualBrokenLinksForNonCritical:
+        if shmu.SHM.edge[virtual_broken_link[0]][virtual_broken_link[1]]['LinkHealth']:
+            shmu.break_link(virtual_broken_link, True)
         else:
-            AlreadyBrokenLinks.append(VirtualBrokenLink)
+            already_broken_links.append(virtual_broken_link)
     # Construct The RoutingGraph
-    NonCriticalRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHMU, Config.UsedTurnModel, False, False))
+    non_critical_rg = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu, Config.UsedTurnModel, False, False))
     # calculate the rectangles for Non-Critical
-    calculate_reachability(AG, NonCriticalRG)
+    calculate_reachability(ag, non_critical_rg)
     # save Non Critical rectangles somewhere
-    NonCriticalRect={}
-    GateWayRect={}
-    for Node in Config.GateToNonCritical:
-        GateWayRect[Node] = copy.deepcopy(AG.node[Node]['Router'].Unreachable)
-    for Node in AG.nodes():
-        if Node not in Config.CriticalRegionNodes:
-            NonCriticalRect[Node] = copy.deepcopy(AG.node[Node]['Router'].Unreachable)
+    non_critical_rect = {}
+    gate_way_rect = {}
+    for node in Config.GateToNonCritical:
+        gate_way_rect[node] = copy.deepcopy(ag.node[node]['Router'].Unreachable)
+    for node in ag.nodes():
+        if node not in Config.CriticalRegionNodes:
+            non_critical_rect[node] = copy.deepcopy(ag.node[node]['Router'].Unreachable)
     # Restore the VirtualBrokenLinksForNonCritical
-    for VirtualBrokenLink in Config.VirtualBrokenLinksForNonCritical:
-        if VirtualBrokenLink not in AlreadyBrokenLinks:
-            SHMU.restore_broken_link(VirtualBrokenLink,True)
+    for virtual_broken_link in Config.VirtualBrokenLinksForNonCritical:
+        if virtual_broken_link not in already_broken_links:
+            shmu.restore_broken_link(virtual_broken_link, True)
 
-    AlreadyBrokenLinks = []
+    already_broken_links = []
     # Add VirtualBrokenLinksForCritical
-    for VirtualBrokenLink in Config.VirtualBrokenLinksForCritical:
-        if SHMU.SHM.edge[VirtualBrokenLink[0]][VirtualBrokenLink[1]]['LinkHealth']:
-            SHMU.break_link(VirtualBrokenLink, True)
+    for virtual_broken_link in Config.VirtualBrokenLinksForCritical:
+        if shmu.SHM.edge[virtual_broken_link[0]][virtual_broken_link[1]]['LinkHealth']:
+            shmu.break_link(virtual_broken_link, True)
         else:
-            AlreadyBrokenLinks.append(VirtualBrokenLink)
-    ClearReachabilityCalculations(AG)
+            already_broken_links.append(virtual_broken_link)
+    clear_reachability_calculations(ag)
     # Construct The RoutingGraph
-    CriticalRG = copy.deepcopy(Routing.GenerateNoCRouteGraph(AG, SHMU, Config.UsedTurnModel, False, False))
+    critical_rg = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu, Config.UsedTurnModel, False, False))
     # calculate the rectangles for Critical
-    calculate_reachability(AG, CriticalRG)
+    calculate_reachability(ag, critical_rg)
     # save Critical rectangles somewhere
-    CriticalRect={}
-    for Node in Config.CriticalRegionNodes:
-        CriticalRect[Node] = copy.deepcopy(AG.node[Node]['Router'].Unreachable)
-    for Node in Config.GateToCritical:
-        GateWayRect[Node] = copy.deepcopy(AG.node[Node]['Router'].Unreachable)
+    critical_rect = {}
+    for node in Config.CriticalRegionNodes:
+        critical_rect[node] = copy.deepcopy(ag.node[node]['Router'].Unreachable)
+    for node in Config.GateToCritical:
+        gate_way_rect[node] = copy.deepcopy(ag.node[node]['Router'].Unreachable)
     # Restore the VirtualBrokenLinksForNonCritical
-    for VirtualBrokenLink in Config.VirtualBrokenLinksForCritical:
-        if VirtualBrokenLink not in AlreadyBrokenLinks:
-            SHMU.restore_broken_link(VirtualBrokenLink, True)
+    for virtual_broken_link in Config.VirtualBrokenLinksForCritical:
+        if virtual_broken_link not in already_broken_links:
+            shmu.restore_broken_link(virtual_broken_link, True)
 
     # Combine Lists
-    for Node in AG.nodes():
-        if Node in CriticalRect:
-            AG.node[Node]['Router'].Unreachable = copy.deepcopy(CriticalRect[Node])
-        elif Node in Config.GateToCritical:
-            AG.node[Node]['Router'].Unreachable = copy.deepcopy(GateWayRect[Node])
-        elif Node in Config.GateToNonCritical:
-            AG.node[Node]['Router'].Unreachable = copy.deepcopy(GateWayRect[Node])
+    for node in ag.nodes():
+        if node in critical_rect:
+            ag.node[node]['Router'].Unreachable = copy.deepcopy(critical_rect[node])
+        elif node in Config.GateToCritical:
+            ag.node[node]['Router'].Unreachable = copy.deepcopy(gate_way_rect[node])
+        elif node in Config.GateToNonCritical:
+            ag.node[node]['Router'].Unreachable = copy.deepcopy(gate_way_rect[node])
         else:
-            AG.node[Node]['Router'].Unreachable = copy.deepcopy(NonCriticalRect[Node])
+            ag.node[node]['Router'].Unreachable = copy.deepcopy(non_critical_rect[node])
     # optimize the results
-    OptimizeReachabilityRectangles(AG, Config.NumberOfRects)
-    return CriticalRG, NonCriticalRG
-
+    optimize_reachability_rectangles(ag, Config.NumberOfRects)
+    return critical_rg, non_critical_rg
 
 
 def reachability_metric(ag, noc_rg, report):
@@ -241,7 +243,7 @@ def reachability_metric(ag, noc_rg, report):
     for source_node in ag.nodes():
         for destination_node in ag.nodes():
             if source_node != destination_node:
-                if IsDestReachableFromSource(noc_rg, source_node, destination_node):
+                if is_destination_reachable_from_source(noc_rg, source_node, destination_node):
                     reachability_counter += 1
     r_metric = float(reachability_counter)
     if report:
