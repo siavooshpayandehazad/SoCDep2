@@ -68,7 +68,7 @@ def initialize_system(logging):
            + str(round(time.time()-routing_graph_start_time))+" SECONDS")
     # this is for double checking...
     if Config.FindOptimumAG:
-        Calculate_Reachability.ReachabilityMetric(ag, noc_rg, True)
+        Calculate_Reachability.reachability_metric(ag, noc_rg, True)
     # Some visualization...
     if Config.RG_Draw:
         RoutingGraph_Reports.draw_rg(noc_rg)

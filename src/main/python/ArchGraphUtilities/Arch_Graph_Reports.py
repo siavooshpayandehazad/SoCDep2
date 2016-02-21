@@ -7,7 +7,6 @@ from AG_Functions import return_node_location
 import math
 
 
-
 def draw_ag(ag, file_name):
     """
     Generates Visualizations of the Architecture Graph and saves it in "GraphDrawings/FileName.png"
@@ -19,7 +18,7 @@ def draw_ag(ag, file_name):
     color_list = []
 
     number_of_layers = Config.Network_Z_Size
-    largest_number = Config.Network_X_Size*Config.Network_Y_Size*Config.Network_Z_Size -1
+    largest_number = Config.Network_X_Size*Config.Network_Y_Size*Config.Network_Z_Size - 1
     node_size = math.log10(largest_number)*60
     # print "Node Size", node_size
 
@@ -29,7 +28,7 @@ def draw_ag(ag, file_name):
     offset_x = 0.2
     offset_y = 0.2
 
-    plt.figure(num=None, figsize=(3*Config.Network_X_Size, 3*Config.Network_Y_Size), dpi=350, facecolor='w', edgecolor='k')
+    plt.figure(num=None, figsize=(3*Config.Network_X_Size, 3*Config.Network_Y_Size), dpi=350)
 
     for Node in ag.nodes():
         x, y, z = return_node_location(Node)
@@ -57,7 +56,6 @@ def draw_vl_opt():
     print ("===========================================")
     print ("GENERATING VL OPTIMIZATION VISUALIZATIONS...")
     fig, ax1 = plt.subplots()
-    solution_num = None
     try:
         vl_cost_file = open('Generated_Files/Internal/vl_opt_cost.txt', 'r')
         cost = []

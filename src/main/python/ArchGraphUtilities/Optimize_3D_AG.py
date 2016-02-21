@@ -2,7 +2,7 @@
 
 from ConfigAndPackages import Config
 from AG_Functions import return_node_number, return_node_location
-from RoutingAlgorithms import Routing, Calculate_Reachability, RoutingGraph_Reports
+from RoutingAlgorithms import Routing, Calculate_Reachability
 import random
 import copy
 from Arch_Graph_Reports import draw_ag, draw_vl_opt
@@ -41,7 +41,7 @@ def opt_ag_vertical_link_iterative_local_search(ag, shmu, cost_file_name, loggin
         vertical_link_list_init = copy.deepcopy(find_feasible_ag_vertical_link_placement(ag, shmu))
         routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu,
                                                                     Config.UsedTurnModel, False, False))
-        cost = Calculate_Reachability.ReachabilityMetric(ag, routing_graph, False)
+        cost = vl_cost_function(ag, routing_graph)
         ag_cost_file.write(str(cost)+"\n")
         current_best_cost = cost
         if j == 0:
@@ -70,7 +70,7 @@ def opt_ag_vertical_link_iterative_local_search(ag, shmu, cost_file_name, loggin
                                                                                            vertical_link_list))
             new_routing_graph = Routing.GenerateNoCRouteGraph(ag, shmu, Config.UsedTurnModel,
                                                               False, False)
-            cost = Calculate_Reachability.ReachabilityMetric(ag, new_routing_graph, False)
+            cost = vl_cost_function(ag, new_routing_graph)
             ag_cost_file.write(str(cost)+"\n")
             if cost >= current_best_cost:
                 vertical_link_list = new_vertical_link_list[:]
@@ -105,7 +105,7 @@ def opt_ag_vertical_link_local_search(ag, shmu, cost_file_name, logging):
     vertical_link_list = find_feasible_ag_vertical_link_placement(ag, shmu)
     routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu, Config.UsedTurnModel,
                                                                 Config.DebugInfo, Config.DebugDetails))
-    cost = Calculate_Reachability.ReachabilityMetric(ag, routing_graph, False)
+    cost = vl_cost_function(ag, routing_graph)
     print ("=====================================")
     print ("STARTING AG VERTICAL LINK PLACEMENT OPTIMIZATION")
     print ("NUMBER OF LINKS: "+str(Config.VerticalLinksNum))
@@ -126,7 +126,7 @@ def opt_ag_vertical_link_local_search(ag, shmu, cost_file_name, logging):
                                                                                        vertical_link_list))
         new_routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu,
                                                                         Config.UsedTurnModel, False, False))
-        cost = Calculate_Reachability.ReachabilityMetric(ag, new_routing_graph, False)
+        cost = vl_cost_function(ag, new_routing_graph)
         ag_cost_file.write(str(cost)+"\n")
         if cost >= best_cost:
             vertical_link_list = copy.deepcopy(new_vertical_link_list)
@@ -240,3 +240,7 @@ def cleanup_ag(ag, shmu):
         if not shmu.SHM.edge[link[0]][link[1]]['LinkHealth']:
             ag.remove_edge(link[0], link[1])
     return None
+
+
+def vl_cost_function(ag, routing_graph):
+    return Calculate_Reachability.reachability_metric(ag, routing_graph, False)

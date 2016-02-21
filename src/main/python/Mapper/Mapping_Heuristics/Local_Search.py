@@ -140,7 +140,7 @@ def mapping_opt_iterative_local_search(tg, ctg, ag, noc_rg, critical_rg, noncrit
                                                                          noncritical_rg, shm, sub_iteration,
                                                                          False, detailed_report, logging,
                                                                          "LocalSearchMappingCost",
-                                                                         "mapping_process_file_name",random_seed)
+                                                                         "mapping_process_file_name", random_seed)
         if current_tg is not False:
             current_cost = Mapping_Functions.mapping_cost_function(current_tg, current_ag, shm, False)
             if current_cost <= best_cost:

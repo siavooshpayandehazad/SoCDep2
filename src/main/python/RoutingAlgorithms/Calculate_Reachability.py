@@ -8,145 +8,150 @@ from ConfigAndPackages import Config
 import Routing
 from ArchGraphUtilities import AG_Functions
 
-def calculate_reachability(AG, NoCRG):
+def calculate_reachability(ag, NoCRG):
     if '3D' in Config.NetworkTopology:
-        PortList = ['U', 'N', 'E', 'W', 'S', 'D']
+        port_list = ['U', 'N', 'E', 'W', 'S', 'D']
     else:
-        PortList = ['N', 'E', 'W', 'S']
+        port_list = ['N', 'E', 'W', 'S']
 
-    for SourceNode in AG.nodes():
-        for Port in PortList:
-            AG.node[SourceNode]['Router'].Unreachable[Port]=[]
-        for DestinationNode in AG.nodes():
+    for source_node in ag.nodes():
+        for port in port_list:
+            ag.node[source_node]['Router'].Unreachable[port] = []
+        for destination_node in ag.nodes():
             # if SourceNode != DestinationNode:
-                for Port in PortList:
-                    if not IsDestinationReachableViaPort(NoCRG, SourceNode, Port, DestinationNode, False, False):
+                for port in port_list:
+                    if not IsDestinationReachableViaPort(NoCRG, source_node, port, destination_node, False, False):
                         # print ("No Path From", SourceNode,Port,"To",DestinationNode)
-                        AG.node[SourceNode]['Router'].Unreachable[Port].append(DestinationNode)
+                        ag.node[source_node]['Router'].Unreachable[port].append(destination_node)
 
 
-def IsDestinationReachableViaPort(NoCRG, SourceNode, Port, DestinationNode, ReturnAllPaths, Report):
+def IsDestinationReachableViaPort(noc_rg, source_node, port, destination_node, return_all_paths, report):
 
     # the Source port should be output port since this is output of router to other routers
-    Source = str(SourceNode)+str(Port)+str('O')
+    source = str(source_node)+str(port)+str('O')
     # the destination port should be output port since this is output of router to PE
     # (which will be connected to PE's input port)
-    Destination = str(DestinationNode)+str('L')+str('O')
-    if networkx.has_path(NoCRG, Source, Destination):
+    destination = str(destination_node)+str('L')+str('O')
+    if networkx.has_path(noc_rg, source, destination):
         return True
     else:
-        if Report:print ("\t\tNO PATH FOUND FROM: ", Source, "TO:", Destination)
+        if report:print ("\t\tNO PATH FOUND FROM: ", source, "TO:", destination)
         return False
 
 
-def IsDestReachableFromSource(NoCRG, SourceNode, DestinationNode):
+def IsDestReachableFromSource(noc_rg, source_node, destination_node):
 
     # the Source port should be input port since this is input of router
     # (which will be connected to PE's output port)
-    Source = str(SourceNode)+str('L')+str('I')
+    source = str(source_node)+str('L')+str('I')
     # the destination port should be output port since this is output of router to PE
     # (which will be connected to PE's input port)
-    Destination = str(DestinationNode)+str('L')+str('O')
-    if networkx.has_path(NoCRG, Source, Destination):
+    destination = str(destination_node)+str('L')+str('O')
+    if networkx.has_path(noc_rg, source, destination):
         return True
     else:
         return False
 
 
-def HowManyPathsFromSource(NoCRG, SourceNode, DestinationNode):
-    Source = str(SourceNode)+str('L')+str('I')
-    Destination = str(DestinationNode)+str('L')+str('O')
-    if networkx.has_path(NoCRG, Source, Destination):
-        NumberOfPaths = len(list(networkx.all_simple_paths(NoCRG, Source, Destination)))
-        return NumberOfPaths
+def HowManyPathsFromSource(noc_rg, source_node, destination_node):
+    source = str(source_node)+str('L')+str('I')
+    destination = str(destination_node)+str('L')+str('O')
+    if networkx.has_path(noc_rg, source, destination):
+        number_of_paths = len(list(networkx.all_simple_paths(noc_rg, source, destination)))
+        return number_of_paths
     else:
         return 0
 
 
-def OptimizeReachabilityRectangles(AG, NumberOfRects):
+def OptimizeReachabilityRectangles(ag, number_of_rectangles):
     # the idea of merging is that we make a rectangle with representing 2 vertex of it,
     # namely north-west and south-east vertex.
     # Then we try to generate optimal rectangle set that covers all of the nodes...
     print ("=====================================")
     print ("STARTING RECTANGLE OPTIMIZATION...")
-    for Node in AG.nodes():
-        for Port in AG.node[Node]['Router'].Unreachable:
-            RectangleList = {}
-            for i in range(0, NumberOfRects):
-                RectangleList[i] = (None, None)
-            if len( AG.node[Node]['Router'].Unreachable[Port]) == Config.Network_X_Size*Config.Network_Y_Size:
-                RectangleList[0] = (0, Config.Network_X_Size*Config.Network_Y_Size-1)
+    for node in ag.nodes():
+        for port in ag.node[node]['Router'].Unreachable:
+            rectangle_list = {}
+            for i in range(0, number_of_rectangles):
+                rectangle_list[i] = (None, None)
+            if len(ag.node[node]['Router'].Unreachable[port]) == Config.Network_X_Size*Config.Network_Y_Size:
+                rectangle_list[0] = (0, Config.Network_X_Size*Config.Network_Y_Size-1)
             else:
-                RectangleList = copy.deepcopy(MergeNodeWithRectangles(RectangleList, AG.node[Node]['Router'].Unreachable[Port]))
-            AG.node[Node]['Router'].Unreachable[Port] = RectangleList
+                rectangle_list = copy.deepcopy(MergeNodeWithRectangles(rectangle_list,
+                                                                      ag.node[node]['Router'].Unreachable[port]))
+            ag.node[node]['Router'].Unreachable[port] = rectangle_list
     print ("RECTANGLE OPTIMIZATION FINISHED...")
     return None
 
 
-def MergeNodeWithRectangles (RectangleList, UnreachableNodeList):
+def MergeNodeWithRectangles(rectangle_list, unreachable_node_list):
     # todo: in this function if we can not perform any loss-less merge, we terminate the process...
     # which is bad... we need to make sure that this node is covered
-    for UnreachableNode in UnreachableNodeList:
-        Covered = False
-        for Rectangle in RectangleList:
-            if RectangleList[Rectangle][0] == None:
+    for unreachable_node in unreachable_node_list:
+        covered = False
+        for rectangle in rectangle_list:
+            if rectangle_list[rectangle][0] is None:
                 # there is no entry, this is the first node to get in...
-                RectangleList[Rectangle] = (UnreachableNode, UnreachableNode)
-                Covered = True
+                rectangle_list[rectangle] = (unreachable_node, unreachable_node)
+                covered = True
                 break
             else:
-                if is_node_inside_rectangle(RectangleList[Rectangle], UnreachableNode):
-                    Covered = True
+                if is_node_inside_rectangle(rectangle_list[rectangle], unreachable_node):
+                    covered = True
                     break
                 else:
-                    MergedX1, MergedY1, MergedZ1, MergedX2, MergedY2, MergedZ2 = MergeRectangleWithNode(RectangleList[Rectangle][0],
-                                                                                   RectangleList[Rectangle][1],
-                                                                                   UnreachableNode)
-                    # print ("Merged:" ,MergedY1 * Config.Network_X_Size + MergedX1,
-                    #        MergedY2 * Config.Network_X_Size + MergedX2)
-                    LossLessMerge = True
-                    for NetworkNode_X in range(MergedX1, MergedX2+1):
-                        for NetworkNode_Y in range(MergedY1, MergedY2+1):
-                            for NetworkNode_Z in range(MergedZ1, MergedZ2+1):
-                                NodeNumber = AG_Functions.return_node_number(NetworkNode_X,NetworkNode_Y, NetworkNode_Z)
-                                if NodeNumber not in UnreachableNodeList:
-                                    LossLessMerge = False
+
+                    location_1, location_2 = merge_rectangle_with_node(rectangle_list[rectangle][0],
+                                                                       rectangle_list[rectangle][1],
+                                                                       unreachable_node)
+                    # print ("Merged:" location_1, location_2)
+                    loss_less_merge = True
+                    for network_node_x in range(location_1[0], location_2[0]+1):        # (merged_x_1, merged_x_2+1)
+                        for network_node_y in range(location_1[1], location_2[1]+1):
+                            for network_node_z in range(location_1[2], location_2[2]+1):
+                                node_number = AG_Functions.return_node_number(network_node_x, network_node_y,
+                                                                              network_node_z)
+                                if node_number not in unreachable_node_list:
+                                    loss_less_merge = False
                                     break
                     # if we are not losing any Node, we perform Merge...
-                    if LossLessMerge:
-                        Merged1 = AG_Functions.return_node_number(MergedX1,MergedY1, MergedZ1)
-                        Merged2 = AG_Functions.return_node_number(MergedX2,MergedY2, MergedZ2)
-                        RectangleList[Rectangle] = copy.deepcopy((Merged1, Merged2))
-                        Covered = True
+                    if loss_less_merge:
+                        #                                            merged X      Merged Y       Merged Z
+                        merged_1 = AG_Functions.return_node_number(location_1[0],location_1[1], location_1[2])
+                        merged_2 = AG_Functions.return_node_number(location_2[0],location_2[1], location_2[2])
+                        rectangle_list[rectangle] = copy.deepcopy((merged_1, merged_2))
+                        covered = True
                         break
-        if not Covered:
+        if not covered:
             pass
             # print ("COULD NOT PERFORM ANY LOSS-LESS MERGE FOR:"+str(UnreachableNode))
             # print (RectangleList)
-    return RectangleList
+    return rectangle_list
 
 
 def is_node_inside_rectangle(Rect,Node):
-    RX1, RY1, RZ1 = AG_Functions.return_node_location(Rect[0])
-    RX2, RY2, RZ2 = AG_Functions.return_node_location(Rect[1])
+    r1x, r1y, r1z = AG_Functions.return_node_location(Rect[0])
+    r2x, r2y, r2z = AG_Functions.return_node_location(Rect[1])
     NodeX, NodeY, NodeZ = AG_Functions.return_node_location(Node)
-    if RX1 <= NodeX <= RX2 and RY1 <= NodeY <= RY2 and RZ1 <= NodeZ <= RZ2:
+    if r1x <= NodeX <= r2x and r1y <= NodeY <= r2y and r1z <= NodeZ <= r2z:
         return True
     else:
         return False
 
 
-def MergeRectangleWithNode(Rect_ll, Rect_ur, Node):
-    x1, y1, z1 = AG_Functions.return_node_location(Rect_ll)
-    x2, y2, z2 = AG_Functions.return_node_location(Rect_ur)
-    NodeX, NodeY, NodeZ = AG_Functions.return_node_location(Node)
-    MergedX1 = min(x1, NodeX)
-    MergedY1 = min(y1, NodeY)
-    MergedZ1 = min(z1, NodeZ)
-    MergedX2 = max(x2, NodeX)
-    MergedY2 = max(y2, NodeY)
-    MergedZ2 = max(z2, NodeZ)
-    return MergedX1, MergedY1, MergedZ1, MergedX2, MergedY2, MergedZ2
+def merge_rectangle_with_node(rect_ll, rect_ur, node):
+    x1, y1, z1 = AG_Functions.return_node_location(rect_ll)
+    x2, y2, z2 = AG_Functions.return_node_location(rect_ur)
+    node_x, node_y, node_z = AG_Functions.return_node_location(node)
+    merged_x1 = min(x1, node_x)
+    merged_y1 = min(y1, node_y)
+    merged_z1 = min(z1, node_z)
+    merged_x2 = max(x2, node_x)
+    merged_y2 = max(y2, node_y)
+    merged_z2 = max(z2, node_z)
+    location_1 = merged_x1, merged_y1, merged_z1
+    location_2 = merged_x2, merged_y2, merged_z2
+    return location_1, location_2
 
 
 def ClearReachabilityCalculations(ag):
@@ -220,7 +225,7 @@ def calculate_reachability_with_regions(AG, SHMU):
 
 
 
-def ReachabilityMetric(ag, noc_rg, report):
+def reachability_metric(ag, noc_rg, report):
     """
     returns the ratio of sum of number of number of paths
     to each nodes for each node to all possible reachable case (where each node can reach all other nodes)

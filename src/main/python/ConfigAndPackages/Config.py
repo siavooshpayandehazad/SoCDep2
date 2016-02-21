@@ -50,10 +50,10 @@ AG_Type = 'Generic'
 VirtualChannelNum = 0
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
-NetworkTopology = '2DMesh'
+NetworkTopology = '3DMesh'
 Network_X_Size = 3
 Network_Y_Size = 3
-Network_Z_Size = 1
+Network_Z_Size = 3
 
 # this is just for double check...
 if '2D' in NetworkTopology:
@@ -68,13 +68,13 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 ################################################
 #          VL Config
 ################################################
-FindOptimumAG = False
+FindOptimumAG = True
 # Available Choices: 'LocalSearch', 'IterativeLocalSearch'
-VL_OptAlg = "LocalSearch"
+VL_OptAlg = "IterativeLocalSearch"
 AG_Opt_Iterations_ILS = 10
 AG_Opt_Iterations_LS = 10
 # Number of Vertical Links
-VerticalLinksNum = 20
+VerticalLinksNum = 5
 ################################################
 #          Routing Config
 ################################################
@@ -82,7 +82,7 @@ VerticalLinksNum = 20
 # Available Turn Models :
 #         2D Turn Models: XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel
 #         3D Turn Models: XYZ_TurnModel, NegativeFirst3D_TurnModel
-UsedTurnModel = PackageFile.XY_TurnModel
+UsedTurnModel = PackageFile.NegativeFirst3D_TurnModel
 # Available choices: 'MinimalPath', 'NonMinimalPath'
 RotingType = 'MinimalPath'
 RoutingFilePath = "User_Inputs/RoutingFile.txt"

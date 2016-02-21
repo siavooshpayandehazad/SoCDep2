@@ -47,7 +47,7 @@ class UnitTesting(unittest.TestCase):
         node = Config.Network_X_Size * Config.Network_Y_Size * Config.Network_Z_Size
         self.assertEqual(is_node_inside_rectangle(rectangle, node), False)
 
-    # todo: test MergeRectangleWithNode
+    # todo: test merge_rectangle_with_node
 
 
 if __name__ == '__main__':
