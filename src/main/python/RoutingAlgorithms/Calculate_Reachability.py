@@ -120,8 +120,9 @@ def MergeNodeWithRectangles (RectangleList, UnreachableNodeList):
                         Covered = True
                         break
         if not Covered:
-            print ("COULD NOT PERFORM ANY LOSS-LESS MERGE FOR:"+str(UnreachableNode))
-            print (RectangleList)
+            pass
+            # print ("COULD NOT PERFORM ANY LOSS-LESS MERGE FOR:"+str(UnreachableNode))
+            # print (RectangleList)
     return RectangleList
 
 

@@ -46,8 +46,49 @@ def draw_ag(ag, file_name):
 
     # POS = networkx.spring_layout(AG)
 
-    networkx.draw(ag, pos=position, with_labels=True, node_size=node_size, arrows=False,
+    networkx.draw(ag, pos=position, with_labels=True, node_size=node_size, arrows=True,
                   node_color=color_list, font_size=7, linewidths=1)
     plt.savefig("GraphDrawings/"+file_name+".png")
     plt.clf()
+    return None
+
+
+def draw_vl_opt():
+    print ("===========================================")
+    print ("GENERATING VL OPTIMIZATION VISUALIZATIONS...")
+    fig, ax1 = plt.subplots()
+    solution_num = None
+    try:
+        vl_cost_file = open('Generated_Files/Internal/vl_opt_cost.txt', 'r')
+        cost = []
+        line = vl_cost_file.readline()
+        max_cost = float(line)
+        max_cost_list = [max_cost]
+        cost.append(float(line))
+        while line != "":
+            cost.append(float(line))
+            if float(line) > max_cost:
+                max_cost = float(line)
+            max_cost_list.append(max_cost)
+            line = vl_cost_file.readline()
+        solution_num = range(0, len(cost))
+        vl_cost_file.close()
+
+        ax1.set_ylabel('vl placement Cost')
+        ax1.set_xlabel('Iteration #')
+        ax1.plot(solution_num, cost, '#5095FD', solution_num, max_cost_list, 'r')
+
+        if Config.VL_OptAlg == 'IterativeLocalSearch':
+            for Iteration in range(1, Config.AG_Opt_Iterations_ILS+2):
+                x1 = x2 = Iteration * Config.AG_Opt_Iterations_LS
+                y1 = 0
+                y2 = max(cost)*1.2
+                ax1.plot((x1, x2), (y1, y2), 'g--')
+    except IOError:
+        print ('CAN NOT OPEN Generated_Files/Internal/vl_opt_cost.txt')
+
+    plt.savefig("GraphDrawings/vl_opt_process.png", dpi=300)
+    plt.clf()
+    plt.close(fig)
+    print ("\033[35m* VIZ::\033[0mVL OPTIMIZATION PROCESS GRAPH CREATED AT: GraphDrawings/vl_opt_process.png")
     return None

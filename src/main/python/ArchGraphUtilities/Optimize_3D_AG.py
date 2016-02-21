@@ -5,21 +5,35 @@ from AG_Functions import return_node_number, return_node_location
 from RoutingAlgorithms import Routing, Calculate_Reachability, RoutingGraph_Reports
 import random
 import copy
-from Arch_Graph_Reports import draw_ag
+from Arch_Graph_Reports import draw_ag, draw_vl_opt
 
 
 def optimize_ag_vertical_links(ag, shmu, logging):
+
+    ag_cost_file = open('Generated_Files/Internal/vl_opt_cost.txt', 'w')
+    ag_cost_file.close()
+
     if Config.Network_Z_Size < 2:
         raise ValueError("Can not optimize VL placement with 1 layer... (NOC is still 2D)")
     if Config.VL_OptAlg == "LocalSearch":
-        return opt_ag_vertical_link_local_search(ag, shmu, logging)
+        opt_ag_vertical_link_local_search(ag, shmu, "vl_opt_cost", logging)
+        draw_vl_opt()
+        return True
     elif Config.VL_OptAlg == "IterativeLocalSearch":
-        return opt_ag_vertical_link_iterative_local_search(ag, shmu, logging)
+        opt_ag_vertical_link_iterative_local_search(ag, shmu, "vl_opt_cost", logging)
+        draw_vl_opt()
+        return True
     else:
         raise ValueError("VL_OptAlg parameter is not valid")
 
 
-def opt_ag_vertical_link_iterative_local_search(ag, shmu, logging):
+def opt_ag_vertical_link_iterative_local_search(ag, shmu, cost_file_name, logging):
+
+    if type(cost_file_name) is str:
+        ag_cost_file = open('Generated_Files/Internal/'+cost_file_name+'.txt', 'a')
+    else:
+        raise ValueError("ag_cost_file name is not string: "+str(cost_file_name))
+
     best_vertical_link_list = []
     starting_cost = None
     for j in range(0, Config.AG_Opt_Iterations_ILS):
@@ -28,6 +42,7 @@ def opt_ag_vertical_link_iterative_local_search(ag, shmu, logging):
         routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu,
                                                                     Config.UsedTurnModel, False, False))
         cost = Calculate_Reachability.ReachabilityMetric(ag, routing_graph, False)
+        ag_cost_file.write(str(cost)+"\n")
         current_best_cost = cost
         if j == 0:
             print ("=====================================")
@@ -56,7 +71,7 @@ def opt_ag_vertical_link_iterative_local_search(ag, shmu, logging):
             new_routing_graph = Routing.GenerateNoCRouteGraph(ag, shmu, Config.UsedTurnModel,
                                                               False, False)
             cost = Calculate_Reachability.ReachabilityMetric(ag, new_routing_graph, False)
-
+            ag_cost_file.write(str(cost)+"\n")
             if cost >= current_best_cost:
                 vertical_link_list = new_vertical_link_list[:]
                 if cost > current_best_cost:
@@ -76,10 +91,16 @@ def opt_ag_vertical_link_iterative_local_search(ag, shmu, logging):
     print ("-------------------------------------")
     print ("STARTING COST:"+str(starting_cost)+"\tFINAL COST:"+str(best_cost))
     print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(best_cost-starting_cost)/starting_cost))+" %")
-    return shmu
+    return None
 
 
-def opt_ag_vertical_link_local_search(ag, shmu, logging):
+def opt_ag_vertical_link_local_search(ag, shmu, cost_file_name, logging):
+
+    if type(cost_file_name) is str:
+        ag_cost_file = open('Generated_Files/Internal/'+cost_file_name+'.txt', 'a')
+    else:
+        raise ValueError("ag_cost_file name is not string: "+str(cost_file_name))
+
     remove_all_vertical_links(shmu, ag)
     vertical_link_list = find_feasible_ag_vertical_link_placement(ag, shmu)
     routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu, Config.UsedTurnModel,
@@ -92,16 +113,21 @@ def opt_ag_vertical_link_local_search(ag, shmu, logging):
     print ("INITIAL REACHABILITY METRIC: "+str(cost))
     starting_cost = cost
     best_cost = cost
+
     ag_temp = copy.deepcopy(ag)
     cleanup_ag(ag_temp, shmu)
     draw_ag(ag_temp, "AG_VLOpt_init")
     del ag_temp
+
+    ag_cost_file.write(str(cost)+"\n")
+
     for i in range(0, Config.AG_Opt_Iterations_LS):
         new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(ag, shmu,
                                                                                        vertical_link_list))
         new_routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu,
                                                                         Config.UsedTurnModel, False, False))
         cost = Calculate_Reachability.ReachabilityMetric(ag, new_routing_graph, False)
+        ag_cost_file.write(str(cost)+"\n")
         if cost >= best_cost:
             vertical_link_list = copy.deepcopy(new_vertical_link_list)
             if cost > best_cost:
@@ -116,7 +142,7 @@ def opt_ag_vertical_link_local_search(ag, shmu, logging):
     print ("-------------------------------------")
     print ("STARTING COST:"+str(starting_cost)+"\tFINAL COST:"+str(best_cost))
     print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(best_cost-starting_cost)/starting_cost))+" %")
-    return shmu
+    return None
 
 
 def find_all_vertical_links(ag):
