@@ -61,11 +61,11 @@ def initialize_system(logging):
     ####################################################################
     routing_graph_start_time = time.time()
     if Config.SetRoutingFromFile:
-        noc_rg = copy.deepcopy(Routing.GenerateNoCRouteGraphFromFile(ag, shmu, Config.RoutingFilePath,
+        noc_rg = copy.deepcopy(Routing.gen_noc_route_graph_from_file(ag, shmu, Config.RoutingFilePath,
                                                                      Config.DebugInfo, Config.DebugDetails))
     else:
-        noc_rg = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu, Config.UsedTurnModel,
-                                                             Config.DebugInfo, Config.DebugDetails))
+        noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
+                                                                Config.DebugInfo, Config.DebugDetails))
     print ("\033[92mTIME::\033[0m ROUTING GRAPH GENERATION TOOK: "
            + str(round(time.time()-routing_graph_start_time))+" SECONDS")
     # this is for double checking...

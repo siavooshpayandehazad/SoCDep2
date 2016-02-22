@@ -173,7 +173,7 @@ def calculate_reachability_with_regions(ag, shmu):
         else:
             already_broken_links.append(virtual_broken_link)
     # Construct The RoutingGraph
-    non_critical_rg = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu, Config.UsedTurnModel, False, False))
+    non_critical_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel, False, False))
     # calculate the rectangles for Non-Critical
     calculate_reachability(ag, non_critical_rg)
     # save Non Critical rectangles somewhere
@@ -198,7 +198,7 @@ def calculate_reachability_with_regions(ag, shmu):
             already_broken_links.append(virtual_broken_link)
     clear_reachability_calculations(ag)
     # Construct The RoutingGraph
-    critical_rg = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu, Config.UsedTurnModel, False, False))
+    critical_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel, False, False))
     # calculate the rectangles for Critical
     calculate_reachability(ag, critical_rg)
     # save Critical rectangles somewhere

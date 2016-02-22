@@ -99,8 +99,9 @@ def map_task_to_node(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, task, nod
             if source_node is not None and destination_node is not None:    # check if both ends of this edge is mapped
                 if source_node != destination_node:
                     # Find the links to be used
-                    list_of_links, number_of_paths = Routing.FindRouteInRouteGraph(noc_rg, critical_rg, noncritical_rg,
-                                                                                   source_node, destination_node, False)
+                    list_of_links, number_of_paths = Routing.find_route_in_route_graph(noc_rg, critical_rg,
+                                                                                       noncritical_rg, source_node,
+                                                                                       destination_node, False)
                     # print number_of_paths, list_of_links
                     if list_of_links is not None:
                         # logging.info("\t\t\tADDING PATH FROM NODE:"+str(source_node)+"TO NODE"+str(destination_node))
@@ -163,8 +164,9 @@ def remove_task_from_node(tg, ag, noc_rg, critical_rg, noncritical_rg, task, nod
             if source_node is not None and destination_node is not None:
                 if source_node != destination_node:
                     # Find the links to be used
-                    list_of_links, number_of_paths = Routing.FindRouteInRouteGraph(noc_rg, critical_rg, noncritical_rg,
-                                                                                   source_node, destination_node, False)
+                    list_of_links, number_of_paths = Routing.find_route_in_route_graph(noc_rg, critical_rg,
+                                                                                       noncritical_rg, source_node,
+                                                                                       destination_node, False)
                     if list_of_links is not None:
                         # logging.info("\t\t\tREMOVING PATH FROM NODE:"+str(source_node)+"TO NODE"+str(destination_node))
                         # logging.info("\t\t\tLIST OF LINKS:"+str(list_of_links))
@@ -224,9 +226,10 @@ def add_cluster_to_node(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, c
             destination_node = ctg.node[ctg_edge[1]]['Node']
             if source_node is not None and destination_node is not None:    # check if both ends of this edge is mapped
                 if source_node != destination_node:
-                    list_of_links, number_of_paths = Routing.FindRouteInRouteGraph(noc_rg, critical_rg, noncritical_rg,
-                                                                                   source_node, destination_node,
-                                                                                   False)  # Find the links to be used
+                    list_of_links, number_of_paths = Routing.find_route_in_route_graph(noc_rg, critical_rg,
+                                                                                       noncritical_rg, source_node,
+                                                                                       destination_node, False)
+                                                                                       # Find the links to be used
                     list_of_edges = []
                     # print ("number_of_paths:", number_of_paths)
                     # print number_of_paths, list_of_links
@@ -311,8 +314,9 @@ def remove_cluster_from_node(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, c
             if source_node is not None and destination_node is not None:    # check if both ends of this edge is mapped
                 if source_node != destination_node:
                     # Find the links to be used
-                    list_of_links, number_of_paths = Routing.FindRouteInRouteGraph(noc_rg, critical_rg, noncritical_rg,
-                                                                                   source_node, destination_node, False)
+                    list_of_links, number_of_paths = Routing.find_route_in_route_graph(noc_rg, critical_rg,
+                                                                                       noncritical_rg, source_node,
+                                                                                       destination_node, False)
                     list_of_edges = []
                     if list_of_links is not None:
                         # find all the edges in TaskGraph that contribute to this edge in CTG

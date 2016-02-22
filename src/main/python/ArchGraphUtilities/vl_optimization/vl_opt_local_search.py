@@ -16,8 +16,8 @@ def opt_ag_vertical_link_local_search(ag, shmu, cost_file_name, logging):
 
     remove_all_vertical_links(shmu, ag)
     vertical_link_list = find_feasible_ag_vertical_link_placement(ag, shmu)
-    routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu, Config.UsedTurnModel,
-                                                                Config.DebugInfo, Config.DebugDetails))
+    routing_graph = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
+                                                                   Config.DebugInfo, Config.DebugDetails))
     cost = vl_cost_function(ag, routing_graph)
     print ("=====================================")
     print ("STARTING AG VERTICAL LINK PLACEMENT OPTIMIZATION")
@@ -37,8 +37,8 @@ def opt_ag_vertical_link_local_search(ag, shmu, cost_file_name, logging):
     for i in range(0, Config.AG_Opt_Iterations_LS):
         new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(ag, shmu,
                                                                                        vertical_link_list))
-        new_routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu,
-                                                                        Config.UsedTurnModel, False, False))
+        new_routing_graph = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
+                                                                           False, False))
         cost = vl_cost_function(ag, new_routing_graph)
         ag_cost_file.write(str(cost)+"\n")
         if cost >= best_cost:
@@ -70,8 +70,8 @@ def opt_ag_vertical_link_iterative_local_search(ag, shmu, cost_file_name, loggin
     for j in range(0, Config.AG_Opt_Iterations_ILS):
         remove_all_vertical_links(shmu, ag)
         vertical_link_list_init = copy.deepcopy(find_feasible_ag_vertical_link_placement(ag, shmu))
-        routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu,
-                                                                    Config.UsedTurnModel, False, False))
+        routing_graph = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu,
+                                                                       Config.UsedTurnModel, False, False))
         cost = vl_cost_function(ag, routing_graph)
         ag_cost_file.write(str(cost)+"\n")
         current_best_cost = cost
@@ -99,8 +99,8 @@ def opt_ag_vertical_link_iterative_local_search(ag, shmu, cost_file_name, loggin
         for i in range(0, Config.AG_Opt_Iterations_LS):
             new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(ag, shmu,
                                                                                            vertical_link_list))
-            new_routing_graph = Routing.GenerateNoCRouteGraph(ag, shmu, Config.UsedTurnModel,
-                                                              False, False)
+            new_routing_graph = Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
+                                                                 False, False)
             cost = vl_cost_function(ag, new_routing_graph)
             ag_cost_file.write(str(cost)+"\n")
             if cost >= current_best_cost:
