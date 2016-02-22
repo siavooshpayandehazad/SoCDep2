@@ -1,0 +1,126 @@
+# Copyright (C) Siavoosh Payandeh Azad
+
+from optimize_vl_functions import remove_all_vertical_links, vl_cost_function, find_feasible_ag_vertical_link_placement, \
+                           move_to_new_vertical_link_configuration, return_to_solution, cleanup_ag
+from ArchGraphUtilities import Arch_Graph_Reports
+from RoutingAlgorithms import Routing
+import copy
+from ConfigAndPackages import Config
+
+
+def opt_ag_vertical_link_local_search(ag, shmu, cost_file_name, logging):
+
+    if type(cost_file_name) is str:
+        ag_cost_file = open('Generated_Files/Internal/'+cost_file_name+'.txt', 'a')
+    else:
+        raise ValueError("ag_cost_file name is not string: "+str(cost_file_name))
+
+    remove_all_vertical_links(shmu, ag)
+    vertical_link_list = find_feasible_ag_vertical_link_placement(ag, shmu)
+    routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu, Config.UsedTurnModel,
+                                                                Config.DebugInfo, Config.DebugDetails))
+    cost = vl_cost_function(ag, routing_graph)
+    print ("=====================================")
+    print ("STARTING AG VERTICAL LINK PLACEMENT OPTIMIZATION")
+    print ("NUMBER OF LINKS: "+str(Config.VerticalLinksNum))
+    print ("NUMBER OF ITERATIONS: "+str(Config.AG_Opt_Iterations_LS))
+    print ("INITIAL REACHABILITY METRIC: "+str(cost))
+    starting_cost = cost
+    best_cost = cost
+
+    ag_temp = copy.deepcopy(ag)
+    cleanup_ag(ag_temp, shmu)
+    Arch_Graph_Reports.draw_ag(ag_temp, "AG_VLOpt_init")
+    del ag_temp
+
+    ag_cost_file.write(str(cost)+"\n")
+
+    for i in range(0, Config.AG_Opt_Iterations_LS):
+        new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(ag, shmu,
+                                                                                       vertical_link_list))
+        new_routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu,
+                                                                        Config.UsedTurnModel, False, False))
+        cost = vl_cost_function(ag, new_routing_graph)
+        ag_cost_file.write(str(cost)+"\n")
+        if cost >= best_cost:
+            vertical_link_list = copy.deepcopy(new_vertical_link_list)
+            if cost > best_cost:
+                best_cost = cost
+                print ("\033[32m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:" + str(cost) + "\t ITERATION: "+str(i))
+            else:
+                # print ("\033[33m* NOTE::\033[0mMOVED TO SOLUTION WITH COST:" + str(Cost) + "\t ITERATION: "+str(i))
+                pass
+        else:
+            return_to_solution(ag, shmu, vertical_link_list)
+            vertical_link_list = copy.deepcopy(vertical_link_list)
+    print ("-------------------------------------")
+    print ("STARTING COST:"+str(starting_cost)+"\tFINAL COST:"+str(best_cost))
+    print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(best_cost-starting_cost)/starting_cost))+" %")
+    return None
+
+
+def opt_ag_vertical_link_iterative_local_search(ag, shmu, cost_file_name, logging):
+
+    if type(cost_file_name) is str:
+        ag_cost_file = open('Generated_Files/Internal/'+cost_file_name+'.txt', 'a')
+    else:
+        raise ValueError("ag_cost_file name is not string: "+str(cost_file_name))
+
+    best_vertical_link_list = []
+    starting_cost = None
+    for j in range(0, Config.AG_Opt_Iterations_ILS):
+        remove_all_vertical_links(shmu, ag)
+        vertical_link_list_init = copy.deepcopy(find_feasible_ag_vertical_link_placement(ag, shmu))
+        routing_graph = copy.deepcopy(Routing.GenerateNoCRouteGraph(ag, shmu,
+                                                                    Config.UsedTurnModel, False, False))
+        cost = vl_cost_function(ag, routing_graph)
+        ag_cost_file.write(str(cost)+"\n")
+        current_best_cost = cost
+        if j == 0:
+            print ("=====================================")
+            print ("STARTING AG VERTICAL LINK PLACEMENT OPTIMIZATION")
+            print ("NUMBER OF LINKS: "+str(Config.VerticalLinksNum))
+            print ("NUMBER OF ITERATIONS: "+str(Config.AG_Opt_Iterations_ILS*Config.AG_Opt_Iterations_LS))
+            print ("INITIAL REACHABILITY METRIC: "+str(cost))
+            starting_cost = cost
+            best_cost = cost
+            best_vertical_link_list = vertical_link_list_init[:]
+            ag_temp = copy.deepcopy(ag)
+            cleanup_ag(ag_temp, shmu)
+            Arch_Graph_Reports.draw_ag(ag_temp, "AG_VLOpt_init")
+            del ag_temp
+        else:
+            print ("\033[33m* NOTE::\033[0m STARITNG NEW ROUND: "+str(j+1)+"\t STARTING COST:"+str(cost))
+            if cost > best_cost:
+                best_vertical_link_list = vertical_link_list_init[:]
+                best_cost = cost
+                print ("\033[32m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:" +
+                       str(cost) + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS))
+        vertical_link_list = vertical_link_list_init[:]
+        for i in range(0, Config.AG_Opt_Iterations_LS):
+            new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(ag, shmu,
+                                                                                           vertical_link_list))
+            new_routing_graph = Routing.GenerateNoCRouteGraph(ag, shmu, Config.UsedTurnModel,
+                                                              False, False)
+            cost = vl_cost_function(ag, new_routing_graph)
+            ag_cost_file.write(str(cost)+"\n")
+            if cost >= current_best_cost:
+                vertical_link_list = new_vertical_link_list[:]
+                if cost > current_best_cost:
+                    current_best_cost = cost
+                    print ("\t \tMOVED TO SOLUTION WITH COST:" + str(cost)
+                           + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS+i))
+            else:
+                return_to_solution(ag, shmu, vertical_link_list)
+
+            if cost > best_cost:
+                best_vertical_link_list = vertical_link_list[:]
+                best_cost = cost
+                print ("\033[32m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:" +
+                       str(cost) + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS+i))
+
+    return_to_solution(ag, shmu, best_vertical_link_list)
+    print ("-------------------------------------")
+    print ("STARTING COST:"+str(starting_cost)+"\tFINAL COST:"+str(best_cost))
+    print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(best_cost-starting_cost)/starting_cost))+" %")
+    return None

@@ -2,16 +2,18 @@
 
 import copy
 import time
+
+from ArchGraphUtilities import Arch_Graph_Reports, AG_Functions, AG_Test
+from ArchGraphUtilities.vl_optimization import optimize_vl_functions
 from ConfigAndPackages import Config
 from Mapper import Mapping, Mapping_Reports, Mapping_Animation
 from Mapper import Mapping_Functions
+from RoutingAlgorithms import Routing, Calculate_Reachability, ReachabilityReports, \
+    RoutingGraph_Reports, Reachability_Test
 from Scheduler import Scheduling_Reports, TrafficTableGenerator, Scheduler
 from SystemHealthMonitoring import SystemHealthMonitoringUnit, SHMU_Reports, \
     SHMU_Functions, TestSchedulingUnit, SHMU_Test
 from TaskGraphUtilities import Task_Graph_Reports, TG_Functions, TG_Test
-from RoutingAlgorithms import Routing, Calculate_Reachability, ReachabilityReports, \
-    RoutingGraph_Reports, Reachability_Test
-from ArchGraphUtilities import Arch_Graph_Reports, AG_Functions, AG_Test, Optimize_3D_AG
 
 
 def initialize_system(logging):
@@ -48,8 +50,8 @@ def initialize_system(logging):
     # Here we are injecting initial faults of the system: we assume these fault
     # information is obtained by post manufacturing system diagnosis
     if Config.FindOptimumAG:
-        Optimize_3D_AG.optimize_ag_vertical_links(ag, shmu, logging)
-        Optimize_3D_AG.cleanup_ag(ag, shmu)
+        optimize_vl_functions.optimize_ag_vertical_links(ag, shmu, logging)
+        optimize_vl_functions.cleanup_ag(ag, shmu)
         Arch_Graph_Reports.draw_ag(ag, "AG_VLOpt")
     SHMU_Functions.ApplyInitialFaults(shmu)
     if Config.SHM_Drawing:
