@@ -9,5 +9,5 @@
 .idea
 out
 target
-
+*.html
 *.mp4
