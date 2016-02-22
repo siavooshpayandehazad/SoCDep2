@@ -129,7 +129,7 @@ class SystemHealthMonitoringUnit:
         :return: None
         """
         MappingString = Mapping_Functions.mapping_into_string(tg)
-        self.MPM[hashlib.md5(SHMU_Functions.GenerateFaultConfig(self)).hexdigest()] = MappingString
+        self.MPM[hashlib.md5(SHMU_Functions.generate_fault_config(self)).hexdigest()] = MappingString
         return None
 
     ##################################################

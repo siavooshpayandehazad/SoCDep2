@@ -186,7 +186,7 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
         time_until_next_fault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
         fault_time += time_until_next_fault
         while fault_time < runtime:
-            fault_location, fault_type = SHMU_Functions.RandomFaultGeneration(shmu.SHM)
+            fault_location, fault_type = SHMU_Functions.random_fault_generation(shmu.SHM)
             fault_time_dict[float("{0:.1f}".format(fault_time))] = (fault_location, fault_type)
             time_until_next_fault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
             fault_time += time_until_next_fault

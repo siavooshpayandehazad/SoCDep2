@@ -53,7 +53,7 @@ def initialize_system(logging):
         vl_opt.optimize_ag_vertical_links(ag, shmu, logging)
         vl_opt_functions.cleanup_ag(ag, shmu)
         Arch_Graph_Reports.draw_ag(ag, "AG_VLOpt")
-    SHMU_Functions.ApplyInitialFaults(shmu)
+    SHMU_Functions.apply_initial_faults(shmu)
     if Config.SHM_Drawing:
         SHMU_Reports.DrawSHM(shmu.SHM)
         SHMU_Reports.DrawTempDistribution(shmu.SHM)

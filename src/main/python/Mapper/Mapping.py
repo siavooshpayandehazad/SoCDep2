@@ -27,7 +27,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
     # tasks... Please use: generate_random_independent_tg
     if Config.Mapping_Function == 'MinMin':
         if Config.TG_Type == 'RandomIndependent':
-            return SimpleGreedy.Min_Min_Mapping(tg, ag, noc_rg, shm, logging)
+            return SimpleGreedy.min_min_mapping(tg, ag, noc_rg, shm, logging)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 

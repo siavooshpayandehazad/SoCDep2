@@ -19,8 +19,8 @@ def find_all_vertical_links(ag):
 
 def remove_all_vertical_links(shm, ag):
     vertical_link_list = find_all_vertical_links(ag)
-    for VLink in vertical_link_list:
-        shm.break_link(VLink, False)
+    for v_link in vertical_link_list:
+        shm.break_link(v_link, False)
     return None
 
 
