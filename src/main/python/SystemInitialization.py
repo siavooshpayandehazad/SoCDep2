@@ -4,7 +4,7 @@ import copy
 import time
 
 from ArchGraphUtilities import Arch_Graph_Reports, AG_Functions, AG_Test
-from ArchGraphUtilities.vl_optimization import optimize_vl_functions
+from ArchGraphUtilities.vl_optimization import vl_opt, vl_opt_functions
 from ConfigAndPackages import Config
 from Mapper import Mapping, Mapping_Reports, Mapping_Animation
 from Mapper import Mapping_Functions
@@ -50,8 +50,8 @@ def initialize_system(logging):
     # Here we are injecting initial faults of the system: we assume these fault
     # information is obtained by post manufacturing system diagnosis
     if Config.FindOptimumAG:
-        optimize_vl_functions.optimize_ag_vertical_links(ag, shmu, logging)
-        optimize_vl_functions.cleanup_ag(ag, shmu)
+        vl_opt.optimize_ag_vertical_links(ag, shmu, logging)
+        vl_opt_functions.cleanup_ag(ag, shmu)
         Arch_Graph_Reports.draw_ag(ag, "AG_VLOpt")
     SHMU_Functions.ApplyInitialFaults(shmu)
     if Config.SHM_Drawing:

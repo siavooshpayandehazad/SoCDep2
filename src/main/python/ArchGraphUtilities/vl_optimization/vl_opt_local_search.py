@@ -1,7 +1,6 @@
 # Copyright (C) Siavoosh Payandeh Azad
 
-from optimize_vl_functions import remove_all_vertical_links, vl_cost_function, find_feasible_ag_vertical_link_placement, \
-                           move_to_new_vertical_link_configuration, return_to_solution, cleanup_ag
+from vl_opt_functions import *
 from ArchGraphUtilities import Arch_Graph_Reports
 from RoutingAlgorithms import Routing
 import copy
