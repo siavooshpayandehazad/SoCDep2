@@ -82,7 +82,7 @@ VerticalLinksNum = 5
 # Available Turn Models :
 #         2D Turn Models: XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel
 #         3D Turn Models: XY_TurnModel, NegativeFirst3D_TurnModel
-UsedTurnModel = PackageFile.XYZ_TurnModel
+UsedTurnModel = PackageFile.XY_TurnModel
 # Available choices: 'MinimalPath', 'NonMinimalPath'
 RotingType = 'MinimalPath'
 RoutingFilePath = "User_Inputs/RoutingFile.txt"
