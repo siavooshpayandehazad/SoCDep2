@@ -53,6 +53,10 @@ def draw_ag(ag, file_name):
 
 
 def draw_vl_opt():
+    """
+    Draws the cost evolution for the vl optimization
+    :return: None
+    """
     print ("===========================================")
     print ("GENERATING VL OPTIMIZATION VISUALIZATIONS...")
     fig, ax1 = plt.subplots()
