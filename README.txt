@@ -43,7 +43,11 @@ Project Directory Map:
 │   │   │   ├── AG_Functions.py
 │   │   │   ├── AG_Test.py
 │   │   │   ├── Arch_Graph_Reports.py
-│   │   │   └── Optimize_3D_AG.py
+│   │   │   └── vl_optimization
+│   │   │       ├── vl_opt.py
+│   │   │       ├── vl_opt_functions.py
+│   │   │       ├── vl_opt_local_search.py
+│   │   │       └── vl_opt_simulated_annealing.py
 │   │   ├── Benchmarks
 │   │   ├── Clusterer
 │   │   │   ├── Clustering.py
@@ -145,9 +149,5 @@ Project Directory Map:
     └── Python
         └── Unit_tests.py
 
-24 directories, 83 files
+25 directories, 86 files
 ===============================================================================
-
-See our page at: http://siavooshpayandehazad.github.io/ScheduleAndDepend/
-Join the chat at https://gitter.im/siavooshpayandehazad/ScheduleAndDepend
-
