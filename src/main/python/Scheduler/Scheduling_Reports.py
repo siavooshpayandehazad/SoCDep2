@@ -228,11 +228,11 @@ def add_routers_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter
 
                 if task in ag.node[node]['Router'].Scheduling:
                     if tg.edge[task[0]][task[1]]['Criticality'] == 'H':
-                        for batch_and_schedule in ag.node[node]['Router'].Scheduling:
+                        for batch_and_schedule in ag.node[node]['Router'].Scheduling[task]:
                             start_time = batch_and_schedule[0]
                             # batch_num = batch_and_schedule[2]
                             task_length = batch_and_schedule[1] - start_time
-                            end_time = start_time + (task_length / (Config.Communication_SlackCount+1))
+                            end_time = batch_and_schedule[1]
                             pe_t.append(start_time)
                             pe_p.append(0)
                             pe_t.append(start_time)
