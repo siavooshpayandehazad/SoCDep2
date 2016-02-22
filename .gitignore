@@ -10,4 +10,6 @@
 out
 target
 *.html
+*.js
+*.css
 *.mp4
