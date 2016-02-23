@@ -13,22 +13,22 @@ from Mapper import Mapping_Functions
 import random
 
 
-def GenerateOneStepDiagnosablePMCG(AG, SHM):
+def gen_one_step_diagnosable_pmcg(ag, shm):
     """
 
-    :param AG: Architecture Unit
-    :param SHM: System Health Map
+    :param ag: Architecture Unit
+    :param shm: System Health Map
     :return:
     """
     print ("===========================================")
     print ("PREPARING ONE STEP DIAGNOSABLE PMC GRAPH (PMCG)...")
-    PMCG = networkx.DiGraph()
-    for PE in AG.nodes():
-        if SHM.node[PE]['NodeHealth']:
-            PMCG.add_node(PE)
+    pmcg = networkx.DiGraph()
+    for PE in ag.nodes():
+        if shm.node[PE]['NodeHealth']:
+            pmcg.add_node(PE)
 
     # we would like to have one-step t-fault diagnosable system
-    n = len(PMCG.nodes())     # number of processors in the system
+    n = len(pmcg.nodes())     # number of processors in the system
     delta = 2
 
     # One-step t-fault diagnosable system S is called optimal if
@@ -54,24 +54,24 @@ def GenerateOneStepDiagnosablePMCG(AG, SHM):
         if (delta*m % n) not in delta_m:
             delta_m.append(delta*m % n)
 
-    for TesterNode in PMCG.nodes():
-        for TestedNode in PMCG.nodes():
+    for TesterNode in pmcg.nodes():
+        for TestedNode in pmcg.nodes():
             if (TesterNode - TestedNode) % n in delta_m:
                 # print "Connecting:",TesterNode, "to", TestedNode, "---> i-j = ", (TesterNode - TestedNode)%n, "mod", n
-                PMCG.add_edge(TesterNode, TestedNode, Weight=0)
+                pmcg.add_edge(TesterNode, TestedNode, Weight=0)
     print ("PMC GRAPH (PMCG) IS READY...")
-    return PMCG
+    return pmcg
 
 
-def GenerateSequentiallyDiagnosablePMCG(AG, SHM):
+def gen_sequentially_diagnosable_pmcg(ag, shm):
     print ("===========================================")
     print ("PREPARING SEQUENTIALLY DIAGNOSABLE PMC GRAPH (PMCG)...")
-    PMCG = networkx.DiGraph()
-    for PE in AG.nodes():
-        if SHM.node[PE]['NodeHealth']:
-            PMCG.add_node(PE)
+    pmcg = networkx.DiGraph()
+    for PE in ag.nodes():
+        if shm.node[PE]['NodeHealth']:
+            pmcg.add_node(PE)
 
-    n = len(PMCG.nodes())     # number of processors in the system
+    n = len(pmcg.nodes())     # number of processors in the system
     # the theorem says there is a a sequentially diagnosable system with    N = n+2t-2
 
     if Config.TFaultDiagnosable is not None:
@@ -79,104 +79,104 @@ def GenerateSequentiallyDiagnosablePMCG(AG, SHM):
     else:
         t = int((n-1)/2)
 
-    for TesterNode in PMCG.nodes():
-        for TestedNode in PMCG.nodes():
+    for TesterNode in pmcg.nodes():
+        for TestedNode in pmcg.nodes():
             if (TesterNode - TestedNode) % n == 1:
-                PMCG.add_edge(TesterNode, TestedNode, Weight=0)
+                pmcg.add_edge(TesterNode, TestedNode, Weight=0)
 
     counter = 0
-    ChosenTestedNode = PMCG.nodes()[0]
+    chosen_tested_node = pmcg.nodes()[0]
     while counter < 2*t-2:
-        ChosenTester = random.choice(PMCG.nodes())
-        # print (ChosenTester, Counter)
-        if ChosenTester != 0 and ChosenTester != n-1 and (ChosenTester, ChosenTestedNode) not in PMCG.edges():
-            PMCG.add_edge(ChosenTester, ChosenTestedNode, Weight=0)
+        chosen_tester = random.choice(pmcg.nodes())
+        # print (chosen_tester, counter)
+        if chosen_tester != 0 and chosen_tester != n-1 and (chosen_tester, chosen_tested_node) not in pmcg.edges():
+            pmcg.add_edge(chosen_tester, chosen_tested_node, Weight=0)
             counter += 1
-    return PMCG
+    return pmcg
 
 
-def GenerateTestTGFromPMCG(PMCG):
+def generate_test_tg_from_pmcg(pmcg):
     """
     Generates a test task graph to be scheduled in between the Tasks from TG on the
-    Network to support PMCG. each edge in PMCG turns into a pair of tasks for a specific
+    Network to support pmcg. each edge in pmcg turns into a pair of tasks for a specific
     functional test to be mapped on the network.
-    :param PMCG: PMC Graph
+    :param pmcg: PMC Graph
     :return: Test Task Graph
     """
-    TTG = networkx.DiGraph()
-    for edge in PMCG.edges():
-        TTG.add_node("S"+str(edge[0])+str(edge[1]), Criticality='L', WCET=Config.NodeTestExeTime, Node=edge[1],
+    ttg = networkx.DiGraph()
+    for edge in pmcg.edges():
+        ttg.add_node("S"+str(edge[0])+str(edge[1]), Criticality='L', WCET=Config.NodeTestExeTime, Node=edge[1],
                      Cluster=None, Priority=None, Distance=0, Release=0, Type='Test')
-        TTG.add_node("R"+str(edge[0])+str(edge[1]), Criticality='L', WCET=1, Node=edge[0], Cluster=None,
+        ttg.add_node("R"+str(edge[0])+str(edge[1]), Criticality='L', WCET=1, Node=edge[0], Cluster=None,
                      Priority=None, Distance=1, Release=0, Type='Test')
-        TTG.add_edge("S"+str(edge[0])+str(edge[1]), "R"+str(edge[0])+str(edge[1]), ComWeight=Config.NodeTestComWeight,
+        ttg.add_edge("S"+str(edge[0])+str(edge[1]), "R"+str(edge[0])+str(edge[1]), ComWeight=Config.NodeTestComWeight,
                      Criticality='L', Link=[])
-    return TTG
+    return ttg
 
 
-def InsertTestTasksInTG(PMCG, TG):
-    # I dont know how we can use this at the moment!
+def insert_test_tasks_in_tg(pmcg, tg):
+    # I don't know how we can use this at the moment!
     print ("===========================================")
     print ("INSERTING PMC TASKS FROM TG...")
-    for edge in PMCG.edges():
-        TG.add_node("S"+str(edge[0])+str(edge[1]), Criticality='L', WCET=Config.NodeTestExeTime, Node=edge[1],
+    for edge in pmcg.edges():
+        tg.add_node("S"+str(edge[0])+str(edge[1]), Criticality='L', WCET=Config.NodeTestExeTime, Node=edge[1],
                     Cluster=None, Priority=None, Distance=0, Release=0, Type='Test')
-        TG.add_node("R"+str(edge[0])+str(edge[1]), Criticality='L', WCET=1, Node=edge[0], Cluster=None,
+        tg.add_node("R"+str(edge[0])+str(edge[1]), Criticality='L', WCET=1, Node=edge[0], Cluster=None,
                     Priority=None, Distance=1, Release=0, Type='Test')
-        TG.add_edge("S"+str(edge[0])+str(edge[1]), "R"+str(edge[0])+str(edge[1]), ComWeight=Config.NodeTestComWeight,
+        tg.add_edge("S"+str(edge[0])+str(edge[1]), "R"+str(edge[0])+str(edge[1]), ComWeight=Config.NodeTestComWeight,
                     Criticality='L', Link=[])
-    return TG
+    return tg
 
 
-def RemoveTestTasksFromTG(TG):
-    # I dont know how we can use this at the moment!
+def remove_test_tasks_from_tg(tg):
+    # I don't know how we can use this at the moment!
     print ("===========================================")
     print ("REMOVING PMC TASKS FROM TG...")
-    for task in TG.nodes():
-        if TG.node[task]['Type'] == 'Test':
-            TG.remove_node(task)
-    return TG
+    for task in tg.nodes():
+        if tg.node[task]['Type'] == 'Test':
+            tg.remove_node(task)
+    return tg
 
 
-def MapTestTasks(TG, AG, SHM, NoCRG, logging):
+def map_test_tasks(tg, ag, shm, noc_rg, logging):
     """
 
-    :param TG: Task Graph
-    :param AG: Architecture Graph
-    :param SHM: System Health Map
-    :param NoCRG: NoC Routing GRaph
+    :param tg: Task Graph
+    :param ag: Architecture Graph
+    :param shm: System Health Map
+    :param noc_rg: NoC Routing GRaph
     :param logging: logging file
     :return: None
     """
-    for task in TG.nodes():
-        if TG.node[task]['Type'] == 'Test':
-            Node = TG.node[task]['Node']
-            if not Mapping_Functions.map_task_to_node(TG, AG, SHM, NoCRG, None, None, task, Node, logging):
-                raise ValueError(" MAPPING TEST TASK FAILED WHILE TYING TO MAP ", task, "ON NODE", Node)
+    for task in tg.nodes():
+        if tg.node[task]['Type'] == 'Test':
+            node = tg.node[task]['Node']
+            if not Mapping_Functions.map_task_to_node(tg, ag, shm, noc_rg, None, None, task, node, logging):
+                raise ValueError(" MAPPING TEST TASK FAILED WHILE TYING TO MAP ", task, "ON NODE", node)
     return None
 
 
-def DrawPMCG(PMCG):
+def draw_pmcg(pmcg):
     print ("===========================================")
     print ("PREPARING PMC GRAPH (PMCG) DRAWINGS...")
-    pos = networkx.circular_layout(PMCG)
-    networkx.draw_networkx_nodes(PMCG, pos, node_size=300, color='b')
-    networkx.draw_networkx_edges(PMCG, pos)
-    networkx.draw_networkx_labels(PMCG, pos)
+    pos = networkx.circular_layout(pmcg)
+    networkx.draw_networkx_nodes(pmcg, pos, node_size=300, color='b')
+    networkx.draw_networkx_edges(pmcg, pos)
+    networkx.draw_networkx_labels(pmcg, pos)
     plt.savefig("GraphDrawings/PMCG")
     plt.clf()
     print ("\033[35m* VIZ::\033[0m PMC GRAPH (PMCG) DRAWING CREATED AT:  GraphDrawings/PMCG.png")
     return None
 
 
-def DrawTTG(TTG):
+def draw_ttg(ttg):
     print ("===========================================")
     print ("PREPARING TEST TASK GRAPH (TTG) DRAWINGS...")
 
-    pos = networkx.circular_layout(TTG, scale=6)
-    networkx.draw_networkx_nodes(TTG, pos, node_size=200, color='b')
-    networkx.draw_networkx_edges(TTG, pos)
-    networkx.draw_networkx_labels(TTG, pos, font_size=8)
+    pos = networkx.circular_layout(ttg, scale=6)
+    networkx.draw_networkx_nodes(ttg, pos, node_size=200, color='b')
+    networkx.draw_networkx_edges(ttg, pos)
+    networkx.draw_networkx_labels(ttg, pos, font_size=8)
     plt.savefig("GraphDrawings/TTG")
     plt.clf()
     print ("\033[35m* VIZ::\033[0m TEST TASK GRAPH (TTG) DRAWING CREATED AT: GraphDrawings/TTG.png")

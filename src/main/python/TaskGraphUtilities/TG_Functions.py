@@ -6,8 +6,7 @@ from ConfigAndPackages import Config
 import TG_File_Parser
 
 
-def generate_manual_tg(task_list, tg_edge_list, task_criticality_list,
-                       task_wcet_list, tg_edge_weight):
+def generate_manual_tg(task_list, tg_edge_list, task_criticality_list, task_wcet_list, tg_edge_weight):
     print("PREPARING TASK GRAPH (TG)...")
     tg = networkx.DiGraph()
     edge_criticality_list = []

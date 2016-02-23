@@ -18,6 +18,12 @@ def find_all_vertical_links(ag):
 
 
 def remove_all_vertical_links(shm, ag):
+    """
+    Finds all vertical links and sets them as faulty in shm
+    :param shm: system health map
+    :param ag: architecture graph
+    :return: None
+    """
     vertical_link_list = find_all_vertical_links(ag)
     for v_link in vertical_link_list:
         shm.break_link(v_link, False)

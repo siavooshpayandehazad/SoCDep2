@@ -24,14 +24,14 @@ def generate_tg_from_dot(file_path):
                 # print EdgeList[0], EdgeList[2], EdgeList[6]
                 if edge_list[0] not in tg.nodes():
                     tg.add_node(edge_list[0], WCET=1, Criticality='L', Cluster=None, Node=None, Priority=None,
-                                        Distance=None, Release=0, Type='App')
+                                Distance=None, Release=0, Type='App')
                 if edge_list[2] not in tg.nodes():
                     tg.add_node(edge_list[2], WCET=1, Criticality='L', Cluster=None, Node=None, Priority=None,
-                                        Distance=None, Release=0, Type='App')
+                                Distance=None, Release=0, Type='App')
                 # TODO: the edge weight is not correct... i should think about it...
                 communication_weight = 1
                 tg.add_edge(edge_list[0], edge_list[2], Criticality='L', Link=[],
-                                    ComWeight=communication_weight)
+                            ComWeight=communication_weight)
             if line == '':
                 break
     except IOError:

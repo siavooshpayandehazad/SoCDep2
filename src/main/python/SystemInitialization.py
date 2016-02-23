@@ -28,7 +28,7 @@ def initialize_system(logging):
         Task_Graph_Reports.report_task_graph(tg, logging)
     Task_Graph_Reports.draw_task_graph(tg)
     if Config.TestMode:
-        TG_Test.CheckAcyclic(tg, logging)
+        TG_Test.check_acyclic(tg, logging)
     ####################################################################
     ag = copy.deepcopy(AG_Functions.generate_ag(logging))
     AG_Functions.update_ag_regions(ag)
@@ -56,7 +56,7 @@ def initialize_system(logging):
     SHMU_Functions.apply_initial_faults(shmu)
     if Config.SHM_Drawing:
         SHMU_Reports.draw_shm(shmu.SHM)
-        SHMU_Reports.DrawTempDistribution(shmu.SHM)
+        SHMU_Reports.draw_temp_distribution(shmu.SHM)
     # SHM_Reports.report_noc_shm()
     ####################################################################
     routing_graph_start_time = time.time()
@@ -114,22 +114,22 @@ def initialize_system(logging):
     if Config.GeneratePMCG:
         pmcg_start_time = time.time()
         if Config.OneStepDiagnosable:
-            pmcg = TestSchedulingUnit.GenerateOneStepDiagnosablePMCG(ag, shmu.SHM)
+            pmcg = TestSchedulingUnit.gen_one_step_diagnosable_pmcg(ag, shmu.SHM)
         else:
-            pmcg = TestSchedulingUnit.GenerateSequentiallyDiagnosablePMCG(ag, shmu.SHM)
-        test_tg = TestSchedulingUnit.GenerateTestTGFromPMCG(pmcg)
+            pmcg = TestSchedulingUnit.gen_sequentially_diagnosable_pmcg(ag, shmu.SHM)
+        test_tg = TestSchedulingUnit.generate_test_tg_from_pmcg(pmcg)
         print ("\033[92mTIME::\033[0m PMCG AND TTG GENERATION TOOK: " +
                str(round(time.time()-pmcg_start_time)) + " SECONDS")
         if Config.PMCG_Drawing:
-            TestSchedulingUnit.DrawPMCG(pmcg)
+            TestSchedulingUnit.draw_pmcg(pmcg)
         if Config.TTG_Drawing:
-            TestSchedulingUnit.DrawTTG(test_tg)
-        TestSchedulingUnit.InsertTestTasksInTG(pmcg, tg)
+            TestSchedulingUnit.draw_ttg(test_tg)
+        TestSchedulingUnit.insert_test_tasks_in_tg(pmcg, tg)
         Task_Graph_Reports.draw_task_graph(tg, ttg=test_tg)
-        TestSchedulingUnit.MapTestTasks(tg, ag, shmu.SHM, noc_rg, logging)
+        TestSchedulingUnit.map_test_tasks(tg, ag, shmu.SHM, noc_rg, logging)
         Scheduler.schedule_test_in_tg(tg, ag, shmu.SHM, False, logging)
         Scheduling_Reports.report_mapped_tasks(ag, logging)
-        # TestSchedulingUnit.RemoveTestTasksFromTG(test_tg, tg)
+        # TestSchedulingUnit.remove_test_tasks_from_tg(test_tg, tg)
         # Task_Graph_Reports.draw_task_graph(tg, TTG=test_tg)
         Scheduling_Reports.generate_gantt_charts(tg, ag, "SchedulingWithTTG")
     else:

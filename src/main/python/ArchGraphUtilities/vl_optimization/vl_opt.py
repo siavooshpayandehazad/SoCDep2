@@ -4,6 +4,7 @@ from ArchGraphUtilities.Arch_Graph_Reports import draw_vl_opt
 from vl_opt_local_search import opt_ag_vertical_link_iterative_local_search, opt_ag_vertical_link_local_search
 from ConfigAndPackages import Config
 
+
 def optimize_ag_vertical_links(ag, shmu, logging):
     ag_cost_file = open('Generated_Files/Internal/vl_opt_cost.txt', 'w')
     ag_cost_file.close()

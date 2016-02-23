@@ -45,7 +45,7 @@ def report_the_event(fault_location, fault_type):
     return None
 
 
-def ReportMPM(shmu):
+def report_mpm(shmu):
     """
 
     :param shmu: System Health Monitoring Unit
@@ -59,7 +59,7 @@ def ReportMPM(shmu):
     return None
 
 
-def DrawTempDistribution(shm):
+def draw_temp_distribution(shm):
     """
 
     :param shm: System Health Map
