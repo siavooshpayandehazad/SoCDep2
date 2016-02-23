@@ -55,9 +55,9 @@ def initialize_system(logging):
         Arch_Graph_Reports.draw_ag(ag, "AG_VLOpt")
     SHMU_Functions.apply_initial_faults(shmu)
     if Config.SHM_Drawing:
-        SHMU_Reports.DrawSHM(shmu.SHM)
+        SHMU_Reports.draw_shm(shmu.SHM)
         SHMU_Reports.DrawTempDistribution(shmu.SHM)
-    # SHM_Reports.Report_NoC_SystemHealthMap()
+    # SHM_Reports.report_noc_shm()
     ####################################################################
     routing_graph_start_time = time.time()
     if Config.SetRoutingFromFile:
@@ -66,8 +66,8 @@ def initialize_system(logging):
     else:
         noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
                                                                 Config.DebugInfo, Config.DebugDetails))
-    print ("\033[92mTIME::\033[0m ROUTING GRAPH GENERATION TOOK: "
-           + str(round(time.time()-routing_graph_start_time))+" SECONDS")
+    print ("\033[92mTIME::\033[0m ROUTING GRAPH GENERATION TOOK: " +
+           str(round(time.time()-routing_graph_start_time))+" SECONDS")
     # this is for double checking...
     if Config.FindOptimumAG:
         Calculate_Reachability.reachability_metric(ag, noc_rg, True)
@@ -78,16 +78,16 @@ def initialize_system(logging):
     # in case of partitioning, we have to route based on different Route-graphs
     if Config.EnablePartitioning:
         critical_rg, noncritical_rg = Calculate_Reachability.calculate_reachability_with_regions(ag, shmu)
-        ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(ag)
+        ReachabilityReports.report_gsnoc_friendly_reachability_in_file(ag)
     else:
         if Config.TestMode:
-            Reachability_Test.ReachabilityTest()
+            Reachability_Test.reachability_test()
         critical_rg, noncritical_rg = None, None
         Calculate_Reachability.calculate_reachability(ag, noc_rg)
         Calculate_Reachability.optimize_reachability_rectangles(ag, Config.NumberOfRects)
-        # ReachabilityReports.ReportReachability(ag)
-        ReachabilityReports.ReportReachabilityInFile(ag, "ReachAbilityNodeReport")
-        ReachabilityReports.ReportGSNoCFriendlyReachabilityInFile(ag)
+        # ReachabilityReports.report_reachability(ag)
+        ReachabilityReports.report_reachability_in_file(ag, "ReachAbilityNodeReport")
+        ReachabilityReports.report_gsnoc_friendly_reachability_in_file(ag)
     ####################################################################
     if Config.read_mapping_from_file:
         Mapping_Functions.read_mapping_from_file(tg, ag, shmu.SHM, noc_rg, critical_rg, noncritical_rg,
@@ -99,7 +99,7 @@ def initialize_system(logging):
             tg = copy.deepcopy(best_tg)
             ag = copy.deepcopy(best_ag)
             del best_tg, best_ag
-            # SHM.AddCurrentMappingToMPM(tg)
+            # SHM.add_current_mapping_to_mpm(tg)
             Mapping_Functions.write_mapping_to_file(ag, "mapping_report")
     if Config.Mapping_Dstr_Drawing:
         Mapping_Reports.draw_mapping_distribution(ag, shmu)
@@ -118,8 +118,8 @@ def initialize_system(logging):
         else:
             pmcg = TestSchedulingUnit.GenerateSequentiallyDiagnosablePMCG(ag, shmu.SHM)
         test_tg = TestSchedulingUnit.GenerateTestTGFromPMCG(pmcg)
-        print ("\033[92mTIME::\033[0m PMCG AND TTG GENERATION TOOK: "
-               + str(round(time.time()-pmcg_start_time)) + " SECONDS")
+        print ("\033[92mTIME::\033[0m PMCG AND TTG GENERATION TOOK: " +
+               str(round(time.time()-pmcg_start_time)) + " SECONDS")
         if Config.PMCG_Drawing:
             TestSchedulingUnit.DrawPMCG(pmcg)
         if Config.TTG_Drawing:

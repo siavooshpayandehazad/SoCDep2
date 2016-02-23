@@ -73,7 +73,7 @@ def generate_fault_config(shmu):
 
 
 def apply_fault_event(ag, shmu, noc_rg, fault_location, fault_type):
-        SHMU_Reports.ReportTheEvent(fault_location, fault_type)
+        SHMU_Reports.report_the_event(fault_location, fault_type)
         if type(fault_location) is tuple:      # its a Link fault
             if fault_type == 'T':    # Transient Fault
                 if shmu.SHM.edge[fault_location[0]][fault_location[1]]['LinkHealth']:

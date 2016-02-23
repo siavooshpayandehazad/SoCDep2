@@ -2,46 +2,56 @@
 
 from ArchGraphUtilities import AG_Functions
 
-def ReportGSNoCFriendlyReachabilityInFile (AG):
-    ReachabilityFile = open("Generated_Files/GSNoC_RectangleFile.txt",'w')
-    for Node in AG.nodes():
-        NodeX, NodeY, NodeZ = AG_Functions.return_node_location(Node)
-        for Port in AG.node[Node]['Router'].Unreachable:
-            if Port == "S":
-                Direction = "SOUTH"
-            elif Port == "N":
-                Direction = "NORTH"
-            elif Port == "W":
-                Direction = "WEST"
-            elif Port == "E":
-                Direction = "EAST"
-            for Entry in AG.node[Node]['Router'].Unreachable[Port]:
-                ReachabilityFile.write( "["+str(NodeX)+","+str(NodeY)+","+str(NodeZ)+"] ")
-                UnreachableArea = AG.node[Node]['Router'].Unreachable[Port][Entry]
-                if UnreachableArea[0] is not None:
-                    UnreachableX, UnreachableY, UnreachableZ = AG_Functions.return_node_location(UnreachableArea[0])
-                    ReachabilityFile.write(str(Direction)+" NetLocCube(ll=["+str(UnreachableX)+","+str(UnreachableY)+
-                                           ","+str(UnreachableZ)+"],")
-                    UnreachableX, UnreachableY, UnreachableZ = AG_Functions.return_node_location(UnreachableArea[1])
-                    ReachabilityFile.write("ur=["+str(UnreachableX)+","+str(UnreachableY)+
-                                           ","+str(UnreachableZ)+"])\n")
+
+def report_gsnoc_friendly_reachability_in_file(ag):
+    reachability_file = open("Generated_Files/GSNoC_RectangleFile.txt", 'w')
+    for node in ag.nodes():
+        node_x, node_y, node_z = AG_Functions.return_node_location(node)
+        for port in ag.node[node]['Router'].Unreachable:
+            if port == "S":
+                direction = "SOUTH"
+            elif port == "N":
+                direction = "NORTH"
+            elif port == "W":
+                direction = "WEST"
+            elif port == "E":
+                direction = "EAST"
+            for entry in ag.node[node]['Router'].Unreachable[port]:
+                reachability_file.write("["+str(node_x)+","+str(node_y)+","+str(node_z)+"] ")
+                unreachable_area = ag.node[node]['Router'].Unreachable[port][entry]
+                if unreachable_area[0] is not None:
+                    unreachable_x, unreachable_y, unreachable_z = AG_Functions.return_node_location(unreachable_area[0])
+                    reachability_file.write(str(direction)+" NetLocCube(ll=["+str(unreachable_x)+"," +
+                                            str(unreachable_y)+","+str(unreachable_z)+"],")
+                    unreachable_x, unreachable_y, unreachable_z = AG_Functions.return_node_location(unreachable_area[1])
+                    reachability_file.write("ur=["+str(unreachable_x)+","+str(unreachable_y) +
+                                            ","+str(unreachable_z)+"])\n")
                 else:
-                    ReachabilityFile.write(str(Direction)+" NetLocCube(invalid)\n")
-        ReachabilityFile.write("\n")
-    ReachabilityFile.close()
+                    reachability_file.write(str(direction)+" NetLocCube(invalid)\n")
+        reachability_file.write("\n")
+    reachability_file.close()
 
-def ReportReachability (AG):
+
+def report_reachability(ag):
+    """
+    reports unreachable nodes for each port of each node
+    :param ag: architecture graph
+    :return: None
+    """
     print ("=====================================")
-    for Node in AG.nodes():
-        print ("NODE", Node, "UNREACHABLE NODES:")
-        for Port in AG.node[Node]['Router'].Unreachable:
-            print ("Port:"+str(Port)+" ==>"+str(AG.node[Node]['Router'].Unreachable[Port]))
+    for node in ag.nodes():
+        print ("NODE", node, "UNREACHABLE NODES:")
+        for port in ag.node[node]['Router'].Unreachable:
+            print ("Port:"+str(port)+" ==>"+str(ag.node[node]['Router'].Unreachable[port]))
+    return None
 
-def ReportReachabilityInFile (AG, FileName):
-    ReachabilityFile = open('Generated_Files/'+FileName+".txt",'w')
-    for Node in AG.nodes():
-        ReachabilityFile.write( "=====================================\n")
-        ReachabilityFile.write( "NODE "+str(Node)+" UNREACHABLE NODES:\n")
-        for Port in AG.node[Node]['Router'].Unreachable:
-            ReachabilityFile.write("Port: "+str(Port)+" ==> "+str(AG.node[Node]['Router'].Unreachable[Port])+"\n")
-    ReachabilityFile.close()
+
+def report_reachability_in_file(ag, file_name):
+    reachability_file = open('Generated_Files/'+file_name+".txt", 'w')
+    for node in ag.nodes():
+        reachability_file.write("=====================================\n")
+        reachability_file.write("NODE "+str(node)+" UNREACHABLE NODES:\n")
+        for port in ag.node[node]['Router'].Unreachable:
+            reachability_file.write("Port: "+str(port)+" ==> "+str(ag.node[node]['Router'].Unreachable[port])+"\n")
+    reachability_file.close()
+    return None

@@ -7,305 +7,328 @@ from ConfigAndPackages import Config
 from ArchGraphUtilities import AG_Functions
 
 
-
-def Report_NoC_SystemHealthMap(SHMU):
-        print ("===========================================")
-        print ("      REPORTING SYSTEM HEALTH MAP")
-        print ("===========================================")
-        for Node in SHMU.SHM.nodes():
-            print ("\tNODE:", Node)
-            print ("\t\tNODE HEALTH:", SHMU.SHM.node[Node]['NodeHealth'])
-            print ("\t\tNODE SPEED:", SHMU.SHM.node[Node]['NodeSpeed'])
-            print ("\t\tTURNS:", SHMU.SHM.node[Node]['TurnsHealth'])
-            print ("\t==============")
-        for Edge in SHMU.SHM.edges():
-            print ("\tLINK:", Edge, "\t", SHMU.SHM.edge[Edge[0]][Edge[1]]['LinkHealth'])
-
-
-def ReportTheEvent(FaultLocation, FaultType):
+def report_noc_shm(shmu):
+    """
+    Reports the system health map in the console
+    :param shmu: system health monitoring unit
+    :return: None
+    """
     print ("===========================================")
-    if FaultType == 'T':    # Transient Fault
-            StringToPrint = "\033[33mSHM:: Event:\033[0m Transient Fault happened at "
-    else:   # Permanent Fault
-            StringToPrint = "\033[33mSHM:: Event:\033[0m Permanent Fault happened at "
-    if type(FaultLocation) is tuple:
-            StringToPrint += 'Link ' + str(FaultLocation)
-    elif type(FaultLocation) is dict:
-            Turn = FaultLocation[FaultLocation.keys()[0]]
-            Node = FaultLocation.keys()[0]
-            StringToPrint += 'Turn ' + str(Turn) + ' of Node ' + str(Node)
-    else:
-            StringToPrint += 'Node ' + str(FaultLocation)
-    print (StringToPrint)
+    print ("      REPORTING SYSTEM HEALTH MAP")
+    print ("===========================================")
+    for node in shmu.SHM.nodes():
+        print ("\tNODE:", node)
+        print ("\t\tNODE HEALTH:", shmu.SHM.node[node]['NodeHealth'])
+        print ("\t\tNODE SPEED:", shmu.SHM.node[node]['NodeSpeed'])
+        print ("\t\tTURNS:", shmu.SHM.node[node]['TurnsHealth'])
+        print ("\t==============")
+    for edge in shmu.SHM.edges():
+        print ("\tLINK:", edge, "\t", shmu.SHM.edge[edge[0]][edge[1]]['LinkHealth'])
     return None
 
 
-def ReportMPM(SHMU):
+def report_the_event(fault_location, fault_type):
+    print ("===========================================")
+    if fault_type == 'T':    # Transient Fault
+            string_to_print = "\033[33mSHM:: Event:\033[0m Transient Fault happened at "
+    else:   # Permanent Fault
+            string_to_print = "\033[33mSHM:: Event:\033[0m Permanent Fault happened at "
+    if type(fault_location) is tuple:
+            string_to_print += 'Link ' + str(fault_location)
+    elif type(fault_location) is dict:
+            turn = fault_location[fault_location.keys()[0]]
+            node = fault_location.keys()[0]
+            string_to_print += 'Turn ' + str(turn) + ' of Node ' + str(node)
+    else:
+            string_to_print += 'Node ' + str(fault_location)
+    print (string_to_print)
+    return None
+
+
+def ReportMPM(shmu):
     """
 
-    :param SHMU: System Health Monitoring Unit
+    :param shmu: System Health Monitoring Unit
     :return:
     """
     print ("===========================================")
     print ("      REPORTING MOST PROBABLE MAPPING ")
     print ("===========================================")
-    for item in SHMU.MPM:
-        print ("KEY:", item, "\t\tMAPPING:", SHMU.MPM[item])
+    for item in shmu.MPM:
+        print ("KEY:", item, "\t\tMAPPING:", shmu.MPM[item])
     return None
 
-def DrawTempDistribution(SHM):
+
+def DrawTempDistribution(shm):
     """
 
-    :param SHM: System Health Map
+    :param shm: System Health Map
     :return:
     """
     print ("===========================================")
     print ("GENERATING TEMPERATURE DISTRIBUTIONS VISUALIZATION...")
-    fig_Util = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
-    MaxTemp = 0
-    for node in SHM.nodes():
-        MaxTemp = max(SHM.node[node]['NodeTemp'], MaxTemp)
+    fig_util = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
+    max_temp = 0
+    for node in shm.nodes():
+        max_temp = max(shm.node[node]['NodeTemp'], max_temp)
 
-    for node in SHM.nodes():
-        Location = AG_Functions.return_node_location(node)
-        XSize = float(Config.Network_X_Size)
-        YSize = float(Config.Network_Y_Size)
-        ZSize = float(Config.Network_Y_Size)
+    for node in shm.nodes():
+        location = AG_Functions.return_node_location(node)
+        x_size = float(Config.Network_X_Size)
+        y_size = float(Config.Network_Y_Size)
+        z_size = float(Config.Network_Y_Size)
 
-        X_Offset = Location[2]/(ZSize*XSize)
-        Y_Offset = Location[2]/(ZSize*YSize)
+        x_offset = location[2]/(z_size*x_size)
+        y_offset = location[2]/(z_size*y_size)
 
-        Temp = 255*(float(SHM.node[node]['RouterTemp'])/Config.MaxTemp)
-        if SHM.node[node]['NodeHealth']:
-            color = '#%02X%02X%02X' % (Temp, 0, 255-Temp)
+        temp = 255*(float(shm.node[node]['RouterTemp'])/Config.MaxTemp)
+        if shm.node[node]['NodeHealth']:
+            color = '#%02X%02X%02X' % (temp, 0, 255-temp)
         else:   # node is broken
             color = '#7B747B'
-        fig_Util.gca().add_patch(patches.Rectangle((Location[0]/XSize+X_Offset,
-                                                    Location[1]/YSize+Y_Offset),
-                                                    width=0.08, height=0.08, facecolor=color,
-                                                    edgecolor="black", linewidth=3, zorder=ZSize-Location[2]))
+        fig_util.gca().add_patch(patches.Rectangle((location[0]/x_size+x_offset,
+                                                    location[1]/y_size+y_offset),
+                                                   width=0.08, height=0.08, facecolor=color,
+                                                   edgecolor="black", linewidth=3, zorder=z_size-location[2]))
 
-        Temp = 255*(float(SHM.node[node]['NodeTemp'])/Config.MaxTemp)
+        temp = 255*(float(shm.node[node]['NodeTemp'])/Config.MaxTemp)
 
-        if SHM.node[node]['NodeHealth']:
-            color = '#%02X%02X%02X' % (Temp, 0, 255-Temp)
+        if shm.node[node]['NodeHealth']:
+            color = '#%02X%02X%02X' % (temp, 0, 255-temp)
         else:   # node is broken
             color = '#7B747B'
-        fig_Util.gca().add_patch(patches.Rectangle((Location[0]/XSize+X_Offset+0.05,
-                                                    Location[1]/YSize+Y_Offset),
-                                                    width=0.03, height=0.03, facecolor=color,
-                                                    edgecolor="black", linewidth=3, zorder=ZSize-Location[2]))
+        fig_util.gca().add_patch(patches.Rectangle((location[0]/x_size+x_offset+0.05,
+                                                    location[1]/y_size+y_offset),
+                                                   width=0.03, height=0.03, facecolor=color,
+                                                   edgecolor="black", linewidth=3, zorder=z_size-location[2]))
 
-    fig_Util.text(0.25, 0.03, 'Distribution of temperature of network nodes', fontsize=15)
-    fig_Util.savefig("GraphDrawings/Temp_Distribute.png", dpi=100)
-    fig_Util.clf()
-    plt.close(fig_Util)
-    print ("\033[35m* VIZ::\033[0mMAPPING UTILIZATION DISTRIBUTION DRAWING CREATED AT: GraphDrawings/Temp_Distribute.png")
-
+    fig_util.text(0.25, 0.03, 'Distribution of temperature of network nodes', fontsize=15)
+    fig_util.savefig("GraphDrawings/Temp_Distribute.png", dpi=100)
+    fig_util.clf()
+    plt.close(fig_util)
+    print("\033[35m* VIZ::\033[0mMAPPING UTILIZATION DISTRIBUTION DRAWING " +
+          "CREATED AT: GraphDrawings/Temp_Distribute.png")
     return None
 
 
-def DrawSHM(SHM):
+def draw_shm(shm):
     """
 
-    :param SHM: System Health Map
+    :param shm: System Health Map
     :return:
     """
     print ("===========================================")
     print ("GENERATING SYSTEM HEALTH MAP DRAWING...")
 
-    XSize = float(Config.Network_X_Size)
-    YSize = float(Config.Network_Y_Size)
-    ZSize = float(Config.Network_Z_Size)
+    x_size = float(Config.Network_X_Size)
+    y_size = float(Config.Network_Y_Size)
+    z_size = float(Config.Network_Z_Size)
 
-    fig = plt.figure(figsize=(10*XSize, 10*YSize))
-    if ZSize == 1:
+    fig = plt.figure(figsize=(10*x_size, 10*y_size))
+    if z_size == 1:
         plt.ylim([0, 1])
         plt.xlim([0, 1])
     else:
-        plt.ylim([0, ZSize])
-        plt.xlim([0, ZSize])
+        plt.ylim([0, z_size])
+        plt.xlim([0, z_size])
 
-    for node in SHM.nodes():
-        Location = AG_Functions.return_node_location(node)
-        X = (Location[0]/XSize)*ZSize
-        Y = (Location[1]/YSize)*ZSize
-        Z = (Location[2]/ZSize)
-        X_offset = Z
-        Y_offset = Z
+    for node in shm.nodes():
+        location = AG_Functions.return_node_location(node)
+        x = (location[0]/x_size)*z_size
+        y = (location[1]/y_size)*z_size
+        z = (location[2]/z_size)
+        x_offset = z
+        y_offset = z
 
-        fontsize = 35 /ZSize
-        plt.text(X+0.155+X_offset, Y+0.055+Y_offset, str(node), fontsize=fontsize)
-        CircleRouter = plt.Circle((X+0.1+X_offset, Y+0.1+Y_offset), 0.05, facecolor='w')
-        plt.gca().add_patch(CircleRouter)
-        if SHM.node[node]['NodeHealth']:
+        font_size = 35 / z_size
+        plt.text(x+0.155+x_offset, y+0.055+y_offset, str(node), fontsize=font_size)
+        circle_router = plt.Circle((x+0.1+x_offset, y+0.1+y_offset), 0.05, facecolor='w')
+        plt.gca().add_patch(circle_router)
+        if shm.node[node]['NodeHealth']:
             color = 'w'
         else:
             color = 'r'
-        CircleNode = plt.Circle((X+0.14+X_offset, Y+0.06 +Y_offset), 0.01, facecolor=color)
-        plt.gca().add_patch(CircleNode)
+        circle_node = plt.Circle((x+0.14+x_offset, y+0.06+y_offset), 0.01, facecolor=color)
+        plt.gca().add_patch(circle_node)
 
-        for turn in SHM.node[node]['TurnsHealth']:
-            if SHM.node[node]['TurnsHealth'][turn]:
+        for turn in shm.node[node]['TurnsHealth']:
+            if shm.node[node]['TurnsHealth'][turn]:
                 color = 'black'
             else:
                 color = 'r'
 
             if turn == 'S2E':
-                plt.gca().add_patch(patches.Arrow(X + 0.11+X_offset, Y+0.065+Y_offset, 0.015, 0.015, width=0.01, color=color))
+                plt.gca().add_patch(patches.Arrow(x+0.11+x_offset, y+0.065+y_offset, 0.015,
+                                                  0.015, width=0.01, color=color))
             elif turn == 'E2S':
-                plt.gca().add_patch(patches.Arrow(X + 0.135+X_offset, Y+0.08+Y_offset, -0.015, -0.015, width=0.01, color=color))
+                plt.gca().add_patch(patches.Arrow(x+0.135+x_offset, y+0.08+y_offset, -0.015,
+                                                  -0.015, width=0.01, color=color))
             elif turn == 'W2N':
-                plt.gca().add_patch(patches.Arrow(X + 0.065+X_offset, Y + 0.117+Y_offset, 0.015, 0.015, width=0.01, color=color))
+                plt.gca().add_patch(patches.Arrow(x+0.065+x_offset, y+0.117+y_offset, 0.015,
+                                                  0.015, width=0.01, color=color))
             elif turn == 'N2W':
-                plt.gca().add_patch(patches.Arrow(X + 0.09+X_offset, Y + 0.132+Y_offset, -0.015, -0.015, width=0.01, color=color))
+                plt.gca().add_patch(patches.Arrow(x+0.09+x_offset, y+0.132+y_offset, -0.015,
+                                                  -0.015, width=0.01, color=color))
             elif turn == 'N2E':
-                plt.gca().add_patch(patches.Arrow(X + 0.12+X_offset, Y + 0.132+Y_offset, 0.015, -0.015, width=0.01, color=color))
+                plt.gca().add_patch(patches.Arrow(x+0.12+x_offset, y+0.132+y_offset, 0.015,
+                                                  -0.015, width=0.01, color=color))
             elif turn == 'E2N':
-                plt.gca().add_patch(patches.Arrow(X + 0.125+X_offset, Y + 0.117+Y_offset, -0.015, 0.015, width=0.01, color=color))
+                plt.gca().add_patch(patches.Arrow(x+0.125+x_offset, y+0.117+y_offset, -0.015,
+                                                  0.015, width=0.01, color=color))
             elif turn == 'W2S':
-                plt.gca().add_patch(patches.Arrow(X + 0.075+X_offset, Y + 0.08+Y_offset, 0.015, -0.015, width=0.01, color=color))
+                plt.gca().add_patch(patches.Arrow(x + 0.075+x_offset, y + 0.08+y_offset, 0.015,
+                                                  -0.015, width=0.01, color=color))
             elif turn == 'S2W':
-                plt.gca().add_patch(patches.Arrow(X + 0.080+X_offset, Y + 0.065+Y_offset, -0.015, 0.015, width=0.01, color=color))
+                plt.gca().add_patch(patches.Arrow(x + 0.080+x_offset, y + 0.065+y_offset, -0.015,
+                                                  0.015, width=0.01, color=color))
 
-            if SHM.node[node]['TurnsHealth'][turn]:
+            if shm.node[node]['TurnsHealth'][turn]:
                 color = 'black'
             else:
                 color = 'r'
 
             if turn == 'N2U':
-                CircleNode = plt.Circle((X+0.09+X_offset, Y+0.142 +Y_offset), 0.005, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
+                circle_node = plt.Circle((x+0.09+x_offset, y+0.142+y_offset), 0.005, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
 
             elif turn == 'N2D':
-                CircleNode = plt.Circle((X+0.11+X_offset, Y+0.142 +Y_offset), 0.005, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
-                CircleNode = plt.Circle((X+0.11+X_offset, Y+0.142 +Y_offset), 0.001, facecolor='b')
-                plt.gca().add_patch(CircleNode)
-
+                circle_node = plt.Circle((x+0.11+x_offset, y+0.142+y_offset), 0.005, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
+                circle_node = plt.Circle((x+0.11+x_offset, y+0.142+y_offset), 0.001, facecolor='b')
+                plt.gca().add_patch(circle_node)
 
             elif turn == 'S2U':
-                CircleNode = plt.Circle((X+0.11+X_offset, Y+0.057 +Y_offset), 0.005, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
+                circle_node = plt.Circle((x+0.11+x_offset, y+0.057+y_offset), 0.005, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
 
             elif turn == 'S2D':
-                CircleNode = plt.Circle((X+0.09+X_offset, Y+0.057 +Y_offset), 0.005, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
-                CircleNode = plt.Circle((X+0.09+X_offset, Y+0.057 +Y_offset), 0.001, facecolor='b')
-                plt.gca().add_patch(CircleNode)
+                circle_node = plt.Circle((x+0.09+x_offset, y+0.057+y_offset), 0.005, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
+                circle_node = plt.Circle((x+0.09+x_offset, y+0.057+y_offset), 0.001, facecolor='b')
+                plt.gca().add_patch(circle_node)
 
             elif turn == 'E2U':
-                CircleNode = plt.Circle((X+0.142+X_offset, Y+0.11 +Y_offset), 0.005, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
-
+                circle_node = plt.Circle((x+0.142+x_offset, y+0.11+y_offset), 0.005, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
 
             elif turn == 'E2D':
-                CircleNode = plt.Circle((X+0.142+X_offset, Y+0.09 +Y_offset), 0.005, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
-                CircleNode = plt.Circle((X+0.142+X_offset, Y+0.09 +Y_offset), 0.001, facecolor='b')
-                plt.gca().add_patch(CircleNode)
+                circle_node = plt.Circle((x+0.142+x_offset, y+0.09+y_offset), 0.005, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
+                circle_node = plt.Circle((x+0.142+x_offset, y+0.09+y_offset), 0.001, facecolor='b')
+                plt.gca().add_patch(circle_node)
 
             elif turn == 'W2U':
-                CircleNode = plt.Circle((X+0.057+X_offset, Y+0.09+Y_offset), 0.005, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
+                circle_node = plt.Circle((x+0.057+x_offset, y+0.09+y_offset), 0.005, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
 
             elif turn == 'W2D':
-                CircleNode = plt.Circle((X+0.057+X_offset, Y+0.11+Y_offset), 0.005, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
-                CircleNode = plt.Circle((X+0.057+X_offset, Y+0.11+Y_offset), 0.001, facecolor='b')
-                plt.gca().add_patch(CircleNode)
+                circle_node = plt.Circle((x+0.057+x_offset, y+0.11+y_offset), 0.005, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
+                circle_node = plt.Circle((x+0.057+x_offset, y+0.11+y_offset), 0.001, facecolor='b')
+                plt.gca().add_patch(circle_node)
 
             elif turn == 'U2N':
-                CircleNode = plt.Circle((X+0.105+X_offset, Y+0.111+Y_offset), 0.005, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
-                CircleNode = plt.Circle((X+0.105+X_offset, Y+0.111+Y_offset), 0.001, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
-                plt.gca().add_patch(patches.Arrow(X + 0.105+X_offset, Y + 0.116+Y_offset, 0, 0.01, width=0.01, color=color))
+                circle_node = plt.Circle((x+0.105+x_offset, y+0.111+y_offset), 0.005, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
+                circle_node = plt.Circle((x+0.105+x_offset, y+0.111+y_offset), 0.001, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
+                plt.gca().add_patch(patches.Arrow(x + 0.105+x_offset, y + 0.116+y_offset,
+                                                  0, 0.01, width=0.01, color=color))
 
             elif turn == 'U2S':
-                CircleNode = plt.Circle((X+0.105+X_offset, Y+0.086+Y_offset), 0.005, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
-                CircleNode = plt.Circle((X+0.105+X_offset, Y+0.086+Y_offset), 0.001, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
-                plt.gca().add_patch(patches.Arrow(X + 0.105+X_offset, Y + 0.081+Y_offset, 0, -0.01, width=0.01, color=color))
+                circle_node = plt.Circle((x+0.105+x_offset, y+0.086+y_offset), 0.005, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
+                circle_node = plt.Circle((x+0.105+x_offset, y+0.086+y_offset), 0.001, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
+                plt.gca().add_patch(patches.Arrow(x + 0.105+x_offset, y + 0.081+y_offset,
+                                                  0, -0.01, width=0.01, color=color))
 
             elif turn == 'U2W':
-                CircleNode = plt.Circle((X+0.085+X_offset, Y+0.093+Y_offset), 0.005, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
-                CircleNode = plt.Circle((X+0.085+X_offset, Y+0.093+Y_offset), 0.001, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
-                plt.gca().add_patch(patches.Arrow(X + 0.08+X_offset, Y + 0.093+Y_offset, -0.01, 0, width=0.01, color=color))
+                circle_node = plt.Circle((x+0.085+x_offset, y+0.093+y_offset), 0.005, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
+                circle_node = plt.Circle((x+0.085+x_offset, y+0.093+y_offset), 0.001, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
+                plt.gca().add_patch(patches.Arrow(x + 0.08+x_offset, y + 0.093+y_offset,
+                                                  -0.01, 0, width=0.01, color=color))
 
             elif turn == 'U2E':
-                CircleNode = plt.Circle((X+0.115+X_offset, Y+0.093+Y_offset), 0.005, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
-                CircleNode = plt.Circle((X+0.115+X_offset, Y+0.093+Y_offset), 0.001, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
-                plt.gca().add_patch(patches.Arrow(X + 0.12+X_offset, Y + 0.093+Y_offset, 0.01, 0, width=0.01, color=color))
+                circle_node = plt.Circle((x+0.115+x_offset, y+0.093+y_offset), 0.005, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
+                circle_node = plt.Circle((x+0.115+x_offset, y+0.093+y_offset), 0.001, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
+                plt.gca().add_patch(patches.Arrow(x + 0.12+x_offset, y + 0.093+y_offset,
+                                                  0.01, 0, width=0.01, color=color))
 
             elif turn == 'D2N':
-                CircleNode = plt.Circle((X+0.095+X_offset, Y+0.111+Y_offset), 0.005, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
-                plt.gca().add_patch(patches.Arrow(X + 0.095+X_offset, Y + 0.116+Y_offset, 0, 0.01, width=0.01, color=color))
+                circle_node = plt.Circle((x+0.095+x_offset, y+0.111+y_offset), 0.005, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
+                plt.gca().add_patch(patches.Arrow(x + 0.095+x_offset, y + 0.116+y_offset,
+                                                  0, 0.01, width=0.01, color=color))
 
             elif turn == 'D2S':
-                CircleNode = plt.Circle((X+0.095+X_offset, Y+0.086+Y_offset), 0.005, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
-                plt.gca().add_patch(patches.Arrow(X + 0.095+X_offset, Y + 0.081+Y_offset, 0, -0.01, width=0.01, color=color))
+                circle_node = plt.Circle((x+0.095+x_offset, y+0.086+y_offset), 0.005, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
+                plt.gca().add_patch(patches.Arrow(x + 0.095+x_offset, y + 0.081+y_offset,
+                                                  0, -0.01, width=0.01, color=color))
 
             elif turn == 'D2W':
-                CircleNode = plt.Circle((X+0.085+X_offset, Y+0.104+Y_offset), 0.005, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
-                plt.gca().add_patch(patches.Arrow(X + 0.08+X_offset, Y + 0.104+Y_offset, -0.01, 0, width=0.01, color=color))
+                circle_node = plt.Circle((x+0.085+x_offset, y+0.104+y_offset), 0.005, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
+                plt.gca().add_patch(patches.Arrow(x + 0.08+x_offset, y + 0.104+y_offset,
+                                                  -0.01, 0, width=0.01, color=color))
 
             elif turn == 'D2E':
-                CircleNode = plt.Circle((X+0.115+X_offset, Y+0.104+Y_offset), 0.005, edgecolor=color, facecolor='w')
-                plt.gca().add_patch(CircleNode)
-                plt.gca().add_patch(patches.Arrow(X + 0.12+X_offset, Y + 0.104+Y_offset, 0.01, 0, width=0.01, color=color))
+                circle_node = plt.Circle((x+0.115+x_offset, y+0.104+y_offset), 0.005, edgecolor=color, facecolor='w')
+                plt.gca().add_patch(circle_node)
+                plt.gca().add_patch(patches.Arrow(x + 0.12+x_offset, y + 0.104+y_offset,
+                                                  0.01, 0, width=0.01, color=color))
 
-
-    for link in SHM.edges():
-        if SHM.edge[link[0]][link[1]]['LinkHealth']:
+    for link in shm.edges():
+        if shm.edge[link[0]][link[1]]['LinkHealth']:
             color = 'black'
         else:
             color = 'r'
-        SourceLoc = AG_Functions.return_node_location(link[0])
-        DestinLoc = AG_Functions.return_node_location(link[1])
+        source_loc = AG_Functions.return_node_location(link[0])
+        destination_loc = AG_Functions.return_node_location(link[1])
 
-        X = (SourceLoc[0]/XSize)*ZSize
-        Y = (SourceLoc[1]/YSize)*ZSize
-        Z = SourceLoc[2]/ZSize
-        X_offset = Z
-        Y_offset = Z
+        x = (source_loc[0]/x_size)*z_size
+        y = (source_loc[1]/y_size)*z_size
+        z = source_loc[2]/z_size
+        x_offset = z
+        y_offset = z
 
-        dx = ((DestinLoc[0] - SourceLoc[0])/XSize)
-        dy = ((DestinLoc[1] - SourceLoc[1])/YSize)
-        dz = ((DestinLoc[2] - SourceLoc[2])/ZSize)
+        dx = ((destination_loc[0] - source_loc[0])/x_size)
+        dy = ((destination_loc[1] - source_loc[1])/y_size)
+        dz = ((destination_loc[2] - source_loc[2])/z_size)
         if dz == 0:
             if dx == 0:
                 if dy > 0:
-                    plt.gca().add_patch(patches.Arrow(X+ 0.11 + X_offset, Y+ 0.15 + Y_offset, 0, dy*ZSize - 0.1, width=0.01, color=color))
+                    plt.gca().add_patch(patches.Arrow(x+0.11+x_offset, y+0.15+y_offset,
+                                                      0, dy*z_size - 0.1, width=0.01, color=color))
                 else:
-                    plt.gca().add_patch(patches.Arrow(X+ 0.09 + X_offset, Y+ 0.05 + Y_offset, 0, dy*ZSize + 0.1, width=0.01, color=color))
+                    plt.gca().add_patch(patches.Arrow(x+0.09+x_offset, y+0.05+y_offset,
+                                                      0, dy*z_size + 0.1, width=0.01, color=color))
 
             elif dy == 0:
                 if dx > 0:
-                    plt.gca().add_patch(patches.Arrow(X+ 0.15 + X_offset, Y+ 0.11 + Y_offset, dx*ZSize - 0.1, 0, width=0.01, color=color))
+                    plt.gca().add_patch(patches.Arrow(x+0.15+x_offset, y+0.11+y_offset,
+                                                      dx*z_size - 0.1, 0, width=0.01, color=color))
                 else:
-                    plt.gca().add_patch(patches.Arrow(X+ 0.05 + X_offset, Y+ 0.09 + Y_offset, dx*ZSize + 0.1, 0, width=0.01, color=color))
+                    plt.gca().add_patch(patches.Arrow(x+0.05+x_offset, y+0.09+y_offset,
+                                                      dx*z_size + 0.1, 0, width=0.01, color=color))
             else:
                 raise ValueError("Can not draw link", link)
         elif dz > 0:
-                Z_offset = 1.4/ZSize
-                plt.gca().add_patch(patches.Arrow(X + 0.130 + X_offset, Y + 0.140 + Y_offset, dz*Z_offset, dz*Z_offset, width=0.01, color=color))
-        elif dz <0:
-                plt.gca().add_patch(patches.Arrow(X + 0.07 + X_offset, Y+ 0.06 + Y_offset, dz*Z_offset, dz*Z_offset, width=0.01, color=color))
-
+                z_offset = 1.4/z_size
+                plt.gca().add_patch(patches.Arrow(x+0.130+x_offset, y+0.140+y_offset,
+                                                  dz*z_offset, dz*z_offset, width=0.01, color=color))
+        elif dz < 0:
+                plt.gca().add_patch(patches.Arrow(x+0.07+x_offset, y+0.06+y_offset,
+                                                  dz*z_offset, dz*z_offset, width=0.01, color=color))
 
     fig.text(0.25, 0.02, "System Health Map", fontsize=35)
     plt.savefig("GraphDrawings/SHM.png", dpi=200)
     plt.clf()
     plt.close(fig)
-    print ("\033[35m* VIZ::\033[0mSYSTEM HEALTH MAP DRAWING CREATED AT: GraphDrawings/SHM.png")
+    print("\033[35m* VIZ::\033[0mSYSTEM HEALTH MAP DRAWING CREATED AT: GraphDrawings/SHM.png")
     return None
-

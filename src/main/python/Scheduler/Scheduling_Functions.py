@@ -1,24 +1,24 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad 
 
 
-def FindScheduleMakeSpan(ag):
+def find_schedule_make_span(ag):
     """
     Calculates the makespan of the Scheduling
     :param ag: Architecture Graph
     :return: MakeSpan of the Scheduling
     """
-    MakeSpan = 0
+    make_span = 0
     for Node in ag.nodes():
         for Task in ag.node[Node]['PE'].MappedTasks:
-            MakeSpan = max(ag.node[Node]['PE'].Scheduling[Task][1], MakeSpan)
-    return MakeSpan
+            make_span = max(ag.node[Node]['PE'].Scheduling[Task][1], make_span)
+    return make_span
 
 
 ################################################################
-def ClearScheduling(ag, tg):
+def clear_scheduling(ag, tg):
     """
     Clears scheduling from PEs, Routers and Links
-    :param AG: Architecture Graph
+    :param ag: Architecture Graph
     :param tg: Task Graph
     :return: None
     """
@@ -28,5 +28,3 @@ def ClearScheduling(ag, tg):
     for link in ag.edges():
         ag.edge[link[0]][link[1]]['Scheduling'] = {}
     return None
-
-

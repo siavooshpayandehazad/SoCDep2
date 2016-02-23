@@ -33,19 +33,19 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
 
     elif Config.Mapping_Function == 'MaxMin':
         if Config.TG_Type == 'RandomIndependent':
-            return SimpleGreedy.Max_Min_Mapping(tg, ag, noc_rg, shm, logging)
+            return SimpleGreedy.max_min_mapping(tg, ag, noc_rg, shm, logging)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
     elif Config.Mapping_Function == 'MinExecutionTime':
         if Config.TG_Type == 'RandomIndependent':
-            return SimpleGreedy.MinExecutionTime(tg, ag, shm, logging)
+            return SimpleGreedy.min_execution_time(tg, ag, shm, logging)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
     elif Config.Mapping_Function == 'MinimumCompletionTime':
         if Config.TG_Type == 'RandomIndependent':
-            return SimpleGreedy.MinimumCompletionTime(tg, ag, shm, logging)
+            return SimpleGreedy.minimum_completion_time(tg, ag, shm, logging)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
@@ -92,7 +92,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
 
                 Mapping_Reports.report_mapping(ag, logging)
                 # Schedule all tasks
-                Scheduling_Functions.ClearScheduling(ag, tg)
+                Scheduling_Functions.clear_scheduling(ag, tg)
                 Scheduler.schedule_all(tg, ag, shm, Config.DebugInfo, Config.DebugDetails, logging)
                 Scheduling_Reports.report_mapped_tasks(ag, logging)
                 Mapping_Functions.mapping_cost_function(tg, ag, shm, Config.DebugInfo)
@@ -147,7 +147,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                        + str(round(time.time()-mapping_start_time))+" SECONDS")
 
                 Mapping_Reports.report_mapping(ag, logging)
-                Scheduling_Functions.ClearScheduling(ag, tg)
+                Scheduling_Functions.clear_scheduling(ag, tg)
                 Scheduler.schedule_all(tg, ag, shm, False, False, logging)
                 Scheduling_Reports.report_mapped_tasks(ag, logging)
                 Mapping_Functions.mapping_cost_function(tg, ag, shm, True,  initial_mapping_string=init_mapping_string)

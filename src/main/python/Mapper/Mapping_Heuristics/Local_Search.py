@@ -76,7 +76,7 @@ def mapping_opt_local_search(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, s
                 return best_tg, best_ctg, best_ag
             try_counter += 1
 
-        Scheduling_Functions.ClearScheduling(ag, tg)
+        Scheduling_Functions.clear_scheduling(ag, tg)
         Scheduler.schedule_all(tg, ag, shm, False, detailed_report, logging)
 
         current_cost = Mapping_Functions.mapping_cost_function(tg, ag, shm, detailed_report)
@@ -101,7 +101,7 @@ def mapping_opt_local_search(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, s
             ctg = copy.deepcopy(best_ctg)
             mapping_process_file.write(Mapping_Functions.mapping_into_string(tg)+"\n")
 
-    Scheduling_Functions.ClearScheduling(ag, tg)
+    Scheduling_Functions.clear_scheduling(ag, tg)
     Scheduler.schedule_all(tg, ag, shm, False, detailed_report, logging)
     mapping_process_file.close()
     mapping_cost_file.close()
@@ -172,7 +172,7 @@ def mapping_opt_iterative_local_search(tg, ctg, ag, noc_rg, critical_rg, noncrit
                 break
             counter += 1
         if schedule:
-            Scheduling_Functions.ClearScheduling(ag, tg)
+            Scheduling_Functions.clear_scheduling(ag, tg)
             Scheduler.schedule_all(tg, ag, shm, False, False, logging)
         else:
             if report:

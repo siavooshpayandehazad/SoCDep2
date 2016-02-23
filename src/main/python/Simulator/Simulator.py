@@ -181,7 +181,7 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
 
     fault_time_dict = {}
     fault_time = 0
-    schedule_length = Scheduling_Functions.FindScheduleMakeSpan(ag)
+    schedule_length = Scheduling_Functions.find_schedule_make_span(ag)
     if Config.EventDrivenFaultInjection:
         time_until_next_fault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
         fault_time += time_until_next_fault

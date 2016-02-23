@@ -7,7 +7,7 @@ from ConfigAndPackages import Config
 from math import ceil, log
 
 
-class CounterThreshold():
+class CounterThreshold:
 
     def __init__(self, fault_threshold, health_threshold, intermittent_threshold):
         # These dictionaries keep the values of the counters where the key is the location!

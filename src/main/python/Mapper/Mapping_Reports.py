@@ -25,11 +25,11 @@ def report_mapping(ag, logging):
     return None
 
 
-def draw_mapping_distribution(ag, shum):
+def draw_mapping_distribution(ag, shmu):
     """
     Draws mapping Task Number and Utilization Distribution
     :param ag: Architecture Graph
-    :param shum: System health Monitoring Unit
+    :param shmu: System health Monitoring Unit
     :return: None
     """
     print ("===========================================")
@@ -49,7 +49,7 @@ def draw_mapping_distribution(ag, shum):
         z_size = float(Config.Network_Y_Size)
         num = 255*len(ag.node[node]['PE'].MappedTasks)/float(max_number_of_tasks)
         util = 255*ag.node[node]['PE'].Utilization/float(max_utilization)
-        if shum.SHM.node[node]['NodeHealth']:
+        if shmu.SHM.node[node]['NodeHealth']:
             if not ag.node[node]['PE'].Dark:
                 color = '#%02X%02X%02X' % (255, 255-num, 255-num)
             else:
@@ -60,7 +60,7 @@ def draw_mapping_distribution(ag, shum):
                                                    location[1]/y_size+location[2]/(z_size*y_size**2)),
                                 width=0.15, height=0.15, facecolor=color,
                                 edgecolor="black", linewidth=3, zorder=z_size-location[2]))
-        if shum.SHM.node[node]['NodeHealth']:
+        if shmu.SHM.node[node]['NodeHealth']:
             if not ag.node[node]['PE'].Dark:
                 color = '#%02X%02X%02X' % (255, 255-util, 255-util)
             else:

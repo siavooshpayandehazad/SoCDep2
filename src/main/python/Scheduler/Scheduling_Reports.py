@@ -209,6 +209,7 @@ def add_routers_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter
     :param fig: a mathplotlib figure
     :param node_counter: counter that shows number of active nodes
     :param link_counter: counter that shows the number of active links
+    :param router_counter:
     :param max_time: maximum execution time on the network
     :param count: counter of the number of plots added to this point
     :return: count ,ax1
@@ -228,6 +229,8 @@ def add_routers_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter
 
                 if task in ag.node[node]['Router'].Scheduling:
                     if tg.edge[task[0]][task[1]]['Criticality'] == 'H':
+                        start_time = 0
+                        end_time = 0
                         for batch_and_schedule in ag.node[node]['Router'].Scheduling[task]:
                             start_time = batch_and_schedule[0]
                             # batch_num = batch_and_schedule[2]
@@ -260,7 +263,6 @@ def add_routers_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter
 
                             start_time = batch_and_schedule[0]
                             end_time = batch_and_schedule[1]
-                            batch_num = batch_and_schedule[2]
                             prob = batch_and_schedule[3]
 
                             pe_t.append(start_time)
@@ -374,9 +376,10 @@ def add_links_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, 
 
                 if task in ag.edge[Link[0]][Link[1]]['Scheduling']:
                     if tg.edge[task[0]][task[1]]['Criticality'] == 'H':
+                        start_time = 0
+                        end_time = 0
                         for batch_and_schedule in ag.edge[Link[0]][Link[1]]['Scheduling'][task]:
                             start_time = batch_and_schedule[0]
-                            batch_num = batch_and_schedule[2]
                             task_length = batch_and_schedule[1] - start_time
                             end_time = start_time + (task_length / (Config.Communication_SlackCount+1))
                             pe_t.append(start_time)
@@ -406,7 +409,6 @@ def add_links_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, 
 
                             start_time = batch_and_schedule[0]
                             end_time = batch_and_schedule[1]
-                            batch_num = batch_and_schedule[2]
                             prob = batch_and_schedule[3]
 
                             pe_t.append(start_time)

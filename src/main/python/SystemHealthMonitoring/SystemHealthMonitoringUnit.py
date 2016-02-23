@@ -25,25 +25,25 @@ class SystemHealthMonitoringUnit:
                                   RouterTemp=10, NodeTemp=random.randint(0, Config.MaxTemp))
         else:
             try:
-                RoutingFile = open(Config.RoutingFilePath, 'r')
+                routing_file = open(Config.RoutingFilePath, 'r')
             except IOError:
                 print ('CAN NOT OPEN', Config.RoutingFilePath)
 
             while True:
-                line = RoutingFile.readline()
+                line = routing_file.readline()
                 if "Ports" in line:
-                    ports = RoutingFile.readline()
+                    ports = routing_file.readline()
                     port_list = ports.split()
                     print ("port_list:", port_list)
                 if "Node" in line:
-                    NodeID = int(re.search(r'\d+', line).group())
+                    node_id = int(re.search(r'\d+', line).group())
                     node_turns_health = copy.deepcopy(turns_health)
-                    line = RoutingFile.readline()
+                    line = routing_file.readline()
                     turns_list = line.split()
                     for turn in node_turns_health.keys():
                         if turn not in turns_list:
                             node_turns_health[turn] = False
-                    self.SHM.add_node(NodeID, TurnsHealth=copy.deepcopy(node_turns_health), NodeHealth=True,
+                    self.SHM.add_node(node_id, TurnsHealth=copy.deepcopy(node_turns_health), NodeHealth=True,
                                       NodeSpeed=100, RouterTemp=0, NodeTemp=0)
                 if line == '':
                     break
@@ -108,36 +108,36 @@ class SystemHealthMonitoringUnit:
             print ("\033[33mSHM::\033[0m NODE "+str(node)+" IS RESTORED...")
 
     ##################################################
-    def TakeSnapShotOfSystemHealth(self):
+    def take_snapshot_of_shm(self):
         self.SnapShot = copy.deepcopy(self.SHM)
         print ("A SNAPSHOT OF SYSTEM HEALTH HAS BEEN STORED...")
         return None
 
     ##################################################
-    def RestoreToPreviousSnapShot(self):
+    def restore_previous_snapshot(self):
         self.SHM = copy.deepcopy(self.SnapShot)
         print ("SYSTEM HEALTH MAP HAS BEEN RESTORED TO PREVIOUS SNAPSHOT...")
         self.SnapShot = None
         return None
 
     ##################################################
-    def AddCurrentMappingToMPM(self, tg):
+    def add_current_mapping_to_mpm(self, tg):
         """
         Adds a mapping (Extracted from TG) under a fault configuration to MPM.
         The dictionary key would be the hash of fault config
         :param tg: Task Graph
         :return: None
         """
-        MappingString = Mapping_Functions.mapping_into_string(tg)
-        self.MPM[hashlib.md5(SHMU_Functions.generate_fault_config(self)).hexdigest()] = MappingString
+        mapping_string = Mapping_Functions.mapping_into_string(tg)
+        self.MPM[hashlib.md5(SHMU_Functions.generate_fault_config(self)).hexdigest()] = mapping_string
         return None
 
     ##################################################
-    def CleanMPM(self):
+    def clean_mpm(self):
         self.MPM = {}
         return None
 
-    def UpdateNodeTemp(self, node, temp):
+    def update_node_temp(self, node, temp):
         """
         Will update a Node's temperature.
         :param node: Node ID Number
@@ -150,7 +150,7 @@ class SystemHealthMonitoringUnit:
         else:
             return False
 
-    def UpdateRouterTemp(self, node, temp):
+    def update_router_temp(self, node, temp):
         """
         Will update a Router's temperature.
         :param node: Node ID Number
@@ -159,6 +159,3 @@ class SystemHealthMonitoringUnit:
         """
         self.SHM.node[node]['RouterTemp'] = temp
         return None
-
-    ##################################################
-    # ToDO: To implement the classification algorithm

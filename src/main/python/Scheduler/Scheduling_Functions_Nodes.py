@@ -3,85 +3,85 @@
 from math import ceil
 import Scheduling_Functions_Tasks
 
-def Add_TG_TaskToNode(tg, ag, Task, Node, StartTime, EndTime, logging=None):
+def Add_TG_TaskToNode(tg, ag, task, node, start_time, end_time, logging=None):
     """
     Adds a Task from Task Graph with specific Start time and end time to mapped node in architecture graph
     :param tg: Task Graph
     :param ag: Architecture Graph
-    :param Task: Task ID
-    :param Node: Node ID
-    :param StartTime: Scheduling time for Task
-    :param EndTime: Task duration for scheduling
+    :param task: Task ID
+    :param node: Node ID
+    :param start_time: Scheduling time for Task
+    :param end_time: Task duration for scheduling
     :param logging: logging file
     :return: True
     """
     # logging.info ("\t\tADDING TASK: "+str(Task)+" TO NODE: "+str(Node))
     # logging.info ("\t\tSTARTING TIME: "+str(StartTime)+" ENDING TIME:"+str(EndTime))
-    ag.node[Node]['PE'].Scheduling[Task] = [StartTime, EndTime]
-    tg.node[Task]['Node'] = Node
+    ag.node[node]['PE'].Scheduling[task] = [start_time, end_time]
+    tg.node[task]['Node'] = node
     return True
 
 
-def FindLastAllocatedTimeOnNode(TG, AG, Node, logging=None):
+def FindLastAllocatedTimeOnNode(tg, ag, node, logging=None):
     if logging is not None:
-        logging.info ("\t\tFINDING LAST ALLOCATED TIME ON NODE "+str(Node))
-    LastAllocatedTime = 0
-    if len(AG.node[Node]['PE'].MappedTasks) > 0:
+        logging.info("\t\tFINDING LAST ALLOCATED TIME ON NODE "+str(node))
+    last_allocated_time = 0
+    if len(ag.node[node]['PE'].MappedTasks) > 0:
         if logging is not None:
-            logging.info ("\t\t\tMAPPED TASKS ON THE NODE: "+str(AG.node[Node]['PE'].MappedTasks))
-        for Task in AG.node[Node]['PE'].MappedTasks:
-            if Task in AG.node[Node]['PE'].Scheduling:
-                StartTime = AG.node[Node]['PE'].Scheduling[Task][0]
-                EndTime = AG.node[Node]['PE'].Scheduling[Task][1]
-                if StartTime is not None and EndTime is not None:
+            logging.info("\t\t\tMAPPED TASKS ON THE NODE: "+str(ag.node[node]['PE'].MappedTasks))
+        for Task in ag.node[node]['PE'].MappedTasks:
+            if Task in ag.node[node]['PE'].Scheduling:
+                start_time = ag.node[node]['PE'].Scheduling[Task][0]
+                end_time = ag.node[node]['PE'].Scheduling[Task][1]
+                if start_time is not None and end_time is not None:
                     if logging is not None:
-                        logging.info ("\t\t\tTASK STARTS AT: "+str(StartTime)+" AND ENDS AT: "+str(EndTime))
-                    if EndTime > LastAllocatedTime:
-                        LastAllocatedTime = EndTime
+                        logging.info("\t\t\tTASK STARTS AT: "+str(start_time)+" AND ENDS AT: "+str(end_time))
+                    if end_time > last_allocated_time:
+                        last_allocated_time = end_time
     else:
         if logging is not None:
             logging.info("\t\t\tNO SCHEDULED TASK FOUND")
         return 0
     if logging is not None:
-        logging.info("\t\t\tLAST ALLOCATED TIME: "+str(LastAllocatedTime))
-    return LastAllocatedTime
+        logging.info("\t\t\tLAST ALLOCATED TIME: "+str(last_allocated_time))
+    return last_allocated_time
 
 
-def FindFirstEmptySlotForTaskOnNode(TG, AG, SHM, Node, Task, PredecessorEndTime, logging=None):
+def FindFirstEmptySlotForTaskOnNode(tg, ag, shm, Node, Task, predecessor_end_time, logging=None):
     """
 
-    :param TG:
-    :param AG:
-    :param SHM: System Health Map
+    :param tg: task graph
+    :param ag:
+    :param shm: System Health Map
     :param Node:
     :param Task:
-    :param PredecessorEndTime:
+    :param predecessor_end_time:
     :param logging:
     :return:
     """
 
-    FirstPossibleMappingTime = PredecessorEndTime
+    first_possible_mapping_time = predecessor_end_time
 
-    NodeSpeedDown = 1+((100.0-SHM.node[Node]['NodeSpeed'])/100)
-    TaskExecutionOnNode = ceil(TG.node[Task]['WCET']*NodeSpeedDown)
+    node_speed_down = 1+((100.0-shm.node[Node]['NodeSpeed'])/100)
+    task_execution_on_node = ceil(tg.node[Task]['WCET']*node_speed_down)
 
-    StartTimeList = []
-    EndTimeList = []
-    for Task in AG.node[Node]['PE'].Scheduling.keys():
-        StartTimeList.append(AG.node[Node]['PE'].Scheduling[Task][0])
-        EndTimeList.append(AG.node[Node]['PE'].Scheduling[Task][1])
-    StartTimeList.sort()
-    EndTimeList.sort()
-    Found = False
-    for i in range(0, len(StartTimeList)-1):
-        if EndTimeList[i]>= PredecessorEndTime:
-            Slot = StartTimeList[i+1]-EndTimeList[i]
-            if Slot >= TaskExecutionOnNode:
-                FirstPossibleMappingTime = EndTimeList[i]
-                Found = True
+    start_time_list = []
+    end_time_list = []
+    for chosen_task in ag.node[Node]['PE'].Scheduling.keys():
+        start_time_list.append(ag.node[Node]['PE'].Scheduling[chosen_task][0])
+        end_time_list.append(ag.node[Node]['PE'].Scheduling[chosen_task][1])
+    start_time_list.sort()
+    end_time_list.sort()
+    found = False
+    for i in range(0, len(start_time_list)-1):
+        if end_time_list[i] >= predecessor_end_time:
+            slot = start_time_list[i+1]-end_time_list[i]
+            if slot >= task_execution_on_node:
+                first_possible_mapping_time = end_time_list[i]
+                found = True
                 break
-    if Found == False:
-        FirstPossibleMappingTime = max(FirstPossibleMappingTime,
-                                       Scheduling_Functions_Tasks.find_task_asap_scheduling(TG, AG, SHM,
-                                                                                            Task, Node, logging)[0])
-    return FirstPossibleMappingTime
+    if not found:
+        first_possible_mapping_time = max(first_possible_mapping_time,
+                                          Scheduling_Functions_Tasks.find_task_asap_scheduling(tg, ag, shm,
+                                                                                               Task, Node, logging)[0])
+    return first_possible_mapping_time

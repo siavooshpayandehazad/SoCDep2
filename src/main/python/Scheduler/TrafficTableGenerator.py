@@ -1,5 +1,6 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
-# "generate_noxim_traffic_table" and "TranslateNodeNumberToNoximSystem" Functions were written in 2015 by Behrad Niazmand
+# "generate_noxim_traffic_table" and "TranslateNodeNumberToNoximSystem" Functions were
+# written in 2015 by Behrad Niazmand
 
 from ArchGraphUtilities import AG_Functions
 from ConfigAndPackages import Config

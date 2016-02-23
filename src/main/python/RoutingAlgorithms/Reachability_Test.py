@@ -1,6 +1,7 @@
 # Copyright (C) Siavoosh Payandeh Azad
 
-def ReachabilityTest():
+
+def reachability_test():
     print("===========================================")
     print("STARTING REACH_ABILITY TESTS...")
     print("NO TEST AVAILABLE...")

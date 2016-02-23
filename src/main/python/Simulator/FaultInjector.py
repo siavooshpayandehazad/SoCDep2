@@ -18,6 +18,7 @@ def fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict, counter
     :param ag: Architecture Graph
     :param shmu: System health Monitoring Unit
     :param noc_rg: NoC routing Graph
+    :param schedule_length: schedule makespan
     :param fault_time_dict: Dictionary with Fault time as key and (Location, Type) tuple as value
     :param counter_threshold: counter threshold object
     :param logging: logging file

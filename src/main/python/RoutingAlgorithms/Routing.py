@@ -279,6 +279,7 @@ def find_route_in_route_graph(noc_rg, critical_rg, non_critical_rg, source_node,
     :param non_critical_rg:
     :param source_node: Source node on AG
     :param destination_node: Destination node on AG
+    :param report : boolean to switch on/off reports to console
     :return: return a path (by name of links) on AG from source to destination if possible, None if not.
     """
     if Config.EnablePartitioning:

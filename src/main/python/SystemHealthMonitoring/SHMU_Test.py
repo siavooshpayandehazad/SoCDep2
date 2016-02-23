@@ -8,16 +8,16 @@ def test_shmu(ag):
     print ("STARTING SYSTEM HEALTH MAP TESTS...")
     shmu_4_test = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
     shmu_4_test.setup_noc_shm(ag, Config.TurnsHealth)
-    TestBreaking(shmu_4_test)
-    TestRestore(shmu_4_test)
-    TestAging(shmu_4_test)
+    test_breaking(shmu_4_test)
+    test_restore(shmu_4_test)
+    test_aging(shmu_4_test)
     # todo: needs more test etc...
     del shmu_4_test
     print ("ALL SHM TESTS PASSED...")
     return None
 
 
-def TestBreaking(shmu):
+def test_breaking(shmu):
     for node in shmu.SHM.nodes():
         shmu.break_node(node, False)
         if shmu.SHM.node[node]['NodeHealth']:
@@ -33,7 +33,7 @@ def TestBreaking(shmu):
     print ("  - BREAKING TESTS PASSED...")
 
 
-def TestRestore(shmu):
+def test_restore(shmu):
     for node in shmu.SHM.nodes():
         shmu.restore_broken_node(node, False)
         if not shmu.SHM.node[node]['NodeHealth']:
@@ -49,7 +49,7 @@ def TestRestore(shmu):
     print ("  - RESTORE TESTS PASSED...")
 
 
-def TestAging(shmu):
+def test_aging(shmu):
     for Node in shmu.SHM.nodes():
         shmu.introduce_aging(Node, 0.5, False)
         if shmu.SHM.node[Node]['NodeSpeed'] != 50:

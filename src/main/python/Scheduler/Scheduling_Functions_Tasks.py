@@ -66,9 +66,9 @@ def task_predecessors_finish_time(tg, ag, task, criticality_level):
         for Predecessor in tg.predecessors(task):
             if tg.node[Predecessor]['Node'] is not None:    # predecessor is mapped
                 # if tg.node[Predecessor]['Criticality'] == criticality_level: #this is not quit right...
-                    Node = tg.node[Predecessor]['Node']
-                    if Predecessor in ag.node[Node]['PE'].Scheduling:             # if this task is scheduled
-                        finish_time = max(ag.node[Node]['PE'].Scheduling[Predecessor][1], finish_time)
+                    node = tg.node[Predecessor]['Node']
+                    if Predecessor in ag.node[node]['PE'].Scheduling:             # if this task is scheduled
+                        finish_time = max(ag.node[node]['PE'].Scheduling[Predecessor][1], finish_time)
     # for Edge in tg.edges():
     #    if Edge[1] == task:
     #        # if tg.edge[Edge[0]][Edge[1]]['Criticality'] == criticality_level:

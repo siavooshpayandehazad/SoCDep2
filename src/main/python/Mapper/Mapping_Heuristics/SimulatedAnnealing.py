@@ -76,7 +76,7 @@ def optimize_mapping_sa(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg,
         i += 1
         new_tg, new_ctg, new_ag = move_to_next_solution(i, current_tg, current_ctg, current_ag,  noc_rg,
                                                         shm, critical_rg, noncritical_rg, logging)
-        Scheduling_Functions.ClearScheduling(new_ag, new_tg)
+        Scheduling_Functions.clear_scheduling(new_ag, new_tg)
         Scheduler.schedule_all(new_tg, new_ag, shm, False, False, logging)
 
         # calculate the cost of new solution

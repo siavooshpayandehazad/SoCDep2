@@ -1,7 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
 from TaskGraphUtilities import TG_Functions
-from Scheduling_Functions import FindScheduleMakeSpan
+from Scheduling_Functions import find_schedule_make_span
 from Scheduling_Functions_Tasks import find_task_asap_scheduling, find_test_task_asap_scheduling
 from Scheduling_Functions_Edges import FindEdge_ASAP_Scheduling_Link, FindEdge_ASAP_Scheduling_Router
 from Scheduling_Functions_Edges import FindTestEdge_ASAP_Scheduling
@@ -24,7 +24,7 @@ def schedule_all(tg, ag, shm, report, detailed_report, logging):
     logging.info("===========================================")
     logging.info("STARTING SCHEDULING PROCESS...")
     asap_scheduling(tg, ag, shm, report, logging=None)
-    makespan = FindScheduleMakeSpan(ag)
+    makespan = find_schedule_make_span(ag)
     logging.info("SCHEDULING MAKESPAN:"+str(makespan))
     alap_scheduling(tg, ag, shm, makespan, report, logging=None)
     logging.info("DONE SCHEDULING...")
