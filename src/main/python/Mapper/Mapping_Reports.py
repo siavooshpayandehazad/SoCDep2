@@ -50,7 +50,7 @@ def draw_mapping_distribution(ag, shmu):
         num = 255*len(ag.node[node]['PE'].MappedTasks)/float(max_number_of_tasks)
         util = 255*ag.node[node]['PE'].Utilization/float(max_utilization)
         if shmu.SHM.node[node]['NodeHealth']:
-            if not ag.node[node]['PE'].Dark:
+            if not ag.node[node]['PE'].dark:
                 color = '#%02X%02X%02X' % (255, 255-num, 255-num)
             else:
                 color = 'gray'
@@ -61,7 +61,7 @@ def draw_mapping_distribution(ag, shmu):
                                 width=0.15, height=0.15, facecolor=color,
                                 edgecolor="black", linewidth=3, zorder=z_size-location[2]))
         if shmu.SHM.node[node]['NodeHealth']:
-            if not ag.node[node]['PE'].Dark:
+            if not ag.node[node]['PE'].dark:
                 color = '#%02X%02X%02X' % (255, 255-util, 255-util)
             else:
                 color = 'gray'
@@ -109,7 +109,7 @@ def draw_mapping(tg, ag, shm, mapping_file_name):
     for node in ag.nodes():
         location = AG_Functions.return_node_location(node)
         if shm.node[node]['NodeHealth']:
-            if not ag.node[node]['PE'].Dark:
+            if not ag.node[node]['PE'].dark:
                 if Config.EnablePartitioning:
                     if node in Config.CriticalRegionNodes:
                         color = '#FF878B'

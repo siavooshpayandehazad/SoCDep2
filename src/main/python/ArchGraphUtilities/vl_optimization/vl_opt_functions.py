@@ -8,6 +8,11 @@ import copy
 
 
 def find_all_vertical_links(ag):
+    """
+    returns a list of all the vertical links possible in AG
+    :param ag: architecture graph
+    :return: list of all vertical links
+    """
     vertical_link_list = []
     for link in ag.edges():
         # if these nodes are on different layers
@@ -30,7 +35,7 @@ def remove_all_vertical_links(shm, ag):
     return None
 
 
-def find_feasible_ag_vertical_link_placement(ag, shmu):
+def find_feasible_ag_vertical_link_placement(shmu):
     new_vertical_link_lists = []
     for i in range(0, Config.VerticalLinksNum):
         source_x = random.randint(0, Config.Network_X_Size-1)
@@ -62,13 +67,21 @@ def find_feasible_ag_vertical_link_placement(ag, shmu):
 
 
 def return_to_solution(ag, shm, vertical_link_list):
+    """
+    Takes a list of vertical links and applies this configuration to the system. used for moving back
+    to an old solution
+    :param ag: architecture graph
+    :param shm: system health map
+    :param vertical_link_list: list of vertical links to be placed
+    :return: None
+    """
     remove_all_vertical_links(shm, ag)
     for link in vertical_link_list:
         shm.restore_broken_link(link, False)
     return None
 
 
-def move_to_new_vertical_link_configuration(ag, shmu, vertical_link_lists):
+def move_to_new_vertical_link_configuration(shmu, vertical_link_lists):
     new_vertical_link_lists = copy.deepcopy(vertical_link_lists)
     chosen_link_to_fix = random.choice(new_vertical_link_lists)
     new_vertical_link_lists.remove(chosen_link_to_fix)
@@ -104,6 +117,12 @@ def move_to_new_vertical_link_configuration(ag, shmu, vertical_link_lists):
 
 
 def cleanup_ag(ag, shmu):
+    """
+    removes the physical links in AG based on information in SHM
+    :param ag: architecture graph
+    :param shmu: system health monitoring unit
+    :return:
+    """
     for link in shmu.SHM.edges():
         if not shmu.SHM.edge[link[0]][link[1]]['LinkHealth']:
             ag.remove_edge(link[0], link[1])
@@ -111,4 +130,10 @@ def cleanup_ag(ag, shmu):
 
 
 def vl_cost_function(ag, routing_graph):
+    """
+    returns cost of the current vertical link placement
+    :param ag: architecture graph
+    :param routing_graph: routing graph
+    :return: cost of the current vl placement
+    """
     return Calculate_Reachability.reachability_metric(ag, routing_graph, False)

@@ -1,7 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
 
-def Add_TG_EdgeTo_Router(tg, ag, edge, node, batch, prob, start_time, end_time, logging=None):
+def add_tg_edge_to_router(ag, edge, node, batch, prob, start_time, end_time, logging=None):
     if logging is not None:
         logging.info("\t\tADDING EDGE: "+str(edge)+" FROM BATCH: "+str(batch)+" TO Router: "+str(node))
         logging.info("\t\tSTARTING TIME: "+str(start_time)+" ENDING TIME: "+str(end_time))
@@ -14,7 +14,7 @@ def Add_TG_EdgeTo_Router(tg, ag, edge, node, batch, prob, start_time, end_time, 
     return True
 
 
-def FindLastAllocatedTimeOnRouter(tg, ag, node, logging=None):
+def find_last_allocated_time_on_router(ag, node, logging=None):
     if logging is not None:
         logging.info("\t\tFINDING LAST ALLOCATED TIME ON Router "+str(node))
     last_allocated_time = 0
@@ -37,7 +37,7 @@ def FindLastAllocatedTimeOnRouter(tg, ag, node, logging=None):
     return last_allocated_time
 
 
-def FindLastAllocatedTimeOnRouterForTask(tg, ag, node, edge, prob, logging=None):
+def find_last_allocated_time_on_router_for_task(ag, node, edge, prob, logging=None):
     if logging is not None:
         logging.info("\t-------------------------")
         logging.info("\tFINDING LAST ALLOCATED TIME ON Router "+str(node)+"\tFOR EDGE: " +

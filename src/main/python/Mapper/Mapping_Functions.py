@@ -83,7 +83,7 @@ def map_task_to_node(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, task, nod
     if not shm.node[node]['NodeHealth']:
         logging.info("CAN NOT MAP ON BROKEN NODE: "+str(node))
         return False
-    elif ag.node[node]['PE'].Dark:
+    elif ag.node[node]['PE'].dark:
         logging.info("CAN NOT MAP ON DARK NODE: "+str(node))
         return False
 
@@ -125,7 +125,8 @@ def map_task_to_node(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, task, nod
                                     # logging.info("\t\t\t\tAdding Packet "+str(edge)+" To Router:"+str(link[0]))
 
                                 ag.node[path[len(path)-1][1]]['Router'].MappedTasks[edge] = [(counter, probability)]
-                                # logging.info("\t\t\t\tAdding Packet "+str(edge)+" To Router:"+str(path[len(path)-1][1]))
+                                # logging.info("\t\t\t\tAdding Packet "+str(edge) +
+                                #              " To Router:"+str(path[len(path)-1][1]))
 
                                 edge_list_of_links = list(batch[1] for batch in tg.edge[edge[0]][edge[1]]['Link'])
                                 if link not in edge_list_of_links:
@@ -168,7 +169,8 @@ def remove_task_from_node(tg, ag, noc_rg, critical_rg, noncritical_rg, task, nod
                                                                                        noncritical_rg, source_node,
                                                                                        destination_node, False)
                     if list_of_links is not None:
-                        # logging.info("\t\t\tREMOVING PATH FROM NODE:"+str(source_node)+"TO NODE"+str(destination_node))
+                        # logging.info("\t\t\tREMOVING PATH FROM NODE:"+str(source_node) +
+                        #              "TO NODE"+str(destination_node))
                         # logging.info("\t\t\tLIST OF LINKS:"+str(list_of_links))
                         for path in list_of_links:
                             for link in path:
@@ -207,7 +209,7 @@ def add_cluster_to_node(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, c
     if not shm.node[node]['NodeHealth']:
         logging.info("CAN NOT MAP ON BROKEN NODE: "+str(node))
         return False
-    elif ag.node[node]['PE'].Dark:
+    elif ag.node[node]['PE'].dark:
         logging.info("CAN NOT MAP ON DARK NODE: "+str(node))
         return False
 
@@ -226,10 +228,11 @@ def add_cluster_to_node(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, c
             destination_node = ctg.node[ctg_edge[1]]['Node']
             if source_node is not None and destination_node is not None:    # check if both ends of this edge is mapped
                 if source_node != destination_node:
+                    # Find the links to be used
                     list_of_links, number_of_paths = Routing.find_route_in_route_graph(noc_rg, critical_rg,
                                                                                        noncritical_rg, source_node,
                                                                                        destination_node, False)
-                                                                                       # Find the links to be used
+
                     list_of_edges = []
                     # print ("number_of_paths:", number_of_paths)
                     # print number_of_paths, list_of_links
@@ -327,7 +330,8 @@ def remove_cluster_from_node(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, c
 
                     # remove edges from list of edges to all links from list of links
                     if list_of_links is not None and len(list_of_edges) > 0:
-                        # logging.info("\t\t\tREMOVING PATH FROM NODE:"+str(source_node)+"TO NODE"+str(destination_node))
+                        # logging.info("\t\t\tREMOVING PATH FROM NODE:"+str(source_node) +
+                        #              "TO NODE"+str(destination_node))
                         # logging.info("\t\t\tLIST OF LINKS:"+str(list_of_links))
                         # logging.info("\t\t\tLIST OF EDGES:"+str(list_of_edges))
                         for path in list_of_links:
@@ -398,13 +402,13 @@ def mapping_cost_function(tg, ag, shm, report, initial_mapping_string=None):
     node_makespan_list = []
     link_makespan_list = []
     for node in ag.nodes():
-        if shm.node[node]['NodeHealth'] and (not ag.node[node]['PE'].Dark):
-            node_makespan_list.append(Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag,
-                                                                                             node, logging=None))
+        if shm.node[node]['NodeHealth'] and (not ag.node[node]['PE'].dark):
+            node_makespan_list.append(Scheduling_Functions_Nodes.find_last_allocated_time_on_node(ag, node,
+                                                                                                  logging=None))
     for link in ag.edges():
         if shm.edge[link[0]][link[1]]['LinkHealth']:
-            link_makespan_list.append(Scheduling_Functions_Links.FindLastAllocatedTimeOnLink(tg, ag,
-                                                                                             link, logging=None))
+            link_makespan_list.append(Scheduling_Functions_Links.find_last_allocated_time_on_link(ag, link,
+                                                                                                  logging=None))
     node_makspan_sd = statistics.stdev(node_makespan_list)
     node_makspan_max = max(node_makespan_list)
     link_makspan_sd = statistics.stdev(link_makespan_list)
@@ -412,7 +416,7 @@ def mapping_cost_function(tg, ag, shm, report, initial_mapping_string=None):
 
     node_util_list = []
     for node in ag.nodes():
-        if shm.node[node]['NodeHealth'] and (not ag.node[node]['PE'].Dark):
+        if shm.node[node]['NodeHealth'] and (not ag.node[node]['PE'].dark):
             node_util_list.append(AG_Functions.return_node_util(tg, ag, node))
     node_util_sd = statistics.stdev(node_util_list)
 
@@ -454,7 +458,7 @@ def mapping_cost_function(tg, ag, shm, report, initial_mapping_string=None):
     return cost
 
 
-def calculate_reliability_cost(tg, noc_rg, logging):
+def calculate_reliability_cost(tg, logging):
     # todo...
     cost = 0
     for edge in tg.edges():
@@ -520,22 +524,22 @@ def nodes_with_smallest_ct(ag, tg, shm, task):
     """
     node_with_smallest_ct = []
     random_node = random.choice(ag.nodes())
-    while (not shm.node[random_node]['NodeHealth']) or ag.node[random_node]['PE'].Dark:
+    while (not shm.node[random_node]['NodeHealth']) or ag.node[random_node]['PE'].dark:
         random_node = random.choice(ag.nodes())
     node_speed_down = 1+((100.0-shm.node[random_node]['NodeSpeed'])/100)
     task_execution_on_node = tg.node[task]['WCET']*node_speed_down
-    last_allocated_time_on_node = Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag, random_node,
-                                                                                         logging=None)
+    last_allocated_time_on_node = Scheduling_Functions_Nodes.find_last_allocated_time_on_node(ag, random_node,
+                                                                                              logging=None)
     if last_allocated_time_on_node < tg.node[task]['Release']:
         smallest_completion_time = tg.node[task]['Release'] + task_execution_on_node
     else:
         smallest_completion_time = last_allocated_time_on_node + task_execution_on_node
     for node in ag.nodes():
-        if shm.node[node]['NodeHealth'] and (not ag.node[random_node]['PE'].Dark):
+        if shm.node[node]['NodeHealth'] and (not ag.node[random_node]['PE'].dark):
             node_speed_down = 1+((100.0-shm.node[node]['NodeSpeed'])/100)
             task_execution_on_node = tg.node[task]['WCET']*node_speed_down
-            last_allocated_time_on_node = Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag, node,
-                                                                                                 logging=None)
+            last_allocated_time_on_node = Scheduling_Functions_Nodes.find_last_allocated_time_on_node(ag, node,
+                                                                                                      logging=None)
             if last_allocated_time_on_node < tg.node[task]['Release']:
                 completion_on_node = tg.node[task]['Release'] + task_execution_on_node
             else:
@@ -544,10 +548,10 @@ def nodes_with_smallest_ct(ag, tg, shm, task):
             if ceil(completion_on_node) < smallest_completion_time:
                 smallest_completion_time = completion_on_node
     for node in ag.nodes():
-        if shm.node[node]['NodeHealth'] and (not ag.node[random_node]['PE'].Dark):
+        if shm.node[node]['NodeHealth'] and (not ag.node[random_node]['PE'].dark):
             node_speed_down = 1+((100.0-shm.node[node]['NodeSpeed'])/100)
-            last_allocated_time_on_node = Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag, node,
-                                                                                                 logging=None)
+            last_allocated_time_on_node = Scheduling_Functions_Nodes.find_last_allocated_time_on_node(ag, node,
+                                                                                                      logging=None)
             task_execution_on_node = tg.node[task]['WCET']*node_speed_down
             if last_allocated_time_on_node < tg.node[task]['Release']:
                 completion_on_node = tg.node[task]['Release']+task_execution_on_node
@@ -558,12 +562,11 @@ def nodes_with_smallest_ct(ag, tg, shm, task):
     return node_with_smallest_ct
 
 
-def fastest_nodes(ag, shm, task_to_be_mapped):
+def fastest_nodes(ag, shm):
     """
     Finds the fastest Nodes in AG
     :param ag:  Architecture Graph
     :param shm: System Health Map
-    :param task_to_be_mapped:
     :return:
     """
     # todo: we need to add some accelerator nodes which have some specific purpose and
@@ -571,11 +574,11 @@ def fastest_nodes(ag, shm, task_to_be_mapped):
     fastest_nodes_list = []
     max_speedup = 0
     for node in ag.nodes():
-        if not ag.node[node]['PE'].Dark:
+        if not ag.node[node]['PE'].dark:
             if shm.node[node]['NodeSpeed'] > max_speedup:
                 max_speedup = shm.node[node]['NodeSpeed']
     for node in ag.nodes():
-        if not ag.node[node]['PE'].Dark:
+        if not ag.node[node]['PE'].dark:
             if shm.node[node]['NodeSpeed'] == max_speedup:
                 fastest_nodes_list.append(node)
     return fastest_nodes_list

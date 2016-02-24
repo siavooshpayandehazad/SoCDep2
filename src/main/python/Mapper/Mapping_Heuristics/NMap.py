@@ -15,11 +15,11 @@ from Mapper import Mapping_Functions
 from RoutingAlgorithms import Calculate_Reachability
 
 
-def NMap(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
+def n_map(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
     """
     Performs NMap Mapping algorithm
     :param tg: Task Graph
-    :param AG: Architecture Graph
+    :param ag: Architecture Graph
     :param noc_rg: NoC Routing Graph
     :param critical_rg: NoC Routing Graph for Critical Region
     :param non_critical_rg: NoC Routing Graph for Non-Critical Region
@@ -234,7 +234,7 @@ def NMap(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
 
     # End of Swapping phase
     print "SWAP PROCESS FINISHED..."
-    Scheduler.schedule_all(tg, ag, shm, True, False, logging)
+    Scheduler.schedule_all(tg, ag, shm, True, logging)
     return tg, ag
 
 

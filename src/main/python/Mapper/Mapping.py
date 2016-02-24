@@ -27,13 +27,13 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
     # tasks... Please use: generate_random_independent_tg
     if Config.Mapping_Function == 'MinMin':
         if Config.TG_Type == 'RandomIndependent':
-            return SimpleGreedy.min_min_mapping(tg, ag, noc_rg, shm, logging)
+            return SimpleGreedy.min_min_mapping(tg, ag, shm, logging)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
     elif Config.Mapping_Function == 'MaxMin':
         if Config.TG_Type == 'RandomIndependent':
-            return SimpleGreedy.max_min_mapping(tg, ag, noc_rg, shm, logging)
+            return SimpleGreedy.max_min_mapping(tg, ag, shm, logging)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
@@ -50,7 +50,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
     elif Config.Mapping_Function == 'NMap':
-        return NMap.NMap(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging)
+        return NMap.n_map(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging)
 
     elif Config.Mapping_Function in ['LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing']:
         if Config.TG_Type in ['RandomDependent', 'Manual', 'FromDOTFile']:
@@ -92,8 +92,8 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
 
                 Mapping_Reports.report_mapping(ag, logging)
                 # Schedule all tasks
-                Scheduling_Functions.clear_scheduling(ag, tg)
-                Scheduler.schedule_all(tg, ag, shm, Config.DebugInfo, Config.DebugDetails, logging)
+                Scheduling_Functions.clear_scheduling(ag)
+                Scheduler.schedule_all(tg, ag, shm, Config.DebugInfo, logging)
                 Scheduling_Reports.report_mapped_tasks(ag, logging)
                 Mapping_Functions.mapping_cost_function(tg, ag, shm, Config.DebugInfo)
                 if Config.Mapping_Function == 'LocalSearch':
@@ -147,8 +147,8 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                        + str(round(time.time()-mapping_start_time))+" SECONDS")
 
                 Mapping_Reports.report_mapping(ag, logging)
-                Scheduling_Functions.clear_scheduling(ag, tg)
-                Scheduler.schedule_all(tg, ag, shm, False, False, logging)
+                Scheduling_Functions.clear_scheduling(ag)
+                Scheduler.schedule_all(tg, ag, shm, False, logging)
                 Scheduling_Reports.report_mapped_tasks(ag, logging)
                 Mapping_Functions.mapping_cost_function(tg, ag, shm, True,  initial_mapping_string=init_mapping_string)
                 return tg, ag

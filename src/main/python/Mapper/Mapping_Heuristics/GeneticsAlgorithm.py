@@ -1,5 +1,6 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
-def OptimizeMappingGeneticsAlgorithm(TG,CTG,AG,NoCRG,IterationNum,Report):
+
+def optimize_mapping_genetics_algorithm():
     # ToDO: GA To be implemented...
     return True

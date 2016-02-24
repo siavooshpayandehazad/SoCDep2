@@ -76,8 +76,8 @@ def mapping_opt_local_search(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, s
                 return best_tg, best_ctg, best_ag
             try_counter += 1
 
-        Scheduling_Functions.clear_scheduling(ag, tg)
-        Scheduler.schedule_all(tg, ag, shm, False, detailed_report, logging)
+        Scheduling_Functions.clear_scheduling(ag)
+        Scheduler.schedule_all(tg, ag, shm, False, logging)
 
         current_cost = Mapping_Functions.mapping_cost_function(tg, ag, shm, detailed_report)
         mapping_process_file.write(Mapping_Functions.mapping_into_string(tg)+"\n")
@@ -101,8 +101,8 @@ def mapping_opt_local_search(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, s
             ctg = copy.deepcopy(best_ctg)
             mapping_process_file.write(Mapping_Functions.mapping_into_string(tg)+"\n")
 
-    Scheduling_Functions.clear_scheduling(ag, tg)
-    Scheduler.schedule_all(tg, ag, shm, False, detailed_report, logging)
+    Scheduling_Functions.clear_scheduling(ag)
+    Scheduler.schedule_all(tg, ag, shm, False, logging)
     mapping_process_file.close()
     mapping_cost_file.close()
     if report:
@@ -172,8 +172,8 @@ def mapping_opt_iterative_local_search(tg, ctg, ag, noc_rg, critical_rg, noncrit
                 break
             counter += 1
         if schedule:
-            Scheduling_Functions.clear_scheduling(ag, tg)
-            Scheduler.schedule_all(tg, ag, shm, False, False, logging)
+            Scheduling_Functions.clear_scheduling(ag)
+            Scheduler.schedule_all(tg, ag, shm, False, logging)
         else:
             if report:
                 print ("\033[33mWARNING::\033[0m CAN NOT FIND ANOTHER FEASIBLE SOLUTION... ",

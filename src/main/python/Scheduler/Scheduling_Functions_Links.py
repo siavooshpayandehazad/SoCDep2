@@ -1,7 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
 
-def Add_TG_EdgeTo_link(tg, ag, edge, link, batch, prob, start_time, end_time, logging=None):
+def add_tg_edge_to_link(ag, edge, link, batch, prob, start_time, end_time, logging=None):
     if logging is not None:
         logging.info("\t\tADDING EDGE: "+str(edge)+" FROM BATCH: "+str(batch)+" TO LINK: "+str(link))
         logging.info("\t\tSTARTING TIME: "+str(start_time)+" ENDING TIME: "+str(end_time))
@@ -12,7 +12,7 @@ def Add_TG_EdgeTo_link(tg, ag, edge, link, batch, prob, start_time, end_time, lo
     return True
 
 
-def FindLastAllocatedTimeOnLink(tg, ag, link, logging=None):
+def find_last_allocated_time_on_link(ag, link, logging=None):
     if logging is not None:
         logging.info("\t\tFINDING LAST ALLOCATED TIME ON LINK "+str(link))
     last_allocated_time = 0
@@ -36,7 +36,7 @@ def FindLastAllocatedTimeOnLink(tg, ag, link, logging=None):
 
 
 ################################################################
-def FindLastAllocatedTimeOnLinkForTask(tg, ag, link, edge, prob, logging=None):
+def find_last_allocated_time_on_link_for_task(ag, link, edge, prob, logging=None):
     if logging is not None:
         logging.info("\t-------------------------")
         logging.info("\tFINDING LAST ALLOCATED TIME ON LINK "+str(link)+"\tFOR EDGE: "+str(edge) +

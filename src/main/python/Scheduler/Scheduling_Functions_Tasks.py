@@ -16,9 +16,8 @@ def find_task_asap_scheduling(tg, ag, shm, task, node, logging=None):
     :param logging: logging file
     :return:
     """
-    criticality_level = tg.node[task]['Criticality']
-    start_time = max(Scheduling_Functions_Nodes.FindLastAllocatedTimeOnNode(tg, ag, node, logging),
-                     task_predecessors_finish_time(tg, ag, task, criticality_level),
+    start_time = max(Scheduling_Functions_Nodes.find_last_allocated_time_on_node(ag, node, logging),
+                     task_predecessors_finish_time(tg, ag, task),
                      tg.node[task]['Release'])
     # This includes the aging and lower frequency of the nodes of graph...
     # however, we do not include fractions of a cycle so we take ceiling of the execution time
@@ -42,10 +41,9 @@ def find_test_task_asap_scheduling(tg, ag, shm, task, node, logging=None):
     :param logging:
     :return:
     """
-    criticality_level = tg.node[task]['Criticality']
-    predecessor_finish_time = task_predecessors_finish_time(tg, ag, task, criticality_level)
-    start_time = Scheduling_Functions_Nodes.FindFirstEmptySlotForTaskOnNode(tg, ag, shm, node, task,
-                                                                            predecessor_finish_time, logging)
+    predecessor_finish_time = task_predecessors_finish_time(tg, ag, task)
+    start_time = Scheduling_Functions_Nodes.find_first_empty_slot_for_task_on_node(tg, ag, shm, node, task,
+                                                                                   predecessor_finish_time, logging)
 
     # This includes the aging and lower frequency of the nodes of graph...
     # however, we do not include fractions of a cycle so we take ceiling of the execution time
@@ -55,33 +53,19 @@ def find_test_task_asap_scheduling(tg, ag, shm, task, node, logging=None):
     return start_time, end_time
 
 
-def find_task_alap_scheduling(tg, ag, task, node, logging=None):
+def find_task_alap_scheduling():
     # todo: Implement ALAP
     return None
 
 
-def task_predecessors_finish_time(tg, ag, task, criticality_level):
+def task_predecessors_finish_time(tg, ag, task):
     finish_time = 0
     if len(tg.predecessors(task)) > 0:
         for Predecessor in tg.predecessors(task):
             if tg.node[Predecessor]['Node'] is not None:    # predecessor is mapped
-                # if tg.node[Predecessor]['Criticality'] == criticality_level: #this is not quit right...
                     node = tg.node[Predecessor]['Node']
                     if Predecessor in ag.node[node]['PE'].Scheduling:             # if this task is scheduled
                         finish_time = max(ag.node[node]['PE'].Scheduling[Predecessor][1], finish_time)
-    # for Edge in tg.edges():
-    #    if Edge[1] == task:
-    #        # if tg.edge[Edge[0]][Edge[1]]['Criticality'] == criticality_level:
-    #            if len(tg.edge[Edge[0]][Edge[1]]['Link']) > 0:    # if the edge is mapped
-    #                # tg.edge[Edge[0]][Edge[1]]['Link'] is a list of tuples of (batch, Link)
-    #                # for each link that this edge goes through
-    #                for BatchAndLink in tg.edge[Edge[0]][Edge[1]]['Link']:
-    #                    Link = BatchAndLink[1]
-    #                    if len(ag.edge[Link[0]][Link[1]]['Scheduling']) > 0:
-    #                        if Edge in ag.edge[Link[0]][Link[1]]['Scheduling']:     # if this edge is scheduled
-    #                            for ScheduleAndBatch in ag.edge[Link[0]][Link[1]]['Scheduling'][Edge]:
-    #                                end_time = ScheduleAndBatch[1]
-    #                                finish_time = max(end_time, finish_time)
     current_node = tg.node[task]['Node']
     for Edge in tg.edges():
         if Edge[1] == task:

@@ -8,14 +8,22 @@ from ConfigAndPackages import Config
 
 
 def opt_ag_vertical_link_local_search(ag, shmu, cost_file_name, logging):
-
+    """
+    optimizes vertical link placement using greedy local search algorithm
+    :param ag: architecture graph
+    :param shmu: system health monitoring unit
+    :param cost_file_name: name of the file for dumping the cost values during the process
+    :param logging: logging file
+    :return: None
+    """
+    logging.info("STARTING LS FOR VL PLACEMENT...")
     if type(cost_file_name) is str:
         ag_cost_file = open('Generated_Files/Internal/'+cost_file_name+'.txt', 'a')
     else:
         raise ValueError("ag_cost_file name is not string: "+str(cost_file_name))
 
     remove_all_vertical_links(shmu, ag)
-    vertical_link_list = find_feasible_ag_vertical_link_placement(ag, shmu)
+    vertical_link_list = find_feasible_ag_vertical_link_placement(shmu)
     routing_graph = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
                                                                    Config.DebugInfo, Config.DebugDetails))
     cost = vl_cost_function(ag, routing_graph)
@@ -35,7 +43,7 @@ def opt_ag_vertical_link_local_search(ag, shmu, cost_file_name, logging):
     ag_cost_file.write(str(cost)+"\n")
 
     for i in range(0, Config.AG_Opt_Iterations_LS):
-        new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(ag, shmu,
+        new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(shmu,
                                                                                        vertical_link_list))
         new_routing_graph = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
                                                                            False, False))
@@ -55,11 +63,20 @@ def opt_ag_vertical_link_local_search(ag, shmu, cost_file_name, logging):
     print ("-------------------------------------")
     print ("STARTING COST:"+str(starting_cost)+"\tFINAL COST:"+str(best_cost))
     print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(best_cost-starting_cost)/starting_cost))+" %")
+    logging.info("LS FOR VL PLACEMENT FINISHED...")
     return None
 
 
 def opt_ag_vertical_link_iterative_local_search(ag, shmu, cost_file_name, logging):
-
+    """
+    Runs iterative local search optimization on vertical link placement
+    :param ag: architecture graph
+    :param shmu: system health map
+    :param cost_file_name: file name to dump cost values during the process
+    :param logging: logging file
+    :return:  None
+    """
+    logging.info("STARTING ILS FOR VL PLACEMENT...")
     if type(cost_file_name) is str:
         ag_cost_file = open('Generated_Files/Internal/'+cost_file_name+'.txt', 'a')
     else:
@@ -69,7 +86,7 @@ def opt_ag_vertical_link_iterative_local_search(ag, shmu, cost_file_name, loggin
     starting_cost = None
     for j in range(0, Config.AG_Opt_Iterations_ILS):
         remove_all_vertical_links(shmu, ag)
-        vertical_link_list_init = copy.deepcopy(find_feasible_ag_vertical_link_placement(ag, shmu))
+        vertical_link_list_init = copy.deepcopy(find_feasible_ag_vertical_link_placement(shmu))
         routing_graph = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu,
                                                                        Config.UsedTurnModel, False, False))
         cost = vl_cost_function(ag, routing_graph)
@@ -89,15 +106,15 @@ def opt_ag_vertical_link_iterative_local_search(ag, shmu, cost_file_name, loggin
             Arch_Graph_Reports.draw_ag(ag_temp, "AG_VLOpt_init")
             del ag_temp
         else:
-            print ("\033[33m* NOTE::\033[0m STARITNG NEW ROUND: "+str(j+1)+"\t STARTING COST:"+str(cost))
+            print("\033[33m* NOTE::\033[0m STARITNG NEW ROUND: "+str(j+1)+"\t STARTING COST:"+str(cost))
             if cost > best_cost:
                 best_vertical_link_list = vertical_link_list_init[:]
                 best_cost = cost
-                print ("\033[32m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:" +
-                       str(cost) + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS))
+                print("\033[32m* NOTE::\033[0mFOUND BETTER SOLUTION WITH COST:" +
+                      str(cost) + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS))
         vertical_link_list = vertical_link_list_init[:]
         for i in range(0, Config.AG_Opt_Iterations_LS):
-            new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(ag, shmu,
+            new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(shmu,
                                                                                            vertical_link_list))
             new_routing_graph = Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
                                                                  False, False)
@@ -119,7 +136,8 @@ def opt_ag_vertical_link_iterative_local_search(ag, shmu, cost_file_name, loggin
                        str(cost) + "\t ITERATION: "+str(j*Config.AG_Opt_Iterations_LS+i))
 
     return_to_solution(ag, shmu, best_vertical_link_list)
-    print ("-------------------------------------")
-    print ("STARTING COST:"+str(starting_cost)+"\tFINAL COST:"+str(best_cost))
-    print ("IMPROVEMENT:"+str("{0:.2f}".format(100*(best_cost-starting_cost)/starting_cost))+" %")
+    print("-------------------------------------")
+    print("STARTING COST:"+str(starting_cost)+"\tFINAL COST:"+str(best_cost))
+    print("IMPROVEMENT:"+str("{0:.2f}".format(100*(best_cost-starting_cost)/starting_cost))+" %")
+    logging.info("ILS FOR VL PLACEMENT FINISHED...")
     return None

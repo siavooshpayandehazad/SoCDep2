@@ -16,7 +16,7 @@ class Router():
 class PE():     # PROCESSING ELEMENT
     def __init__(self):
         self.Utilization = 0
-        self.Dark = False
+        self.dark = False
         self.MappedTasks = []
         self.Scheduling = {}
         self.Type = 'Processor'       # Can be accelerator or something else
@@ -304,23 +304,23 @@ def setup_network_partitioning(ag):
     # Todo: This needs to be tested...
     print ("===========================================")
     print ("SETTING UP NETWORK PARTITIONING...")
-    NonCriticalNodes = []
+    non_critical_nodes = []
     for node in ag.nodes():
         if node not in Config.CriticalRegionNodes:
             if node not in Config.GateToNonCritical:
                 if node not in Config.GateToCritical:
-                    NonCriticalNodes.append(node)
+                    non_critical_nodes.append(node)
 
     for link in ag.edges():
         # ListOfBrokenLinks
-        if link[0] in Config.CriticalRegionNodes and link[1] in NonCriticalNodes:
+        if link[0] in Config.CriticalRegionNodes and link[1] in non_critical_nodes:
             Config.ListOfBrokenLinks.append(link)
-        if link[0] in NonCriticalNodes and link[1] in Config.CriticalRegionNodes:
+        if link[0] in non_critical_nodes and link[1] in Config.CriticalRegionNodes:
             Config.ListOfBrokenLinks.append(link)
 
-        if link[0] in Config.GateToCritical and link[1] in NonCriticalNodes:
+        if link[0] in Config.GateToCritical and link[1] in non_critical_nodes:
             Config.ListOfBrokenLinks.append(link)
-        if link[0] in NonCriticalNodes and link[1] in Config.GateToNonCritical:
+        if link[0] in non_critical_nodes and link[1] in Config.GateToNonCritical:
             Config.ListOfBrokenLinks.append(link)
 
         # VirtualBrokenLinksForNonCritical
@@ -332,7 +332,7 @@ def setup_network_partitioning(ag):
             Config.VirtualBrokenLinksForNonCritical.append(link)
 
         #  VirtualBrokenLinksForCritical
-        if link[0] in Config.GateToNonCritical and link[1] in NonCriticalNodes:
+        if link[0] in Config.GateToNonCritical and link[1] in non_critical_nodes:
             Config.VirtualBrokenLinksForCritical.append(link)
 
     print "ListOfBrokenLinks:", Config.ListOfBrokenLinks
@@ -343,14 +343,14 @@ def setup_network_partitioning(ag):
 
 def random_darkness(ag):
     """
-    Takes the percentage of Dark Nodes form the Config File and turns of some Nodes.
+    Takes the percentage of dark nodes form the Config File and turns of some Nodes.
     :param ag: Architecture Graph
     :return: None
     """
     number_of_dark_nodes = int(ceil(len(ag.nodes())*Config.DarkSiliconPercentage))
     for i in range(0, number_of_dark_nodes):
         node = random.choice(ag.nodes())
-        ag.node[node]['PE'].Dark = True
+        ag.node[node]['PE'].dark = True
     return None
 
 
@@ -362,7 +362,7 @@ def return_active_nodes(ag):
     """
     active_nodes = []
     for node in ag.nodes():
-        if not ag.node[node]['PE'].Dark:
+        if not ag.node[node]['PE'].dark:
             active_nodes.append(node)
     return active_nodes
 
@@ -406,6 +406,6 @@ def return_healthy_active_nodes(ag, system_health_map):
     healthy_active_nodes = []
     for node in ag.nodes():
         if system_health_map.node[node]['NodeHealth']:
-            if not ag.node[node]['PE'].Dark:
+            if not ag.node[node]['PE'].dark:
                 healthy_active_nodes.append(node)
     return healthy_active_nodes

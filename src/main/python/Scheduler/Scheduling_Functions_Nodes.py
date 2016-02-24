@@ -3,7 +3,8 @@
 from math import ceil
 import Scheduling_Functions_Tasks
 
-def Add_TG_TaskToNode(tg, ag, task, node, start_time, end_time, logging=None):
+
+def add_tg_task_to_node(tg, ag, task, node, start_time, end_time, logging=None):
     """
     Adds a Task from Task Graph with specific Start time and end time to mapped node in architecture graph
     :param tg: Task Graph
@@ -15,14 +16,15 @@ def Add_TG_TaskToNode(tg, ag, task, node, start_time, end_time, logging=None):
     :param logging: logging file
     :return: True
     """
-    # logging.info ("\t\tADDING TASK: "+str(Task)+" TO NODE: "+str(Node))
-    # logging.info ("\t\tSTARTING TIME: "+str(StartTime)+" ENDING TIME:"+str(EndTime))
+    if logging is not None:
+        logging.info("\t\tADDING TASK: "+str(task)+" TO NODE: "+str(node))
+        logging.info("\t\tSTARTING TIME: "+str(start_time)+" ENDING TIME:"+str(end_time))
     ag.node[node]['PE'].Scheduling[task] = [start_time, end_time]
     tg.node[task]['Node'] = node
     return True
 
 
-def FindLastAllocatedTimeOnNode(tg, ag, node, logging=None):
+def find_last_allocated_time_on_node(ag, node, logging=None):
     if logging is not None:
         logging.info("\t\tFINDING LAST ALLOCATED TIME ON NODE "+str(node))
     last_allocated_time = 0
@@ -47,14 +49,14 @@ def FindLastAllocatedTimeOnNode(tg, ag, node, logging=None):
     return last_allocated_time
 
 
-def FindFirstEmptySlotForTaskOnNode(tg, ag, shm, Node, Task, predecessor_end_time, logging=None):
+def find_first_empty_slot_for_task_on_node(tg, ag, shm, node, task, predecessor_end_time, logging=None):
     """
 
     :param tg: task graph
     :param ag:
     :param shm: System Health Map
-    :param Node:
-    :param Task:
+    :param node:
+    :param task:
     :param predecessor_end_time:
     :param logging:
     :return:
@@ -62,14 +64,14 @@ def FindFirstEmptySlotForTaskOnNode(tg, ag, shm, Node, Task, predecessor_end_tim
 
     first_possible_mapping_time = predecessor_end_time
 
-    node_speed_down = 1+((100.0-shm.node[Node]['NodeSpeed'])/100)
-    task_execution_on_node = ceil(tg.node[Task]['WCET']*node_speed_down)
+    node_speed_down = 1+((100.0-shm.node[node]['NodeSpeed'])/100)
+    task_execution_on_node = ceil(tg.node[task]['WCET']*node_speed_down)
 
     start_time_list = []
     end_time_list = []
-    for chosen_task in ag.node[Node]['PE'].Scheduling.keys():
-        start_time_list.append(ag.node[Node]['PE'].Scheduling[chosen_task][0])
-        end_time_list.append(ag.node[Node]['PE'].Scheduling[chosen_task][1])
+    for chosen_task in ag.node[node]['PE'].Scheduling.keys():
+        start_time_list.append(ag.node[node]['PE'].Scheduling[chosen_task][0])
+        end_time_list.append(ag.node[node]['PE'].Scheduling[chosen_task][1])
     start_time_list.sort()
     end_time_list.sort()
     found = False
@@ -83,5 +85,5 @@ def FindFirstEmptySlotForTaskOnNode(tg, ag, shm, Node, Task, predecessor_end_tim
     if not found:
         first_possible_mapping_time = max(first_possible_mapping_time,
                                           Scheduling_Functions_Tasks.find_task_asap_scheduling(tg, ag, shm,
-                                                                                               Task, Node, logging)[0])
+                                                                                               task, node, logging)[0])
     return first_possible_mapping_time

@@ -163,7 +163,7 @@ def ctg_opt_move(tg, ctg, iteration, logging):
     elif Config.ClusteringOptMove == 'Swap':
         task_swap(tg, ctg, iteration, logging)
     elif Config.ClusteringOptMove == 'Circulate':
-        task_circulation(tg, ctg, iteration, Config.CTG_CirculationLength, logging)
+        task_circulation()
     return None
 
 
@@ -273,7 +273,7 @@ def task_swap(tg, ctg, iteration, logging):
     return None
 
 
-def task_circulation(tg, ctg, iteration, circulation_length, logging):
+def task_circulation():
     # todo... Circulate N tasks...
     return None
 

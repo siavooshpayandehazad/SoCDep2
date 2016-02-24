@@ -92,7 +92,7 @@ def initialize_system(logging):
     if Config.read_mapping_from_file:
         Mapping_Functions.read_mapping_from_file(tg, ag, shmu.SHM, noc_rg, critical_rg, noncritical_rg,
                                                  Config.mapping_file_path, logging)
-        Scheduler.schedule_all(tg, ag, shmu.SHM, False, False, logging)
+        Scheduler.schedule_all(tg, ag, shmu.SHM, False, logging)
     else:
         best_tg, best_ag = Mapping.mapping(tg, ag, noc_rg, critical_rg, noncritical_rg, shmu.SHM, logging)
         if best_ag is not None and best_tg is not None:
@@ -141,5 +141,5 @@ def initialize_system(logging):
     TrafficTableGenerator.generate_noxim_traffic_table(ag, tg)
     TrafficTableGenerator.generate_gsnoc_traffic_table(ag, tg)
     if Config.GenMappingFrames:
-        Mapping_Animation.generate_frames(tg, ag, shmu.SHM)
+        Mapping_Animation.generate_frames(ag, shmu.SHM)
     return ag, shmu, noc_rg, critical_rg, noncritical_rg, pmcg

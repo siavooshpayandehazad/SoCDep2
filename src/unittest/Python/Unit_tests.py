@@ -21,7 +21,7 @@ class UnitTesting(unittest.TestCase):
             for j in range(0, Config.Network_Y_Size):
                 for i in range(0, Config.Network_X_Size):
                     self.assertEqual(return_node_number(i, j, k),
-                                     i + j*Config.Network_X_Size + k*Config.Network_Y_Size*Config.Network_X_Size)
+                                     i + j*Config.Network_X_Size+k*Config.Network_Y_Size*Config.Network_X_Size)
         self.assertEqual(return_node_number(Config.Network_X_Size-1, Config.Network_Y_Size-1, Config.Network_Z_Size-1),
                          Config.Network_X_Size * Config.Network_Y_Size * Config.Network_Z_Size - 1)
 

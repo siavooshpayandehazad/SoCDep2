@@ -15,11 +15,10 @@ def find_schedule_make_span(ag):
 
 
 ################################################################
-def clear_scheduling(ag, tg):
+def clear_scheduling(ag):
     """
     Clears scheduling from PEs, Routers and Links
     :param ag: Architecture Graph
-    :param tg: Task Graph
     :return: None
     """
     for node in ag.nodes():

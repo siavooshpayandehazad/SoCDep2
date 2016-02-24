@@ -10,10 +10,9 @@ from ArchGraphUtilities import AG_Functions
 import random
 
 
-def generate_frames(tg, ag, shm):
+def generate_frames(ag, shm):
     """
     Generates Animation frames for the mapping process.
-    :param tg: Task Graph
     :param ag: Architecture Graph
     :param shm: System Health Map
     :return: None

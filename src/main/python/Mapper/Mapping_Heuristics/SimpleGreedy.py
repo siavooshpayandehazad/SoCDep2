@@ -5,11 +5,10 @@ from Scheduler import Scheduling_Functions_Nodes, Scheduling_Reports
 import random
 
 
-def min_min_mapping(tg, ag, noc_rg, shm, logging):
+def min_min_mapping(tg, ag, shm, logging):
     """
     :param tg: Task Graph
     :param ag: Architecture Graph
-    :param noc_rg: NoC Routing Graph
     :param shm: System Health Map
     :param logging: logging file
     :return: (TG, AG)
@@ -41,9 +40,9 @@ def min_min_mapping(tg, ag, noc_rg, shm, logging):
             task_execution_on_node = tg.node[task_to_be_mapped]['WCET']*node_speed_down
             completion_on_node = tg.node[task_to_be_mapped]['Release'] + task_execution_on_node
 
-            Scheduling_Functions_Nodes.Add_TG_TaskToNode(tg, ag, task_to_be_mapped, chosen_node,
-                                                         tg.node[task_to_be_mapped]['Release'],
-                                                         completion_on_node, logging)
+            Scheduling_Functions_Nodes.add_tg_task_to_node(tg, ag, task_to_be_mapped, chosen_node,
+                                                           tg.node[task_to_be_mapped]['Release'],
+                                                           completion_on_node, None)
         if len(shortest_tasks) == 0:
             shortest_tasks = Mapping_Functions.unmapped_task_with_smallest_wcet(tg, logging)
     print ("MIN-MIN MAPPING FINISHED...")
@@ -51,12 +50,11 @@ def min_min_mapping(tg, ag, noc_rg, shm, logging):
     return tg, ag
 
 
-def max_min_mapping(tg, ag, noc_rg, shm, logging):
+def max_min_mapping(tg, ag, shm, logging):
     """
 
     :param tg: Task Graph
     :param ag: Architecture Graph
-    :param noc_rg: NoC Routing Graph
     :param shm: System Health Map
     :param logging: logging file
     :return: (TG, AG)
@@ -94,9 +92,9 @@ def max_min_mapping(tg, ag, noc_rg, shm, logging):
             task_execution_on_node = tg.node[task_to_be_mapped]['WCET']*node_speed_down
             completion_on_node = tg.node[task_to_be_mapped]['Release'] + task_execution_on_node
 
-            Scheduling_Functions_Nodes.Add_TG_TaskToNode(tg, ag, task_to_be_mapped, chosen_node,
-                                                         tg.node[task_to_be_mapped]['Release'],
-                                                         completion_on_node, logging)
+            Scheduling_Functions_Nodes.add_tg_task_to_node(tg, ag, task_to_be_mapped, chosen_node,
+                                                           tg.node[task_to_be_mapped]['Release'],
+                                                           completion_on_node, None)
 
         if len(longest_tasks) == 0:
             longest_tasks = Mapping_Functions.unmapped_task_with_biggest_wcet(tg, logging)
@@ -119,7 +117,7 @@ def min_execution_time(tg, ag, shm, logging):
     print ("===========================================")
     print ("STARTING MIN EXECUTION TIME MAPPING")
     for task_to_be_mapped in tg.nodes():
-        chosen_node = random.choice(Mapping_Functions.fastest_nodes(ag, shm, task_to_be_mapped))
+        chosen_node = random.choice(Mapping_Functions.fastest_nodes(ag, shm))
         tg.node[task_to_be_mapped]['Node'] = chosen_node
         ag.node[chosen_node]['PE'].MappedTasks.append(task_to_be_mapped)
         ag.node[chosen_node]['PE'].Utilization += tg.node[task_to_be_mapped]['WCET']
@@ -128,9 +126,9 @@ def min_execution_time(tg, ag, shm, logging):
         task_execution_on_node = tg.node[task_to_be_mapped]['WCET']*node_speed_down
         completion_on_node = tg.node[task_to_be_mapped]['Release'] + task_execution_on_node
 
-        Scheduling_Functions_Nodes.Add_TG_TaskToNode(tg, ag, task_to_be_mapped, chosen_node,
-                                                     tg.node[task_to_be_mapped]['Release'],
-                                                     completion_on_node, logging)
+        Scheduling_Functions_Nodes.add_tg_task_to_node(tg, ag, task_to_be_mapped, chosen_node,
+                                                       tg.node[task_to_be_mapped]['Release'],
+                                                       completion_on_node, None)
 
         print ("\tTASK "+str(task_to_be_mapped)+" MAPPED ON NODE: "+str(chosen_node))
     print ("MIN EXECUTION TIME MAPPING FINISHED...")
@@ -161,9 +159,9 @@ def minimum_completion_time(tg, ag, shm, logging):
         task_execution_on_node = tg.node[task_to_be_mapped]['WCET']*node_speed_down
         completion_on_node = tg.node[task_to_be_mapped]['Release'] + task_execution_on_node
 
-        Scheduling_Functions_Nodes.Add_TG_TaskToNode(tg, ag, task_to_be_mapped, chosen_node,
-                                                     tg.node[task_to_be_mapped]['Release'],
-                                                     completion_on_node, logging)
+        Scheduling_Functions_Nodes.add_tg_task_to_node(tg, ag, task_to_be_mapped, chosen_node,
+                                                       tg.node[task_to_be_mapped]['Release'],
+                                                       completion_on_node, None)
 
         print ("\tTASK "+str(task_to_be_mapped)+" MAPPED ON NODE: "+str(chosen_node))
     print ("MIN COMPLETION TIME MAPPING FINISHED...")
@@ -171,7 +169,7 @@ def minimum_completion_time(tg, ag, shm, logging):
     return tg, ag
 
 
-def first_free(tg, ag, shm, logging):
+def first_free(tg, ag, logging):
     print ("===========================================")
     print ("STARTING FIRST FREE MAPPING")
     # Todo: to write the function

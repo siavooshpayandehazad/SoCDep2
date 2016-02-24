@@ -1,9 +1,9 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
 import matplotlib.pyplot as plt
-from Scheduling_Functions_Routers import FindLastAllocatedTimeOnRouter
-from Scheduling_Functions_Nodes import FindLastAllocatedTimeOnNode
-from Scheduling_Functions_Links import FindLastAllocatedTimeOnLink
+from Scheduling_Functions_Routers import find_last_allocated_time_on_router
+from Scheduling_Functions_Nodes import find_last_allocated_time_on_node
+from Scheduling_Functions_Links import find_last_allocated_time_on_link
 from ConfigAndPackages import Config
 import random
 
@@ -55,10 +55,10 @@ def generate_gantt_charts(tg, ag, file_name):
     router_makespan_list = []
     link_makespan_list = []
     for node in ag.nodes():
-        node_makespan_list.append(FindLastAllocatedTimeOnNode(tg, ag, node, logging=None))
-        router_makespan_list.append(FindLastAllocatedTimeOnRouter(tg, ag, node, logging=None))
+        node_makespan_list.append(find_last_allocated_time_on_node(ag, node, logging=None))
+        router_makespan_list.append(find_last_allocated_time_on_router(ag, node, logging=None))
     for link in ag.edges():
-        link_makespan_list.append(FindLastAllocatedTimeOnLink(tg, ag, link, logging=None))
+        link_makespan_list.append(find_last_allocated_time_on_link(ag, link, logging=None))
     if len(link_makespan_list) > 0:
         max_time_link = max(link_makespan_list)
     else:
