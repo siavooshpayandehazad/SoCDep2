@@ -103,8 +103,8 @@ def find_edge_predecessors_finish_time(tg, ag, edge, batch):
     """
     finish_time = 0
     source_node = tg.node[edge[0]]['Node']
-    if edge[0] in ag.node[source_node]['PE'].Scheduling:
-        finish_time = max(ag.node[source_node]['PE'].Scheduling[edge[0]][1], finish_time)
+    if edge[0] in ag.node[source_node]['PE'].scheduling:
+        finish_time = max(ag.node[source_node]['PE'].scheduling[edge[0]][1], finish_time)
 
     for link in ag.edges():
             # if they are incoming links
@@ -120,8 +120,8 @@ def find_edge_predecessors_finish_time(tg, ag, edge, batch):
                                 raise ValueError("FlowControl is not supported")
 
     for Node in ag.nodes():
-        if edge in ag.node[Node]['Router'].Scheduling:
-            for ScheduleAndBatch in ag.node[Node]['Router'].Scheduling[edge]:
+        if edge in ag.node[Node]['Router'].scheduling:
+            for ScheduleAndBatch in ag.node[Node]['Router'].scheduling[edge]:
                 if ScheduleAndBatch[2] == batch:
                     if ScheduleAndBatch[1] > finish_time:
                         if Config.FlowControl == "Wormhole":

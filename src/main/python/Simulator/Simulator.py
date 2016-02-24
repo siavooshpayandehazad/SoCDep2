@@ -196,9 +196,9 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
     print "SETTING UP ROUTERS AND PES..."
     for node in ag.nodes():
         # print node, AG.node[node]["Scheduling"]
-        env.process(processor_sim(env, ag, node, ag.node[node]['PE'].Scheduling, schedule_length,
+        env.process(processor_sim(env, ag, node, ag.node[node]['PE'].scheduling, schedule_length,
                                   fault_time_dict, counter_threshold, logging))
-        env.process(router_sim(env, ag, node, ag.node[node]['Router'].Scheduling, schedule_length,
+        env.process(router_sim(env, ag, node, ag.node[node]['Router'].scheduling, schedule_length,
                                fault_time_dict, counter_threshold, logging))
 
     print "SETTING UP LINKS..."

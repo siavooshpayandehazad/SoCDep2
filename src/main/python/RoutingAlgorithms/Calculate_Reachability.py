@@ -18,13 +18,13 @@ def calculate_reachability(ag, noc_rg):
 
     for source_node in ag.nodes():
         for port in port_list:
-            ag.node[source_node]['Router'].Unreachable[port] = []
+            ag.node[source_node]['Router'].unreachable[port] = []
         for destination_node in ag.nodes():
             # if SourceNode != DestinationNode:
                 for port in port_list:
                     if not is_destination_reachable_via_port(noc_rg, source_node, port, destination_node, False):
                         # print ("No Path From", SourceNode,Port,"To",DestinationNode)
-                        ag.node[source_node]['Router'].Unreachable[port].append(destination_node)
+                        ag.node[source_node]['Router'].unreachable[port].append(destination_node)
 
 
 def is_destination_reachable_via_port(noc_rg, source_node, port, destination_node, report):
@@ -73,16 +73,16 @@ def optimize_reachability_rectangles(ag, number_of_rectangles):
     print ("=====================================")
     print ("STARTING RECTANGLE OPTIMIZATION...")
     for node in ag.nodes():
-        for port in ag.node[node]['Router'].Unreachable:
+        for port in ag.node[node]['Router'].unreachable:
             rectangle_list = {}
             for i in range(0, number_of_rectangles):
                 rectangle_list[i] = (None, None)
-            if len(ag.node[node]['Router'].Unreachable[port]) == Config.Network_X_Size*Config.Network_Y_Size:
+            if len(ag.node[node]['Router'].unreachable[port]) == Config.Network_X_Size*Config.Network_Y_Size:
                 rectangle_list[0] = (0, Config.Network_X_Size*Config.Network_Y_Size-1)
             else:
                 rectangle_list = copy.deepcopy(merge_node_with_rectangles(rectangle_list,
-                                                                          ag.node[node]['Router'].Unreachable[port]))
-            ag.node[node]['Router'].Unreachable[port] = rectangle_list
+                                                                          ag.node[node]['Router'].unreachable[port]))
+            ag.node[node]['Router'].unreachable[port] = rectangle_list
     print ("RECTANGLE OPTIMIZATION FINISHED...")
     return None
 
@@ -159,8 +159,8 @@ def merge_rectangle_with_node(rect_ll, rect_ur, node):
 
 def clear_reachability_calculations(ag):
     for node in ag.nodes():
-        for port in ag.node[node]['Router'].Unreachable:
-            ag.node[node]['Router'].Unreachable[port] = {}
+        for port in ag.node[node]['Router'].unreachable:
+            ag.node[node]['Router'].unreachable[port] = {}
     return None
 
 
@@ -180,10 +180,10 @@ def calculate_reachability_with_regions(ag, shmu):
     non_critical_rect = {}
     gate_way_rect = {}
     for node in Config.GateToNonCritical:
-        gate_way_rect[node] = copy.deepcopy(ag.node[node]['Router'].Unreachable)
+        gate_way_rect[node] = copy.deepcopy(ag.node[node]['Router'].unreachable)
     for node in ag.nodes():
         if node not in Config.CriticalRegionNodes:
-            non_critical_rect[node] = copy.deepcopy(ag.node[node]['Router'].Unreachable)
+            non_critical_rect[node] = copy.deepcopy(ag.node[node]['Router'].unreachable)
     # Restore the VirtualBrokenLinksForNonCritical
     for virtual_broken_link in Config.VirtualBrokenLinksForNonCritical:
         if virtual_broken_link not in already_broken_links:
@@ -204,9 +204,9 @@ def calculate_reachability_with_regions(ag, shmu):
     # save Critical rectangles somewhere
     critical_rect = {}
     for node in Config.CriticalRegionNodes:
-        critical_rect[node] = copy.deepcopy(ag.node[node]['Router'].Unreachable)
+        critical_rect[node] = copy.deepcopy(ag.node[node]['Router'].unreachable)
     for node in Config.GateToCritical:
-        gate_way_rect[node] = copy.deepcopy(ag.node[node]['Router'].Unreachable)
+        gate_way_rect[node] = copy.deepcopy(ag.node[node]['Router'].unreachable)
     # Restore the VirtualBrokenLinksForNonCritical
     for virtual_broken_link in Config.VirtualBrokenLinksForCritical:
         if virtual_broken_link not in already_broken_links:
@@ -215,13 +215,13 @@ def calculate_reachability_with_regions(ag, shmu):
     # Combine Lists
     for node in ag.nodes():
         if node in critical_rect:
-            ag.node[node]['Router'].Unreachable = copy.deepcopy(critical_rect[node])
+            ag.node[node]['Router'].unreachable = copy.deepcopy(critical_rect[node])
         elif node in Config.GateToCritical:
-            ag.node[node]['Router'].Unreachable = copy.deepcopy(gate_way_rect[node])
+            ag.node[node]['Router'].unreachable = copy.deepcopy(gate_way_rect[node])
         elif node in Config.GateToNonCritical:
-            ag.node[node]['Router'].Unreachable = copy.deepcopy(gate_way_rect[node])
+            ag.node[node]['Router'].unreachable = copy.deepcopy(gate_way_rect[node])
         else:
-            ag.node[node]['Router'].Unreachable = copy.deepcopy(non_critical_rect[node])
+            ag.node[node]['Router'].unreachable = copy.deepcopy(non_critical_rect[node])
     # optimize the results
     optimize_reachability_rectangles(ag, Config.NumberOfRects)
     return critical_rg, non_critical_rg

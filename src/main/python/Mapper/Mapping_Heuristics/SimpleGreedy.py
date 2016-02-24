@@ -33,8 +33,8 @@ def min_min_mapping(tg, ag, shm, logging):
             print ("\t\tMAPPING TASK "+str(task_to_be_mapped)+" WITH RELEASE: " +
                    str(tg.node[task_to_be_mapped]['Release'])+" ---> NODE: "+str(chosen_node))
             tg.node[task_to_be_mapped]['Node'] = chosen_node
-            ag.node[chosen_node]['PE'].MappedTasks.append(task_to_be_mapped)
-            ag.node[chosen_node]['PE'].Utilization += tg.node[task_to_be_mapped]['WCET']
+            ag.node[chosen_node]['PE'].mapped_tasks.append(task_to_be_mapped)
+            ag.node[chosen_node]['PE'].utilization += tg.node[task_to_be_mapped]['WCET']
 
             node_speed_down = 1+((100.0-shm.node[chosen_node]['NodeSpeed'])/100)
             task_execution_on_node = tg.node[task_to_be_mapped]['WCET']*node_speed_down
@@ -85,8 +85,8 @@ def max_min_mapping(tg, ag, shm, logging):
                        str(tg.node[task_to_be_mapped]['Release']) +
                        " ---> NODE: "+str(chosen_node))
             tg.node[task_to_be_mapped]['Node'] = chosen_node
-            ag.node[chosen_node]['PE'].MappedTasks.append(task_to_be_mapped)
-            ag.node[chosen_node]['PE'].Utilization += tg.node[task_to_be_mapped]['WCET']
+            ag.node[chosen_node]['PE'].mapped_tasks.append(task_to_be_mapped)
+            ag.node[chosen_node]['PE'].utilization += tg.node[task_to_be_mapped]['WCET']
 
             node_speed_down = 1+((100.0-shm.node[chosen_node]['NodeSpeed'])/100)
             task_execution_on_node = tg.node[task_to_be_mapped]['WCET']*node_speed_down
@@ -119,8 +119,8 @@ def min_execution_time(tg, ag, shm, logging):
     for task_to_be_mapped in tg.nodes():
         chosen_node = random.choice(Mapping_Functions.fastest_nodes(ag, shm))
         tg.node[task_to_be_mapped]['Node'] = chosen_node
-        ag.node[chosen_node]['PE'].MappedTasks.append(task_to_be_mapped)
-        ag.node[chosen_node]['PE'].Utilization += tg.node[task_to_be_mapped]['WCET']
+        ag.node[chosen_node]['PE'].mapped_tasks.append(task_to_be_mapped)
+        ag.node[chosen_node]['PE'].utilization += tg.node[task_to_be_mapped]['WCET']
 
         node_speed_down = 1+((100.0-shm.node[chosen_node]['NodeSpeed'])/100)
         task_execution_on_node = tg.node[task_to_be_mapped]['WCET']*node_speed_down
@@ -152,8 +152,8 @@ def minimum_completion_time(tg, ag, shm, logging):
     for task_to_be_mapped in tg.nodes():
         chosen_node = random.choice(Mapping_Functions.nodes_with_smallest_ct(ag, tg, shm, task_to_be_mapped))
         tg.node[task_to_be_mapped]['Node'] = chosen_node
-        ag.node[chosen_node]['PE'].MappedTasks.append(task_to_be_mapped)
-        ag.node[chosen_node]['PE'].Utilization += tg.node[task_to_be_mapped]['WCET']
+        ag.node[chosen_node]['PE'].mapped_tasks.append(task_to_be_mapped)
+        ag.node[chosen_node]['PE'].utilization += tg.node[task_to_be_mapped]['WCET']
 
         node_speed_down = 1+((100.0-shm.node[chosen_node]['NodeSpeed'])/100)
         task_execution_on_node = tg.node[task_to_be_mapped]['WCET']*node_speed_down

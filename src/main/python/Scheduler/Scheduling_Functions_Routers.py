@@ -7,10 +7,10 @@ def add_tg_edge_to_router(ag, edge, node, batch, prob, start_time, end_time, log
         logging.info("\t\tSTARTING TIME: "+str(start_time)+" ENDING TIME: "+str(end_time))
     if end_time < start_time:
         raise ValueError("End time smaller than Start time fpr router:", node)
-    if edge in ag.node[node]['Router'].Scheduling:
-        ag.node[node]['Router'].Scheduling[edge].append([start_time, end_time, batch, prob])
+    if edge in ag.node[node]['Router'].scheduling:
+        ag.node[node]['Router'].scheduling[edge].append([start_time, end_time, batch, prob])
     else:
-        ag.node[node]['Router'].Scheduling[edge] = [[start_time, end_time, batch, prob]]
+        ag.node[node]['Router'].scheduling[edge] = [[start_time, end_time, batch, prob]]
     return True
 
 
@@ -18,10 +18,10 @@ def find_last_allocated_time_on_router(ag, node, logging=None):
     if logging is not None:
         logging.info("\t\tFINDING LAST ALLOCATED TIME ON Router "+str(node))
     last_allocated_time = 0
-    if len(ag.node[node]['Router'].MappedTasks) > 0:
-        for Task in ag.node[node]['Router'].MappedTasks.keys():
-            if Task in ag.node[node]['Router'].Scheduling:
-                for ScheduleAndBatch in ag.node[node]['Router'].Scheduling[Task]:
+    if len(ag.node[node]['Router'].mapped_tasks) > 0:
+        for Task in ag.node[node]['Router'].mapped_tasks.keys():
+            if Task in ag.node[node]['Router'].scheduling:
+                for ScheduleAndBatch in ag.node[node]['Router'].scheduling[Task]:
                     start_time = ScheduleAndBatch[0]
                     end_time = ScheduleAndBatch[1]
                     if start_time is not None and end_time is not None:
@@ -43,10 +43,10 @@ def find_last_allocated_time_on_router_for_task(ag, node, edge, prob, logging=No
         logging.info("\tFINDING LAST ALLOCATED TIME ON Router "+str(node)+"\tFOR EDGE: " +
                      str(edge)+" WITH PROB: "+str(prob))
     last_allocated_time = 0
-    if len(ag.node[node]['Router'].MappedTasks) > 0:
-        for task in ag.node[node]['Router'].MappedTasks.keys():
-            if task in ag.node[node]['Router'].Scheduling:
-                for ScheduleAndBatch in ag.node[node]['Router'].Scheduling[task]:
+    if len(ag.node[node]['Router'].mapped_tasks) > 0:
+        for task in ag.node[node]['Router'].mapped_tasks.keys():
+            if task in ag.node[node]['Router'].scheduling:
+                for ScheduleAndBatch in ag.node[node]['Router'].scheduling[task]:
                     start_time = ScheduleAndBatch[0]
                     end_time = ScheduleAndBatch[1]
                     task_prob = ScheduleAndBatch[3]
@@ -59,8 +59,8 @@ def find_last_allocated_time_on_router_for_task(ag, node, edge, prob, logging=No
                             if logging is not None:
                                 logging.info("\t\tEndTime:"+str(end_time))
                                 logging.info("\t\t\tStart  Stop  Prob          SumProb")
-                            for OtherTask in ag.node[node]['Router'].Scheduling:
-                                for schedule in ag.node[node]['Router'].Scheduling[task]:
+                            for OtherTask in ag.node[node]['Router'].scheduling:
+                                for schedule in ag.node[node]['Router'].scheduling[task]:
                                     if OtherTask != edge:
                                         if logging is not None:
                                             logging.info("Picked other task: "+str(OtherTask) +

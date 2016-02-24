@@ -64,12 +64,12 @@ def task_predecessors_finish_time(tg, ag, task):
         for Predecessor in tg.predecessors(task):
             if tg.node[Predecessor]['Node'] is not None:    # predecessor is mapped
                     node = tg.node[Predecessor]['Node']
-                    if Predecessor in ag.node[node]['PE'].Scheduling:             # if this task is scheduled
-                        finish_time = max(ag.node[node]['PE'].Scheduling[Predecessor][1], finish_time)
+                    if Predecessor in ag.node[node]['PE'].scheduling:             # if this task is scheduled
+                        finish_time = max(ag.node[node]['PE'].scheduling[Predecessor][1], finish_time)
     current_node = tg.node[task]['Node']
     for Edge in tg.edges():
         if Edge[1] == task:
-            if Edge in ag.node[current_node]['Router'].Scheduling:
-                for ScheduleAndBatch in ag.node[current_node]['Router'].Scheduling[Edge]:
+            if Edge in ag.node[current_node]['Router'].scheduling:
+                for ScheduleAndBatch in ag.node[current_node]['Router'].scheduling[Edge]:
                     finish_time = max(ScheduleAndBatch[1], finish_time)
     return finish_time

@@ -8,18 +8,18 @@ from math import ceil
 
 class Router():
     def __init__(self):
-        self.Unreachable = {}
-        self.MappedTasks = {}
-        self.Scheduling = {}
+        self.unreachable = {}
+        self.mapped_tasks = {}
+        self.scheduling = {}
 
 
 class PE():     # PROCESSING ELEMENT
     def __init__(self):
-        self.Utilization = 0
+        self.utilization = 0
         self.dark = False
-        self.MappedTasks = []
-        self.Scheduling = {}
-        self.Type = 'Processor'       # Can be accelerator or something else
+        self.mapped_tasks = []
+        self.scheduling = {}
+        self.type = 'Processor'       # Can be accelerator or something else
 
 
 def generate_manual_ag(proc_element_list, ag_edge_list, ag_edge_port_list):
@@ -376,8 +376,8 @@ def return_node_util(tg, ag, node):
     :return: utilization
     """
     utilization = 0
-    if len(ag.node[node]['PE'].MappedTasks) > 0:
-        for task in ag.node[node]['PE'].MappedTasks:
+    if len(ag.node[node]['PE'].mapped_tasks) > 0:
+        for task in ag.node[node]['PE'].mapped_tasks:
             utilization += tg.node[task]['WCET']
     return utilization
 

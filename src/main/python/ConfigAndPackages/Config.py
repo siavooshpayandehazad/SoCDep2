@@ -5,7 +5,7 @@ import PackageFile
 #          Program  Config
 ################################################
 enable_simulator = True
-ProgramRunTime = 900      # in cycles
+ProgramRunTime = 100      # in cycles
 DebugInfo = False
 DebugDetails = False
 
@@ -182,7 +182,7 @@ read_mapping_from_file = False
 mapping_file_path = "mapping_report.txt"
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'LocalSearch'
+Mapping_Function = 'IterativeLocalSearch'
 LocalSearchIteration = 10
 IterativeLocalSearchIterations = 5
 mapping_random_seed = 2000

@@ -271,11 +271,11 @@ def swap_nodes(tg, ag, shm, noc_rg, critical_routing_graph,
     :param logging: logging file
     :return: True if it successfully swaps two nodes tasks
     """
-    if len(ag.node[node_1]['PE'].MappedTasks) == 0 or len(ag.node[node_2]['PE'].MappedTasks) == 0:
+    if len(ag.node[node_1]['PE'].mapped_tasks) == 0 or len(ag.node[node_2]['PE'].mapped_tasks) == 0:
         raise ValueError("at least one of selected nodes for swapping doesnt have any tasks on it. ")
 
-    task_1 = ag.node[node_1]['PE'].MappedTasks[0]
-    task_2 = ag.node[node_2]['PE'].MappedTasks[0]
+    task_1 = ag.node[node_1]['PE'].mapped_tasks[0]
+    task_2 = ag.node[node_2]['PE'].mapped_tasks[0]
     Mapping_Functions.remove_task_from_node(tg, ag, noc_rg, critical_routing_graph,
                                             non_critical_routing_graph, task_1, node_1, logging)
     Mapping_Functions.remove_task_from_node(tg, ag, noc_rg, critical_routing_graph,

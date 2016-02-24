@@ -89,8 +89,8 @@ def map_task_to_node(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, task, nod
 
     logging.info("\tADDING TASK: "+str(task)+"TO NODE:"+str(node))
     tg.node[task]['Node'] = node
-    ag.node[node]['PE'].MappedTasks.append(task)
-    ag.node[node]['PE'].Utilization += tg.node[task]['WCET']
+    ag.node[node]['PE'].mapped_tasks.append(task)
+    ag.node[node]['PE'].utilization += tg.node[task]['WCET']
     for edge in tg.edges():
         if task in edge:    # find all the edges that are connected to Task
             # logging.info("\t\tEDGE:"+str(edge)+"CONTAINS Task:"+str(task))
@@ -117,14 +117,14 @@ def map_task_to_node(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, task, nod
                             for link in path:
                                 if edge in ag.edge[link[0]][link[1]]['MappedTasks'].keys():
                                     ag.edge[link[0]][link[1]]['MappedTasks'][edge].append((counter, probability))
-                                    ag.node[link[0]]['Router'].MappedTasks[edge].append((counter, probability))
+                                    ag.node[link[0]]['Router'].mapped_tasks[edge].append((counter, probability))
                                     # logging.info("\t\t\t\tAdding Packet "+str(edge)+" To Router:"+str(link[0]))
                                 else:
                                     ag.edge[link[0]][link[1]]['MappedTasks'][edge] = [(counter, probability)]
-                                    ag.node[link[0]]['Router'].MappedTasks[edge] = [(counter, probability)]
+                                    ag.node[link[0]]['Router'].mapped_tasks[edge] = [(counter, probability)]
                                     # logging.info("\t\t\t\tAdding Packet "+str(edge)+" To Router:"+str(link[0]))
 
-                                ag.node[path[len(path)-1][1]]['Router'].MappedTasks[edge] = [(counter, probability)]
+                                ag.node[path[len(path)-1][1]]['Router'].mapped_tasks[edge] = [(counter, probability)]
                                 # logging.info("\t\t\t\tAdding Packet "+str(edge) +
                                 #              " To Router:"+str(path[len(path)-1][1]))
 
@@ -154,7 +154,7 @@ def remove_task_from_node(tg, ag, noc_rg, critical_rg, noncritical_rg, task, nod
     :param logging: logging File
     :return:    True if it removes task with sucess
     """
-    if task not in ag.node[node]['PE'].MappedTasks:
+    if task not in ag.node[node]['PE'].mapped_tasks:
         raise ValueError("Trying removing Task from Node which is not the host")
 
     logging.info("\tREMOVING TASK:"+str(task)+"FROM NODE:"+str(node))
@@ -176,18 +176,18 @@ def remove_task_from_node(tg, ag, noc_rg, critical_rg, noncritical_rg, task, nod
                             for link in path:
                                 if edge in ag.edge[link[0]][link[1]]['MappedTasks'].keys():
                                     del ag.edge[link[0]][link[1]]['MappedTasks'][edge]
-                                    del ag.node[link[0]]['Router'].MappedTasks[edge]
+                                    del ag.node[link[0]]['Router'].mapped_tasks[edge]
                                     # logging.info("\t\t\t\tRemoving Packet "+str(edge)+" To Router:"+str(link[0]))
                                     for BatchAndLink in tg.edge[edge[0]][edge[1]]['Link']:
                                         if BatchAndLink[1] == link:
                                             tg.edge[edge[0]][edge[1]]['Link'].remove(BatchAndLink)
-                            del ag.node[path[len(path)-1][1]]['Router'].MappedTasks[edge]
+                            del ag.node[path[len(path)-1][1]]['Router'].mapped_tasks[edge]
                             # logging.info("\t\t\t\tRemoving Packet "+str(edge)+" To Router:"+str(path[len(path)-1][1]))
                     else:
                         logging.warning("\tNOTHING TO BE REMOVED...")
     tg.node[task]['Node'] = None
-    ag.node[node]['PE'].MappedTasks.remove(task)
-    ag.node[node]['PE'].Utilization -= tg.node[task]['WCET']
+    ag.node[node]['PE'].mapped_tasks.remove(task)
+    ag.node[node]['PE'].utilization -= tg.node[task]['WCET']
     return True
 
 
@@ -218,8 +218,8 @@ def add_cluster_to_node(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, c
     ctg.node[cluster]['Node'] = node
     for Task in ctg.node[cluster]['TaskList']:
         tg.node[Task]['Node'] = node
-        ag.node[node]['PE'].MappedTasks.append(Task)
-    ag.node[node]['PE'].Utilization += ctg.node[cluster]['Utilization']
+        ag.node[node]['PE'].mapped_tasks.append(Task)
+    ag.node[node]['PE'].utilization += ctg.node[cluster]['Utilization']
 
     for ctg_edge in ctg.edges():
         if cluster in ctg_edge:     # find all the edges that are connected to cluster
@@ -261,13 +261,13 @@ def add_cluster_to_node(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, c
                                     if chosen_edge in ag.edge[link[0]][link[1]]['MappedTasks'].keys():
                                         ag.edge[link[0]][link[1]]['MappedTasks'][chosen_edge].append((counter,
                                                                                                       probability))
-                                        ag.node[link[0]]['Router'].MappedTasks[chosen_edge].append((counter,
+                                        ag.node[link[0]]['Router'].mapped_tasks[chosen_edge].append((counter,
                                                                                                     probability))
                                         # logging.info("\t\t\t\tAdding Packet "+str(chosen_edge)+" To Router:" +
                                         #              str(link[0]))
                                     else:
                                         ag.edge[link[0]][link[1]]['MappedTasks'][chosen_edge] = [(counter, probability)]
-                                        ag.node[link[0]]['Router'].MappedTasks[chosen_edge] = [(counter, probability)]
+                                        ag.node[link[0]]['Router'].mapped_tasks[chosen_edge] = [(counter, probability)]
                                         # logging.info("\t\t\t\tAdding Packet "+str(chosen_edge)+" To Router:" +
                                         #              str(link[0]))
                                     edge_list_of_links = list(batch[1] for batch in
@@ -281,7 +281,7 @@ def add_cluster_to_node(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, c
                                     probability = 1         # we reserve the whole bandwidth for critical packets...
                                 else:
                                     probability = 1.0/number_of_paths
-                                ag.node[path[len(path)-1][1]]['Router'].MappedTasks[chosen_edge] = \
+                                ag.node[path[len(path)-1][1]]['Router'].mapped_tasks[chosen_edge] = \
                                     [(counter, probability)]
                                 # logging.info("\t\t\t\tAdding Packet "+str(chosen_edge)+" To Router:" +
                                 #             str(path[len(path)-1][1]))
@@ -339,16 +339,16 @@ def remove_cluster_from_node(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, c
                                 for chosen_edge in list_of_edges:
                                     if chosen_edge in ag.edge[Link[0]][Link[1]]['MappedTasks'].keys():
                                         del ag.edge[Link[0]][Link[1]]['MappedTasks'][chosen_edge]
-                                        if chosen_edge in ag.node[Link[0]]['Router'].MappedTasks.keys():
-                                            del ag.node[Link[0]]['Router'].MappedTasks[chosen_edge]
+                                        if chosen_edge in ag.node[Link[0]]['Router'].mapped_tasks.keys():
+                                            del ag.node[Link[0]]['Router'].mapped_tasks[chosen_edge]
                                         # logging.info("\t\t\t\tRemoving Packet "+str(chosen_edge) +
                                         #             " To Router:"+str(Link[0]))
                                         for LinkAndBatch in tg.edge[chosen_edge[0]][chosen_edge[1]]['Link']:
                                             if LinkAndBatch[1] == Link:
                                                 tg.edge[chosen_edge[0]][chosen_edge[1]]['Link'].remove(LinkAndBatch)
                             for chosen_edge in list_of_edges:
-                                if chosen_edge in ag.node[path[len(path)-1][1]]['Router'].MappedTasks:
-                                    del ag.node[path[len(path)-1][1]]['Router'].MappedTasks[chosen_edge]
+                                if chosen_edge in ag.node[path[len(path)-1][1]]['Router'].mapped_tasks:
+                                    del ag.node[path[len(path)-1][1]]['Router'].mapped_tasks[chosen_edge]
                                     # logging.info("\t\t\t\tRemoving Packet "+str(chosen_edge)+" To Router:" +
                                     #             str(path[len(path)-1][1]))
                     else:
@@ -356,8 +356,8 @@ def remove_cluster_from_node(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, c
     ctg.node[cluster]['Node'] = None
     for task in ctg.node[cluster]['TaskList']:
         tg.node[task]['Node'] = None
-        ag.node[node]['PE'].MappedTasks.remove(task)
-    ag.node[node]['PE'].Utilization -= ctg.node[cluster]['Utilization']
+        ag.node[node]['PE'].mapped_tasks.remove(task)
+    ag.node[node]['PE'].utilization -= ctg.node[cluster]['Utilization']
     return True
 
 
@@ -376,12 +376,12 @@ def clear_mapping(tg, ctg, ag):
     for cluster in ctg.nodes():
         ctg.node[cluster]['Node'] = None
     for node in ag.nodes():
-        ag.node[node]['PE'].MappedTasks = []
-        ag.node[node]['PE'].Utilization = 0
-        ag.node[node]['PE'].Scheduling = {}
+        ag.node[node]['PE'].mapped_tasks = []
+        ag.node[node]['PE'].utilization = 0
+        ag.node[node]['PE'].scheduling = {}
 
-        ag.node[node]['Router'].Scheduling = {}
-        ag.node[node]['Router'].MappedTasks = {}
+        ag.node[node]['Router'].scheduling = {}
+        ag.node[node]['Router'].mapped_tasks = {}
 
     for link in ag.edges():
         ag.edge[link[0]][link[1]]['MappedTasks'] = {}
@@ -633,8 +633,8 @@ def write_mapping_to_file(ag, file_name):
     for node in ag.nodes():
         string_to_write = "node_"+str(node)+": "
         counter = 0
-        for task in ag.node[node]['PE'].MappedTasks:
-            if counter < len(ag.node[node]['PE'].MappedTasks)-1:
+        for task in ag.node[node]['PE'].mapped_tasks:
+            if counter < len(ag.node[node]['PE'].mapped_tasks)-1:
                 string_to_write += str(task)+","
             else:
                 string_to_write += str(task)+"\n"
@@ -644,7 +644,7 @@ def write_mapping_to_file(ag, file_name):
     # this section is not necessary
     # mapping_file.write("\n[routers]\n")
     # for node in ag.nodes():
-    #     mapping_file.write("router_"+str(node)+": "+str(ag.node[node]['Router'].MappedTasks)+"\n")
+    #     mapping_file.write("router_"+str(node)+": "+str(ag.node[node]['Router'].mapped_tasks)+"\n")
 
     # mapping_file.write("\n[links]\n")
     # for link in ag.edges():

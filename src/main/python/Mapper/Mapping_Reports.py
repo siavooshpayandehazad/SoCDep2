@@ -18,8 +18,8 @@ def report_mapping(ag, logging):
     logging.info("      REPORTING MAPPING RESULT")
     logging.info("===========================================")
     for node in ag.nodes():
-        logging.info("NODE: "+str(node)+" CONTAINS: "+str(ag.node[node]['PE'].MappedTasks))
-        logging.info("NODE: "+str(node)+"'s Router CONTAINS: "+str(ag.node[node]['Router'].MappedTasks))
+        logging.info("NODE: "+str(node)+" CONTAINS: "+str(ag.node[node]['PE'].mapped_tasks))
+        logging.info("NODE: "+str(node)+"'s Router CONTAINS: "+str(ag.node[node]['Router'].mapped_tasks))
     for link in ag.edges():
         logging.info("LINK: "+str(link)+" CONTAINS: "+str(ag.edge[link[0]][link[1]]['MappedTasks']))
     return None
@@ -39,16 +39,16 @@ def draw_mapping_distribution(ag, shmu):
     max_number_of_tasks = 0
     max_utilization = 0
     for node in ag.nodes():
-        max_number_of_tasks = max(len(ag.node[node]['PE'].MappedTasks), max_number_of_tasks)
-        max_utilization = max(ag.node[node]['PE'].Utilization, max_utilization)
+        max_number_of_tasks = max(len(ag.node[node]['PE'].mapped_tasks), max_number_of_tasks)
+        max_utilization = max(ag.node[node]['PE'].utilization, max_utilization)
 
     for node in ag.nodes():
         location = AG_Functions.return_node_location(node)
         x_size = float(Config.Network_X_Size)
         y_size = float(Config.Network_Y_Size)
         z_size = float(Config.Network_Y_Size)
-        num = 255*len(ag.node[node]['PE'].MappedTasks)/float(max_number_of_tasks)
-        util = 255*ag.node[node]['PE'].Utilization/float(max_utilization)
+        num = 255*len(ag.node[node]['PE'].mapped_tasks)/float(max_number_of_tasks)
+        util = 255*ag.node[node]['PE'].utilization/float(max_utilization)
         if shmu.SHM.node[node]['NodeHealth']:
             if not ag.node[node]['PE'].dark:
                 color = '#%02X%02X%02X' % (255, 255-num, 255-num)
@@ -148,7 +148,7 @@ def draw_mapping(tg, ag, shm, mapping_file_name):
         offset_x = -(node_size/(2*number_of_task_in_row))
         offset_y = node_size / (number_of_task_in_row+1)
         task_count = 0
-        for task in ag.node[node]['PE'].MappedTasks:
+        for task in ag.node[node]['PE'].mapped_tasks:
             offset_x += node_size / number_of_task_in_row
             if task_count == number_of_task_in_row:
                 task_count = 0

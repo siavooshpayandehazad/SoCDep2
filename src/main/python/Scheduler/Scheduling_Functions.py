@@ -9,8 +9,8 @@ def find_schedule_make_span(ag):
     """
     make_span = 0
     for Node in ag.nodes():
-        for Task in ag.node[Node]['PE'].MappedTasks:
-            make_span = max(ag.node[Node]['PE'].Scheduling[Task][1], make_span)
+        for Task in ag.node[Node]['PE'].mapped_tasks:
+            make_span = max(ag.node[Node]['PE'].scheduling[Task][1], make_span)
     return make_span
 
 
@@ -22,8 +22,8 @@ def clear_scheduling(ag):
     :return: None
     """
     for node in ag.nodes():
-        ag.node[node]['PE'].Scheduling = {}
-        ag.node[node]['Router'].Scheduling = {}
+        ag.node[node]['PE'].scheduling = {}
+        ag.node[node]['Router'].scheduling = {}
     for link in ag.edges():
         ag.edge[link[0]][link[1]]['Scheduling'] = {}
     return None

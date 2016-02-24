@@ -19,13 +19,12 @@ def report_mapped_tasks(ag, logging):
     logging.info("          REPORTING SCHEDULING ")
     logging.info("===========================================")
     for node in ag.nodes():
-        logging.info("NODE"+str(node)+"CONTAINS THE FOLLOWING TASKS:"+str(ag.node[node]['PE'].MappedTasks) +
-                     "\tWITH SCHEDULING:"+str(ag.node[node]['PE'].Scheduling))
+        logging.info("NODE"+str(node)+"CONTAINS THE FOLLOWING TASKS:"+str(ag.node[node]['PE'].mapped_tasks) +
+                     "\tWITH SCHEDULING:"+str(ag.node[node]['PE'].scheduling))
     for link in ag.edges():
         logging.info("LINK" + str(link)+"CONTAINS THE FOLLOWING TG's Edges:" +
                      str(ag.edge[link[0]][link[1]]['MappedTasks']) + "\tWITH SCHEDULING:" +
                      str(ag.edge[link[0]][link[1]]['Scheduling']))
-
     return None
 
 
@@ -35,8 +34,8 @@ def report_scheduling_memory_usage(ag):
     print "==========================================="
     counter = 0
     for node in ag.nodes():
-        counter += len(ag.node[node]['PE'].Scheduling)
-        counter += len(ag.node[node]['Router'].Scheduling)
+        counter += len(ag.node[node]['PE'].scheduling)
+        counter += len(ag.node[node]['Router'].scheduling)
     for link in ag.edges():
         counter += len(ag.edge[link[0]][link[1]]['Scheduling'])
     print "SCHEDULE MEMORY USE:", counter
@@ -77,9 +76,9 @@ def generate_gantt_charts(tg, ag, file_name):
     router_counter = 0
     link_counter = 0
     for node in ag.nodes():
-        if len(ag.node[node]['PE'].MappedTasks) > 0:
+        if len(ag.node[node]['PE'].mapped_tasks) > 0:
             node_counter += 1
-        if len(ag.node[node]['Router'].MappedTasks) > 0:
+        if len(ag.node[node]['Router'].mapped_tasks) > 0:
             router_counter += 1
     for Link in ag.edges():
         if len(ag.edge[Link[0]][Link[1]]['MappedTasks']) > 0:
@@ -110,9 +109,9 @@ def generate_gantt_charts(tg, ag, file_name):
 def add_pe_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, router_counter, max_time, count):
     ax1 = None
     for node in ag.nodes():
-        if len(ag.node[node]['PE'].MappedTasks) > 0:
+        if len(ag.node[node]['PE'].mapped_tasks) > 0:
             ax1 = fig.add_subplot(num_of_plots, 1, count)
-            for task in ag.node[node]['PE'].MappedTasks:
+            for task in ag.node[node]['PE'].mapped_tasks:
                     pe_t = []
                     pe_p = []
                     pe_p.append(0)
@@ -122,10 +121,10 @@ def add_pe_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, rou
                     slack_t.append(0)
                     slack_p.append(0)
                     task_color = 'w'
-                    if task in ag.node[node]['PE'].Scheduling:
+                    if task in ag.node[node]['PE'].scheduling:
                         if tg.node[task]['Criticality'] == 'H':
-                            start_time = ag.node[node]['PE'].Scheduling[task][0]
-                            task_length = ag.node[node]['PE'].Scheduling[task][1]-ag.node[node]['PE'].Scheduling[task][0]
+                            start_time = ag.node[node]['PE'].scheduling[task][0]
+                            task_length = ag.node[node]['PE'].scheduling[task][1] - ag.node[node]['PE'].scheduling[task][0]
                             end_time = start_time + (task_length/(Config.Task_SlackCount+1))
                             pe_t.append(start_time)
                             pe_p.append(0)
@@ -148,8 +147,8 @@ def add_pe_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, rou
                                 slack_t.append(end_time)
                                 slack_p.append(0)
                         else:
-                            start_time = ag.node[node]['PE'].Scheduling[task][0]
-                            end_time = ag.node[node]['PE'].Scheduling[task][1]
+                            start_time = ag.node[node]['PE'].scheduling[task][0]
+                            end_time = ag.node[node]['PE'].scheduling[task][1]
                             pe_t.append(start_time)
                             pe_p.append(0)
                             pe_t.append(start_time)
@@ -179,19 +178,19 @@ def add_pe_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, rou
             if count < link_counter + node_counter + router_counter:
                 plt.setp(ax1.get_xticklabels(), visible=False)
 
-            for task in ag.node[node]['PE'].MappedTasks:
-                if task in ag.node[node]['PE'].Scheduling:
-                    start_time = ag.node[node]['PE'].Scheduling[task][0]
+            for task in ag.node[node]['PE'].mapped_tasks:
+                if task in ag.node[node]['PE'].scheduling:
+                    start_time = ag.node[node]['PE'].scheduling[task][0]
                     if tg.node[task]['Criticality'] == 'H':
-                        task_length = (ag.node[node]['PE'].Scheduling[task][1] -
-                                       ag.node[node]['PE'].Scheduling[task][0])/(Config.Task_SlackCount+1)
+                        task_length = (ag.node[node]['PE'].scheduling[task][1] -
+                                       ag.node[node]['PE'].scheduling[task][0])/(Config.Task_SlackCount+1)
                         ax1.text(start_time+task_length/2 - len(str(task))/2, 0.01, str(task), fontsize=10)
-                        end_time = ag.node[node]['PE'].Scheduling[task][1]
+                        end_time = ag.node[node]['PE'].scheduling[task][1]
                         if Config.Task_SlackCount > 0:
                             ax1.text((start_time+task_length+end_time)/2 - len(str(task)+'S')/2,
                                      0.01, str(task)+'S', fontsize=5)
                     else:
-                        end_time = ag.node[node]['PE'].Scheduling[task][1]
+                        end_time = ag.node[node]['PE'].scheduling[task][1]
                         ax1.text((start_time+end_time)/2 - len(str(task))/2, 0.01, str(task), fontsize=5)
             ax1.yaxis.set_label_coords(-0.08, 0)
             ax1.set_ylabel(r'PE'+str(node), size=14, rotation=0)
@@ -216,22 +215,22 @@ def add_routers_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter
     """
     ax1 = None
     for node in ag.nodes():
-        if len(ag.node[node]['Router'].MappedTasks) > 0:
+        if len(ag.node[node]['Router'].mapped_tasks) > 0:
             ax1 = fig.add_subplot(num_of_plots, 1, count)
             schedule_list = []
-            zorder = len(ag.node[node]['Router'].MappedTasks)
-            for task in ag.node[node]['Router'].MappedTasks:
+            zorder = len(ag.node[node]['Router'].mapped_tasks)
+            for task in ag.node[node]['Router'].mapped_tasks:
                 pe_t = [0, 0]
                 pe_p = [0.1, 0]
                 edge_color = 'w'
                 slack_t = [0]
                 slack_p = [0]
 
-                if task in ag.node[node]['Router'].Scheduling:
+                if task in ag.node[node]['Router'].scheduling:
                     if tg.edge[task[0]][task[1]]['Criticality'] == 'H':
                         start_time = 0
                         end_time = 0
-                        for batch_and_schedule in ag.node[node]['Router'].Scheduling[task]:
+                        for batch_and_schedule in ag.node[node]['Router'].scheduling[task]:
                             start_time = batch_and_schedule[0]
                             # batch_num = batch_and_schedule[2]
                             task_length = batch_and_schedule[1] - start_time
@@ -259,7 +258,7 @@ def add_routers_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter
                         schedule_list.append((start_time, end_time, 1))
                         zorder -= 1
                     else:
-                        for batch_and_schedule in ag.node[node]['Router'].Scheduling[task]:
+                        for batch_and_schedule in ag.node[node]['Router'].scheduling[task]:
 
                             start_time = batch_and_schedule[0]
                             end_time = batch_and_schedule[1]
