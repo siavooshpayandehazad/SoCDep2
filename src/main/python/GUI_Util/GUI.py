@@ -70,7 +70,7 @@ class ConfigApp(Tkinter.Tk):
                     'RandomDependent': ['LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing', 'NMap'],
                     'RandomIndependent': ['MinMin', 'MaxMin', 'MinExecutionTime', 'MinimumCompletionTime']}
 
-    VLP_Alg_List = ['LocalSearch', 'IterativeLocalSearch']
+    vlp_alg_list = ['LocalSearch', 'IterativeLocalSearch']
 
     flow_control_list = ['Wormhole', 'StoreAndForward']
 
@@ -344,7 +344,7 @@ class ConfigApp(Tkinter.Tk):
         self.vlp_alg_label = Tkinter.Label(self, text="Opt algorithm:")
         self.vlp_alg = Tkinter.StringVar()
         self.vlp_alg.set('LocalSearch')
-        self.vlp_alg_option = Tkinter.OptionMenu(self, self.vlp_alg, *self.vlp_alg_List, command=self._vlp_alg_func)
+        self.vlp_alg_option = Tkinter.OptionMenu(self, self.vlp_alg, *self.vlp_alg_list, command=self._vlp_alg_func)
         self.vlp_alg_option.config(width=self.option_menu_width)
 
         self.num_of_vls_label = Tkinter.Label(self, text="Number of VLs:")
