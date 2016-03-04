@@ -907,7 +907,7 @@ class ConfigApp(Tkinter.Tk):
             self.vlp_iter_ils.delete(0, 'end')
             self.vlp_iter_ils.insert(0, '10')
 
-    def _routing_func(self):
+    def _routing_func(self, event):
         if self.routing_alg.get() in ['XY', 'XYZ']:
             self.routing_type_option.config(state='disable')
         else:
