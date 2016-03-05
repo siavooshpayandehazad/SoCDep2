@@ -77,12 +77,12 @@ def add_task_to_ctg(tg, ctg, task, cluster):
             if source_cluster is not None and destination_cluster is not None:
                 if source_cluster != destination_cluster:
                     if (source_cluster, destination_cluster) in ctg.edges():
-                        if Config.Clustering_DetailedReport:
+                        if Config.clustering.detailed_report:
                             print ("\t\tEDGE", source_cluster, "--->", destination_cluster,
                                    "ALREADY EXISTS... ADDING", weight_to_add, "TO WEIGHT...")
                         ctg.edge[source_cluster][destination_cluster]['Weight'] += weight_to_add
                     else:
-                        if Config.Clustering_DetailedReport:
+                        if Config.clustering.detailed_report:
                             print ("\t\tEDGE", source_cluster, destination_cluster,
                                    "DOES NOT EXISTS... ADDING EDGE WITH WEIGHT:",
                                    tg.edge[edge[0]][edge[1]]['ComWeight'])
@@ -109,24 +109,24 @@ def ctg_cost_function(ctg):
     max_util = max(cluster_utilization)
     avg_util = sum(cluster_utilization)/len(cluster_utilization)
 
-    if Config.Clustering_CostFunctionType == 'SD':
+    if Config.clustering.cost_function == 'SD':
         cluster_util_sd = statistics.stdev(cluster_utilization)
         com_weight_sd = statistics.stdev(com_weight_list)
         cost = cluster_util_sd + com_weight_sd
-    elif Config.Clustering_CostFunctionType == 'SD+MAX':
+    elif Config.clustering.cost_function == 'SD+MAX':
         cluster_util_sd = statistics.stdev(cluster_utilization)
         com_weight_sd = statistics.stdev(com_weight_list)
         cost = max_com_weight + com_weight_sd + max_util + cluster_util_sd
-    elif Config.Clustering_CostFunctionType == 'MAX':
+    elif Config.clustering.cost_function == 'MAX':
         cost = max_com_weight + max_util
-    elif Config.Clustering_CostFunctionType == 'MAXCOM':
+    elif Config.clustering.cost_function == 'MAXCOM':
         cost = max_com_weight
-    elif Config.Clustering_CostFunctionType == 'AVGUTIL':
+    elif Config.clustering.cost_function == 'AVGUTIL':
         cost = avg_util
-    elif Config.Clustering_CostFunctionType == 'SUMCOM':
+    elif Config.clustering.cost_function == 'SUMCOM':
         cost = total_com_weight
     else:
-        raise ValueError("Clustering_CostFunctionType is not valid")
+        raise ValueError("clustering cost function is not valid")
     return cost
 
 
@@ -158,11 +158,11 @@ def ctg_opt_move(tg, ctg, iteration, logging):
     :param logging: logging file
     :return: None
     """
-    if Config.ClusteringOptMove == 'RandomTaskMove':
+    if Config.clustering.opt_move == 'RandomTaskMove':
         random_task_move(tg, ctg, iteration, logging)
-    elif Config.ClusteringOptMove == 'Swap':
+    elif Config.clustering.opt_move == 'Swap':
         task_swap(tg, ctg, iteration, logging)
-    elif Config.ClusteringOptMove == 'Circulate':
+    elif Config.clustering.opt_move == 'Circulate':
         task_circulation()
     return None
 
@@ -175,7 +175,7 @@ def random_task_move(tg, ctg, iteration, logging):
     :param logging: logging file
     :return: None
     """
-    random_seed = Config.ctg_random_seed
+    random_seed = Config.clustering.random_seed
     random.seed(Config.mapping_random_seed)
     for i in range(0, iteration):
         random_seed = random.randint(1, 100000)
@@ -211,7 +211,7 @@ def task_swap(tg, ctg, iteration, logging):
     :param logging: logging file
     :return: None
     """
-    random_seed = Config.ctg_random_seed
+    random_seed = Config.clustering.random_seed
     random.seed(Config.mapping_random_seed)
     for i in range(0, iteration):
         random_seed = random.randint(1, 100000)

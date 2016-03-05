@@ -138,10 +138,10 @@ def update_config(config_file_path):
     #               VL_Config
     # ------------------------------------------------
     Config.FindOptimumAG = config.getboolean("VL_Config", "FindOptimumAG")
-    Config.VL_OptAlg = config.get("VL_Config", "VL_OptAlg")
-    Config.AG_Opt_Iterations_ILS = config.getint("VL_Config", "AG_Opt_Iterations_ILS")
-    Config.AG_Opt_Iterations_LS = config.getint("VL_Config", "AG_Opt_Iterations_LS")
-    Config.VerticalLinksNum = config.getint("VL_Config", "VerticalLinksNum")
+    Config.vl_opt.vl_opt_alg = config.get("VL_Config", "VL_OptAlg")
+    Config.vl_opt.ils_iteration = config.getint("VL_Config", "AG_Opt_Iterations_ILS")
+    Config.vl_opt.ls_iteration = config.getint("VL_Config", "AG_Opt_Iterations_LS")
+    Config.vl_opt.vl_num = config.getint("VL_Config", "VerticalLinksNum")
 
     # ------------------------------------------------
     #               Routing_Config
@@ -183,13 +183,13 @@ def update_config(config_file_path):
     #               CTG_Config
     # ------------------------------------------------
     Config.Clustering_Optimization = config.getboolean("CTG_Config", "Clustering_Optimization")
-    Config.ClusteringIteration = config.getint("CTG_Config", "ClusteringIteration")
-    Config.ctg_random_seed = config.getint("CTG_Config", "ctg_random_seed")
-    Config.Clustering_Report = config.getboolean("CTG_Config", "Clustering_Report")
-    Config.Clustering_DetailedReport = config.getboolean("CTG_Config", "Clustering_DetailedReport")
-    Config.Clustering_CostFunctionType = config.get("CTG_Config", "Clustering_CostFunctionType")
-    Config.ClusteringOptMove = config.get("CTG_Config", "ClusteringOptMove")
-    Config.CTG_CirculationLength = config.getint("CTG_Config", "CTG_CirculationLength")
+    Config.clustering.iterations = config.getint("CTG_Config", "ClusteringIteration")
+    Config.clustering.random_seed = config.getint("CTG_Config", "ctg_random_seed")
+    Config.clustering.report = config.getboolean("CTG_Config", "Clustering_Report")
+    Config.clustering.detailed_report = config.getboolean("CTG_Config", "Clustering_DetailedReport")
+    Config.clustering.cost_function = config.get("CTG_Config", "Clustering_CostFunctionType")
+    Config.clustering.opt_move = config.get("CTG_Config", "ClusteringOptMove")
+    Config.clustering.circulation_length = config.getint("CTG_Config", "CTG_CirculationLength")
 
     # ------------------------------------------------
     #               Mapping_Config
@@ -323,10 +323,10 @@ def generate_configfile():
     # ------------------------------------------------
     cnfgpars.add_section('VL_Config')
     cnfgpars.set('VL_Config', 'FindOptimumAG', Config.FindOptimumAG)
-    cnfgpars.set('VL_Config', 'VL_OptAlg', Config.VL_OptAlg)
-    cnfgpars.set('VL_Config', 'AG_Opt_Iterations_ILS', Config.AG_Opt_Iterations_ILS)
-    cnfgpars.set('VL_Config', 'AG_Opt_Iterations_LS', Config.AG_Opt_Iterations_LS)
-    cnfgpars.set('VL_Config', 'VerticalLinksNum', Config.VerticalLinksNum)
+    cnfgpars.set('VL_Config', 'VL_OptAlg', Config.vl_opt.vl_opt_alg)
+    cnfgpars.set('VL_Config', 'AG_Opt_Iterations_ILS', Config.vl_opt.ils_iteration)
+    cnfgpars.set('VL_Config', 'AG_Opt_Iterations_LS', Config.vl_opt.ls_iteration)
+    cnfgpars.set('VL_Config', 'VerticalLinksNum', Config.vl_opt.vl_num)
     # ------------------------------------------------
     #               Routing_Config
     # ------------------------------------------------
@@ -372,13 +372,13 @@ def generate_configfile():
     # ------------------------------------------------
     cnfgpars.add_section('CTG_Config')
     cnfgpars.set('CTG_Config', 'Clustering_Optimization', Config.Clustering_Optimization)
-    cnfgpars.set('CTG_Config', 'ClusteringIteration', Config.ClusteringIteration)
-    cnfgpars.set('CTG_Config', 'ctg_random_seed', Config.ctg_random_seed)
-    cnfgpars.set('CTG_Config', 'Clustering_Report', Config.Clustering_Report)
-    cnfgpars.set('CTG_Config', 'Clustering_DetailedReport', Config.Clustering_DetailedReport)
-    cnfgpars.set('CTG_Config', 'Clustering_CostFunctionType', Config.Clustering_CostFunctionType)
-    cnfgpars.set('CTG_Config', 'ClusteringOptMove', Config.ClusteringOptMove)
-    cnfgpars.set('CTG_Config', 'CTG_CirculationLength', Config.CTG_CirculationLength)
+    cnfgpars.set('CTG_Config', 'ClusteringIteration', Config.clustering.iterations)
+    cnfgpars.set('CTG_Config', 'ctg_random_seed', Config.clustering.random_seed)
+    cnfgpars.set('CTG_Config', 'Clustering_Report', Config.clustering.report)
+    cnfgpars.set('CTG_Config', 'Clustering_DetailedReport', Config.clustering.detailed_report)
+    cnfgpars.set('CTG_Config', 'Clustering_CostFunctionType', Config.clustering.cost_function)
+    cnfgpars.set('CTG_Config', 'ClusteringOptMove', Config.clustering.opt_move)
+    cnfgpars.set('CTG_Config', 'CTG_CirculationLength', Config.clustering.circulation_length)
     # ------------------------------------------------
     #               Mapping_Config
     # ------------------------------------------------

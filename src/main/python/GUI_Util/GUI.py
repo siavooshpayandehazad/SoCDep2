@@ -1208,9 +1208,9 @@ class ConfigApp(Tkinter.Tk):
             Config.Network_Z_Size = int(self.network_size_z.get())
 
             # clustering config
-            Config.ClusteringIteration = int(self.clustering_iterations.get())
+            Config.clustering.iterations = int(self.clustering_iterations.get())
             Config.Clustering_Optimization = self.clustering_opt_var.get()
-            Config.Clustering_CostFunctionType = self.clustering_cost.get()
+            Config.clustering.cost_function = self.clustering_cost.get()
 
             # mapping config
             Config.Mapping_CostFunctionType = self.mapping_cost.get()
@@ -1281,8 +1281,8 @@ class ConfigApp(Tkinter.Tk):
             # todo: There is something with update from 3D to 2D system.
             Config.FindOptimumAG = self.vl_placement_enable.get()
             if self.vl_placement_enable.get():
-                Config.VL_OptAlg = self.vlp_alg.get()
-                Config.VerticalLinksNum = int(self.num_of_vls.get())
+                Config.vl_opt.vl_opt_alg = self.vlp_alg.get()
+                Config.vl_opt.vl_num = int(self.num_of_vls.get())
 
             # dependability Config
             Config.Communication_SlackCount = int(self.com_slack_number.get())

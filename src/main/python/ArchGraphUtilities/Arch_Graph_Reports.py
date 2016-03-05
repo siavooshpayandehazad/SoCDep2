@@ -60,6 +60,7 @@ def draw_vl_opt():
     print ("===========================================")
     print ("GENERATING VL OPTIMIZATION VISUALIZATIONS...")
     fig, ax1 = plt.subplots()
+    solution_num = None
     try:
         vl_cost_file = open('Generated_Files/Internal/vl_opt_cost.txt', 'r')
         cost = []
@@ -75,19 +76,39 @@ def draw_vl_opt():
             line = vl_cost_file.readline()
         solution_num = range(0, len(cost))
         vl_cost_file.close()
-
+        # print len(solution_num), len(cost)
         ax1.set_ylabel('vl placement Cost')
         ax1.set_xlabel('Iteration #')
         ax1.plot(solution_num, cost, '#5095FD', solution_num, max_cost_list, 'r')
 
-        if Config.VL_OptAlg == 'IterativeLocalSearch':
-            for Iteration in range(1, Config.AG_Opt_Iterations_ILS+2):
-                x1 = x2 = Iteration * Config.AG_Opt_Iterations_LS
+        if Config.vl_opt.vl_opt_alg == 'IterativeLocalSearch':
+            for Iteration in range(1, Config.vl_opt.ils_iteration+2):
+                x1 = x2 = Iteration * Config.vl_opt.ls_iteration
                 y1 = 0
                 y2 = max(cost)*1.2
                 ax1.plot((x1, x2), (y1, y2), 'g--')
+
     except IOError:
         print ('CAN NOT OPEN Generated_Files/Internal/vl_opt_cost.txt')
+
+    if Config.vl_opt.vl_opt_alg == 'SimulatedAnnealing':
+        try:
+            sa_temp_file = open('Generated_Files/Internal/vlp_sa_temp.txt', 'r')
+            temp = []
+            line = sa_temp_file.readline()
+            temp.append(float(line))
+            while line != '':
+                temp.append(float(line))
+                line = sa_temp_file.readline()
+            sa_temp_file.close()
+            # print len(temp), len(solution_num)
+            ax2 = ax1.twinx()
+            ax2.plot(solution_num, temp, 'g--')
+            ax2.set_ylabel('Temperature')
+            for tl in ax2.get_yticklabels():
+                tl.set_color('g')
+        except IOError:
+            print ('CAN NOT OPEN vlp_sa_temp.txt')
 
     plt.savefig("GraphDrawings/vl_opt_process.png", dpi=300)
     plt.clf()

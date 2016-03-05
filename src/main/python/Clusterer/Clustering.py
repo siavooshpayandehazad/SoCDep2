@@ -38,9 +38,9 @@ def initial_clustering(tg, ctg):
     print ("===========================================")
     print ("STARTING INITIAL CLUSTERING...")
 
-    if Config.ctg_random_seed is not None:
-        print "RANDOM SEED: ", Config.ctg_random_seed
-        random.seed(Config.ctg_random_seed)
+    if Config.clustering.random_seed is not None:
+        print "RANDOM SEED: ", Config.clustering.random_seed
+        random.seed(Config.clustering.random_seed)
     else:
         print "RANDOM SEED SET TO NONE!"
         random.seed(None)

@@ -4,7 +4,7 @@ import PackageFile
 ################################################
 #          Program  Config
 ################################################
-enable_simulator = True
+enable_simulator = False
 ProgramRunTime = 100      # in cycles
 DebugInfo = False
 DebugDetails = False
@@ -50,10 +50,10 @@ AG_Type = 'Generic'
 VirtualChannelNum = 0
 # in case of Generic AG_type
 # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
-NetworkTopology = '2DMesh'
+NetworkTopology = '3DMesh'
 Network_X_Size = 3
 Network_Y_Size = 3
-Network_Z_Size = 1
+Network_Z_Size = 3
 
 # this is just for double check...
 if '2D' in NetworkTopology:
@@ -68,13 +68,37 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 ################################################
 #          VL Config
 ################################################
-FindOptimumAG = False
-# Available Choices: 'LocalSearch', 'IterativeLocalSearch'
-VL_OptAlg = "IterativeLocalSearch"
-AG_Opt_Iterations_ILS = 10
-AG_Opt_Iterations_LS = 10
-# Number of Vertical Links
-VerticalLinksNum = 5
+FindOptimumAG = True
+
+
+class VLOpt:
+    def __init__(self):
+        # Available Choices: 'LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing'
+        self.vl_opt_alg = "SimulatedAnnealing"
+        # Number of Vertical Links
+        self.vl_num = 5
+        self.ils_iteration = 10
+        self.ls_iteration = 10
+        self.random_seed = 2000
+        #################
+        # for simulated annealing optimization
+        #################
+        # Available Annealing Schedule: 'Linear', 'Exponential', 'Logarithmic'
+        self.sa_annealing_schedule = 'Logarithmic'
+        # Termination Criteria Could be either 'StopTemp' or 'IterationNum'
+        self.termination_criteria = 'IterationNum'
+        self.sa_initial_temp = 20
+        self.sa_stop_temp = 1
+        self.sa_iteration = 1000
+        self.sa_report_solutions = False
+        self.sa_alpha = 0.9995
+        self.sa_log_cooling_constant = 15
+
+
+vl_opt = VLOpt()
+
+
+
 ################################################
 #          Routing Config
 ################################################
@@ -82,7 +106,7 @@ VerticalLinksNum = 5
 # Available Turn Models :
 #         2D Turn Models: XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel
 #         3D Turn Models: XY_TurnModel, NegativeFirst3D_TurnModel
-UsedTurnModel = PackageFile.XY_TurnModel
+UsedTurnModel = PackageFile.NegativeFirst3D_TurnModel
 
 # Available choices: 'MinimalPath', 'NonMinimalPath'
 RotingType = 'MinimalPath'
@@ -156,25 +180,32 @@ MaxTemp = 100
 #          Clustering Function  Config
 ################################################
 Clustering_Optimization = True     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
-ClusteringIteration = 70
-ctg_random_seed = 100
-Clustering_Report = False
-Clustering_DetailedReport = False
-# here you can change the type of cost function used for Clustering the available cost functions are:
-# 'SD' = Com_Weight_SD + Node_Util_SD
-# 'SD+MAX' = Com_Weight_SD + MaxComWeight + Node_Util_SD + MaxNodeUtil
-# 'MAX' = MaxComWeight + MaxNodeUtil
-# 'MAXCOM' = MaxComWeight
-# 'AVGUTIL' = sum(ClusterUtilization)/len(ClusterUtilization)
-# 'SUMCOM' = sum(CommunicationWeight)   This one is really funny. one thinks it would converge to a point that
-# it puts every task in one cluster. however, it usually gets into local minima. and the result is really interesting
-Clustering_CostFunctionType = 'MAX'
 
-# RandomTaskMove: randomly chooses a task from a cluster and moves it to another random cluster
-# Swap: randomly chooses a 2 tasks from 2 clusters and Swaps them
-# Circulate: randomly chooses a N tasks from N clusters and Circulates them (is not implemented yet)
-ClusteringOptMove = 'RandomTaskMove'
-CTG_CirculationLength = 3
+
+class Clustering:
+    def __init__(self):
+        self.iterations = 70
+        self.random_seed = 100
+        self.report = False
+        self.detailed_report = False
+        # here you can change the type of cost function used for Clustering the available cost functions are:
+        # 'SD' = Com_Weight_SD + Node_Util_SD
+        # 'SD+MAX' = Com_Weight_SD + MaxComWeight + Node_Util_SD + MaxNodeUtil
+        # 'MAX' = MaxComWeight + MaxNodeUtil
+        # 'MAXCOM' = MaxComWeight
+        # 'AVGUTIL' = sum(ClusterUtilization)/len(ClusterUtilization)
+        # 'SUMCOM' = sum(CommunicationWeight)   This one is really funny. one thinks it would converge to a point that
+        # it puts every task in one cluster. however, it usually gets into local minima. and the result is
+        # really interesting
+        self.cost_function = 'MAX'
+        # RandomTaskMove: randomly chooses a task from a cluster and moves it to another random cluster
+        # Swap: randomly chooses a 2 tasks from 2 clusters and Swaps them
+        # Circulate: randomly chooses a N tasks from N clusters and Circulates them (is not implemented yet)
+        self.opt_move = 'RandomTaskMove'
+        self.circulation_length = 3
+
+clustering = Clustering()
+
 ################################################
 #          Mapping Function  Config
 ################################################
@@ -315,8 +346,8 @@ RG_Draw = False
 PMCG_Drawing = False
 TTG_Drawing = False
 Mapping_Dstr_Drawing = False
-Mapping_Drawing = True
-Scheduling_Drawing = True
+Mapping_Drawing = False
+Scheduling_Drawing = False
 SHM_Drawing = False          # if True generates SHM Drawing
 GenMappingFrames = False    # If True, generates the frames for animation
 FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks

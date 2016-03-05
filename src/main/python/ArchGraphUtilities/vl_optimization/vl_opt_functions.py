@@ -22,22 +22,22 @@ def find_all_vertical_links(ag):
     return vertical_link_list
 
 
-def remove_all_vertical_links(shm, ag):
+def remove_all_vertical_links(shmu, ag):
     """
     Finds all vertical links and sets them as faulty in shm
-    :param shm: system health map
+    :param shmu: system health monitoring unit
     :param ag: architecture graph
     :return: None
     """
     vertical_link_list = find_all_vertical_links(ag)
     for v_link in vertical_link_list:
-        shm.break_link(v_link, False)
+        shmu.break_link(v_link, False)
     return None
 
 
 def find_feasible_ag_vertical_link_placement(shmu):
     new_vertical_link_lists = []
-    for i in range(0, Config.VerticalLinksNum):
+    for i in range(0, Config.vl_opt.vl_num):
         source_x = random.randint(0, Config.Network_X_Size-1)
         source_y = random.randint(0, Config.Network_Y_Size-1)
         source_z = random.randint(0, Config.Network_Z_Size-1)
@@ -66,18 +66,18 @@ def find_feasible_ag_vertical_link_placement(shmu):
     return new_vertical_link_lists
 
 
-def return_to_solution(ag, shm, vertical_link_list):
+def return_to_solution(ag, shmu, vertical_link_list):
     """
     Takes a list of vertical links and applies this configuration to the system. used for moving back
     to an old solution
     :param ag: architecture graph
-    :param shm: system health map
+    :param shm: system health monitoring unit
     :param vertical_link_list: list of vertical links to be placed
     :return: None
     """
-    remove_all_vertical_links(shm, ag)
+    remove_all_vertical_links(shmu, ag)
     for link in vertical_link_list:
-        shm.restore_broken_link(link, False)
+        shmu.restore_broken_link(link, False)
     return None
 
 

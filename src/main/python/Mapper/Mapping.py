@@ -64,7 +64,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
             # Clustered Task Graph Optimization
             if Config.Clustering_Optimization:
                 (best_clustering, best_task_graph) = \
-                    Clustering.ctg_opt_local_search(tg, ctg, Config.ClusteringIteration, logging)
+                    Clustering.ctg_opt_local_search(tg, ctg, Config.clustering.iterations, logging)
                 tg = copy.deepcopy(best_task_graph)
                 ctg = copy.deepcopy(best_clustering)
                 del best_clustering, best_task_graph
