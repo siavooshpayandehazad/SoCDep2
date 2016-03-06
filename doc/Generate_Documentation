@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+
+command_exists () {
+    type "$1" &> /dev/null ;
+}
+
+if command_exists doxygen ; then
+	echo "Doxygen is available, proceeding to ..."
+    doxygen doxygen_configfile
+	cd html/
+	open ./index.html
+fi
+
