@@ -17,8 +17,8 @@ def draw_ag(ag, file_name):
     position = {}
     color_list = []
 
-    number_of_layers = Config.Network_Z_Size
-    largest_number = Config.Network_X_Size*Config.Network_Y_Size*Config.Network_Z_Size - 1
+    number_of_layers = Config.ag.z_size
+    largest_number = Config.ag.x_size*Config.ag.y_size*Config.ag.z_size - 1
     node_size = math.log10(largest_number)*60
     # print "Node Size", node_size
 
@@ -28,7 +28,7 @@ def draw_ag(ag, file_name):
     offset_x = 0.2
     offset_y = 0.2
 
-    plt.figure(num=None, figsize=(3*Config.Network_X_Size, 3*Config.Network_Y_Size), dpi=350)
+    plt.figure(num=None, figsize=(3*Config.ag.x_size, 3*Config.ag.y_size), dpi=350)
 
     for Node in ag.nodes():
         x, y, z = return_node_location(Node)

@@ -17,7 +17,7 @@ EventDrivenFaultInjection = True
 ################################################
 
 
-class TG:
+class TaskGraph:
     def __init__(self):
         # TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile', 'GenericTraffic'
         self.type = 'RandomDependent'
@@ -34,7 +34,7 @@ class TG:
         # as example...
         self.dot_file_path = 'Something.dot'
 
-tg = TG()
+tg = TaskGraph()
 
 # For Generic Traffic:
 generic_traffic = 'random_uniform'
@@ -51,20 +51,28 @@ TG_Edge_Weight = [5, 9, 4, 7, 5, 3, 5, 1]
 ################################################
 #          AG Config
 ################################################
-# AG_Type can be : 'Generic','Manual'
-AG_Type = 'Generic'
-# Todo: virtual channel
-VirtualChannelNum = 0
-# in case of Generic AG_type
-# available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
-NetworkTopology = '3DMesh'
-Network_X_Size = 3
-Network_Y_Size = 3
-Network_Z_Size = 3
 
-# this is just for double check...
-if '2D' in NetworkTopology:
-    Network_Z_Size = 1
+
+class ArchGraph:
+    def __init__(self):
+        # AG_Type can be : 'Generic','Manual'
+        self.type = 'Generic'
+        # in case of Generic AG_type
+        # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
+        self.topology = '2DMesh'
+        self.x_size = 3
+        self.y_size = 3
+        self.z_size = 1
+        # Todo: virtual channel
+        self.virtual_channel_num = 0
+
+        self.check()
+
+    def check(self):
+        if self.topology == '2DMesh':
+            self.z_size = 1
+
+ag = ArchGraph()
 
 # Only for Manual AG_Type:
 PE_List = [0, 1, 2, 3]
@@ -75,10 +83,10 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 ################################################
 #          VL Config
 ################################################
-FindOptimumAG = True
+FindOptimumAG = False
 
 
-class VLOpt:
+class VerticalLinkPlacementOpt:
     def __init__(self):
         # Available Choices: 'LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing'
         self.vl_opt_alg = "SimulatedAnnealing"
@@ -102,7 +110,7 @@ class VLOpt:
         self.sa_log_cooling_constant = 15
 
 
-vl_opt = VLOpt()
+vl_opt = VerticalLinkPlacementOpt()
 
 
 
@@ -112,8 +120,8 @@ vl_opt = VLOpt()
 # Todo: introduce more turn models
 # Available Turn Models :
 #         2D Turn Models: XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel
-#         3D Turn Models: XY_TurnModel, NegativeFirst3D_TurnModel
-UsedTurnModel = PackageFile.NegativeFirst3D_TurnModel
+#         3D Turn Models: XYZ_TurnModel, NegativeFirst3D_TurnModel
+UsedTurnModel = PackageFile.XY_TurnModel
 
 # Available choices: 'MinimalPath', 'NonMinimalPath'
 RotingType = 'MinimalPath'
@@ -133,14 +141,14 @@ DarkSiliconPercentage = 0
 
 def setup_turns_health():
     global TurnsHealth
-    if '2D' in NetworkTopology:
+    if '2D' in ag.topology:
         TurnsHealth = PackageFile.TurnsHealth_2DNetwork
         if not SetRoutingFromFile:
             for Turn in PackageFile.FULL_TurnModel_2D:
                 if Turn not in UsedTurnModel:
                     if Turn in TurnsHealth.keys():
                         TurnsHealth[Turn] = False
-    elif '3D' in NetworkTopology:
+    elif '3D' in ag.topology:
         TurnsHealth = PackageFile.TurnsHealth_3DNetwork
         if not SetRoutingFromFile:
             for Turn in PackageFile.FULL_TurnModel_3D:
@@ -216,6 +224,8 @@ clustering = Clustering()
 ################################################
 #          Mapping Function  Config
 ################################################
+# the tool generates a mapping report file in Generated_Files directory. you can use the same file to be fed into
+# the system instead of calculating the mapping.
 read_mapping_from_file = False
 mapping_file_path = "mapping_report.txt"
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'

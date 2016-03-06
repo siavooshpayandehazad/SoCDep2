@@ -69,8 +69,8 @@ def translate_node_number_to_noxim_system(node):
     :return: Node coordination in Noxim System
     """
     x, y, z = AG_Functions.return_node_location(node)
-    z = Config.Network_Z_Size - z - 1
-    y = Config.Network_Y_Size - y - 1
+    z = Config.ag.z_size - z - 1
+    y = Config.ag.y_size - y - 1
     return AG_Functions.return_node_number(x, y, z)
 
 

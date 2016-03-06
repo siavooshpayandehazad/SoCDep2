@@ -38,23 +38,23 @@ def remove_all_vertical_links(shmu, ag):
 def find_feasible_ag_vertical_link_placement(shmu):
     new_vertical_link_lists = []
     for i in range(0, Config.vl_opt.vl_num):
-        source_x = random.randint(0, Config.Network_X_Size-1)
-        source_y = random.randint(0, Config.Network_Y_Size-1)
-        source_z = random.randint(0, Config.Network_Z_Size-1)
+        source_x = random.randint(0, Config.ag.x_size-1)
+        source_y = random.randint(0, Config.ag.y_size-1)
+        source_z = random.randint(0, Config.ag.z_size-1)
         source_node = return_node_number(source_x, source_y, source_z)
         possible_z = []
-        if source_z+1 <= Config.Network_Z_Size-1:
+        if source_z+1 <= Config.ag.z_size-1:
             possible_z.append(source_z+1)
         if 0 <= source_z-1:
             possible_z.append(source_z-1)
         destination_node = return_node_number(source_x, source_y, random.choice(possible_z))
         while shmu.SHM.edge[source_node][destination_node]['LinkHealth']:
-            source_x = random.randint(0, Config.Network_X_Size-1)
-            source_y = random.randint(0, Config.Network_Y_Size-1)
-            source_z = random.randint(0, Config.Network_Z_Size-1)
+            source_x = random.randint(0, Config.ag.x_size-1)
+            source_y = random.randint(0, Config.ag.y_size-1)
+            source_z = random.randint(0, Config.ag.z_size-1)
             source_node = return_node_number(source_x, source_y, source_z)
             possible_z = []
-            if source_z + 1 <= Config.Network_Z_Size-1:
+            if source_z + 1 <= Config.ag.z_size-1:
                 possible_z.append(source_z+1)
             if 0 <= source_z-1:
                 possible_z.append(source_z-1)
@@ -87,12 +87,12 @@ def move_to_new_vertical_link_configuration(shmu, vertical_link_lists):
     new_vertical_link_lists.remove(chosen_link_to_fix)
     shmu.break_link(chosen_link_to_fix, False)
 
-    source_x = random.randint(0, Config.Network_X_Size-1)
-    source_y = random.randint(0, Config.Network_Y_Size-1)
-    source_z = random.randint(0, Config.Network_Z_Size-1)
+    source_x = random.randint(0, Config.ag.x_size-1)
+    source_y = random.randint(0, Config.ag.y_size-1)
+    source_z = random.randint(0, Config.ag.z_size-1)
     source_node = return_node_number(source_x, source_y, source_z)
     possible_z = []
-    if source_z + 1 <= Config.Network_Z_Size-1:
+    if source_z + 1 <= Config.ag.z_size-1:
         possible_z.append(source_z + 1)
     if 0 <= source_z - 1:
         possible_z.append(source_z - 1)
@@ -100,12 +100,12 @@ def move_to_new_vertical_link_configuration(shmu, vertical_link_lists):
 
     while source_node == destination_node or \
             shmu.SHM.edge[source_node][destination_node]['LinkHealth']:
-        source_x = random.randint(0, Config.Network_X_Size-1)
-        source_y = random.randint(0, Config.Network_Y_Size-1)
-        source_z = random.randint(0, Config.Network_Z_Size-1)
+        source_x = random.randint(0, Config.ag.x_size-1)
+        source_y = random.randint(0, Config.ag.y_size-1)
+        source_z = random.randint(0, Config.ag.z_size-1)
         source_node = return_node_number(source_x, source_y, source_z)
         possible_z = []
-        if source_z+1 <= Config.Network_Z_Size-1:
+        if source_z+1 <= Config.ag.z_size-1:
             possible_z.append(source_z+1)
         if 0 <= source_z-1:
             possible_z.append(source_z-1)

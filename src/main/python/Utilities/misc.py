@@ -124,12 +124,12 @@ def update_config(config_file_path):
     # ------------------------------------------------
     #               AG_Config
     # ------------------------------------------------
-    Config.AG_Type = config.get("AG_Config", "AG_Type")
+    Config.ag.type = config.get("AG_Config", "AG_Type")
     # VirtualChannelNum
-    Config.NetworkTopology = config.get("AG_Config", "NetworkTopology")
-    Config.Network_X_Size = config.getint("AG_Config", "Network_X_Size")
-    Config.Network_Y_Size = config.getint("AG_Config", "Network_Y_Size")
-    Config.Network_Z_Size = config.getint("AG_Config", "Network_Z_Size")
+    Config.ag.topology = config.get("AG_Config", "NetworkTopology")
+    Config.ag.x_size = config.getint("AG_Config", "Network_X_Size")
+    Config.ag.y_size = config.getint("AG_Config", "Network_Y_Size")
+    Config.ag.z_size = config.getint("AG_Config", "Network_Z_Size")
     # Config.PE_List = map(int, config.get("AG_Config", "PE_List").split(","))
     # AG_Edge_List
     # AG_Edge_Port_List
@@ -308,11 +308,11 @@ def generate_configfile():
     # ------------------------------------------------
     cnfgpars.add_section('AG_Config')
 
-    cnfgpars.set('AG_Config', 'AG_Type', Config.AG_Type)
-    cnfgpars.set('AG_Config', 'NetworkTopology', Config.NetworkTopology)
-    cnfgpars.set('AG_Config', 'Network_X_Size', Config.Network_X_Size)
-    cnfgpars.set('AG_Config', 'Network_Y_Size', Config.Network_Y_Size)
-    cnfgpars.set('AG_Config', 'Network_Z_Size', Config.Network_Z_Size)
+    cnfgpars.set('AG_Config', 'AG_Type', Config.ag.type)
+    cnfgpars.set('AG_Config', 'NetworkTopology', Config.ag.topology)
+    cnfgpars.set('AG_Config', 'Network_X_Size', Config.ag.x_size)
+    cnfgpars.set('AG_Config', 'Network_Y_Size', Config.ag.y_size)
+    cnfgpars.set('AG_Config', 'Network_Z_Size', Config.ag.z_size)
     # VirtualChannelNum
     # Config.PE_List = map(int, config.get("AG_Config", "PE_List").split(","))
     # AG_Edge_List

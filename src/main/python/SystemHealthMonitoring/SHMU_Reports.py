@@ -67,16 +67,16 @@ def draw_temp_distribution(shm):
     """
     print ("===========================================")
     print ("GENERATING TEMPERATURE DISTRIBUTIONS VISUALIZATION...")
-    fig_util = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
+    fig_util = plt.figure(figsize=(4*Config.ag.x_size, 4*Config.ag.y_size))
     max_temp = 0
     for node in shm.nodes():
         max_temp = max(shm.node[node]['NodeTemp'], max_temp)
 
     for node in shm.nodes():
         location = AG_Functions.return_node_location(node)
-        x_size = float(Config.Network_X_Size)
-        y_size = float(Config.Network_Y_Size)
-        z_size = float(Config.Network_Y_Size)
+        x_size = float(Config.ag.x_size)
+        y_size = float(Config.ag.y_size)
+        z_size = float(Config.ag.y_size)
 
         x_offset = location[2]/(z_size*x_size)
         y_offset = location[2]/(z_size*y_size)
@@ -120,9 +120,9 @@ def draw_shm(shm):
     print ("===========================================")
     print ("GENERATING SYSTEM HEALTH MAP DRAWING...")
 
-    x_size = float(Config.Network_X_Size)
-    y_size = float(Config.Network_Y_Size)
-    z_size = float(Config.Network_Z_Size)
+    x_size = float(Config.ag.x_size)
+    y_size = float(Config.ag.y_size)
+    z_size = float(Config.ag.z_size)
 
     fig = plt.figure(figsize=(10*x_size, 10*y_size))
     if z_size == 1:

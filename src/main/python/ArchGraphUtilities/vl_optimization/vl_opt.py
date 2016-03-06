@@ -10,7 +10,7 @@ def optimize_ag_vertical_links(ag, shmu, logging):
     ag_cost_file = open('Generated_Files/Internal/vl_opt_cost.txt', 'w')
     ag_cost_file.close()
 
-    if Config.Network_Z_Size < 2:
+    if Config.ag.z_size < 2:
         raise ValueError("Can not optimize VL placement with 1 layer... (NOC is still 2D)")
     if Config.vl_opt.vl_opt_alg == "LocalSearch":
         opt_ag_vertical_link_local_search(ag, shmu, "vl_opt_cost", logging)

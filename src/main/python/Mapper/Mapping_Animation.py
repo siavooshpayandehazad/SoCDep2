@@ -20,14 +20,14 @@ def generate_frames(ag, shm):
     print ("===========================================")
     print ("GENERATING MAPPING ANIMATION FRAMES...")
     mapping_process_file = open("Generated_Files/Internal/MappingProcess.txt", 'r')
-    x_size = float(Config.Network_X_Size)
-    y_size = float(Config.Network_Y_Size)
+    x_size = float(Config.ag.x_size)
+    y_size = float(Config.ag.y_size)
     line = mapping_process_file.readline()
 
     bound = int(log10(2 * Config.MaxNumberOfIterations)) + 1   # UpperBoundOnFileNumberDigits
     counter = 0
     while line != '':
-        fig = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size), dpi=Config.FrameResolution)
+        fig = plt.figure(figsize=(4*Config.ag.x_size, 4*Config.ag.y_size), dpi=Config.FrameResolution)
         # initialize an empty list of cirlces
         mapped_pe_list = line.split(" ")
         for node in ag.nodes():

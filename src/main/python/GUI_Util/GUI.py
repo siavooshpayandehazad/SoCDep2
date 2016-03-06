@@ -1202,10 +1202,10 @@ class ConfigApp(Tkinter.Tk):
             if self.tg_type.get() == 'FromDOTFile':
                 Config.tg.dot_file_path = self.tg_browse.get()
             # topology config
-            Config.NetworkTopology = self.topology.get()
-            Config.Network_X_Size = int(self.network_size_x.get())
-            Config.Network_Y_Size = int(self.network_size_y.get())
-            Config.Network_Z_Size = int(self.network_size_z.get())
+            Config.ag.topology = self.topology.get()
+            Config.ag.x_size = int(self.network_size_x.get())
+            Config.ag.y_size = int(self.network_size_y.get())
+            Config.ag.z_size = int(self.network_size_z.get())
 
             # clustering config
             Config.clustering.iterations = int(self.clustering_iterations.get())

@@ -34,8 +34,8 @@ def draw_mapping_distribution(ag, shmu):
     """
     print ("===========================================")
     print ("GENERATING MAPPING DISTRIBUTIONS VISUALIZATION...")
-    fig_num = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
-    fig_util = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
+    fig_num = plt.figure(figsize=(4*Config.ag.x_size, 4*Config.ag.y_size))
+    fig_util = plt.figure(figsize=(4*Config.ag.x_size, 4*Config.ag.y_size))
     max_number_of_tasks = 0
     max_utilization = 0
     for node in ag.nodes():
@@ -44,9 +44,9 @@ def draw_mapping_distribution(ag, shmu):
 
     for node in ag.nodes():
         location = AG_Functions.return_node_location(node)
-        x_size = float(Config.Network_X_Size)
-        y_size = float(Config.Network_Y_Size)
-        z_size = float(Config.Network_Y_Size)
+        x_size = float(Config.ag.x_size)
+        y_size = float(Config.ag.y_size)
+        z_size = float(Config.ag.y_size)
         num = 255*len(ag.node[node]['PE'].mapped_tasks)/float(max_number_of_tasks)
         util = 255*ag.node[node]['PE'].utilization/float(max_utilization)
         if shmu.SHM.node[node]['NodeHealth']:
@@ -97,12 +97,12 @@ def draw_mapping(tg, ag, shm, mapping_file_name):
     """
     print ("===========================================")
     print ("GENERATING MAPPING VISUALIZATION...")
-    fig = plt.figure(figsize=(4*Config.Network_X_Size, 4*Config.Network_Y_Size))
+    fig = plt.figure(figsize=(4*Config.ag.x_size, 4*Config.ag.y_size))
     color_list = []
     position = {}
-    x_size = float(Config.Network_X_Size)
-    y_size = float(Config.Network_Y_Size)
-    z_size = float(Config.Network_Z_Size)
+    x_size = float(Config.ag.x_size)
+    y_size = float(Config.ag.y_size)
+    z_size = float(Config.ag.z_size)
     node_size = 0.3
     step_size = node_size * 1.08
     distance = step_size * z_size * 1.2
@@ -163,7 +163,7 @@ def draw_mapping(tg, ag, shm, mapping_file_name):
             position[task] = (distance*location[0]+location[2]*step_size+offset_x,
                               distance*location[1]+location[2]*step_size+offset_y)
             task_count += 1
-    task_size = 800/Config.Network_Z_Size
+    task_size = 800/Config.ag.z_size
     networkx.draw(tg, position, with_labels=True, node_size=task_size, node_color=color_list, width=0, alpha=0.5)
     fig.text(0.35, 0.1, 'Mapping visualization for network nodes', fontsize=15)
 

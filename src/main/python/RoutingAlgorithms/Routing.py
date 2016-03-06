@@ -46,9 +46,9 @@ def generate_noc_route_graph(ag, shm, turn_model, report, detailed_report):
 
     # the order is crucial... do not change
     # to find out why its important, check: connect direct paths
-    if Config.Network_Z_Size == 1:
+    if Config.ag.z_size == 1:
         port_list = ['N', 'W', 'L', 'E', 'S']
-    elif Config.Network_Z_Size > 1:
+    elif Config.ag.z_size > 1:
         port_list = ['U', 'N', 'W', 'L', 'E', 'S', 'D']
 
     noc_rg = networkx.DiGraph()

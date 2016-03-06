@@ -13,9 +13,9 @@ def draw_rg(rg):
     print ("GENERATING ROUTING GRAPH VISUALIZATION...")
     pos = {}
     color_list = []
-    plt.figure(figsize=(10*Config.Network_X_Size, 10*Config.Network_Y_Size))
-    distance = 100*Config.Network_Z_Size
-    step = (distance*0.8)/Config.Network_Z_Size
+    plt.figure(figsize=(10*Config.ag.x_size, 10*Config.ag.y_size))
+    distance = 100*Config.ag.z_size
+    step = (distance*0.8)/Config.ag.z_size
     for node in rg.nodes():
         chosen_node = int(re.search(r'\d+', node).group())
         location = AG_Functions.return_node_location(chosen_node)

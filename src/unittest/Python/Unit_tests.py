@@ -17,34 +17,34 @@ class UnitTesting(unittest.TestCase):
 
     def test_return_node_number(self):
         self.assertEqual(return_node_number(0, 0, 0), 0)
-        for k in range(0, Config.Network_Z_Size):
-            for j in range(0, Config.Network_Y_Size):
-                for i in range(0, Config.Network_X_Size):
+        for k in range(0, Config.ag.z_size):
+            for j in range(0, Config.ag.y_size):
+                for i in range(0, Config.ag.x_size):
                     self.assertEqual(return_node_number(i, j, k),
-                                     i + j*Config.Network_X_Size+k*Config.Network_Y_Size*Config.Network_X_Size)
-        self.assertEqual(return_node_number(Config.Network_X_Size-1, Config.Network_Y_Size-1, Config.Network_Z_Size-1),
-                         Config.Network_X_Size * Config.Network_Y_Size * Config.Network_Z_Size - 1)
+                                     i + j*Config.ag.x_size+k*Config.ag.y_size*Config.ag.x_size)
+        self.assertEqual(return_node_number(Config.ag.x_size-1, Config.ag.y_size-1, Config.ag.z_size-1),
+                         Config.ag.x_size * Config.ag.y_size * Config.ag.z_size - 1)
 
     def test_return_node_location(self):
-        for k in range(0, Config.Network_Z_Size):
-            for j in range(0, Config.Network_Y_Size):
-                for i in range(0, Config.Network_X_Size):
+        for k in range(0, Config.ag.z_size):
+            for j in range(0, Config.ag.y_size):
+                for i in range(0, Config.ag.x_size):
                     # we have the assumption that return_node_number is fully tested...
                     self.assertEqual(return_node_location(return_node_number(i, j, k)), (i, j, k))
 
     def test_manhattan_distance(self):
         self.assertEqual(manhattan_distance(0, 0), 0)
-        last_node_number = return_node_number(Config.Network_X_Size-1, Config.Network_Y_Size-1, Config.Network_Z_Size-1)
+        last_node_number = return_node_number(Config.ag.x_size-1, Config.ag.y_size-1, Config.ag.z_size-1)
         self.assertEqual(manhattan_distance(0, last_node_number),
-                         Config.Network_X_Size+Config.Network_Y_Size+Config.Network_Z_Size-3)
+                         Config.ag.x_size+Config.ag.y_size+Config.ag.z_size-3)
 
     def test_is_node_inside_rectangle(self):
         # test that every node in network is inside a cube with size of network
-        rectangle = (0, Config.Network_X_Size*Config.Network_Y_Size*Config.Network_Z_Size-1)
-        for node in range(0, Config.Network_X_Size*Config.Network_Y_Size*Config.Network_Z_Size-1):
+        rectangle = (0, Config.ag.x_size*Config.ag.y_size*Config.ag.z_size-1)
+        for node in range(0, Config.ag.x_size*Config.ag.y_size*Config.ag.z_size-1):
             self.assertEqual(is_node_inside_rectangle(rectangle, node), True)
 
-        node = Config.Network_X_Size * Config.Network_Y_Size * Config.Network_Z_Size
+        node = Config.ag.x_size * Config.ag.y_size * Config.ag.z_size
         self.assertEqual(is_node_inside_rectangle(rectangle, node), False)
 
     # todo: test merge_rectangle_with_node

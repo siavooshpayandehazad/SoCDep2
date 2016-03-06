@@ -190,10 +190,10 @@ def generate_ag(logging):
     :param logging: logging file
     :return: returns the generated Architecture Graph
     """
-    if Config.AG_Type == 'Generic':
-        return generate_generic_topology_ag(Config.NetworkTopology, Config.Network_X_Size,
-                                            Config.Network_Y_Size, Config.Network_Z_Size, logging)
-    elif Config.AG_Type == 'Manual':
+    if Config.ag.type == 'Generic':
+        return generate_generic_topology_ag(Config.ag.topology, Config.ag.x_size,
+                                            Config.ag.y_size, Config.ag.z_size, logging)
+    elif Config.ag.type == 'Manual':
         return generate_manual_ag(Config.PE_List, Config.AG_Edge_List, Config.AG_Edge_Port_List)
     else:
         raise ValueError('AG TYPE DOESNT EXIST...!!!')
@@ -225,14 +225,14 @@ def return_node_location(node_number):
     calculates the Cartesian location of the node
     Examples:
     return_node_location(0) = (0,0,0)
-    return_node_location(Config.Network_X_Size * Config.Network_Y_Size * Config.Network_Z_Size - 1) =
-            (Config.Network_X_Size -1, Config.Network_Y_Size - 1, Config.Network_Z_Size -1)
+    return_node_location(Config.ag.x_size * Config.ag.y_size * Config.ag.z_size - 1) =
+            (Config.ag.x_size -1, Config.ag.y_size - 1, Config.ag.z_size -1)
     :param node_number: The node id used in AG
     :return: Cartesian location of the node in the form of (x,y,z)
     """
-    node_x = node_number % Config.Network_X_Size
-    node_y = (node_number / Config.Network_X_Size) % Config.Network_Y_Size
-    node_z = node_number / (Config.Network_Y_Size * Config.Network_X_Size)
+    node_x = node_number % Config.ag.x_size
+    node_y = (node_number / Config.ag.x_size) % Config.ag.y_size
+    node_z = node_number / (Config.ag.y_size * Config.ag.x_size)
     return node_x, node_y, node_z
 
 
@@ -244,7 +244,7 @@ def return_node_number(node_x, node_y, node_z):
     :param node_z: Location of the node on Z axis
     :return: ID of the node as an integer
     """
-    return node_z * Config.Network_X_Size * Config.Network_Y_Size + node_y * Config.Network_X_Size + node_x
+    return node_z * Config.ag.x_size * Config.ag.y_size + node_y * Config.ag.x_size + node_x
 
 
 def node_neighbors(ag, system_health_map):

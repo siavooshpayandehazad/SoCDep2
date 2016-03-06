@@ -11,7 +11,7 @@ from ArchGraphUtilities import AG_Functions
 
 
 def calculate_reachability(ag, noc_rg):
-    if '3D' in Config.NetworkTopology:
+    if '3D' in Config.ag.topology:
         port_list = ['U', 'N', 'E', 'W', 'S', 'D']
     else:
         port_list = ['N', 'E', 'W', 'S']
@@ -77,8 +77,8 @@ def optimize_reachability_rectangles(ag, number_of_rectangles):
             rectangle_list = {}
             for i in range(0, number_of_rectangles):
                 rectangle_list[i] = (None, None)
-            if len(ag.node[node]['Router'].unreachable[port]) == Config.Network_X_Size*Config.Network_Y_Size:
-                rectangle_list[0] = (0, Config.Network_X_Size*Config.Network_Y_Size-1)
+            if len(ag.node[node]['Router'].unreachable[port]) == Config.ag.x_size*Config.ag.y_size:
+                rectangle_list[0] = (0, Config.ag.x_size*Config.ag.y_size-1)
             else:
                 rectangle_list = copy.deepcopy(merge_node_with_rectangles(rectangle_list,
                                                                           ag.node[node]['Router'].unreachable[port]))
