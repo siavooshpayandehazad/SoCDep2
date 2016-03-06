@@ -75,6 +75,7 @@ class ConfigApp(Tkinter.Tk):
     flow_control_list = ['Wormhole', 'StoreAndForward']
 
     def __init__(self, parent):
+
         Tkinter.Tk.__init__(self, parent)
         self.parent = parent
 

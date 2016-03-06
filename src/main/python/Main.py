@@ -10,10 +10,11 @@ import logging
 from ConfigAndPackages import Config, PackageFile, Check_Config
 from Utilities import Logger, Benchmark_Alg_Downloader
 import SystemInitialization
-from GUI_Util import GUI
+from GUI_Util import GUI, Trial_GUI
 from pympler import tracker
 from Simulator import Simulator
 # from Simulator import FaultInjector
+import Tkinter as tk
 
 tr = None
 if Config.MemoryProfiler:
@@ -31,11 +32,21 @@ if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("")
     sys.exit()
 elif '-GUI' in sys.argv[1:]:
+
     app = GUI.ConfigApp(None)
     app.title('Schedule And Depend')
     app.mainloop()
     if not app.apply_button:
         sys.exit()
+
+    """
+
+    mainwindow = Trial_GUI.MainView(None)
+    mainwindow.mainloop()
+    if not mainwindow.apply_button:
+        sys.exit()
+    """
+
 elif '-UTEST' in sys.argv[1:]:
     os.system('python ../../unittest/Python/Unit_tests.py')
     sys.exit()
