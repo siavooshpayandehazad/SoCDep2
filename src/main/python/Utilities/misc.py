@@ -77,7 +77,7 @@ def check_for_dependencies():
             __import__(module)
         except ImportError:
             raise ImportError("MODULE "+str(module)+" DOES NOT EXIST...")
-    print "ALL REQUIRED MODULES AVAILABLE..."
+    print "\033[33m* INFO::\033[0m ALL REQUIRED MODULES AVAILABLE..."
     return True
 
 

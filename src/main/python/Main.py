@@ -7,7 +7,7 @@ import sys
 import os
 import time
 import logging
-from ConfigAndPackages import Config, PackageFile
+from ConfigAndPackages import Config, PackageFile, Check_Config
 from Utilities import Logger, Benchmark_Alg_Downloader
 import SystemInitialization
 from GUI_Util import GUI
@@ -53,6 +53,7 @@ elif '-BENCHMARK' in sys.argv[1:]:
     else:
         sys.exit()
 
+Check_Config.check_config_file()
 program_start_time = time.time()
 ##############################
 # Just for getting a copy of the current console

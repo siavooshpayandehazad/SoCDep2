@@ -29,6 +29,9 @@ class TaskGraph:
         self.edge_weight_range = 5
         self.release_range = 5  # task release time range
         self.random_seed = 1000
+        # For Generic Traffic:
+        self.generic_traffic = 'random_uniform'
+        self.injection_rate = 1
         # TG DOT FILE PATH
         # you can use this one: http://express.ece.ucsb.edu/benchmark/jpeg/h2v2_smooth_downsample.html
         # as example...
@@ -36,9 +39,7 @@ class TaskGraph:
 
 tg = TaskGraph()
 
-# For Generic Traffic:
-generic_traffic = 'random_uniform'
-injection_rate = 1
+
 # The following is only for Manual TG_Type:
 # Note::    if you have High-critical tasks in your TG, make sure that you have checked partitioning options for the
 #           network.
@@ -65,12 +66,6 @@ class ArchGraph:
         self.z_size = 1
         # Todo: virtual channel
         self.virtual_channel_num = 0
-
-        self.check()
-
-    def check(self):
-        if self.topology == '2DMesh':
-            self.z_size = 1
 
 ag = ArchGraph()
 
@@ -112,8 +107,6 @@ class VerticalLinkPlacementOpt:
 
 vl_opt = VerticalLinkPlacementOpt()
 
-
-
 ################################################
 #          Routing Config
 ################################################
@@ -140,25 +133,25 @@ DarkSiliconPercentage = 0
 
 
 def setup_turns_health():
-    global TurnsHealth
+    turns_health = {}
     if '2D' in ag.topology:
-        TurnsHealth = PackageFile.TurnsHealth_2DNetwork
+        turns_health = PackageFile.TurnsHealth_2DNetwork
         if not SetRoutingFromFile:
             for Turn in PackageFile.FULL_TurnModel_2D:
                 if Turn not in UsedTurnModel:
-                    if Turn in TurnsHealth.keys():
-                        TurnsHealth[Turn] = False
+                    if Turn in turns_health.keys():
+                        turns_health[Turn] = False
     elif '3D' in ag.topology:
-        TurnsHealth = PackageFile.TurnsHealth_3DNetwork
+        turns_health = PackageFile.TurnsHealth_3DNetwork
         if not SetRoutingFromFile:
             for Turn in PackageFile.FULL_TurnModel_3D:
                 if Turn not in UsedTurnModel:
-                    if Turn in TurnsHealth.keys():
-                        TurnsHealth[Turn] = False
-    return None
+                    if Turn in turns_health.keys():
+                        turns_health[Turn] = False
+    return turns_health
 
-TurnsHealth = {}
-setup_turns_health()
+TurnsHealth = setup_turns_health()
+
 # ==========================
 # Number of Unreachable-Rectangles
 NumberOfRects = 5

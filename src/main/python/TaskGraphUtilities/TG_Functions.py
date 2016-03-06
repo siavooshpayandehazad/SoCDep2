@@ -158,7 +158,7 @@ def generate_generic_tg():
     tg = networkx.DiGraph()
     # Todo: we have to make some sort of way to make a Task Graph that if i run it repeatedly, i can get the traffic
     print("PREPARING UNIFORM TASK GRAPH (TG)...")
-    if Config.generic_traffic == "random_uniform":
+    if Config.tg.generic_traffic == "random_uniform":
         # for each 2 nodes we make two pair of tasks:
         #           node 1 ----> node 2
         #           node 2 ----> node 1
