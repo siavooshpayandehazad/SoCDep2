@@ -4,7 +4,8 @@ import os.path
 import urllib
 from ConfigAndPackages import Config
 
-def Download_Benchmark_Algorithms(Benchmark):
+
+def download_benchmark_algorithms(Benchmark):
     testfile = urllib.FancyURLopener()
 
     if Benchmark == 'idct':     # Inverse Discrete Cosine Transform
@@ -30,11 +31,11 @@ def Download_Benchmark_Algorithms(Benchmark):
             print "DOWNLOADING BENCHMARK..."
             testfile.retrieve(url, DestinationFile)
             print "FINISHED DOWNLOADING..."
-            Config.TG_DOT_Path = DestinationFile
-            Config.TG_Type = 'FromDOTFile'
+            Config.tg.dot_file_path = DestinationFile
+            Config.tg.type = 'FromDOTFile'
             return True
     else:
         print "FILE ALREADY EXISTS..."
-        Config.TG_DOT_Path = DestinationFile
-        Config.TG_Type = 'FromDOTFile'
+        Config.tg.dot_file_path = DestinationFile
+        Config.tg.type = 'FromDOTFile'
         return True

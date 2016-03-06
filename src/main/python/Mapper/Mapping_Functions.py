@@ -476,7 +476,7 @@ def unmapped_task_with_smallest_wcet(tg, logging):
     :return: list of shortest un-mapped Tasks
     """
     shortest_tasks = []
-    smallest_wcet = Config.WCET_Range
+    smallest_wcet = Config.tg.wcet_range
     for node in tg.nodes():
         if tg.node[node]['Node'] is None:
             if tg.node[node]['WCET'] < smallest_wcet:

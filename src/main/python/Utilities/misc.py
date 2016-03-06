@@ -104,15 +104,15 @@ def update_config(config_file_path):
     # ------------------------------------------------
     #               TG_Config
     # ------------------------------------------------
-    Config.TG_Type = config.get("TG_Config", "TG_Type")
+    Config.tg.type = config.get("TG_Config", "TG_Type")
 
-    Config.NumberOfTasks = config.getint("TG_Config", "NumberOfTasks")
-    Config.NumberOfCriticalTasks = config.getint("TG_Config", "NumberOfCriticalTasks")
-    Config.NumberOfEdges = config.getint("TG_Config", "NumberOfEdges")
-    Config.WCET_Range = config.getint("TG_Config", "WCET_Range")
-    Config.EdgeWeightRange = config.getint("TG_Config", "EdgeWeightRange")
-    Config.Release_Range = config.getint("TG_Config", "Release_Range")      # task release time range
-    Config.tg_random_seed = config.getint("TG_Config", "tg_random_seed")
+    Config.tg.num_of_tasks = config.getint("TG_Config", "NumberOfTasks")
+    Config.tg.num_of_critical_tasks = config.getint("TG_Config", "NumberOfCriticalTasks")
+    Config.tg.num_of_edges = config.getint("TG_Config", "NumberOfEdges")
+    Config.tg.wcet_range = config.getint("TG_Config", "WCET_Range")
+    Config.tg.edge_weight_range = config.getint("TG_Config", "EdgeWeightRange")
+    Config.tg.release_range = config.getint("TG_Config", "Release_Range")      # task release time range
+    Config.tg.random_seed = config.getint("TG_Config", "tg_random_seed")
 
     # Config.Task_List = map(int, config.get("TG_Config", "Task_List").split(","))
     # Config.Task_WCET_List = map(int, config.get("TG_Config", "Task_WCET_List").split(","))
@@ -294,14 +294,14 @@ def generate_configfile():
     #               TG_Config
     # ------------------------------------------------
     cnfgpars.add_section('TG_Config')
-    cnfgpars.set('TG_Config', 'TG_Type', Config.TG_Type)
-    cnfgpars.set('TG_Config', 'NumberOfTasks', Config.NumberOfTasks)
-    cnfgpars.set('TG_Config', 'NumberOfCriticalTasks', Config.NumberOfCriticalTasks)
-    cnfgpars.set('TG_Config', 'NumberOfEdges', Config.NumberOfEdges)
-    cnfgpars.set('TG_Config', 'WCET_Range', Config.WCET_Range)
-    cnfgpars.set('TG_Config', 'EdgeWeightRange', Config.EdgeWeightRange)
-    cnfgpars.set('TG_Config', 'Release_Range', Config.Release_Range)
-    cnfgpars.set('TG_Config', 'tg_random_seed', Config.tg_random_seed)
+    cnfgpars.set('TG_Config', 'TG_Type', Config.tg.type)
+    cnfgpars.set('TG_Config', 'NumberOfTasks', Config.tg.num_of_tasks)
+    cnfgpars.set('TG_Config', 'NumberOfCriticalTasks', Config.tg.num_of_critical_tasks)
+    cnfgpars.set('TG_Config', 'NumberOfEdges', Config.tg.num_of_edges)
+    cnfgpars.set('TG_Config', 'WCET_Range', Config.tg.wcet_range)
+    cnfgpars.set('TG_Config', 'EdgeWeightRange', Config.tg.edge_weight_range)
+    cnfgpars.set('TG_Config', 'Release_Range', Config.tg.release_range)
+    cnfgpars.set('TG_Config', 'tg_random_seed', Config.tg.random_seed)
 
     # ------------------------------------------------
     #               AG_Config

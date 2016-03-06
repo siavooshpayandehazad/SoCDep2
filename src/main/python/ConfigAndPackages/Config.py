@@ -15,19 +15,30 @@ EventDrivenFaultInjection = True
 ################################################
 #          TG Config
 ################################################
-# TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile', 'GenericTraffic'
-TG_Type = 'RandomDependent'
+
+
+class TG:
+    def __init__(self):
+        # TG_Type can be: 'RandomDependent','RandomIndependent','Manual', 'FromDOTFile', 'GenericTraffic'
+        self.type = 'RandomDependent'
+        # For Random TG_Type:
+        self.num_of_tasks = 25
+        self.num_of_critical_tasks = 0
+        self.num_of_edges = 35
+        self.wcet_range = 25
+        self.edge_weight_range = 5
+        self.release_range = 5  # task release time range
+        self.random_seed = 1000
+        # TG DOT FILE PATH
+        # you can use this one: http://express.ece.ucsb.edu/benchmark/jpeg/h2v2_smooth_downsample.html
+        # as example...
+        self.dot_file_path = 'Something.dot'
+
+tg = TG()
+
 # For Generic Traffic:
 generic_traffic = 'random_uniform'
 injection_rate = 1
-# For Random TG_Type:
-NumberOfTasks = 25
-NumberOfCriticalTasks = 0
-NumberOfEdges = 35
-WCET_Range = 25
-EdgeWeightRange = 5
-Release_Range = 5      # task release time range
-tg_random_seed = 1000
 # The following is only for Manual TG_Type:
 # Note::    if you have High-critical tasks in your TG, make sure that you have checked partitioning options for the
 #           network.
@@ -37,10 +48,6 @@ Task_Criticality_List = ['L', 'L', 'L', 'L', 'L', 'L', 'L', 'L']
 TG_Edge_List = [(1, 2), (1, 3), (2, 5), (0, 5), (4, 7), (4, 3), (1, 6), (0, 6)]
 TG_Edge_Weight = [5, 9, 4, 7, 5, 3, 5, 1]
 
-# TG DOT FILE PATH
-# you can use this one: http://express.ece.ucsb.edu/benchmark/jpeg/h2v2_smooth_downsample.html
-# as example...
-TG_DOT_Path = 'Something.dot'
 ################################################
 #          AG Config
 ################################################
@@ -76,7 +83,7 @@ class VLOpt:
         # Available Choices: 'LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing'
         self.vl_opt_alg = "SimulatedAnnealing"
         # Number of Vertical Links
-        self.vl_num = 5
+        self.vl_num = 8
         self.ils_iteration = 10
         self.ls_iteration = 10
         self.random_seed = 2000
@@ -84,9 +91,9 @@ class VLOpt:
         # for simulated annealing optimization
         #################
         # Available Annealing Schedule: 'Linear', 'Exponential', 'Logarithmic'
-        self.sa_annealing_schedule = 'Logarithmic'
+        self.sa_annealing_schedule = 'Exponential'
         # Termination Criteria Could be either 'StopTemp' or 'IterationNum'
-        self.termination_criteria = 'IterationNum'
+        self.termination_criteria = 'StopTemp'
         self.sa_initial_temp = 20
         self.sa_stop_temp = 1
         self.sa_iteration = 1000

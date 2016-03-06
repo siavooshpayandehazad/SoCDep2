@@ -48,7 +48,7 @@ elif '-CONF' in sys.argv[1:]:
 elif '-BENCHMARK' in sys.argv[1:]:
     benchmark = sys.argv[sys.argv.index('-BENCHMARK') + 1]
     print benchmark
-    if Benchmark_Alg_Downloader.Download_Benchmark_Algorithms(str(benchmark)):
+    if Benchmark_Alg_Downloader.download_benchmark_algorithms(str(benchmark)):
         pass
     else:
         sys.exit()

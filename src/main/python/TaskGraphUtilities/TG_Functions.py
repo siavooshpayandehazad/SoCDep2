@@ -67,7 +67,7 @@ def generate_random_tg(number_of_tasks, number_of_critical_tasks, number_of_edge
                        wcet_range, edge_weight_range):
     tg = networkx.DiGraph()
     print("PREPARING RANDOM TASK GRAPH (TG)...")
-    random.seed(Config.tg_random_seed)
+    random.seed(Config.tg.random_seed)
     task_list = []
     task_criticality_list = []
     task_wcet_list = []
@@ -170,7 +170,7 @@ def generate_generic_tg():
 def generate_random_independent_tg(number_of_tasks, wcet_range, release_range):
     tg = networkx.DiGraph()
     print("PREPARING RANDOM TASK GRAPH (TG) WITH INDEPENDENT TASKS...")
-    random.seed(Config.tg_random_seed)
+    random.seed(Config.tg.random_seed)
     task_list = []
     task_criticality_list = []
     task_wcet_list = []
@@ -179,7 +179,7 @@ def generate_random_independent_tg(number_of_tasks, wcet_range, release_range):
         task_list.append(i)
         task_criticality_list.append('L')
         counter = 0
-        while counter < Config.NumberOfCriticalTasks:
+        while counter < Config.tg.num_of_critical_tasks:
             chosen_task = random.choice(task_list)
             if task_criticality_list[chosen_task] == 'L':
                 task_criticality_list[chosen_task] = 'H'
@@ -229,17 +229,17 @@ def assign_distance(tg):
 
 ########################################################
 def generate_tg():
-    if Config.TG_Type == 'RandomDependent':
-        return generate_random_tg(Config.NumberOfTasks, Config.NumberOfCriticalTasks, Config.NumberOfEdges,
-                                  Config.WCET_Range, Config.EdgeWeightRange)
-    elif Config.TG_Type == 'RandomIndependent':
-        return generate_random_independent_tg(Config.NumberOfTasks, Config.WCET_Range, Config.Release_Range)
-    elif Config.TG_Type == 'Manual':
+    if Config.tg.type == 'RandomDependent':
+        return generate_random_tg(Config.tg.num_of_tasks, Config.tg.num_of_critical_tasks, Config.tg.num_of_edges,
+                                  Config.tg.wcet_range, Config.tg.edge_weight_range)
+    elif Config.tg.type == 'RandomIndependent':
+        return generate_random_independent_tg(Config.tg.num_of_tasks, Config.tg.wcet_range, Config.tg.release_range)
+    elif Config.tg.type == 'Manual':
         return generate_manual_tg(Config.Task_List, Config.TG_Edge_List,
                                   Config.Task_Criticality_List, Config.Task_WCET_List, Config.TG_Edge_Weight)
-    elif Config.TG_Type == 'FromDOTFile':
-        return TG_File_Parser.generate_tg_from_dot(Config.TG_DOT_Path)
-    elif Config.TG_Type == 'GenericTraffic':
+    elif Config.tg.type == 'FromDOTFile':
+        return TG_File_Parser.generate_tg_from_dot(Config.tg.dot_file_path)
+    elif Config.tg.type == 'GenericTraffic':
         return generate_generic_tg()
     else:
         raise ValueError('TG TYPE DOESNT EXIST...!!!')

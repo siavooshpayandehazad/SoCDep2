@@ -1192,15 +1192,15 @@ class ConfigApp(Tkinter.Tk):
         # apply changes...
         if self._check_for_errors():
             # tg Config
-            Config.TG_Type = self.tg_type.get()
-            Config.NumberOfTasks = int(self.num_of_tasks.get())
-            Config.NumberOfCriticalTasks = int(self.num_of_crit_tasks.get())
-            Config.NumberOfEdges = int(self.num_of_edge.get())
-            Config.WCET_Range = int(self.wcet_range.get())
-            Config.EdgeWeightRange = int(self.edge_weight_range.get())
-            Config.Release_Range = int(self.release_range.get())
+            Config.tg.type = self.tg_type.get()
+            Config.tg.num_of_tasks = int(self.num_of_tasks.get())
+            Config.tg.num_of_critical_tasks = int(self.num_of_crit_tasks.get())
+            Config.tg.num_of_edges = int(self.num_of_edge.get())
+            Config.tg.wcet_range = int(self.wcet_range.get())
+            Config.tg.edge_weight_range = int(self.edge_weight_range.get())
+            Config.tg.release_range = int(self.release_range.get())
             if self.tg_type.get() == 'FromDOTFile':
-                Config.TG_DOT_Path = self.tg_browse.get()
+                Config.tg.dot_file_path = self.tg_browse.get()
             # topology config
             Config.NetworkTopology = self.topology.get()
             Config.Network_X_Size = int(self.network_size_x.get())

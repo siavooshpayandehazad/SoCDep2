@@ -11,7 +11,7 @@ def report_task_graph(tg, logging):
     print ("      REPORTING TASK GRAPH")
     print ("===========================================")
     logging.info('TASK GRAPH REPORT:')
-    logging.info('TASK GRAPH Type:\t'+str(Config.TG_Type))
+    logging.info('TASK GRAPH Type:\t'+str(Config.tg.type))
     for Node in tg.nodes():
         massage = "TASK:"+str(Node)+"\tWCET:"+str(tg.node[Node]['WCET'])+"\tCRITICALITY:" +\
                   str(tg.node[Node]['Criticality'])+"\tCLUSTER:"+str(tg.node[Node]['Cluster']) +\
@@ -59,7 +59,7 @@ def draw_task_graph(tg, ttg=None):
         tg_edge_list.append(Edge)
         tg_edge_weight.append(tg.edge[Edge[0]][Edge[1]]['ComWeight'])
 
-    if Config.TG_Type == "RandomIndependent":
+    if Config.tg.type == "RandomIndependent":
         pos = networkx.shell_layout(tg)
     else:
         width = 1000

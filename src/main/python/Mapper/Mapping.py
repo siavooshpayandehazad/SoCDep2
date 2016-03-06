@@ -26,25 +26,25 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
     # to run the following heuristics (Min_Min,Max_Min), one needs to use independent
     # tasks... Please use: generate_random_independent_tg
     if Config.Mapping_Function == 'MinMin':
-        if Config.TG_Type == 'RandomIndependent':
+        if Config.tg.type == 'RandomIndependent':
             return SimpleGreedy.min_min_mapping(tg, ag, shm, logging)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
     elif Config.Mapping_Function == 'MaxMin':
-        if Config.TG_Type == 'RandomIndependent':
+        if Config.tg.type == 'RandomIndependent':
             return SimpleGreedy.max_min_mapping(tg, ag, shm, logging)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
     elif Config.Mapping_Function == 'MinExecutionTime':
-        if Config.TG_Type == 'RandomIndependent':
+        if Config.tg.type == 'RandomIndependent':
             return SimpleGreedy.min_execution_time(tg, ag, shm, logging)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
 
     elif Config.Mapping_Function == 'MinimumCompletionTime':
-        if Config.TG_Type == 'RandomIndependent':
+        if Config.tg.type == 'RandomIndependent':
             return SimpleGreedy.minimum_completion_time(tg, ag, shm, logging)
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomIndependent')
@@ -53,7 +53,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
         return NMap.n_map(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging)
 
     elif Config.Mapping_Function in ['LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing']:
-        if Config.TG_Type in ['RandomDependent', 'Manual', 'FromDOTFile']:
+        if Config.tg.type in ['RandomDependent', 'Manual', 'FromDOTFile']:
             pass
         else:
             raise ValueError('WRONG TG TYPE FOR THIS MAPPING FUNCTION. SHOULD USE::RandomDependent')
