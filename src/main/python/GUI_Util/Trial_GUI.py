@@ -369,8 +369,7 @@ class Page2(Page):  # architecture graph
         self.vl_placement_enable.set('False')
         self.vl_placement_enable_box = tk.Checkbutton(self, text="Enable VL Placement Optimization",
                                                       variable=self.vl_placement_enable,
-                                                      command=self._vl_placement_func,
-                                                      wraplength=200)
+                                                      command=self._vl_placement_func)
 
         self.vlp_alg_label = tk.Label(self, text="Opt algorithm:")
         self.vlp_alg = tk.StringVar()
@@ -392,7 +391,7 @@ class Page2(Page):  # architecture graph
                                            row=self.vl_placement_starting_row, columnspan=2)
 
         self.vl_placement_enable_box.grid(column=self.vl_placement_starting_col,
-                                          row=self.vl_placement_starting_row+1)
+                                          row=self.vl_placement_starting_row+1, columnspan=2,  sticky="ew")
         self.vl_placement_enable_box.config(state='disable')
 
         # ---------------------------------------------
@@ -866,8 +865,14 @@ class Page3(Page):
         self.markov_temp_step_Label.grid_forget()
         self.markov_temp_step.grid_forget()
 
+class Page4(Page):      # testing
+    def __init__(self, *args, **kwargs):
+        Page.__init__(self, *args, **kwargs)
 
-class Page4(Page):      # visualization
+
+
+
+class Page5(Page):      # visualization
 
     # visualization
     viz_starting_row = 0
@@ -970,19 +975,20 @@ class MainView(tk.Tk):
         tk.Tk.__init__(self, parent)
         self.parent = parent
 
-        p1 = Page1(self)
-        p2 = Page2(self)
-        p3 = Page3(self)
-        p4 = Page4(self)
+        self.p1 = Page1(self)
+        self.p2 = Page2(self)
+        self.p3 = Page3(self)
+        self.p4 = Page4(self)
+        self.p5 = Page5(self)
 
         logo_frame = tk.Frame(self)
         tab_frame = tk.Frame(self)
-        container = tk.Frame(self, width=600, height=300)
+        container = tk.Frame(self, width=650, height=300)
         action_frame = tk.Frame(self)
-        logo_frame.grid(column=0, row=0, columnspan=1, sticky='w')
-        tab_frame.grid(column=0, row=1, columnspan=1, sticky='w')
-        container.grid(column=0, row=3, columnspan=1, sticky='w')
-        action_frame.grid(column=0, row=4, columnspan=1, sticky='w')
+        logo_frame.grid(column=0, row=0,  sticky='w' )
+        tab_frame.grid(column=0, row=1,  sticky='w')
+        container.grid(column=0, row=3, sticky='w')
+        action_frame.grid(column=0, row=4, sticky='w')
 
         img = ImageTk.PhotoImage(Image.open("GUI_Util/Jelly.png"))
         # This work, "Jelly.png", is a derivative of "Sea Ghost" by Joey Gannon,
@@ -993,24 +999,27 @@ class MainView(tk.Tk):
         logo.bind("<Enter>", self._on_enter)
         logo.image = img
 
-        label = tk.Label(logo_frame, text="schedule and Depend Configuration GUI")
-        logo.pack(side="left")
-        label.pack(side="left")
+        label = tk.Label(logo_frame, text="Schedule and Depend Configuration GUI")
+        logo.grid(column=0, row=0, columnspan=1, sticky='w')
+        label.grid(column=1, row=0, columnspan=3 )
 
-        p1.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
-        p2.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
-        p3.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
-        p4.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+        self.p1.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+        self.p2.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+        self.p3.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+        self.p4.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+        self.p5.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
 
-        b1 = tk.Button(tab_frame, text="Task Graph", command=p1.lift)
-        b2 = tk.Button(tab_frame, text="Arch Graph", command=p2.lift)
-        b3 = tk.Button(tab_frame, text="Mapping", command=p3.lift)
-        b4 = tk.Button(tab_frame, text="Visualizations", command=p4.lift)
+        self.b1 = tk.Button(tab_frame, text="Task Graph", command=lambda: self.button_command(1))
+        self.b2 = tk.Button(tab_frame, text="Arch Graph", command=lambda: self.button_command(2))
+        self.b3 = tk.Button(tab_frame, text="Mapping", command=lambda: self.button_command(3))
+        self.b4 = tk.Button(tab_frame, text="Testing", command=lambda: self.button_command(4))
+        self.b5 = tk.Button(tab_frame, text="Visualizations", command=lambda: self.button_command(5))
 
-        b1.grid(column=0, row=1, columnspan=1, sticky='w')
-        b2.grid(column=1, row=1, columnspan=1, sticky='w')
-        b3.grid(column=2, row=1, columnspan=1, sticky='w')
-        b4.grid(column=3, row=1, columnspan=1, sticky='w')
+        self.b1.grid(column=0, row=1, columnspan=1, sticky='w')
+        self.b2.grid(column=1, row=1, columnspan=1, sticky='w')
+        self.b3.grid(column=2, row=1, columnspan=1, sticky='w')
+        self.b4.grid(column=3, row=1, columnspan=1, sticky='w')
+        self.b5.grid(column=4, row=1, columnspan=1, sticky='w')
         ttk.Separator(self, orient='horizontal').grid(column=0,
                                                       row=2, columnspan=4, sticky="ew")
 
@@ -1020,7 +1029,7 @@ class MainView(tk.Tk):
         apply_button.grid(column=1, row=0, columnspan=1, sticky='w')
         cancel_button.grid(column=2, row=0, columnspan=1, sticky='w')
 
-        p1.show()
+        self.p1.show()
 
     def _on_enter(self, event):
         tkMessageBox.showinfo("License Message", "The logo picture is a derivative of \"Sea Ghost\" by Joey Gannon, " +
@@ -1029,9 +1038,33 @@ class MainView(tk.Tk):
                               "This work is under same license as the original."
                               "(https://creativecommons.org/licenses/by-sa/2.0/)")
 
-    def _apply_button(self):
-        self.apply_button = True
-        self.destroy()
 
     def _cancel_button(self):
+        self.destroy()
+
+    def button_command(self, button_number):
+
+        self.b1.configure(relief='raised')
+        self.b2.configure(relief='raised')
+        self.b3.configure(relief='raised')
+        self.b4.configure(relief='raised')
+        self.b5.configure(relief='raised')
+
+        if button_number == 1:
+            self.p1.lift()
+            self.b1.configure(relief='sunken')
+        elif button_number == 2:
+            self.p2.lift()
+            self.b2.configure(relief='sunken')
+        elif button_number == 3:
+            self.p3.lift()
+            self.b3.configure(relief='sunken')
+        elif button_number == 4:
+            self.p4.lift()
+            self.b4.configure(relief='sunken')
+        elif button_number == 5:
+            self.p5.lift()
+            self.b5.configure(relief='sunken')
+    def _apply_button(self):
+        self.apply_button = True
         self.destroy()
