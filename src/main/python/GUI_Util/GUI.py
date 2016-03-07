@@ -2,10 +2,10 @@
 
 from Pages import page_1, page_2, page_3, page_4, page_5
 import Tkinter as tk
-import ttk
 from PIL import ImageTk, Image
 import tkMessageBox
 from ConfigAndPackages import Config, PackageFile
+import ttk
 
 
 class MainView(tk.Tk):
@@ -24,12 +24,13 @@ class MainView(tk.Tk):
 
         logo_frame = tk.Frame(self)
         tab_frame = tk.Frame(self)
-        container = tk.Frame(self, width=700, height=300)
+        container = tk.Frame(self, width=600, height=300)
         action_frame = tk.Frame(self)
-        logo_frame.grid(column=0, row=0,  sticky='w' )
-        tab_frame.grid(column=0, row=1,  sticky='w')
-        container.grid(column=0, row=3, sticky='w')
-        action_frame.grid(column=0, row=4, sticky='w')
+
+        logo_frame.pack(fill='both', expand=True)
+        tab_frame.pack(fill='both', expand=True)
+        container.pack(fill='both', expand=True)
+        action_frame.pack(fill='both', expand=True)
 
         img = ImageTk.PhotoImage(Image.open("GUI_Util/Jelly.png"))
         # This work, "Jelly.png", is a derivative of "Sea Ghost" by Joey Gannon,
@@ -40,9 +41,11 @@ class MainView(tk.Tk):
         logo.bind("<Enter>", self._on_enter)
         logo.image = img
 
-        label = tk.Label(logo_frame, text="Schedule and Depend Configuration GUI")
-        logo.grid(column=0, row=0, columnspan=1, sticky='w')
-        label.grid(column=1, row=0, columnspan=3 )
+        label = tk.Label(logo_frame, text="Welcome to Schedule and Depend. This graphical user interface " +
+                                          "is designed for configuration of the tool... enjoy!", wraplength=400)
+
+        logo.pack(side="left")
+        label.pack(side="left")
 
         self.p1.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         self.p2.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
@@ -55,30 +58,28 @@ class MainView(tk.Tk):
         self.b3 = tk.Button(tab_frame, text="Mapping", command=lambda: self.button_command(3))
         self.b4 = tk.Button(tab_frame, text="Dependability & Testing", command=lambda: self.button_command(4))
         self.b5 = tk.Button(tab_frame, text="Visualizations", command=lambda: self.button_command(5))
+        self.h_line_1 = ttk.Separator(tab_frame, orient='horizontal')
+        self.h_line_1.pack(side="top", fill='both', expand=True)
+        self.h_line_2 = ttk.Separator(tab_frame, orient='horizontal')
+        self.h_line_2.pack(side="bottom", fill='both', expand=True)
 
-        self.b1.grid(column=0, row=1, columnspan=1, sticky='w')
-        self.b2.grid(column=1, row=1, columnspan=1, sticky='w')
-        self.b3.grid(column=2, row=1, columnspan=1, sticky='w')
-        self.b4.grid(column=3, row=1, columnspan=1, sticky='w')
-        self.b5.grid(column=4, row=1, columnspan=1, sticky='w')
-        ttk.Separator(self, orient='horizontal').grid(column=0, row=2, columnspan=4, sticky="ew")
+        self.b1.pack(side="left")
+        self.b2.pack(side="left")
+        self.b3.pack(side="left")
+        self.b4.pack(side="left")
+        self.b5.pack(side="left")
 
-        self.error_message = tk.Label(action_frame, text="", font="-weight bold", fg="red")
+        self.h_line_3 = ttk.Separator(action_frame, orient='horizontal')
+        self.error_message = tk.Label(action_frame, text="", font=("-weight bold", 10), fg="red")
         apply_button = tk.Button(action_frame, text="Apply", command=self._apply_button)
         cancel_button = tk.Button(action_frame, text="Cancel", command=self._cancel_button)
 
-        self.error_message.grid(column=0, row=0, columnspan=5)
-        apply_button.grid(column=1, row=1, columnspan=2, sticky='w')
-        cancel_button.grid(column=3, row=1, columnspan=2, sticky='w')
+        self.h_line_3.pack(side="top", fill='both', expand=True)
+        apply_button.pack(side='right')
+        cancel_button.pack(side='right', padx=5)
+        self.error_message.pack(side='right')
 
         self.p1.show()
-
-    def _on_enter(self, event):
-        tkMessageBox.showinfo("License Message", "The logo picture is a derivative of \"Sea Ghost\" by Joey Gannon, " +
-                              "used under CC BY-SA. The original version can be found here: " +
-                              "https://www.flickr.com/photos/brunkfordbraun/679827214 " +
-                              "This work is under same license as the original."
-                              "(https://creativecommons.org/licenses/by-sa/2.0/)")
 
     def _cancel_button(self):
         self.destroy()
@@ -246,3 +247,11 @@ class MainView(tk.Tk):
 
             self.apply_button = True
             self.destroy()
+
+    @staticmethod
+    def _on_enter(self):
+        tkMessageBox.showinfo("License Message", "The logo picture is a derivative of \"Sea Ghost\" by Joey Gannon, " +
+                              "used under CC BY-SA. The original version can be found here: " +
+                              "https://www.flickr.com/photos/brunkfordbraun/679827214 " +
+                              "This work is under same license as the original."
+                              "(https://creativecommons.org/licenses/by-sa/2.0/)")

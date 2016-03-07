@@ -14,7 +14,6 @@ from GUI_Util import GUI_old, GUI
 from pympler import tracker
 from Simulator import Simulator
 # from Simulator import FaultInjector
-import Tkinter as tk
 
 tr = None
 if Config.MemoryProfiler:
@@ -32,21 +31,11 @@ if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("")
     sys.exit()
 elif '-GUI' in sys.argv[1:]:
-    """
-    app = GUI.ConfigApp(None)
-    app.title('Schedule And Depend')
-    app.mainloop()
-    if not app.apply_button:
-        sys.exit()
-
-    """
-
     main_window = GUI.MainView(None)
+    main_window.title("Schedule and Depend Configuration GUI")
     main_window.mainloop()
     if not main_window.apply_button:
         sys.exit()
-
-
 elif '-UTEST' in sys.argv[1:]:
     os.system('python ../../unittest/Python/Unit_tests.py')
     sys.exit()

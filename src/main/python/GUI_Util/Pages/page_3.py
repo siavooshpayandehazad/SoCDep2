@@ -310,4 +310,3 @@ class Page3(Page):
         self.ils_iter.grid_forget()
         self.mapping_cost_label.grid_forget()
         self.mapping_cost_opt.grid_forget()
-

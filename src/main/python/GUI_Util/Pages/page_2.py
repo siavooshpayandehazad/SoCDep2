@@ -114,14 +114,14 @@ class Page2(Page):  # architecture graph
         self.routing_alg.set(self.routing_dict['2D'][0])
         self.routing_alg_option = tk.OptionMenu(self, self.routing_alg, *available_routings,
                                                 command=self._routing_func)
-        self.routing_alg_option.config(width=10)
+        self.routing_alg_option.config(width=self.option_menu_width)
 
         self.routing_type_label = tk.Label(self, text="Routing type:")
         available_routings_types = ['MinimalPath', 'NonMinimalPath']
         self.routing_type = tk.StringVar()
         self.routing_type.set('MinimalPath')
         self.routing_type_option = tk.OptionMenu(self, self.routing_type, *available_routings_types)
-        self.routing_type_option.config(width=15)
+        self.routing_type_option.config(width=self.option_menu_width)
 
         self.routing_browse = tk.Entry(self, bg='gray')
         self.routing_browse.insert(0, "Routing File Path...")
@@ -160,7 +160,7 @@ class Page2(Page):  # architecture graph
             self.routing_alg_option = tk.OptionMenu(self, self.routing_alg, *self.routing_dict['3D'],
                                                     command=self._routing_func)
             self.routing_alg_option.grid(column=self.routing_starting_col+1, row=self.routing_starting_row+1)
-            self.routing_alg_option.config(width=10)
+            self.routing_alg_option.config(width=self.option_menu_width)
 
             self.routing_type.set("Please Select...")
             self.routing_type_option.config(state='disable')
@@ -188,7 +188,7 @@ class Page2(Page):  # architecture graph
             self.routing_alg_option = tk.OptionMenu(self, self.routing_alg, *self.routing_dict['2D'],
                                                     command=self._routing_func)
             self.routing_alg_option.grid(column=self.routing_starting_col+1, row=self.routing_starting_row+1)
-            self.routing_alg_option.config(width=10)
+            self.routing_alg_option.config(width=self.option_menu_width)
 
             self.routing_type.set("Please Select...")
             self.routing_type_option.config(state='disable')
@@ -274,4 +274,3 @@ class Page2(Page):  # architecture graph
         if path:
             self.routing_browse.delete(0, 'end')
             self.routing_browse.insert(1, path)
-
