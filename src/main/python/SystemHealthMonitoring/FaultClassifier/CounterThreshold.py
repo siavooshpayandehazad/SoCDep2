@@ -53,13 +53,7 @@ class CounterThreshold:
             print location, type(location)
             raise ValueError("location type is wrong!")
 
-        if location in self.dead_components:
-            # do not increase the counter if component is dead
-            return None
-        if location in self.fault_counters.keys() or location in self.intermittent_counters.keys():
-            pass
-        else:
-            # do not start the health counter if there is no fault or intermittent counter
+        if not self.check_counter_start(location, "Health"):
             return None
 
         # increase the health counter
@@ -73,10 +67,7 @@ class CounterThreshold:
         # check for reaching the threshold
         if self.health_counters[location] == self.health_threshold:
             logging.info("resetting component: "+location+" counters")
-            # heal the intermittent component
-            if location in self.intermittent_components:
-                self.intermittent_components.remove(location)
-            self.reset_counters(location)
+            self.threshold_handler(location, "Health")
 
         current_memory_usage = self.return_allocated_memory()
         if current_memory_usage > self.memory_counter:
@@ -111,8 +102,7 @@ class CounterThreshold:
             print location, type(location)
             raise ValueError("location type is wrong!")
 
-        if location in self.dead_components:
-            # do not increase the counter if component is dead
+        if not self.check_counter_start(location, "Intermittent"):
             return None
 
         if location not in self.health_counters:
@@ -129,9 +119,8 @@ class CounterThreshold:
         # Check for reaching Threshold
         if self.intermittent_counters[location] == self.fault_threshold:
             logging.info("Declaring component: "+location+" intermittent!")
-            if location not in self.intermittent_components:
-                self.intermittent_components.append(location)
-            self.reset_counters(location)
+            self.threshold_handler(location, "Intermittent")
+
 
         current_memory_usage = self.return_allocated_memory()
         if current_memory_usage > self.memory_counter:
@@ -166,8 +155,7 @@ class CounterThreshold:
             print location, type(location)
             raise ValueError("location type is wrong!")
 
-        if location in self.dead_components:
-            # do not increase the counter if component is dead
+        if not self.check_counter_start(location, "Fault"):
             return None
 
         if location not in self.health_counters:
@@ -182,10 +170,7 @@ class CounterThreshold:
         # Check for reaching threshold
         if self.fault_counters[location] == self.fault_threshold:
             logging.info("Declaring component: "+location+" dead!")
-            self.dead_components.append(location)
-            if location in self.intermittent_components:
-                self.intermittent_components.remove(location)
-            self.reset_counters(location)
+            self.threshold_handler(location, "Intermittent")
 
         current_memory_usage = self.return_allocated_memory()
         if current_memory_usage > self.memory_counter:
@@ -193,6 +178,63 @@ class CounterThreshold:
         if len(self.comp_of_interest) > self.max_comp_of_interest:
             self.max_comp_of_interest = len(self.comp_of_interest)
         return None
+
+    def threshold_handler(self, location, threshold):
+        if Config.state_config == "1":
+            if threshold == "health":
+                # heal the intermittent component
+                if location in self.intermittent_components:
+                    self.intermittent_components.remove(location)
+                self.reset_counters(location)
+            elif threshold == "Intermittent":
+                if location not in self.intermittent_components:
+                    self.intermittent_components.append(location)
+                self.reset_counters(location)
+            elif threshold == "Fault":
+                self.dead_components.append(location)
+                if location in self.intermittent_components:
+                    self.intermittent_components.remove(location)
+                self.reset_counters(location)
+        elif Config.state_config == "2":
+            pass
+        elif Config.state_config == "3":
+            pass
+        elif Config.state_config == "4":
+            pass
+        elif Config.state_config == "5":
+            pass
+
+    def check_counter_start(self, location, counter_name):
+        if Config.state_config == "1":
+            if counter_name == "health":
+                if location in self.dead_components:
+                    # do not increase the counter if component is dead
+                    return None
+                if location in self.fault_counters.keys() or location in self.intermittent_counters.keys():
+                    return True
+                else:
+                    # do not start the health counter if there is no fault or intermittent counter
+                    return None
+            elif counter_name == "Intermittent":
+                if location in self.dead_components:
+                    # do not increase the counter if component is dead
+                    return False
+                else:
+                    return True
+            elif counter_name == "Fault":
+                if location in self.dead_components:
+                    # do not increase the counter if component is dead
+                    return False
+                else:
+                    return True
+        elif Config.state_config == "2":
+            pass
+        elif Config.state_config == "3":
+            pass
+        elif Config.state_config == "4":
+            pass
+        elif Config.state_config == "5":
+            pass
 
     def reset_counters(self, location):
         """

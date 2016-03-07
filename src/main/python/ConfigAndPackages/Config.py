@@ -4,8 +4,8 @@ import PackageFile
 ################################################
 #          Program  Config
 ################################################
-enable_simulator = False
-ProgramRunTime = 100      # in cycles
+enable_simulator = True
+ProgramRunTime = 900      # in cycles
 DebugInfo = False
 DebugDetails = False
 
@@ -311,6 +311,8 @@ enable_link_counters = True
 enable_router_counters = False
 enable_pe_counters = False
 error_correction_rate = 0.8
+# state config can be an integer from 1 to 5 and represents the state machine which is implemented for classification
+state_config = "1"
 ################################################
 #           Network Partitioning
 ################################################
