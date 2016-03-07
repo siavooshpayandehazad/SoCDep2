@@ -127,17 +127,7 @@ class Page1(Page):
 
     def _tg_type_cont(self, tg_type):
         if tg_type == 'RandomDependent':
-            """
-            self.mapping_option.grid_forget()
-            del self.mapping_option
-
-            self.mapping.set('Please Select...')
-            self.mapping_option = tk.OptionMenu(self, self.mapping, *self.mapping_dict['RandomDependent'],
-                                                     command=self._mapping_alg_cont)
-            self.mapping_option.grid(column=self.mapping_opt_start_col+1, row=self.mapping_opt_start_row+1)
-            self.mapping_option.config(width=self.option_menu_width)
-            self._clear_mapping()
-            """
+            Page3().invalidate_options('RandomDependent')
             self.num_of_tasks_label.grid(column=self.tg_starting_col, row=self.tg_starting_row+2)
             self.num_of_tasks.grid(column=self.tg_starting_col+1, row=self.tg_starting_row+2)
             self.num_of_tasks.delete(0, 'end')
@@ -172,17 +162,7 @@ class Page1(Page):
             self.tg_browse_button.grid_forget()
 
         elif tg_type == 'RandomIndependent':
-            """
-            self.mapping_option.grid_forget()
-            del self.mapping_option
-
-            self.mapping.set('Please Select...')
-            self.mapping_option = tk.OptionMenu(self, self.mapping, *self.mapping_dict['RandomIndependent'],
-                                                     command=self._mapping_alg_cont)
-            self.mapping_option.grid(column=self.mapping_opt_start_col+1, row=self.mapping_opt_start_row+1)
-            self.mapping_option.config(width=self.option_menu_width)
-            self._clear_mapping()
-            """
+            Page3().invalidate_options('RandomIndependent')
             self.num_of_tasks_label.grid(column=self.tg_starting_col, row=self.tg_starting_row+2)
             self.num_of_tasks.grid(column=self.tg_starting_col+1, row=self.tg_starting_row+2)
             self.num_of_tasks.delete(0, 'end')
@@ -213,17 +193,7 @@ class Page1(Page):
             self.tg_browse_button.grid_forget()
 
         elif tg_type == 'Manual':
-            """
-            self.mapping_option.grid_forget()
-            del self.mapping_option
-
-            self.mapping.set('Please Select...')
-            self.mapping_option = tk.OptionMenu(self, self.mapping, *self.mapping_dict['Manual'],
-                                                     command=self._mapping_alg_cont)
-            self.mapping_option.grid(column=self.mapping_opt_start_col+1, row=self.mapping_opt_start_row+1)
-            self.mapping_option.config(width=self.option_menu_width)
-            self._clear_mapping()
-            """
+            Page3().invalidate_options("Manual")
             self.tg_browse.grid_forget()
             self.tg_browse_button.grid_forget()
 
@@ -246,17 +216,7 @@ class Page1(Page):
             self.edge_weight_range_label.grid_forget()
 
         elif tg_type == 'FromDOTFile':
-            """
-            self.mapping_option.grid_forget()
-            del self.mapping_option
-
-            self.mapping.set('Please Select...')
-            self.mapping_option = tk.OptionMenu(self, self.mapping, *self.mapping_dict['Manual'],
-                                                     command=self._mapping_alg_cont)
-            self.mapping_option.grid(column=self.mapping_opt_start_col+1, row=self.mapping_opt_start_row+1)
-            self.mapping_option.config(width=self.option_menu_width)
-            self._clear_mapping()
-            """
+            Page3().invalidate_options("Manual")
             self.tg_browse.grid(column=self.tg_starting_col, row=self.tg_starting_row+2, sticky='e')
             self.tg_browse_button.grid(column=self.tg_starting_col+1, row=self.tg_starting_row+2)
 
@@ -514,7 +474,7 @@ class Page2(Page):  # architecture graph
                                    row=self.vl_placement_starting_row+5, sticky='w')
             self.vlp_iter_ils.delete(0, 'end')
             self.vlp_iter_ils.insert(0, '10')
-            
+
     def _vl_placement_func(self):
         if self.vl_placement_enable.get():
             self.vlp_alg_label.grid(column=self.vl_placement_starting_col,
@@ -680,6 +640,17 @@ class Page3(Page):
 
         self.ls_iter_label.grid(column=self.mapping_opt_start_col, row=self.mapping_opt_start_row+3)
         self.ls_iter.grid(column=self.mapping_opt_start_col+1, row=self.mapping_opt_start_row+3)
+
+    def invalidate_options(self, type):
+
+        self.mapping_option.grid_forget()
+        del self.mapping_option
+        self.mapping.set('Please Select...')
+        self.mapping_option = tk.OptionMenu(self, self.mapping, *self.mapping_dict[type],
+                                            command=self._mapping_alg_cont)
+        self.mapping_option.grid(column=self.mapping_opt_start_col+1, row=self.mapping_opt_start_row+1)
+        self.mapping_option.config(width=self.option_menu_width)
+        self._clear_mapping()
 
     def _mapping_alg_cont(self, event):
         if self.mapping.get() in ['SimulatedAnnealing', 'LocalSearch', 'IterativeLocalSearch']:
@@ -864,6 +835,15 @@ class Page3(Page):
         self.markov_temp_step_Label.grid_forget()
         self.markov_temp_step.grid_forget()
 
+    def _clear_mapping(self):
+        self._clear_sa_mapping()
+        self.ls_iter_label.grid_forget()
+        self.ls_iter.grid_forget()
+        self.ils_iter_label.grid_forget()
+        self.ils_iter.grid_forget()
+        self.mapping_cost_label.grid_forget()
+        self.mapping_cost_opt.grid_forget()
+
 
 class Page4(Page):      # testing
     # PMC Config
@@ -924,8 +904,8 @@ class Page4(Page):      # testing
         #           Dependability section
         # ----------------------------------------
         tk.Label(self, text="Dependability Config",
-                 font="-weight bold").grid(column=self.dependability_starting_col,
-                                           row=self.dependability_starting_row, columnspan=2)
+                      font="-weight bold").grid(column=self.dependability_starting_col,
+                                                row=self.dependability_starting_row, columnspan=2)
         self.slack_number_label.grid(column=self.dependability_starting_col, row=self.dependability_starting_row+1)
         self.slack_number.grid(column=self.dependability_starting_col+1, row=self.dependability_starting_row+1)
 
@@ -962,7 +942,7 @@ class Page4(Page):      # testing
         #           PMC Graph
         # ----------------------------------------
         tk.Label(self, text="PMC Config", font="-weight bold").grid(column=self.pmc_starting_col,
-                                                                    row=self.pmc_starting_row, columnspan=2)
+                                                                         row=self.pmc_starting_row, columnspan=2)
 
         self.pmc_enable_check_box.grid(column=self.pmc_starting_col, row=self.pmc_starting_row+1, sticky='w')
 
@@ -970,10 +950,11 @@ class Page4(Page):      # testing
         #               Fault
         # ----------------------------------------
         tk.Label(self, text="Fault Settings", font="-weight bold").grid(column=self.fault_starting_col,
-                                                                        row=self.fault_starting_row,
-                                                                        columnspan=2)
+                                                                             row=self.fault_starting_row,
+                                                                             columnspan=2)
         self.fault_injection.set('False')
         self.fault_injection_enable.grid(column=self.fault_starting_col, row=self.fault_starting_row+1)
+
 
     def _pmc_func(self):
         if self.pmc_enable.get():
@@ -1123,7 +1104,7 @@ class MainView(tk.Tk):
         tab_frame = tk.Frame(self)
         container = tk.Frame(self, width=700, height=300)
         action_frame = tk.Frame(self)
-        logo_frame.grid(column=0, row=0,  sticky='w')
+        logo_frame.grid(column=0, row=0,  sticky='w' )
         tab_frame.grid(column=0, row=1,  sticky='w')
         container.grid(column=0, row=3, sticky='w')
         action_frame.grid(column=0, row=4, sticky='w')
@@ -1139,7 +1120,7 @@ class MainView(tk.Tk):
 
         label = tk.Label(logo_frame, text="Schedule and Depend Configuration GUI")
         logo.grid(column=0, row=0, columnspan=1, sticky='w')
-        label.grid(column=1, row=0, columnspan=3)
+        label.grid(column=1, row=0, columnspan=3 )
 
         self.p1.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         self.p2.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
@@ -1176,6 +1157,7 @@ class MainView(tk.Tk):
                               "https://www.flickr.com/photos/brunkfordbraun/679827214 " +
                               "This work is under same license as the original."
                               "(https://creativecommons.org/licenses/by-sa/2.0/)")
+
 
     def _cancel_button(self):
         self.destroy()
