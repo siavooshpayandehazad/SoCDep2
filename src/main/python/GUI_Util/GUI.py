@@ -681,7 +681,6 @@ class Page3(Page):
         self.ls_iter_label.grid(column=self.mapping_opt_start_col, row=self.mapping_opt_start_row+3)
         self.ls_iter.grid(column=self.mapping_opt_start_col+1, row=self.mapping_opt_start_row+3)
 
-
     def _mapping_alg_cont(self, event):
         if self.mapping.get() in ['SimulatedAnnealing', 'LocalSearch', 'IterativeLocalSearch']:
             self.mapping_cost_label.grid(column=self.mapping_opt_start_col, row=self.mapping_opt_start_row+2)
@@ -865,6 +864,7 @@ class Page3(Page):
         self.markov_temp_step_Label.grid_forget()
         self.markov_temp_step.grid_forget()
 
+
 class Page4(Page):      # testing
     # PMC Config
     pmc_starting_row = 0
@@ -924,8 +924,8 @@ class Page4(Page):      # testing
         #           Dependability section
         # ----------------------------------------
         tk.Label(self, text="Dependability Config",
-                      font="-weight bold").grid(column=self.dependability_starting_col,
-                                                row=self.dependability_starting_row, columnspan=2)
+                 font="-weight bold").grid(column=self.dependability_starting_col,
+                                           row=self.dependability_starting_row, columnspan=2)
         self.slack_number_label.grid(column=self.dependability_starting_col, row=self.dependability_starting_row+1)
         self.slack_number.grid(column=self.dependability_starting_col+1, row=self.dependability_starting_row+1)
 
@@ -962,7 +962,7 @@ class Page4(Page):      # testing
         #           PMC Graph
         # ----------------------------------------
         tk.Label(self, text="PMC Config", font="-weight bold").grid(column=self.pmc_starting_col,
-                                                                         row=self.pmc_starting_row, columnspan=2)
+                                                                    row=self.pmc_starting_row, columnspan=2)
 
         self.pmc_enable_check_box.grid(column=self.pmc_starting_col, row=self.pmc_starting_row+1, sticky='w')
 
@@ -970,11 +970,10 @@ class Page4(Page):      # testing
         #               Fault
         # ----------------------------------------
         tk.Label(self, text="Fault Settings", font="-weight bold").grid(column=self.fault_starting_col,
-                                                                             row=self.fault_starting_row,
-                                                                             columnspan=2)
+                                                                        row=self.fault_starting_row,
+                                                                        columnspan=2)
         self.fault_injection.set('False')
         self.fault_injection_enable.grid(column=self.fault_starting_col, row=self.fault_starting_row+1)
-
 
     def _pmc_func(self):
         if self.pmc_enable.get():
@@ -1009,6 +1008,7 @@ class Page4(Page):      # testing
             self.sd_mtbf.grid_forget()
             self.run_time_label.grid_forget()
             self.run_time.grid_forget()
+
 
 class Page5(Page):      # visualization
 
@@ -1123,7 +1123,7 @@ class MainView(tk.Tk):
         tab_frame = tk.Frame(self)
         container = tk.Frame(self, width=700, height=300)
         action_frame = tk.Frame(self)
-        logo_frame.grid(column=0, row=0,  sticky='w' )
+        logo_frame.grid(column=0, row=0,  sticky='w')
         tab_frame.grid(column=0, row=1,  sticky='w')
         container.grid(column=0, row=3, sticky='w')
         action_frame.grid(column=0, row=4, sticky='w')
@@ -1139,7 +1139,7 @@ class MainView(tk.Tk):
 
         label = tk.Label(logo_frame, text="Schedule and Depend Configuration GUI")
         logo.grid(column=0, row=0, columnspan=1, sticky='w')
-        label.grid(column=1, row=0, columnspan=3 )
+        label.grid(column=1, row=0, columnspan=3)
 
         self.p1.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         self.p2.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
@@ -1176,7 +1176,6 @@ class MainView(tk.Tk):
                               "https://www.flickr.com/photos/brunkfordbraun/679827214 " +
                               "This work is under same license as the original."
                               "(https://creativecommons.org/licenses/by-sa/2.0/)")
-
 
     def _cancel_button(self):
         self.destroy()
