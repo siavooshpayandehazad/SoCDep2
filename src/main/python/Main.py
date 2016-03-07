@@ -10,7 +10,7 @@ import logging
 from ConfigAndPackages import Config, PackageFile, Check_Config
 from Utilities import Logger, Benchmark_Alg_Downloader
 import SystemInitialization
-from GUI_Util import GUI, Trial_GUI
+from GUI_Util import GUI_old, GUI
 from pympler import tracker
 from Simulator import Simulator
 # from Simulator import FaultInjector
@@ -32,7 +32,7 @@ if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("")
     sys.exit()
 elif '-GUI' in sys.argv[1:]:
-
+    """
     app = GUI.ConfigApp(None)
     app.title('Schedule And Depend')
     app.mainloop()
@@ -41,11 +41,11 @@ elif '-GUI' in sys.argv[1:]:
 
     """
 
-    mainwindow = Trial_GUI.MainView(None)
-    mainwindow.mainloop()
-    if not mainwindow.apply_button:
+    main_window = GUI.MainView(None)
+    main_window.mainloop()
+    if not main_window.apply_button:
         sys.exit()
-    """
+
 
 elif '-UTEST' in sys.argv[1:]:
     os.system('python ../../unittest/Python/Unit_tests.py')
