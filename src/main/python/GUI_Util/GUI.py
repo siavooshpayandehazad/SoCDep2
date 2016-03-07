@@ -641,12 +641,12 @@ class Page3(Page):
         self.ls_iter_label.grid(column=self.mapping_opt_start_col, row=self.mapping_opt_start_row+3)
         self.ls_iter.grid(column=self.mapping_opt_start_col+1, row=self.mapping_opt_start_row+3)
 
-    def invalidate_options(self, type):
+    def invalidate_options(self, tg_type):
 
         self.mapping_option.grid_forget()
         del self.mapping_option
         self.mapping.set('Please Select...')
-        self.mapping_option = tk.OptionMenu(self, self.mapping, *self.mapping_dict[type],
+        self.mapping_option = tk.OptionMenu(self, self.mapping, *self.mapping_dict[tg_type],
                                             command=self._mapping_alg_cont)
         self.mapping_option.grid(column=self.mapping_opt_start_col+1, row=self.mapping_opt_start_row+1)
         self.mapping_option.config(width=self.option_menu_width)
@@ -904,8 +904,8 @@ class Page4(Page):      # testing
         #           Dependability section
         # ----------------------------------------
         tk.Label(self, text="Dependability Config",
-                      font="-weight bold").grid(column=self.dependability_starting_col,
-                                                row=self.dependability_starting_row, columnspan=2)
+                 font="-weight bold").grid(column=self.dependability_starting_col,
+                                           row=self.dependability_starting_row, columnspan=2)
         self.slack_number_label.grid(column=self.dependability_starting_col, row=self.dependability_starting_row+1)
         self.slack_number.grid(column=self.dependability_starting_col+1, row=self.dependability_starting_row+1)
 
@@ -942,7 +942,7 @@ class Page4(Page):      # testing
         #           PMC Graph
         # ----------------------------------------
         tk.Label(self, text="PMC Config", font="-weight bold").grid(column=self.pmc_starting_col,
-                                                                         row=self.pmc_starting_row, columnspan=2)
+                                                                    row=self.pmc_starting_row, columnspan=2)
 
         self.pmc_enable_check_box.grid(column=self.pmc_starting_col, row=self.pmc_starting_row+1, sticky='w')
 
@@ -950,11 +950,10 @@ class Page4(Page):      # testing
         #               Fault
         # ----------------------------------------
         tk.Label(self, text="Fault Settings", font="-weight bold").grid(column=self.fault_starting_col,
-                                                                             row=self.fault_starting_row,
-                                                                             columnspan=2)
+                                                                        row=self.fault_starting_row,
+                                                                        columnspan=2)
         self.fault_injection.set('False')
         self.fault_injection_enable.grid(column=self.fault_starting_col, row=self.fault_starting_row+1)
-
 
     def _pmc_func(self):
         if self.pmc_enable.get():
@@ -1157,7 +1156,6 @@ class MainView(tk.Tk):
                               "https://www.flickr.com/photos/brunkfordbraun/679827214 " +
                               "This work is under same license as the original."
                               "(https://creativecommons.org/licenses/by-sa/2.0/)")
-
 
     def _cancel_button(self):
         self.destroy()
