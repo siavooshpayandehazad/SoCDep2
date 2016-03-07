@@ -127,7 +127,7 @@ class Page1(Page):
 
     def _tg_type_cont(self, tg_type):
         if tg_type == 'RandomDependent':
-            Page3().invalidate_options('RandomDependent')
+
             self.num_of_tasks_label.grid(column=self.tg_starting_col, row=self.tg_starting_row+2)
             self.num_of_tasks.grid(column=self.tg_starting_col+1, row=self.tg_starting_row+2)
             self.num_of_tasks.delete(0, 'end')
@@ -162,7 +162,7 @@ class Page1(Page):
             self.tg_browse_button.grid_forget()
 
         elif tg_type == 'RandomIndependent':
-            Page3().invalidate_options('RandomIndependent')
+
             self.num_of_tasks_label.grid(column=self.tg_starting_col, row=self.tg_starting_row+2)
             self.num_of_tasks.grid(column=self.tg_starting_col+1, row=self.tg_starting_row+2)
             self.num_of_tasks.delete(0, 'end')
@@ -193,7 +193,7 @@ class Page1(Page):
             self.tg_browse_button.grid_forget()
 
         elif tg_type == 'Manual':
-            Page3().invalidate_options("Manual")
+
             self.tg_browse.grid_forget()
             self.tg_browse_button.grid_forget()
 
@@ -216,7 +216,7 @@ class Page1(Page):
             self.edge_weight_range_label.grid_forget()
 
         elif tg_type == 'FromDOTFile':
-            Page3().invalidate_options("Manual")
+
             self.tg_browse.grid(column=self.tg_starting_col, row=self.tg_starting_row+2, sticky='e')
             self.tg_browse_button.grid(column=self.tg_starting_col+1, row=self.tg_starting_row+2)
 
@@ -544,7 +544,7 @@ class Page3(Page):
         self.mapping_label = tk.Label(self, text="Mapping Algorithm:")
         self.mapping = tk.StringVar(self)
         self.mapping.set('LocalSearch')
-        self.mapping_option = tk.OptionMenu(self, self.mapping, *self.mapping_dict['RandomDependent'],
+        self.mapping_option = tk.OptionMenu(self, self.mapping, *self.mapping_dict['Manual'],
                                             command=self._mapping_alg_cont)
         self.mapping_option.config(width=self.option_menu_width)
 
@@ -640,17 +640,6 @@ class Page3(Page):
 
         self.ls_iter_label.grid(column=self.mapping_opt_start_col, row=self.mapping_opt_start_row+3)
         self.ls_iter.grid(column=self.mapping_opt_start_col+1, row=self.mapping_opt_start_row+3)
-
-    def invalidate_options(self, tg_type):
-
-        self.mapping_option.grid_forget()
-        del self.mapping_option
-        self.mapping.set('Please Select...')
-        self.mapping_option = tk.OptionMenu(self, self.mapping, *self.mapping_dict[tg_type],
-                                            command=self._mapping_alg_cont)
-        self.mapping_option.grid(column=self.mapping_opt_start_col+1, row=self.mapping_opt_start_row+1)
-        self.mapping_option.config(width=self.option_menu_width)
-        self._clear_mapping()
 
     def _mapping_alg_cont(self, event):
         if self.mapping.get() in ['SimulatedAnnealing', 'LocalSearch', 'IterativeLocalSearch']:
