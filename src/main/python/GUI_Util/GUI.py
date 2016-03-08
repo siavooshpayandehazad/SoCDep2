@@ -132,6 +132,9 @@ class MainView(tk.Tk):
             if self.p2.vl_placement_enable.get():
                 self.error_message.config(text="Can not optimize VL placement for 1 layer NoC")
                 return False
+        elif self.p3.mapping.get() not in self.p3.mapping_dict[self.p1.tg_type.get()]:
+            self.error_message.config(text="Can not perform mapping algorithm with the current TG type")
+            return False
         else:
             self.error_message.config(text="")
             return True

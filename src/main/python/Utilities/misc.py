@@ -143,6 +143,15 @@ def update_config(config_file_path):
     Config.vl_opt.ls_iteration = config.getint("VL_Config", "AG_Opt_Iterations_LS")
     Config.vl_opt.vl_num = config.getint("VL_Config", "VerticalLinksNum")
 
+    Config.vl_opt.random_seed = config.getint("VL_Config", "random_seed")
+    Config.vl_opt.sa_annealing_schedule = config.get("VL_Config", "sa_annealing_schedule")
+    Config.vl_opt.termination_criteria = config.get("VL_Config", "termination_criteria")
+    Config.vl_opt.sa_initial_temp = config.getint("VL_Config", "sa_initial_temp")
+    Config.vl_opt.sa_stop_temp = config.getint("VL_Config", "sa_stop_temp")
+    Config.vl_opt.sa_iteration = config.getint("VL_Config", "sa_iteration")
+    Config.vl_opt.sa_report_solutions = config.getboolean("VL_Config", "sa_report_solutions")
+    Config.vl_opt.sa_alpha = config.getfloat("VL_Config", "sa_alpha")
+    Config.vl_opt.sa_log_cooling_constant = config.getfloat("VL_Config", "sa_log_cooling_constant")
     # ------------------------------------------------
     #               Routing_Config
     # ------------------------------------------------
@@ -327,6 +336,17 @@ def generate_configfile():
     cnfgpars.set('VL_Config', 'AG_Opt_Iterations_ILS', Config.vl_opt.ils_iteration)
     cnfgpars.set('VL_Config', 'AG_Opt_Iterations_LS', Config.vl_opt.ls_iteration)
     cnfgpars.set('VL_Config', 'VerticalLinksNum', Config.vl_opt.vl_num)
+
+    cnfgpars.set('VL_Config', 'random_seed', Config.vl_opt.random_seed)
+    cnfgpars.set('VL_Config', 'sa_annealing_schedule', Config.vl_opt.sa_annealing_schedule)
+    cnfgpars.set('VL_Config', 'termination_criteria', Config.vl_opt.termination_criteria)
+    cnfgpars.set('VL_Config', 'sa_initial_temp', Config.vl_opt.sa_initial_temp)
+    cnfgpars.set('VL_Config', 'sa_stop_temp', Config.vl_opt.sa_stop_temp)
+    cnfgpars.set('VL_Config', 'sa_iteration', Config.vl_opt.sa_iteration)
+    cnfgpars.set('VL_Config', 'sa_report_solutions', Config.vl_opt.sa_report_solutions)
+    cnfgpars.set('VL_Config', 'sa_alpha', Config.vl_opt.sa_alpha)
+    cnfgpars.set('VL_Config', 'sa_log_cooling_constant', Config.vl_opt.sa_log_cooling_constant)
+
     # ------------------------------------------------
     #               Routing_Config
     # ------------------------------------------------

@@ -30,6 +30,16 @@ vl_optalg = LocalSearch
 ag_opt_iterations_ils = 10
 ag_opt_iterations_ls = 10
 verticallinksnum = 20
+random_seed = 2000
+sa_annealing_schedule = Exponential
+termination_criteria = StopTemp
+sa_initial_temp = 20
+sa_stop_temp = 1
+sa_iteration = 1000
+sa_report_solutions = False
+sa_alpha = 0.9995
+sa_log_cooling_constant = 15
+
 
 [Routing_Config]
 usedturnmodel = XY_TurnModel
