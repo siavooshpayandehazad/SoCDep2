@@ -125,7 +125,7 @@ FlowControl = "Wormhole"
 ################################################
 #          Dark Silicon  Config
 ################################################
-DarkSiliconPercentage = 0
+DarkSiliconPercentage = 0       # should be an integer between 0 and 100
 ################################################
 #          SHM  Config
 ################################################

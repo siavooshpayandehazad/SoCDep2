@@ -10,9 +10,11 @@ sys.path.append(CurrentPath)
 # Add Imports here:
 from ArchGraphUtilities.AG_Functions import return_node_location, return_node_number, manhattan_distance, generate_ag
 from ArchGraphUtilities.AG_Functions import update_ag_regions, max_node_neighbors, return_healthy_nodes
+from ArchGraphUtilities.AG_Functions import random_darkness
 from SystemHealthMonitoring import SystemHealthMonitoringUnit, SHMU_Functions
 from RoutingAlgorithms.Calculate_Reachability import is_node_inside_rectangle
 from ConfigAndPackages import Config
+from math import ceil
 import copy
 import random
 
@@ -177,6 +179,23 @@ class UnitTesting(unittest.TestCase):
 
         test_healthy_nodes = return_healthy_nodes(ag_4_test, shmu_4_test.SHM)
         self.assertEqual(test_healthy_nodes, healthy_nodes)
+
+    def test_random_darkness(self):
+        config_darkness = Config.DarkSiliconPercentage
+        ag_4_test = copy.deepcopy(generate_ag(logging=None))
+        for i in range(1, 100):
+            Config.DarkSiliconPercentage = i
+            random_darkness(ag_4_test)
+            num_of_dark_nodes = 0
+            for node in ag_4_test.nodes():
+                if ag_4_test.node[node]['PE'].dark:
+                    num_of_dark_nodes += 1
+            self.assertEqual(num_of_dark_nodes, ceil(len(ag_4_test.nodes())*i/100))
+            # clean the AG
+            for node in ag_4_test.nodes():
+                ag_4_test.node[node]['PE'].dark = False
+        del ag_4_test
+        Config.DarkSiliconPercentage = config_darkness
 
 if __name__ == '__main__':
     unittest.main()

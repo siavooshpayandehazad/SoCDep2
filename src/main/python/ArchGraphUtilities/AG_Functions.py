@@ -353,13 +353,14 @@ def setup_network_partitioning(ag):
 
 def random_darkness(ag):
     """
+    randomly sets Config.DarkSiliconPercentage percent of the nodes to dark
     Takes the percentage of dark nodes form the Config File and turns of some Nodes.
     :param ag: Architecture Graph
     :return: None
     """
-    number_of_dark_nodes = int(ceil(len(ag.nodes())*Config.DarkSiliconPercentage))
-    for i in range(0, number_of_dark_nodes):
-        node = random.choice(ag.nodes())
+    number_of_dark_nodes = int(ceil(len(ag.nodes())*Config.DarkSiliconPercentage/100))
+    list_of_dark_node = random.sample(ag.nodes(), number_of_dark_nodes)
+    for node in list_of_dark_node:
         ag.node[node]['PE'].dark = True
     return None
 
