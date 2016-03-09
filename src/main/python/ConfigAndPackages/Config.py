@@ -354,12 +354,18 @@ NodeTestComWeight = 2
 ###############################################
 #           VISUALIZATION Config
 ###############################################
-RG_Draw = False
-PMCG_Drawing = False
-TTG_Drawing = False
-Mapping_Dstr_Drawing = False
-Mapping_Drawing = False
-Scheduling_Drawing = False
-SHM_Drawing = False          # if True generates SHM Drawing
-GenMappingFrames = False    # If True, generates the frames for animation
-FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks
+
+
+class Viz:
+    def __init__(self):
+        self.rg = False
+        self.pmcg = False
+        self.ttg = False
+        self.mapping_distribution = False
+        self.mapping = False
+        self.scheduling = False
+        self.shm = False     # if True generates SHM Drawing
+        self.mapping_frames = False  # If True, generates the frames for animation
+        self.frame_resolution = 20   # Resolution in dpi. for resolutions above 50, text is added to the tasks
+
+viz = Viz()

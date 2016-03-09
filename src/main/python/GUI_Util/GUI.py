@@ -190,14 +190,14 @@ class MainView(tk.Tk):
             Config.ProgramRunTime = float(self.p4.run_time.get())
 
             # Viz Config
-            Config.Mapping_Drawing = self.p5.mapping_Draw.get()
-            Config.RG_Draw = self.p5.rg_draw.get()
-            Config.SHM_Drawing = self.p5.shm_draw.get()
-            Config.PMCG_Drawing = self.p5.pmcg_draw.get()
-            Config.TTG_Drawing = self.p5.ttg_draw.get()
+            Config.viz.mapping = self.p5.mapping_Draw.get()
+            Config.viz.rg = self.p5.rg_draw.get()
+            Config.viz.shm = self.p5.shm_draw.get()
+            Config.viz.pmcg = self.p5.pmcg_draw.get()
+            Config.viz.ttg = self.p5.ttg_draw.get()
 
-            Config.GenMappingFrames = self.p5.anim_enable.get()
-            Config.FrameResolution = int(self.p5.frame_rez.get())
+            Config.viz.mapping_frames = self.p5.anim_enable.get()
+            Config.viz.frame_resolution = int(self.p5.frame_rez.get())
 
             # Routing
             Config.FlowControl = self.p2.flow_control.get()

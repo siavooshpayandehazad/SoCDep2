@@ -272,15 +272,15 @@ def update_config(config_file_path):
     # ------------------------------------------------
     #               Viz_Config
     # ------------------------------------------------
-    Config.RG_Draw = config.getboolean("Viz_Config", "RG_Draw")
-    Config.PMCG_Drawing = config.getboolean("Viz_Config", "PMCG_Drawing")
-    Config.TTG_Drawing = config.getboolean("Viz_Config", "TTG_Drawing")
-    Config.Mapping_Dstr_Drawing = config.getboolean("Viz_Config", "Mapping_Dstr_Drawing")
-    Config.Mapping_Drawing = config.getboolean("Viz_Config", "Mapping_Drawing")
-    Config.Scheduling_Drawing = config.getboolean("Viz_Config", "Scheduling_Drawing")
-    Config.SHM_Drawing = config.getboolean("Viz_Config", "SHM_Drawing")
-    Config.GenMappingFrames = config.getboolean("Viz_Config", "GenMappingFrames")
-    Config.FrameResolution = config.getint("Viz_Config", "FrameResolution")
+    Config.viz.rg = config.getboolean("Viz_Config", "RG_Draw")
+    Config.viz.pmcg = config.getboolean("Viz_Config", "PMCG_Drawing")
+    Config.viz.ttg = config.getboolean("Viz_Config", "TTG_Drawing")
+    Config.viz.mapping_distribution = config.getboolean("Viz_Config", "Mapping_Dstr_Drawing")
+    Config.viz.mapping = config.getboolean("Viz_Config", "Mapping_Drawing")
+    Config.viz.scheduling = config.getboolean("Viz_Config", "Scheduling_Drawing")
+    Config.viz.shm = config.getboolean("Viz_Config", "SHM_Drawing")
+    Config.viz.mapping_frames = config.getboolean("Viz_Config", "GenMappingFrames")
+    Config.viz.frame_resolution = config.getint("Viz_Config", "FrameResolution")
     return None
 
 
@@ -479,15 +479,15 @@ def generate_configfile():
     #               Viz_Config
     # ------------------------------------------------
     cnfgpars.add_section('Viz_Config')
-    cnfgpars.set('Viz_Config', 'RG_Draw', Config.RG_Draw)
-    cnfgpars.set('Viz_Config', 'PMCG_Drawing', Config.PMCG_Drawing)
-    cnfgpars.set('Viz_Config', 'TTG_Drawing', Config.TTG_Drawing)
-    cnfgpars.set('Viz_Config', 'Mapping_Dstr_Drawing', Config.Mapping_Dstr_Drawing)
-    cnfgpars.set('Viz_Config', 'Mapping_Drawing', Config.Mapping_Drawing)
-    cnfgpars.set('Viz_Config', 'Scheduling_Drawing', Config.Scheduling_Drawing)
-    cnfgpars.set('Viz_Config', 'SHM_Drawing', Config.SHM_Drawing)
-    cnfgpars.set('Viz_Config', 'GenMappingFrames', Config.GenMappingFrames)
-    cnfgpars.set('Viz_Config', 'FrameResolution', Config.FrameResolution)
+    cnfgpars.set('Viz_Config', 'RG_Draw', Config.viz.rg)
+    cnfgpars.set('Viz_Config', 'PMCG_Drawing', Config.viz.pmcg)
+    cnfgpars.set('Viz_Config', 'TTG_Drawing', Config.viz.ttg)
+    cnfgpars.set('Viz_Config', 'Mapping_Dstr_Drawing', Config.viz.mapping_distribution)
+    cnfgpars.set('Viz_Config', 'Mapping_Drawing', Config.viz.mapping)
+    cnfgpars.set('Viz_Config', 'Scheduling_Drawing', Config.viz.scheduling)
+    cnfgpars.set('Viz_Config', 'SHM_Drawing', Config.viz.shm)
+    cnfgpars.set('Viz_Config', 'GenMappingFrames', Config.viz.mapping_frames)
+    cnfgpars.set('Viz_Config', 'FrameResolution', Config.viz.frame_resolution)
 
     cnfgpars.write(cfg_file)
     cfg_file.close()
