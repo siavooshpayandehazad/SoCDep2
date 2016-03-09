@@ -329,7 +329,6 @@ else:
     CriticalRegionNodes = []
     GateToNonCritical = []
     GateToCritical = []
-    GateToCritical = []
 # For 6X6 network: (This is the Example scenario no. 2 in ReCoSoC paper)
 # ListOfBrokenLinks += [(35, 29), (29, 35), (34, 28), (28, 34), (33, 27), (11, 17), (17, 11), (10, 16), (16, 10),
 #                      (9, 15), (14, 15), (20, 26), (20, 19), (20, 14), (26, 27)]
