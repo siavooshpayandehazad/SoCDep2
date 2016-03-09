@@ -4,7 +4,7 @@ import PackageFile
 ################################################
 #          Program  Config
 ################################################
-enable_simulator = True
+enable_simulator = False
 ProgramRunTime = 900      # in cycles
 DebugInfo = False
 DebugDetails = False
