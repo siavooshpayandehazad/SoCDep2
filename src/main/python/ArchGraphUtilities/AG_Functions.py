@@ -44,7 +44,7 @@ def generate_manual_ag(proc_element_list, ag_edge_list, ag_edge_port_list):
     return ag
 
 
-def generate_generic_topology_ag(topology, size_x, size_y, size_z, logging):
+def generate_generic_topology_ag(topology, size_x, size_y, size_z, logging=None):
     """
     Takes a generic topology: 2DTorus, 2DMesh, 2DLine, 2DRing etc. and returns AG
     :param topology: a string with topology name
