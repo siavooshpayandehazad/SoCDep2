@@ -10,7 +10,7 @@ sys.path.append(CurrentPath)
 # Add Imports here:
 from ArchGraphUtilities.AG_Functions import return_node_location, return_node_number, manhattan_distance, generate_ag
 from ArchGraphUtilities.AG_Functions import update_ag_regions, max_node_neighbors, return_healthy_nodes
-from ArchGraphUtilities.AG_Functions import random_darkness
+from ArchGraphUtilities.AG_Functions import random_darkness, return_active_nodes, generate_manual_ag
 from SystemHealthMonitoring import SystemHealthMonitoringUnit, SHMU_Functions
 from RoutingAlgorithms.Calculate_Reachability import is_node_inside_rectangle
 from ConfigAndPackages import Config
@@ -144,6 +144,7 @@ class UnitTesting(unittest.TestCase):
             else:
                 self.assertEqual(ag_4_test.node[node]['Region'], 'L')
 
+        # return to previous Config
         Config.CriticalRegionNodes = copy.deepcopy(temp_critical_region)
         Config.GateToNonCritical = copy.deepcopy(temp_gnc_region)
         Config.GateToCritical = copy.deepcopy(temp_gc_region)
@@ -180,7 +181,8 @@ class UnitTesting(unittest.TestCase):
         test_healthy_nodes = return_healthy_nodes(ag_4_test, shmu_4_test.SHM)
         self.assertEqual(test_healthy_nodes, healthy_nodes)
 
-    def test_random_darkness(self):
+    def test_random_darkness_return_active_nodes(self):
+        # copy the config
         config_darkness = Config.DarkSiliconPercentage
         ag_4_test = copy.deepcopy(generate_ag(logging=None))
         for i in range(1, 100):
@@ -191,11 +193,44 @@ class UnitTesting(unittest.TestCase):
                 if ag_4_test.node[node]['PE'].dark:
                     num_of_dark_nodes += 1
             self.assertEqual(num_of_dark_nodes, ceil(len(ag_4_test.nodes())*i/100))
+            active_nodes = return_active_nodes(ag_4_test)
+            self.assertEqual(len(ag_4_test.nodes())-num_of_dark_nodes, len(active_nodes))
             # clean the AG
             for node in ag_4_test.nodes():
                 ag_4_test.node[node]['PE'].dark = False
         del ag_4_test
+        # return to previous config
         Config.DarkSiliconPercentage = config_darkness
 
+    def test_generate_manual_ag(self):
+        for number_of_tests in range(0, 100):
+            number_of_nodes = random.randint(10,30)
+            number_of_edges = int(ceil(number_of_nodes*1.5))
+            proc_element_list = []
+            edge_list = []
+            edge_port_list = []
+            for i in range(0, number_of_nodes):
+                proc_element_list.append(i)
+
+            for j in range(0, number_of_edges):
+                link = random.sample(proc_element_list, 2)
+                while (link[0], link[1]) in edge_list:
+                    link = random.sample(proc_element_list, 2)
+                edge_list.append((link[0], link[1]))
+                port_1 = random.choice(['W', 'E', 'S', 'N'])
+                port_2 = random.choice(['W', 'E', 'S', 'N'])
+                edge_port_list.append((port_1, port_2))
+
+            ag = generate_manual_ag(proc_element_list, edge_list, edge_port_list)
+            self.assertEqual(len(ag.nodes()), len(proc_element_list))
+            self.assertEqual(len(ag.edges()), len(edge_list))
+            for node in ag.nodes():
+                self.assertTrue(node in proc_element_list)
+            for link in ag.edges():
+                self.assertTrue(link in edge_list)
+                port = ag.edge[link[0]][link[1]]['Port']
+                index = edge_list.index(link)
+                self.assertEqual(edge_port_list[index], port)
+            del ag
 if __name__ == '__main__':
     unittest.main()
