@@ -5,8 +5,8 @@ import os
 import re
 
 # Setting up the python path to import the functions
-CurrentPath = re.sub('UnitTest', '', str(os.getcwd()))
-sys.path.append(CurrentPath)
+current_path = re.sub('unittest', '', str(os.getcwd()))
+sys.path.append(current_path)
 # Add Imports here:
 from ArchGraphUtilities.AG_Functions import return_node_location, return_node_number, manhattan_distance, generate_ag
 from ArchGraphUtilities.AG_Functions import update_ag_regions, max_node_neighbors, return_healthy_nodes
@@ -20,6 +20,213 @@ import random
 
 
 class ArchGraphTesting(unittest.TestCase):
+
+    def test_generate_manual_ag(self):
+        for number_of_tests in range(0, 100):
+            number_of_nodes = random.randint(10, 30)
+            number_of_edges = int(ceil(number_of_nodes*1.5))
+            proc_element_list = []
+            edge_list = []
+            edge_port_list = []
+            for i in range(0, number_of_nodes):
+                proc_element_list.append(i)
+
+            for j in range(0, number_of_edges):
+                link = random.sample(proc_element_list, 2)
+                while (link[0], link[1]) in edge_list:
+                    link = random.sample(proc_element_list, 2)
+                edge_list.append((link[0], link[1]))
+                port_1 = random.choice(['W', 'E', 'S', 'N'])
+                port_2 = random.choice(['W', 'E', 'S', 'N'])
+                edge_port_list.append((port_1, port_2))
+
+            ag = generate_manual_ag(proc_element_list, edge_list, edge_port_list)
+            self.assertEqual(len(ag.nodes()), len(proc_element_list))
+            self.assertEqual(len(ag.edges()), len(edge_list))
+            for node in ag.nodes():
+                self.assertTrue(node in proc_element_list)
+            for link in ag.edges():
+                self.assertTrue(link in edge_list)
+                port = ag.edge[link[0]][link[1]]['Port']
+                index = edge_list.index(link)
+                self.assertEqual(edge_port_list[index], port)
+            del ag
+
+    def test_generate_generic_topology_ag(self):
+        temp_x = Config.ag.x_size
+        temp_y = Config.ag.y_size
+        temp_z = Config.ag.z_size
+        size_z = 1
+        for size_y in range(2, 5):
+            for size_x in range(2, 5):
+                for topology in ['2DMesh', '2DTorus', '2DRing', '2DLine']:
+                    # todo:  test if the returned ag is ok!
+
+                    Config.ag.x_size = size_x
+                    Config.ag.y_size = size_y
+                    Config.ag.z_size = size_z
+                    ag_4_test = copy.deepcopy(generate_generic_topology_ag(topology, None))
+                    self.assertEqual(len(ag_4_test.nodes()), size_x*size_y*size_z, msg=str(ag_4_test.nodes()))
+                    # --------------------------------------------
+                    if topology is '2DMesh':
+                        link_counter = 0
+                        for j in range(0, size_y):
+                            for i in range(0, size_x-1):
+                                source = return_node_number(i, j, 0)
+                                destination = return_node_number(i+1, j, 0)
+                                self.assertTrue(ag_4_test.has_edge(source, destination))
+                                self.assertTrue(ag_4_test.has_edge(destination, source))
+                                link_counter += 2
+
+                        for j in range(0, size_y-1):
+                            for i in range(0, size_x):
+                                source = return_node_number(i, j, 0)
+                                destination = return_node_number(i, j+1, 0)
+                                self.assertTrue(ag_4_test.has_edge(source, destination))
+                                self.assertTrue(ag_4_test.has_edge(destination, source))
+                                link_counter += 2
+
+                        self.assertEqual(link_counter, len(ag_4_test.edges()), msg="link_counter: " +
+                                         str(link_counter) + " number of edges: " + str(len(ag_4_test.edges())) +
+                                         " topology: "+str(topology))
+                    # --------------------------------------------
+                    if topology is '2DTorus':
+                        link_list = []
+                        for j in range(0, size_y):
+                            for i in range(0, size_x-1):
+                                source = return_node_number(i, j, 0)
+                                destination = return_node_number(i+1, j, 0)
+                                self.assertTrue(ag_4_test.has_edge(source, destination))
+                                self.assertTrue(ag_4_test.has_edge(destination, source))
+                                if (source, destination) not in link_list:
+                                    link_list.append((source, destination))
+                                if (destination, source) not in link_list:
+                                    link_list.append((destination, source))
+
+                        for j in range(0, size_y-1):
+                            for i in range(0, size_x):
+                                source = return_node_number(i, j, 0)
+                                destination = return_node_number(i, j+1, 0)
+                                self.assertTrue(ag_4_test.has_edge(source, destination),
+                                                msg="in topology: "+str(topology)+"\ndid not found path from " +
+                                                    str(source) +
+                                                    " to "+str(destination) +
+                                                    " \nAG nodes: "+str(ag_4_test.nodes()) +
+                                                    " \nAG edges: "+str(ag_4_test.edges()))
+                                self.assertTrue(ag_4_test.has_edge(destination, source))
+                                if (source, destination) not in link_list:
+                                    link_list.append((source, destination))
+                                if (destination, source) not in link_list:
+                                    link_list.append((destination, source))
+
+                        for i in range(0, size_x):
+                            source = return_node_number(i, size_y-1, 0)
+                            destination = return_node_number(i, 0, 0)
+                            self.assertTrue(ag_4_test.has_edge(source, destination))
+                            self.assertTrue(ag_4_test.has_edge(destination, source))
+                            if (source, destination) not in link_list:
+                                link_list.append((source, destination))
+                            if (destination, source) not in link_list:
+                                link_list.append((destination, source))
+                        for j in range(0, size_y):
+                            source = return_node_number(size_x-1, j, 0)
+                            destination = return_node_number(0, j, 0)
+                            self.assertTrue(ag_4_test.has_edge(source, destination))
+                            self.assertTrue(ag_4_test.has_edge(destination, source))
+                            if (source, destination) not in link_list:
+                                link_list.append((source, destination))
+                            if (destination, source) not in link_list:
+                                link_list.append((destination, source))
+                        self.assertEqual(len(link_list), len(ag_4_test.edges()), msg="link_list: "+str(link_list) +
+                                         " number of edges: " + str(len(ag_4_test.edges())) + " topology: " +
+                                         str(topology))
+                    # --------------------------------------------
+                    if topology is '2DLine':
+                        link_counter = 0
+                        for j in range(0, size_y):
+                            for i in range(0, size_x-1):
+                                source = return_node_number(i, j, 0)
+                                destination = return_node_number(i+1, j, 0)
+                                self.assertTrue(ag_4_test.has_edge(source, destination))
+                                self.assertTrue(ag_4_test.has_edge(destination, source))
+                                link_counter += 2
+                        self.assertEqual(link_counter, len(ag_4_test.edges()), msg="link_counter: " +
+                                         str(link_counter) + " number of edges: " +
+                                         str(len(ag_4_test.edges())) + " topology: "+str(topology))
+                    # --------------------------------------------
+                    if topology is '2DRing':
+                        link_list = []
+                        for j in range(0, size_y):
+                            for i in range(0, size_x-1):
+                                source = return_node_number(i, j, 0)
+                                destination = return_node_number(i+1, j, 0)
+                                self.assertTrue(ag_4_test.has_edge(source, destination))
+                                self.assertTrue(ag_4_test.has_edge(destination, source))
+                                if (source, destination) not in link_list:
+                                    link_list.append((source, destination))
+                                if (destination, source) not in link_list:
+                                    link_list.append((destination, source))
+                        for j in range(0, size_y):
+                            source = return_node_number(size_x-1, j, 0)
+                            destination = return_node_number(0, j, 0)
+                            self.assertTrue(ag_4_test.has_edge(source, destination))
+                            self.assertTrue(ag_4_test.has_edge(destination, source))
+                            if (source, destination) not in link_list:
+                                link_list.append((source, destination))
+                            if (destination, source) not in link_list:
+                                link_list.append((destination, source))
+                        self.assertEqual(len(link_list), len(ag_4_test.edges()), msg="link_list: " +
+                                         str(link_list) + " number of edges: " + str(len(ag_4_test.edges())) +
+                                         " topology: "+str(topology))
+                    del ag_4_test
+
+        # --------------------------------------------
+        for size_z in range(2, 5):
+            for size_y in range(2, 5):
+                for size_x in range(2, 5):
+                    for topology in ['3DMesh']:
+                        size_x = 2
+                        size_y = 2
+                        size_z = 2
+                        Config.ag.x_size = size_x
+                        Config.ag.y_size = size_y
+                        Config.ag.z_size = size_z
+                        ag_4_test = generate_generic_topology_ag(topology, None)
+                        link_counter = 0
+                        for k in range(0, size_z):
+                            for j in range(0, size_y):
+                                for i in range(0, size_x-1):
+                                    source = return_node_number(i, j, k)
+                                    destination = return_node_number(i+1, j, k)
+                                    self.assertTrue(ag_4_test.has_edge(source, destination))
+                                    self.assertTrue(ag_4_test.has_edge(destination, source))
+                                    link_counter += 2
+
+                        for k in range(0, size_z):
+                            for j in range(0, size_y-1):
+                                for i in range(0, size_x):
+                                    source = return_node_number(i, j, k)
+                                    destination = return_node_number(i, j+1, k)
+                                    self.assertTrue(ag_4_test.has_edge(source, destination))
+                                    self.assertTrue(ag_4_test.has_edge(destination, source))
+                                    link_counter += 2
+
+                        for k in range(0, size_z-1):
+                            for j in range(0, size_y):
+                                for i in range(0, size_x):
+                                    source = return_node_number(i, j, k)
+                                    destination = return_node_number(i, j, k+1)
+                                    self.assertTrue(ag_4_test.has_edge(source, destination))
+                                    self.assertTrue(ag_4_test.has_edge(destination, source))
+                                    link_counter += 2
+                        self.assertEqual(link_counter, len(ag_4_test.edges()), msg="link_counter: " +
+                                         str(link_counter) + " number of edges: " + str(len(ag_4_test.edges())) +
+                                         " list of edges: "+str(ag_4_test.edges()) + " topology: "+str(topology))
+                        del ag_4_test
+
+        Config.ag.x_size = temp_x
+        Config.ag.y_size = temp_y
+        Config.ag.z_size = temp_z
 
     def test_return_node_number(self):
         self.assertEqual(return_node_number(0, 0, 0), 0)
@@ -86,6 +293,7 @@ class ArchGraphTesting(unittest.TestCase):
         Config.ag.x_size = temp_ag_x
         Config.ag.y_size = temp_ag_y
         Config.ag.z_size = temp_ag_z
+        del ag_4_test
 
     def test_max_node_neighbors(self):
         number_of_nodes = random.randint(0, 10)
@@ -114,6 +322,8 @@ class ArchGraphTesting(unittest.TestCase):
 
         test_healthy_nodes = return_healthy_nodes(ag_4_test, shmu_4_test.SHM)
         self.assertEqual(test_healthy_nodes, healthy_nodes)
+        del ag_4_test
+        del shmu_4_test
 
     def test_random_darkness_return_active_nodes(self):
         # copy the config
@@ -135,39 +345,3 @@ class ArchGraphTesting(unittest.TestCase):
         del ag_4_test
         # return to previous config
         Config.DarkSiliconPercentage = config_darkness
-
-    def test_generate_manual_ag(self):
-        for number_of_tests in range(0, 100):
-            number_of_nodes = random.randint(10, 30)
-            number_of_edges = int(ceil(number_of_nodes*1.5))
-            proc_element_list = []
-            edge_list = []
-            edge_port_list = []
-            for i in range(0, number_of_nodes):
-                proc_element_list.append(i)
-
-            for j in range(0, number_of_edges):
-                link = random.sample(proc_element_list, 2)
-                while (link[0], link[1]) in edge_list:
-                    link = random.sample(proc_element_list, 2)
-                edge_list.append((link[0], link[1]))
-                port_1 = random.choice(['W', 'E', 'S', 'N'])
-                port_2 = random.choice(['W', 'E', 'S', 'N'])
-                edge_port_list.append((port_1, port_2))
-
-            ag = generate_manual_ag(proc_element_list, edge_list, edge_port_list)
-            self.assertEqual(len(ag.nodes()), len(proc_element_list))
-            self.assertEqual(len(ag.edges()), len(edge_list))
-            for node in ag.nodes():
-                self.assertTrue(node in proc_element_list)
-            for link in ag.edges():
-                self.assertTrue(link in edge_list)
-                port = ag.edge[link[0]][link[1]]['Port']
-                index = edge_list.index(link)
-                self.assertEqual(edge_port_list[index], port)
-            del ag
-
-    def test_generate_generic_topology_ag(self):
-        for topology in ['2DTorus', '2DMesh', '2DRing', '2DLine', '3DMesh']:
-            # todo:  test if the returned ag is ok!
-            ag_4_test = generate_generic_topology_ag(topology, 2, 2, 1, None)

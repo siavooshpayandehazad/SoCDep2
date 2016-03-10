@@ -6,8 +6,8 @@ import os
 import re
 
 # Setting up the python path to import the functions
-CurrentPath = re.sub('UnitTest', '', str(os.getcwd()))
-sys.path.append(CurrentPath)
+current_path = re.sub('unittest', '', str(os.getcwd()))
+sys.path.append(current_path)
 # Add Imports here:
 from ArchGraphUtilities.AG_Functions import generate_ag
 from SystemHealthMonitoring import SystemHealthMonitoringUnit, SHMU_Functions
@@ -74,3 +74,5 @@ class SystemHealthMonitoringUnitTesting(unittest.TestCase):
             self.assertEqual(shmu_4_test.SHM.node[broken_node]['NodeHealth'], False)
         for aged_pe in Config.ListOfAgedPEs:
             self.assertEqual(shmu_4_test.SHM.node[aged_pe]['NodeSpeed'],  Config.ListOfAgedPEs[aged_pe])
+        del ag_4_test
+        del shmu_4_test

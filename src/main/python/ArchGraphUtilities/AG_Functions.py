@@ -44,16 +44,16 @@ def generate_manual_ag(proc_element_list, ag_edge_list, ag_edge_port_list):
     return ag
 
 
-def generate_generic_topology_ag(topology, size_x, size_y, size_z, logging=None):
+def generate_generic_topology_ag(topology, logging=None):
     """
     Takes a generic topology: 2DTorus, 2DMesh, 2DLine, 2DRing etc. and returns AG
     :param topology: a string with topology name
-    :param size_x: size of network in X dimension
-    :param size_y: size of network in Y dimension
-    :param size_z: size of network in Z dimension
     :param logging: logging file
     :return: AG
     """
+    size_x = Config.ag.x_size
+    size_y = Config.ag.y_size
+    size_z = Config.ag.z_size
     supported_topologies = ['2DTorus', '2DMesh', '2DRing', '2DLine', '3DMesh']
     print ("===========================================")
     print ("PREPARING AN ARCHITECTURE GRAPH (AG)...")
@@ -201,8 +201,7 @@ def generate_ag(logging=None):
     :return: returns the generated Architecture Graph
     """
     if Config.ag.type == 'Generic':
-        return generate_generic_topology_ag(Config.ag.topology, Config.ag.x_size,
-                                            Config.ag.y_size, Config.ag.z_size, logging)
+        return generate_generic_topology_ag(Config.ag.topology, logging)
     elif Config.ag.type == 'Manual':
         return generate_manual_ag(Config.PE_List, Config.AG_Edge_List, Config.AG_Edge_Port_List)
     else:

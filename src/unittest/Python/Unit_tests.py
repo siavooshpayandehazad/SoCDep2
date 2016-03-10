@@ -5,8 +5,8 @@ import os
 import re
 
 # Setting up the python path to import the functions
-CurrentPath = re.sub('UnitTest', '', str(os.getcwd()))
-sys.path.append(CurrentPath)
+current_path = re.sub('unittest', '', str(os.getcwd()))
+sys.path.append(current_path)
 # Add Imports here:
 from RoutingAlgorithms.Calculate_Reachability import is_node_inside_rectangle
 from ConfigAndPackages import Config
