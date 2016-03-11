@@ -4,8 +4,8 @@ import PackageFile
 ################################################
 #          Program  Config
 ################################################
-enable_simulator = False
-ProgramRunTime = 900      # in cycles
+enable_simulator = True
+ProgramRunTime = 1000      # in cycles
 DebugInfo = False
 DebugDetails = False
 
@@ -310,9 +310,9 @@ intermittent_counter_threshold = 2
 enable_link_counters = True
 enable_router_counters = False
 enable_pe_counters = False
-error_correction_rate = 0.8
+error_correction_rate = 0.2
 # state config can be an integer from 1 to 5 and represents the state machine which is implemented for classification
-state_config = "1"
+state_config = "2"
 ################################################
 #           Network Partitioning
 ################################################
@@ -362,7 +362,7 @@ class Viz:
         self.ttg = False
         self.mapping_distribution = False
         self.mapping = False
-        self.scheduling = False
+        self.scheduling = True
         self.shm = False     # if True generates SHM Drawing
         self.mapping_frames = False  # If True, generates the frames for animation
         self.frame_resolution = 20   # Resolution in dpi. for resolutions above 50, text is added to the tasks

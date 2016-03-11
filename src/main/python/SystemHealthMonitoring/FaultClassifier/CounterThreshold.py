@@ -55,12 +55,16 @@ class CounterThreshold:
 
         if not self.check_counter_start(location, "Health"):
             return None
+        else:
+            pass
 
         # increase the health counter
         if location in self.health_counters.keys():
             self.health_counters[location] += 1
         else:
             self.health_counters[location] = 1
+
+
         self.update_report_dict(ag)
         logging.info("Increasing health counter at location: "+location +
                      " Counter: "+str(self.health_counters[location]))
@@ -180,7 +184,7 @@ class CounterThreshold:
 
     def threshold_handler(self, location, threshold):
         if Config.state_config == "1":
-            if threshold == "health":
+            if threshold == "Health":
                 # heal the intermittent component, quick degrade
                 if location in self.intermittent_components:
                     self.intermittent_components.remove(location)
@@ -195,7 +199,7 @@ class CounterThreshold:
                     self.intermittent_components.remove(location)
                 self.reset_counters(location)
         elif Config.state_config == "2":
-            if threshold == "health":
+            if threshold == "Health":
                 # heal the intermittent component, slow degrade
                 if location in self.intermittent_components:
                     self.intermittent_components.remove(location)
@@ -214,7 +218,7 @@ class CounterThreshold:
                 self.intermittent_components.append(location)
             self.reset_counters(location)
         elif Config.state_config == "3":
-            if threshold == "health":
+            if threshold == "Health":
                 # heal the intermittent component,slow degrade, revival through intermittent only
                 if location in self.intermittent_components:
                     self.intermittent_components.remove(location)
@@ -237,7 +241,7 @@ class CounterThreshold:
                     self.dead_components.append(location)
                 self.reset_counters(location)
         elif Config.state_config == "4":
-            if threshold == "health":
+            if threshold == "Health":
                 # heal the intermittent component,quick degrade, no revival
                 if location in self.intermittent_components:
                     self.intermittent_components.remove(location)
@@ -257,7 +261,7 @@ class CounterThreshold:
                     self.dead_components.append(location)
                 self.reset_counters(location)
         elif Config.state_config == "5":
-            if threshold == "health":
+            if threshold == "Health":
                 # heal the intermittent component,quick degrade, revival through intermittent only
                 if location in self.intermittent_components:
                     self.intermittent_components.remove(location)
@@ -282,15 +286,15 @@ class CounterThreshold:
 
     def check_counter_start(self, location, counter_name):
         if Config.state_config == "1" or Config.state_config == "2" or Config.state_config == "4":
-            if counter_name == "health":
+            if counter_name == "Health":
                 if location in self.dead_components:
                     # do not increase the counter if component is dead
-                    return None
+                    return False
                 if location in self.fault_counters.keys() or location in self.intermittent_counters.keys():
                     return True
                 else:
                     # do not start the health counter if there is no fault or intermittent counter
-                    return None
+                    return False
             elif counter_name == "Intermittent":
                 if location in self.dead_components:
                     # do not increase the counter if component is dead
