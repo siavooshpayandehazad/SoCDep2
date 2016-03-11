@@ -1,6 +1,4 @@
 from pybuilder.core import init, use_plugin
-from pybuilder.utils import assert_can_execute
-from pybuilder.core import task
 
 use_plugin("python.core")
 use_plugin("python.unittest")
@@ -10,7 +8,6 @@ use_plugin("python.install_dependencies")
 # use_plugin("python.coverage")
 
 default_task = ['install_dependencies', 'publish']
-
 
 @init
 def initialize(project):

@@ -27,7 +27,7 @@ def generate_frames(ag, shm):
     bound = int(log10(2 * Config.MaxNumberOfIterations)) + 1   # UpperBoundOnFileNumberDigits
     counter = 0
     while line != '':
-        fig = plt.figure(figsize=(4*Config.ag.x_size, 4*Config.ag.y_size), dpi=Config.FrameResolution)
+        fig = plt.figure(figsize=(4*Config.ag.x_size, 4*Config.ag.y_size), dpi=Config.viz.frame_resolution)
         # initialize an empty list of cirlces
         mapped_pe_list = line.split(" ")
         for node in ag.nodes():
@@ -68,12 +68,12 @@ def generate_frames(ag, shm):
                     b = random.randrange(0, 255)
                     color = '#%02X%02X%02X' % (r, g, b)
                     circle = plt.Circle((location[0]/x_size+offset_x, location[1]/y_size+offset_y), 0.01, fc=color)
-                    if Config.FrameResolution >= 50:
+                    if Config.viz.frame_resolution >= 50:
                         plt.text(location[0]/x_size+offset_x, location[1]/y_size+offset_y-0.001, task)
                     plt.gca().add_patch(circle)
         fig.text(0.25, 0.02, "Iteration:" + str(counter), fontsize=35)
         plt.savefig("GraphDrawings/Mapping_Animation_Material/Mapping_Frame_"+str(counter).zfill(bound) + ".png",
-                    dpi=Config.FrameResolution)
+                    dpi=Config.viz.frame_resolution)
         plt.clf()
         plt.close(fig)
         counter += 1

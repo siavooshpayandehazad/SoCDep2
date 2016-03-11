@@ -4,7 +4,7 @@ import PackageFile
 ################################################
 #          Program  Config
 ################################################
-enable_simulator = True
+enable_simulator = False
 ProgramRunTime = 900      # in cycles
 DebugInfo = False
 DebugDetails = False
@@ -125,7 +125,7 @@ FlowControl = "Wormhole"
 ################################################
 #          Dark Silicon  Config
 ################################################
-DarkSiliconPercentage = 0
+DarkSiliconPercentage = 0       # should be an integer between 0 and 100
 ################################################
 #          SHM  Config
 ################################################
@@ -329,7 +329,6 @@ else:
     CriticalRegionNodes = []
     GateToNonCritical = []
     GateToCritical = []
-    GateToCritical = []
 # For 6X6 network: (This is the Example scenario no. 2 in ReCoSoC paper)
 # ListOfBrokenLinks += [(35, 29), (29, 35), (34, 28), (28, 34), (33, 27), (11, 17), (17, 11), (10, 16), (16, 10),
 #                      (9, 15), (14, 15), (20, 26), (20, 19), (20, 14), (26, 27)]
@@ -354,12 +353,18 @@ NodeTestComWeight = 2
 ###############################################
 #           VISUALIZATION Config
 ###############################################
-RG_Draw = False
-PMCG_Drawing = False
-TTG_Drawing = False
-Mapping_Dstr_Drawing = False
-Mapping_Drawing = False
-Scheduling_Drawing = False
-SHM_Drawing = False          # if True generates SHM Drawing
-GenMappingFrames = False    # If True, generates the frames for animation
-FrameResolution = 20        # Resolution in dpi. for resolutions above 50, text is added to the tasks
+
+
+class Viz:
+    def __init__(self):
+        self.rg = False
+        self.pmcg = False
+        self.ttg = False
+        self.mapping_distribution = False
+        self.mapping = False
+        self.scheduling = False
+        self.shm = False     # if True generates SHM Drawing
+        self.mapping_frames = False  # If True, generates the frames for animation
+        self.frame_resolution = 20   # Resolution in dpi. for resolutions above 50, text is added to the tasks
+
+viz = Viz()

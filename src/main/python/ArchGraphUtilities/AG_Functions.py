@@ -44,16 +44,16 @@ def generate_manual_ag(proc_element_list, ag_edge_list, ag_edge_port_list):
     return ag
 
 
-def generate_generic_topology_ag(topology, size_x, size_y, size_z, logging):
+def generate_generic_topology_ag(topology, logging=None):
     """
     Takes a generic topology: 2DTorus, 2DMesh, 2DLine, 2DRing etc. and returns AG
     :param topology: a string with topology name
-    :param size_x: size of network in X dimension
-    :param size_y: size of network in Y dimension
-    :param size_z: size of network in Z dimension
     :param logging: logging file
     :return: AG
     """
+    size_x = Config.ag.x_size
+    size_y = Config.ag.y_size
+    size_z = Config.ag.z_size
     supported_topologies = ['2DTorus', '2DMesh', '2DRing', '2DLine', '3DMesh']
     print ("===========================================")
     print ("PREPARING AN ARCHITECTURE GRAPH (AG)...")
@@ -64,10 +64,11 @@ def generate_generic_topology_ag(topology, size_x, size_y, size_z, logging):
     ag = networkx.DiGraph()
 
     if topology not in supported_topologies:
-        logging.error("TOPOLOGY NOT SUPPORTED...")
+        if logging is not None:
+            logging.error("TOPOLOGY NOT SUPPORTED...")
         raise ValueError('TOPOLOGY ', topology, ' is NOT SUPPORTED...')
-
-    logging.info("GENERATING ARCHITECTURE GRAPH (AG)...")
+    if logging is not None:
+        logging.info("GENERATING ARCHITECTURE GRAPH (AG)...")
     if topology == '2DSpidergon':
         if size_x == size_y:
             # Todo: write spidergon
@@ -78,30 +79,34 @@ def generate_generic_topology_ag(topology, size_x, size_y, size_z, logging):
         for i in range(0, size_x):
             current_node = return_node_number(i, 0, 0)
             next_node = return_node_number(i, size_y-1, 0)
-            logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
-            logging.info("CONNECTING  "+str((size_y-1)*size_x+i)+" TO "+str(current_node))
+            if logging is not None:
+                logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
+                logging.info("CONNECTING  "+str((size_y-1)*size_x+i)+" TO "+str(current_node))
             ag.add_edge(current_node, (size_y-1)*size_x+i, Port=('S', 'N'), MappedTasks={}, Scheduling={})
             ag.add_edge(next_node, current_node, Port=('N', 'S'), MappedTasks={}, Scheduling={})
         for j in range(0, size_y):
             current_node = return_node_number(0, j, 0)
             next_node = return_node_number(size_x-1, j, 0)
-            logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
-            logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
+            if logging is not None:
+                logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
+                logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
             ag.add_edge(current_node, next_node, Port=('W', 'E'), MappedTasks={}, Scheduling={})
             ag.add_edge(next_node, current_node, Port=('E', 'W'), MappedTasks={}, Scheduling={})
             for i in range(0, size_x-1):
                 current_node = return_node_number(i, j, 0)
                 next_node = return_node_number(i+1, j, 0)
-                logging.info("CONNECTING  " + str(current_node) + " TO " + str(next_node))
-                logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
+                if logging is not None:
+                    logging.info("CONNECTING  " + str(current_node) + " TO " + str(next_node))
+                    logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
                 ag.add_edge(current_node, next_node, Port=('E', 'W'), MappedTasks={}, Scheduling={})
                 ag.add_edge(next_node, current_node, Port=('W', 'E'), MappedTasks={}, Scheduling={})
         for j in range(0, size_y-1):
             for i in range(0, size_x):
                 current_node = return_node_number(i, j, 0)
                 next_node = return_node_number(i, j+1, 0)
-                logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
-                logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
+                if logging is not None:
+                    logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
+                    logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
                 ag.add_edge(current_node, next_node, Port=('N', 'S'), MappedTasks={}, Scheduling={})
                 ag.add_edge(next_node, current_node, Port=('S', 'N'), MappedTasks={}, Scheduling={})
     ##############################################################
@@ -112,16 +117,18 @@ def generate_generic_topology_ag(topology, size_x, size_y, size_z, logging):
             for i in range(0, size_x-1):
                 current_node = return_node_number(i, j, 0)
                 next_node = return_node_number(i+1, j, 0)
-                logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
-                logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
+                if logging is not None:
+                    logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
+                    logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
                 ag.add_edge(current_node, next_node, Port=('E', 'W'), MappedTasks={}, Scheduling={})
                 ag.add_edge(next_node, current_node, Port=('W', 'E'), MappedTasks={}, Scheduling={})
         for j in range(0, size_y-1):
             for i in range(0, size_x):
                 current_node = return_node_number(i, j, 0)
                 next_node = return_node_number(i, j+1, 0)
-                logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
-                logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
+                if logging is not None:
+                    logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
+                    logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
                 ag.add_edge(current_node, next_node, Port=('N', 'S'), MappedTasks={}, Scheduling={})
                 ag.add_edge(next_node, current_node, Port=('S', 'N'), MappedTasks={}, Scheduling={})
     ##############################################################
@@ -157,15 +164,17 @@ def generate_generic_topology_ag(topology, size_x, size_y, size_z, logging):
         for j in range(0, size_y):
             current_node = return_node_number(0, j, 0)
             next_node = return_node_number(size_x-1, j, 0)
-            logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
-            logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
+            if logging is not None:
+                logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
+                logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
             ag.add_edge(current_node, j*size_x+size_x-1, Port=('W', 'E'), MappedTasks={}, Scheduling={})
             ag.add_edge(next_node, current_node, Port=('E', 'W'), MappedTasks={}, Scheduling={})
             for i in range(0, size_x-1):
                 current_node = return_node_number(i, j, 0)
                 next_node = return_node_number(i+1, j, 0)
-                logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
-                logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
+                if logging is not None:
+                    logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
+                    logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
                 ag.add_edge(current_node, next_node, Port=('E', 'W'), MappedTasks={}, Scheduling={})
                 ag.add_edge(next_node, current_node, Port=('W', 'E'), MappedTasks={}, Scheduling={})
     ##############################################################
@@ -176,23 +185,23 @@ def generate_generic_topology_ag(topology, size_x, size_y, size_z, logging):
             for i in range(0, size_x-1):
                 current_node = return_node_number(i, j, 0)
                 next_node = return_node_number(i+1, j, 0)
-                logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
-                logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
+                if logging is not None:
+                    logging.info("CONNECTING  "+str(current_node)+" TO "+str(next_node))
+                    logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
                 ag.add_edge(current_node, next_node, Port=('E', 'W'), MappedTasks={}, Scheduling={})
                 ag.add_edge(next_node, current_node, Port=('W', 'E'), MappedTasks={}, Scheduling={})
     print("ARCHITECTURE GRAPH (AG) IS READY...")
     return ag
 
 
-def generate_ag(logging):
+def generate_ag(logging=None):
     """
     This function generates the architecture graph based on the configuration in Config File
     :param logging: logging file
     :return: returns the generated Architecture Graph
     """
     if Config.ag.type == 'Generic':
-        return generate_generic_topology_ag(Config.ag.topology, Config.ag.x_size,
-                                            Config.ag.y_size, Config.ag.z_size, logging)
+        return generate_generic_topology_ag(Config.ag.topology, logging)
     elif Config.ag.type == 'Manual':
         return generate_manual_ag(Config.PE_List, Config.AG_Edge_List, Config.AG_Edge_Port_List)
     else:
@@ -343,13 +352,14 @@ def setup_network_partitioning(ag):
 
 def random_darkness(ag):
     """
+    randomly sets Config.DarkSiliconPercentage percent of the nodes to dark
     Takes the percentage of dark nodes form the Config File and turns of some Nodes.
     :param ag: Architecture Graph
     :return: None
     """
-    number_of_dark_nodes = int(ceil(len(ag.nodes())*Config.DarkSiliconPercentage))
-    for i in range(0, number_of_dark_nodes):
-        node = random.choice(ag.nodes())
+    number_of_dark_nodes = int(ceil(len(ag.nodes())*Config.DarkSiliconPercentage/100))
+    list_of_dark_node = random.sample(ag.nodes(), number_of_dark_nodes)
+    for node in list_of_dark_node:
         ag.node[node]['PE'].dark = True
     return None
 

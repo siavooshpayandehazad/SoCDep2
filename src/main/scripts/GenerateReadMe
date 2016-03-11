@@ -24,6 +24,7 @@ echo AUTHORS:  																			>> $READMEFILE
 echo ' \t '		SIAVOOSH PAYANDEH AZAD		>> $READMEFILE
 echo ' \t '		BEHRAD NIAZMAND		>> $READMEFILE
 echo ' \t '		RENÉ PIHLAK		>> $READMEFILE
+echo ' \t '		NEVIN GEORGE		>> $READMEFILE
 echo DATE:    MAY 2015																	>> $READMEFILE
 echo LICENSE: GNU GENERAL PUBLIC LICENSE Version 2										>> $READMEFILE
 echo PYTHON VER: 2.7.6																	>> $READMEFILE

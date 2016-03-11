@@ -3,16 +3,15 @@
 import copy
 import time
 
-from ArchGraphUtilities import Arch_Graph_Reports, AG_Functions, AG_Test
+from ArchGraphUtilities import Arch_Graph_Reports, AG_Functions
 from ArchGraphUtilities.vl_optimization import vl_opt, vl_opt_functions
 from ConfigAndPackages import Config
 from Mapper import Mapping, Mapping_Reports, Mapping_Animation
 from Mapper import Mapping_Functions
-from RoutingAlgorithms import Routing, Calculate_Reachability, ReachabilityReports, \
-    RoutingGraph_Reports, Reachability_Test
+from RoutingAlgorithms import Routing, Calculate_Reachability, ReachabilityReports, RoutingGraph_Reports
 from Scheduler import Scheduling_Reports, TrafficTableGenerator, Scheduler
 from SystemHealthMonitoring import SystemHealthMonitoringUnit, SHMU_Reports, \
-    SHMU_Functions, TestSchedulingUnit, SHMU_Test
+    SHMU_Functions, TestSchedulingUnit
 from TaskGraphUtilities import Task_Graph_Reports, TG_Functions, TG_Test
 
 
@@ -35,16 +34,13 @@ def initialize_system(logging):
     AG_Functions.random_darkness(ag)
     if Config.EnablePartitioning:
         AG_Functions.setup_network_partitioning(ag)
-    if Config.TestMode:
-        AG_Test.ag_test()
     if Config.FindOptimumAG:
         Arch_Graph_Reports.draw_ag(ag, "AG_Full")
     else:
         Arch_Graph_Reports.draw_ag(ag, "AG")
     ####################################################################
     Config.setup_turns_health()
-    if Config.TestMode:
-        SHMU_Test.test_shmu(ag)
+
     shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
     shmu.setup_noc_shm(ag, Config.TurnsHealth)
     # Here we are injecting initial faults of the system: we assume these fault
@@ -54,7 +50,7 @@ def initialize_system(logging):
         vl_opt_functions.cleanup_ag(ag, shmu)
         Arch_Graph_Reports.draw_ag(ag, "AG_VLOpt")
     SHMU_Functions.apply_initial_faults(shmu)
-    if Config.SHM_Drawing:
+    if Config.viz.shm:
         SHMU_Reports.draw_shm(shmu.SHM)
         SHMU_Reports.draw_temp_distribution(shmu.SHM)
     # SHM_Reports.report_noc_shm()
@@ -72,7 +68,7 @@ def initialize_system(logging):
     if Config.FindOptimumAG:
         Calculate_Reachability.reachability_metric(ag, noc_rg, True)
     # Some visualization...
-    if Config.RG_Draw:
+    if Config.viz.rg:
         RoutingGraph_Reports.draw_rg(noc_rg)
     ####################################################################
     # in case of partitioning, we have to route based on different Route-graphs
@@ -80,8 +76,6 @@ def initialize_system(logging):
         critical_rg, noncritical_rg = Calculate_Reachability.calculate_reachability_with_regions(ag, shmu)
         ReachabilityReports.report_gsnoc_friendly_reachability_in_file(ag)
     else:
-        if Config.TestMode:
-            Reachability_Test.reachability_test()
         critical_rg, noncritical_rg = None, None
         Calculate_Reachability.calculate_reachability(ag, noc_rg)
         Calculate_Reachability.optimize_reachability_rectangles(ag, Config.NumberOfRects)
@@ -101,11 +95,11 @@ def initialize_system(logging):
             del best_tg, best_ag
             # SHM.add_current_mapping_to_mpm(tg)
             Mapping_Functions.write_mapping_to_file(ag, "mapping_report")
-    if Config.Mapping_Dstr_Drawing:
+    if Config.viz.mapping_distribution:
         Mapping_Reports.draw_mapping_distribution(ag, shmu)
-    if Config.Mapping_Drawing:
+    if Config.viz.mapping:
         Mapping_Reports.draw_mapping(tg, ag, shmu.SHM, "Mapping_post_opt")
-    if Config.Scheduling_Drawing:
+    if Config.viz.scheduling:
         Scheduling_Reports.generate_gantt_charts(tg, ag, "SchedulingTG")
     ####################################################################
     # PMC-Graph
@@ -120,9 +114,9 @@ def initialize_system(logging):
         test_tg = TestSchedulingUnit.generate_test_tg_from_pmcg(pmcg)
         print ("\033[92mTIME::\033[0m PMCG AND TTG GENERATION TOOK: " +
                str(round(time.time()-pmcg_start_time)) + " SECONDS")
-        if Config.PMCG_Drawing:
+        if Config.viz.pmcg:
             TestSchedulingUnit.draw_pmcg(pmcg)
-        if Config.TTG_Drawing:
+        if Config.viz.ttg:
             TestSchedulingUnit.draw_ttg(test_tg)
         TestSchedulingUnit.insert_test_tasks_in_tg(pmcg, tg)
         Task_Graph_Reports.draw_task_graph(tg, ttg=test_tg)
@@ -140,6 +134,6 @@ def initialize_system(logging):
 
     TrafficTableGenerator.generate_noxim_traffic_table(ag, tg)
     TrafficTableGenerator.generate_gsnoc_traffic_table(ag, tg)
-    if Config.GenMappingFrames:
+    if Config.viz.mapping_frames:
         Mapping_Animation.generate_frames(ag, shmu.SHM)
     return ag, shmu, noc_rg, critical_rg, noncritical_rg, pmcg

@@ -1241,14 +1241,14 @@ class ConfigApp(Tkinter.Tk):
             Config.ProgramRunTime = float(self.run_time.get())
 
             # Viz Config
-            Config.Mapping_Drawing = self.mapping_Draw.get()
-            Config.RG_Draw = self.rg_draw.get()
-            Config.SHM_Drawing = self.shm_draw.get()
-            Config.PMCG_Drawing = self.pmcg_draw.get()
-            Config.TTG_Drawing = self.ttg_draw.get()
+            Config.viz.mapping = self.mapping_Draw.get()
+            Config.viz.rg = self.rg_draw.get()
+            Config.viz.shm = self.shm_draw.get()
+            Config.viz.pmcg = self.pmcg_draw.get()
+            Config.viz.ttg = self.ttg_draw.get()
 
-            Config.GenMappingFrames = self.anim_enable.get()
-            Config.FrameResolution = int(self.frame_rez.get())
+            Config.viz.mapping_frames = self.anim_enable.get()
+            Config.viz.frame_resolution = int(self.frame_rez.get())
 
             # Routing
             Config.FlowControl = self.flow_control.get()
