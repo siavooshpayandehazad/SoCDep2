@@ -308,7 +308,7 @@ class CounterThreshold:
                 else:
                     return True
         elif Config.state_config == "3" or Config.state_config == "5":
-            if counter_name == "health":
+            if counter_name == "Health":
                 if location in self.fault_counters.keys() or \
                    location in self.intermittent_counters.keys() or \
                    location in self.dead_components:
