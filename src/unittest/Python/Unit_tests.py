@@ -23,6 +23,5 @@ class UnitTesting(unittest.TestCase):
         node = Config.ag.x_size * Config.ag.y_size * Config.ag.z_size
         self.assertEqual(is_node_inside_rectangle(rectangle, node), False)
 
-
 if __name__ == '__main__':
     unittest.main()

@@ -26,6 +26,7 @@ def draw_logo():
     print ("          SIAVOOSH PAYANDEH AZAD")
     print ("          RENE PIHLAK")
     print ("          BEHRAD NIAZMAND")
+    print ("          NEVIN GEORGE")
     print ("DATE:    MAY 2015")
     print ("THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME ")
     print ("DEPENDABILITY MECHANISMS ON DIFFERENT ARCHITECTURES....")

@@ -5,13 +5,13 @@ use_plugin("python.unittest")
 use_plugin("python.pycharm")
 use_plugin("python.install_dependencies")
 
-# use_plugin("python.coverage")
+use_plugin("python.coverage")
 
 default_task = ['install_dependencies', 'publish']
 
+
 @init
 def initialize(project):
-    
     project.version = "0.1.1"
     project.depends_on('networkx')
     # project.depends_on('Tkinter')
