@@ -1,10 +1,10 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 import PackageFile
-
+import copy
 ################################################
 #          Program  Config
 ################################################
-enable_simulator = True
+enable_simulator = False
 ProgramRunTime = 1000      # in cycles
 DebugInfo = False
 DebugDetails = False
@@ -84,12 +84,12 @@ FindOptimumAG = False
 class VerticalLinkPlacementOpt:
     def __init__(self):
         # Available Choices: 'LocalSearch', 'IterativeLocalSearch', 'SimulatedAnnealing'
-        self.vl_opt_alg = "SimulatedAnnealing"
+        self.vl_opt_alg = "IterativeLocalSearch"
         # Number of Vertical Links
-        self.vl_num = 8
+        self.vl_num = 5
         self.ils_iteration = 10
         self.ls_iteration = 10
-        self.random_seed = 2000
+        self.random_seed = 1000
         #################
         # for simulated annealing optimization
         #################
@@ -114,7 +114,7 @@ vl_opt = VerticalLinkPlacementOpt()
 # Available Turn Models :
 #         2D Turn Models: XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel
 #         3D Turn Models: XYZ_TurnModel, NegativeFirst3D_TurnModel
-UsedTurnModel = PackageFile.XY_TurnModel
+UsedTurnModel = PackageFile.NegativeFirst3D_TurnModel
 
 # Available choices: 'MinimalPath', 'NonMinimalPath'
 RotingType = 'MinimalPath'
@@ -135,14 +135,18 @@ DarkSiliconPercentage = 0       # should be an integer between 0 and 100
 def setup_turns_health():
     turns_health = {}
     if '2D' in ag.topology:
-        turns_health = PackageFile.TurnsHealth_2DNetwork
+        turns_health = copy.deepcopy(PackageFile.TurnsHealth_2DNetwork)
         if not SetRoutingFromFile:
             for Turn in PackageFile.FULL_TurnModel_2D:
                 if Turn not in UsedTurnModel:
                     if Turn in turns_health.keys():
+                        print Turn
                         turns_health[Turn] = False
+                else:
+                    if Turn in turns_health.keys():
+                        turns_health[Turn] = True
     elif '3D' in ag.topology:
-        turns_health = PackageFile.TurnsHealth_3DNetwork
+        turns_health = copy.deepcopy(PackageFile.TurnsHealth_3DNetwork)
         if not SetRoutingFromFile:
             for Turn in PackageFile.FULL_TurnModel_3D:
                 if Turn not in UsedTurnModel:
@@ -150,7 +154,7 @@ def setup_turns_health():
                         turns_health[Turn] = False
     return turns_health
 
-TurnsHealth = setup_turns_health()
+TurnsHealth = copy.deepcopy(setup_turns_health())
 
 # ==========================
 # Number of Unreachable-Rectangles

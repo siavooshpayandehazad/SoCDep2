@@ -170,12 +170,11 @@ def update_config(config_file_path):
         Config.UsedTurnModel = PackageFile.NegativeFirst3D_TurnModel
     else:
         raise ValueError("Turn Model not Available")
-
     Config.RotingType = config.get("Routing_Config", "RotingType")
     Config.RoutingFilePath = config.get("Routing_Config", "RoutingFilePath")
     Config.SetRoutingFromFile = config.getboolean("Routing_Config", "SetRoutingFromFile")
     Config.FlowControl = config.get("Routing_Config", "FlowControl")
-
+    Config.TurnsHealth = Config.setup_turns_health()
     # ------------------------------------------------
     #               Dark_Sil_Config
     # ------------------------------------------------

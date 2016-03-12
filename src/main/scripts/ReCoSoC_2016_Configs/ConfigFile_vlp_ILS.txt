@@ -1,0 +1,131 @@
+[Program_Config]
+enable_simulator = False
+programruntime = 1000
+debuginfo = False
+debugdetails = False
+testmode = False
+memoryprofiler = False
+eventdrivenfaultinjection = True
+
+[TG_Config]
+tg_type = RandomDependent
+numberoftasks = 25
+numberofcriticaltasks = 0
+numberofedges = 35
+wcet_range = 25
+edgeweightrange = 5
+release_range = 5
+tg_random_seed = 1000
+
+[AG_Config]
+ag_type = Generic
+networktopology = 3DMesh
+network_x_size = 3
+network_y_size = 3
+network_z_size = 3
+
+[VL_Config]
+findoptimumag = True
+vl_optalg = IterativeLocalSearch
+ag_opt_iterations_ils = 10
+ag_opt_iterations_ls = 10
+verticallinksnum = 5
+random_seed = 1000
+sa_annealing_schedule = Exponential
+termination_criteria = StopTemp
+sa_initial_temp = 20
+sa_stop_temp = 1
+sa_iteration = 1000
+sa_report_solutions = False
+sa_alpha = 0.9995
+sa_log_cooling_constant = 15
+
+[Routing_Config]
+usedturnmodel = NegativeFirst3D_TurnModel
+rotingtype = MinimalPath
+routingfilepath = User_Inputs/RoutingFile.txt
+setroutingfromfile = False
+flowcontrol = Wormhole
+
+[Dark_Sil_Config]
+darksiliconpercentage = 0
+
+[SHM_Config]
+numberofrects = 5
+listofbrokenturns = {}
+maxtemp = 100
+
+[CTG_Config]
+clustering_optimization = True
+clusteringiteration = 70
+ctg_random_seed = 100
+clustering_report = False
+clustering_detailedreport = False
+clustering_costfunctiontype = MAX
+clusteringoptmove = RandomTaskMove
+ctg_circulationlength = 3
+
+[Mapping_Config]
+read_mapping_from_file = False
+mapping_file_path = mapping_report.txt
+mapping_function = IterativeLocalSearch
+localsearchiteration = 10
+iterativelocalsearchiterations = 5
+mapping_random_seed = 2000
+simulatedannealingiteration = 1000
+sa_initialtemp = 20
+sa_stoptemp = 1
+sa_reportsolutions = False
+sa_annealingschedule = Huang
+terminationcriteria = StopTemp
+logcoolingconstant = 0
+costmonitorquesize = 2000
+maxsteadystate = 0
+markovnum = 0
+huangn = 30
+huangtargetvalue1 = 45
+huangtargetvalue2 = 45
+sa_alpha = 0.999
+sloperangeforcooling = 0
+markovtempstep = 0
+delta = 0.05
+huangalpha = 0.5
+mapping_costfunctiontype = Node_Util_SD
+distancebetweenmapping = False
+
+[Scheduling_Config]
+communication_slackcount = 0
+task_slackcount = 0
+
+[Fault_Config]
+mtbf = 1
+classification_method = counter_threshold
+health_counter_threshold = 4
+fault_counter_threshold = 2
+intermittent_counter_threshold = 2
+enable_link_counters = True
+enable_router_counters = False
+enable_pe_counters = False
+error_correction_rate = 0.2
+
+[Network_Partitioning]
+enablepartitioning = False
+
+[PMCG_Config]
+generatepmcg = False
+onestepdiagnosable = False
+tfaultdiagnosable
+nodetestexetime = 2
+nodetestcomweight = 2
+
+[Viz_Config]
+rg_draw = False
+pmcg_drawing = False
+ttg_drawing = False
+mapping_dstr_drawing = False
+mapping_drawing = False
+scheduling_drawing = False
+shm_drawing = False
+genmappingframes = False
+frameresolution = 20
+

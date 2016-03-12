@@ -13,7 +13,7 @@ rm -rf ../results/*
 fi
 
 
-CONFFILES=MappingExperiments/ConfigFile*
+CONFFILES=ReCoSoC_2016_Configs/ConfigFile*
 counter=1
 for conffile in $CONFFILES
 do 
