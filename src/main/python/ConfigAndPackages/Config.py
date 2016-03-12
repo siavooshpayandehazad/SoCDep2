@@ -140,7 +140,6 @@ def setup_turns_health():
             for Turn in PackageFile.FULL_TurnModel_2D:
                 if Turn not in UsedTurnModel:
                     if Turn in turns_health.keys():
-                        print Turn
                         turns_health[Turn] = False
                 else:
                     if Turn in turns_health.keys():
