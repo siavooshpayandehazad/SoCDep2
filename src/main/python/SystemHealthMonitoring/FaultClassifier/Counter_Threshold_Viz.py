@@ -36,13 +36,16 @@ def counter_threshold_viz(ag, counter_threshold):
             ax1 = fig.add_subplot(number_of_plots, 1, count)
             # Generating health monitor counters visualization
             ax1.fill_between(counter_threshold.viz_counter_list[location]+[last_number, last_number],
-                             counter_threshold.counters_h_report[location]+[0, max_threshold_value], 0, facecolor='g')
+                             counter_threshold.counters_h_report[location]+[0, max_threshold_value], 0,
+                             facecolor='g')
             # Generating fault monitor counters visualization
             ax1.fill_between(counter_threshold.viz_counter_list[location]+[last_number, last_number],
-                             counter_threshold.counters_f_report[location]+[0, max_threshold_value], 0, facecolor='r')
+                             counter_threshold.counters_f_report[location]+[0, max_threshold_value], 0,
+                             facecolor='r')
             # Generating intermittent monitor counters visualization
             ax1.fill_between(counter_threshold.viz_counter_list[location]+[last_number, last_number],
-                             counter_threshold.counters_i_report[location]+[0, max_threshold_value], 0, edgecolor='k')
+                             counter_threshold.counters_i_report[location]+[0, max_threshold_value], 0,
+                             edgecolor='k')
             # disable x and y axis ticks
             plt.setp(ax1.get_xticklabels(), visible=False)
             plt.setp(ax1.get_yticklabels(), visible=False)

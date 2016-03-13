@@ -11,6 +11,7 @@ import matplotlib.patches as patches
 def draw_rg(rg):
     print ("===========================================")
     print ("GENERATING ROUTING GRAPH VISUALIZATION...")
+    line_width = 5
     pos = {}
     color_list = []
     plt.figure(figsize=(10*Config.ag.x_size, 10*Config.ag.y_size))
@@ -20,15 +21,15 @@ def draw_rg(rg):
         chosen_node = int(re.search(r'\d+', node).group())
         location = AG_Functions.return_node_location(chosen_node)
         circle1 = plt.Circle((location[0]*distance+step*location[2], location[1]*distance+step*location[2]),
-                             radius=35, color='#8ABDFF', fill=False)
+                             radius=35, color='#8ABDFF', fill=False, lw=line_width)
         plt.gca().add_patch(circle1)
 
         circle2 = plt.Circle((location[0]*distance+step*location[2]+45, location[1]*distance+step*location[2]-50),
-                             radius=10, color='#FF878B', fill=False)
+                             radius=10, color='#FF878B', fill=False, lw=line_width)
         plt.gca().add_patch(circle2)
 
         plt.text(location[0]*distance+step*location[2]-30, location[1]*distance+step*location[2]+30,
-                 str(chosen_node), fontsize=15)
+                 str(chosen_node), fontsize=45)
 
         offset_x = 0
         offset_y = 0
@@ -97,7 +98,8 @@ def draw_rg(rg):
 
         pos[node] = [location[0]*distance+offset_x+step*location[2], location[1]*distance+offset_y+step*location[2]]
 
-    networkx.draw(rg, pos, with_labels=False, arrows=False, node_size=30, node_color=color_list)
+    networkx.draw(rg, pos, with_labels=False, arrows=False, node_size=140, node_color=color_list,
+                  linewidths=line_width, width=line_width)
 
     plt.text(0, -100, 'X', fontsize=15)
     plt.text(-100, 0, 'Y', fontsize=15)

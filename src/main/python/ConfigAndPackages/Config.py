@@ -5,7 +5,7 @@ import copy
 #          Program  Config
 ################################################
 enable_simulator = False
-ProgramRunTime = 1000      # in cycles
+ProgramRunTime = 200      # in cycles
 DebugInfo = False
 DebugDetails = False
 
@@ -114,7 +114,7 @@ vl_opt = VerticalLinkPlacementOpt()
 # Available Turn Models :
 #         2D Turn Models: XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel
 #         3D Turn Models: XYZ_TurnModel, NegativeFirst3D_TurnModel
-UsedTurnModel = PackageFile.NegativeFirst3D_TurnModel
+UsedTurnModel = PackageFile.XY_TurnModel
 
 # Available choices: 'MinimalPath', 'NonMinimalPath'
 RotingType = 'MinimalPath'
