@@ -69,6 +69,13 @@ def generate_file_directories():
     file_list = [text_file for text_file in os.listdir(internal_files_directory) if text_file.endswith(".txt")]
     for text_file in file_list:
         os.remove(internal_files_directory+'/'+text_file)
+
+    latex_directory = "Generated_Files/Latex"
+    if not os.path.isdir(latex_directory):
+        os.makedirs(latex_directory)
+    file_list = [tex_file for tex_file in os.listdir(latex_directory) if tex_file.endswith(".tex")]
+    for tex_file in file_list:
+        os.remove(latex_directory+'/'+tex_file)
     return None
 
 

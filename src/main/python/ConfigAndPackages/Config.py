@@ -365,7 +365,7 @@ class Viz:
         self.ttg = False
         self.mapping_distribution = False
         self.mapping = False
-        self.scheduling = True
+        self.scheduling = False
         self.shm = False     # if True generates SHM Drawing
         self.mapping_frames = False  # If True, generates the frames for animation
         self.frame_resolution = 20   # Resolution in dpi. for resolutions above 50, text is added to the tasks

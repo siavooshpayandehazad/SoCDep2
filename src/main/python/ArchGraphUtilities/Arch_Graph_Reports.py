@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 import networkx
 from ConfigAndPackages import Config
-from AG_Functions import return_node_location
+from AG_Functions import return_node_location, return_node_number
 import math
 
 
@@ -115,3 +115,84 @@ def draw_vl_opt():
     plt.close(fig)
     print ("\033[35m* VIZ::\033[0mVL OPTIMIZATION PROCESS GRAPH CREATED AT: GraphDrawings/vl_opt_process.png")
     return None
+
+
+def gen_latex_ag(ag, shm):
+    if Config.ag.z_size > 1:
+        return None
+
+    latex_ag_file = open('Generated_Files/Latex/ag.tex', 'w')
+
+    latex_ag_file.write("\\documentclass[12pt]{article}\n")
+    latex_ag_file.write("\\usepackage{tikz}\n")
+    latex_ag_file.write("\definecolor{critical}{RGB}{255,204,204}\n")
+    latex_ag_file.write("\definecolor{non_critical}{RGB}{255,255,255}\n")
+    latex_ag_file.write("\definecolor{gate_to_critical}{RGB}{204,229,255}\n")
+    latex_ag_file.write("\definecolor{gate_to_non_critical}{RGB}{178,102,255}\n")
+    latex_ag_file.write("\\begin{document}\n")
+    latex_ag_file.write("\\begin{tikzpicture}\n")
+
+    node_size = 1
+    for j in range(0, Config.ag.y_size):
+        for i in range(0, Config.ag.x_size):
+            start_x = i*2*node_size
+            start_y = j*2*node_size
+            node_number = return_node_number(i, j, 0)
+            if ag.node[node_number]['Region'] == 'L':
+                color = 'non_critical'
+            elif ag.node[node_number]['Region'] == 'H':
+                color = 'critical'
+            elif ag.node[node_number]['Region'] == 'GH':
+                color = 'gate_to_critical'
+            elif ag.node[node_number]['Region'] == 'GNH':
+                color = 'gate_to_non_critical'
+            else:
+                color = 'white'
+
+            latex_ag_file.write("\\draw [fill="+color+"] ("+str(start_x)+","+str(start_y)+") rectangle (" +
+                                str(start_x+node_size)+","+str(start_y+node_size)+");\n")
+
+            latex_ag_file.write("\\node[text width=0.5cm] at ("+str(start_x+node_size*0.5)+"," +
+                                str(start_y+node_size*0.5)+") {"+str(node_number)+"};\n")
+
+            if i < Config.ag.x_size-1:
+                if shm.edge[return_node_number(i, j, 0)][return_node_number(i+1, j, 0)]["LinkHealth"]:
+                    latex_ag_file.write("\\draw [line width=0.5mm, blue][ -latex ] (" +
+                                        str(start_x+node_size)+","+str(start_y+node_size*0.25) +
+                                        ") -- ("+str(start_x+2*node_size)+","+str(start_y+node_size*0.25)+");\n")
+                else:
+                    latex_ag_file.write("\\draw [line width=0.5mm, red][ -latex ] (" +
+                                        str(start_x+node_size)+","+str(start_y+node_size*0.25) +
+                                        ") -- ("+str(start_x+2*node_size)+","+str(start_y+node_size*0.25)+");\n")
+
+                if shm.edge[return_node_number(i+1, j, 0)][return_node_number(i, j, 0)]["LinkHealth"]:
+                    latex_ag_file.write("\\draw [line width=0.5mm, blue][ -latex ] (" +
+                                        str(start_x+2*node_size)+","+str(start_y+node_size*0.75) +
+                                        ") -- ("+str(start_x+node_size)+","+str(start_y+node_size*0.75)+");\n")
+                else:
+                    latex_ag_file.write("\\draw [line width=0.5mm, red][ -latex ] (" +
+                                        str(start_x+2*node_size)+","+str(start_y+node_size*0.75) +
+                                        ") -- ("+str(start_x+node_size)+","+str(start_y+node_size*0.75)+");\n")
+
+            if j < Config.ag.y_size-1:
+                if shm.edge[return_node_number(i, j, 0)][return_node_number(i, j+1, 0)]["LinkHealth"]:
+                    latex_ag_file.write("\\draw [line width=.5mm, blue][ -latex ] (" +
+                                        str(start_x+node_size*0.25)+"," + str(start_y+node_size) +
+                                        ") -- ("+str(start_x+node_size*0.25)+","+str(start_y+node_size*2)+");\n")
+                else:
+                    latex_ag_file.write("\\draw [line width=.5mm, red][ -latex ] (" +
+                                        str(start_x+node_size*0.25)+"," + str(start_y+node_size) +
+                                        ") -- ("+str(start_x+node_size*0.25)+","+str(start_y+node_size*2)+");\n")
+
+                if shm.edge[return_node_number(i, j+1, 0)][return_node_number(i, j, 0)]["LinkHealth"]:
+                    latex_ag_file.write("\\draw [line width=0.5mm, blue][ -latex ] (" +
+                                        str(start_x+node_size*0.75)+","+str(start_y+node_size*2) +
+                                        ") -- ("+str(start_x+node_size*0.75)+","+str(start_y+node_size)+");\n")
+                else:
+                    latex_ag_file.write("\\draw [line width=0.5mm, red][ -latex ] (" +
+                                        str(start_x+node_size*0.75)+","+str(start_y+node_size*2) +
+                                        ") -- ("+str(start_x+node_size*0.75)+","+str(start_y+node_size)+");\n")
+
+    latex_ag_file.write("\\end{tikzpicture}\n")
+    latex_ag_file.write("\\end{document}\n")
+    latex_ag_file.close()

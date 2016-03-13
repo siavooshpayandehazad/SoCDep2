@@ -128,7 +128,7 @@ def initialize_system(logging):
         Scheduling_Reports.generate_gantt_charts(tg, ag, "SchedulingWithTTG")
     else:
         pmcg = None
-
+    Arch_Graph_Reports.gen_latex_ag(ag, shmu.SHM)
     print ("===========================================")
     print ("SYSTEM IS UP...")
 
