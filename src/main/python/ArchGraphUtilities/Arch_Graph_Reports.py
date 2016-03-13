@@ -156,42 +156,47 @@ def gen_latex_ag(ag, shm):
                                 str(start_y+node_size*0.5)+") {"+str(node_number)+"};\n")
 
             if i < Config.ag.x_size-1:
-                if shm.edge[return_node_number(i, j, 0)][return_node_number(i+1, j, 0)]["LinkHealth"]:
-                    latex_ag_file.write("\\draw [line width=0.5mm, blue][ -latex ] (" +
-                                        str(start_x+node_size)+","+str(start_y+node_size*0.25) +
-                                        ") -- ("+str(start_x+2*node_size)+","+str(start_y+node_size*0.25)+");\n")
-                else:
-                    latex_ag_file.write("\\draw [line width=0.5mm, red][ -latex ] (" +
-                                        str(start_x+node_size)+","+str(start_y+node_size*0.25) +
-                                        ") -- ("+str(start_x+2*node_size)+","+str(start_y+node_size*0.25)+");\n")
+                if ag.has_edge(return_node_number(i, j, 0),return_node_number(i+1, j, 0)):
+                    if shm.edge[return_node_number(i, j, 0)][return_node_number(i+1, j, 0)]["LinkHealth"]:
+                        latex_ag_file.write("\\draw [line width=0.5mm, blue][ -latex ] (" +
+                                            str(start_x+node_size)+","+str(start_y+node_size*0.25) +
+                                            ") -- ("+str(start_x+2*node_size)+","+str(start_y+node_size*0.25)+");\n")
+                    else:
+                        latex_ag_file.write("\\draw [line width=0.5mm, red][ -latex ] (" +
+                                            str(start_x+node_size)+","+str(start_y+node_size*0.25) +
+                                            ") -- ("+str(start_x+2*node_size)+","+str(start_y+node_size*0.25)+");\n")
 
-                if shm.edge[return_node_number(i+1, j, 0)][return_node_number(i, j, 0)]["LinkHealth"]:
-                    latex_ag_file.write("\\draw [line width=0.5mm, blue][ -latex ] (" +
-                                        str(start_x+2*node_size)+","+str(start_y+node_size*0.75) +
-                                        ") -- ("+str(start_x+node_size)+","+str(start_y+node_size*0.75)+");\n")
-                else:
-                    latex_ag_file.write("\\draw [line width=0.5mm, red][ -latex ] (" +
-                                        str(start_x+2*node_size)+","+str(start_y+node_size*0.75) +
-                                        ") -- ("+str(start_x+node_size)+","+str(start_y+node_size*0.75)+");\n")
+                if ag.has_edge(return_node_number(i+1, j, 0),return_node_number(i, j, 0)):
+                    if shm.edge[return_node_number(i+1, j, 0)][return_node_number(i, j, 0)]["LinkHealth"]:
+                        latex_ag_file.write("\\draw [line width=0.5mm, blue][ -latex ] (" +
+                                            str(start_x+2*node_size)+","+str(start_y+node_size*0.75) +
+                                            ") -- ("+str(start_x+node_size)+","+str(start_y+node_size*0.75)+");\n")
+                    else:
+                        latex_ag_file.write("\\draw [line width=0.5mm, red][ -latex ] (" +
+                                            str(start_x+2*node_size)+","+str(start_y+node_size*0.75) +
+                                            ") -- ("+str(start_x+node_size)+","+str(start_y+node_size*0.75)+");\n")
 
             if j < Config.ag.y_size-1:
-                if shm.edge[return_node_number(i, j, 0)][return_node_number(i, j+1, 0)]["LinkHealth"]:
-                    latex_ag_file.write("\\draw [line width=.5mm, blue][ -latex ] (" +
-                                        str(start_x+node_size*0.25)+"," + str(start_y+node_size) +
-                                        ") -- ("+str(start_x+node_size*0.25)+","+str(start_y+node_size*2)+");\n")
-                else:
-                    latex_ag_file.write("\\draw [line width=.5mm, red][ -latex ] (" +
-                                        str(start_x+node_size*0.25)+"," + str(start_y+node_size) +
-                                        ") -- ("+str(start_x+node_size*0.25)+","+str(start_y+node_size*2)+");\n")
 
-                if shm.edge[return_node_number(i, j+1, 0)][return_node_number(i, j, 0)]["LinkHealth"]:
-                    latex_ag_file.write("\\draw [line width=0.5mm, blue][ -latex ] (" +
-                                        str(start_x+node_size*0.75)+","+str(start_y+node_size*2) +
-                                        ") -- ("+str(start_x+node_size*0.75)+","+str(start_y+node_size)+");\n")
-                else:
-                    latex_ag_file.write("\\draw [line width=0.5mm, red][ -latex ] (" +
-                                        str(start_x+node_size*0.75)+","+str(start_y+node_size*2) +
-                                        ") -- ("+str(start_x+node_size*0.75)+","+str(start_y+node_size)+");\n")
+                if ag.has_edge(return_node_number(i, j, 0),return_node_number(i, j+1, 0)):
+                    if shm.edge[return_node_number(i, j, 0)][return_node_number(i, j+1, 0)]["LinkHealth"]:
+                        latex_ag_file.write("\\draw [line width=.5mm, blue][ -latex ] (" +
+                                            str(start_x+node_size*0.25)+"," + str(start_y+node_size) +
+                                            ") -- ("+str(start_x+node_size*0.25)+","+str(start_y+node_size*2)+");\n")
+                    else:
+                        latex_ag_file.write("\\draw [line width=.5mm, red][ -latex ] (" +
+                                            str(start_x+node_size*0.25)+"," + str(start_y+node_size) +
+                                            ") -- ("+str(start_x+node_size*0.25)+","+str(start_y+node_size*2)+");\n")
+
+                if ag.has_edge(return_node_number(i, j+1, 0),return_node_number(i, j, 0)):
+                    if shm.edge[return_node_number(i, j+1, 0)][return_node_number(i, j, 0)]["LinkHealth"]:
+                        latex_ag_file.write("\\draw [line width=0.5mm, blue][ -latex ] (" +
+                                            str(start_x+node_size*0.75)+","+str(start_y+node_size*2) +
+                                            ") -- ("+str(start_x+node_size*0.75)+","+str(start_y+node_size)+");\n")
+                    else:
+                        latex_ag_file.write("\\draw [line width=0.5mm, red][ -latex ] (" +
+                                            str(start_x+node_size*0.75)+","+str(start_y+node_size*2) +
+                                            ") -- ("+str(start_x+node_size*0.75)+","+str(start_y+node_size)+");\n")
 
     latex_ag_file.write("\\end{tikzpicture}\n")
     latex_ag_file.write("\\end{document}\n")
