@@ -158,95 +158,84 @@ def gen_latex_ag(ag, shm):
                                 str(start_y+node_size*0.5)+") {"+str(node_number)+"};\n")
 
             if i < Config.ag.x_size-1:
-                if ag.has_edge(return_node_number(i, j, 0),return_node_number(i+1, j, 0)):
+                if ag.has_edge(return_node_number(i, j, 0), return_node_number(i+1, j, 0)):
                     if shm.edge[return_node_number(i, j, 0)][return_node_number(i+1, j, 0)]["LinkHealth"]:
-                        latex_ag_file.write("\\draw [line width=0.5mm, blue][ -latex ] (" +
-                                            str(start_x+node_size)+","+str(start_y+node_size*0.25) +
-                                            ") -- ("+str(start_x+2*node_size)+","+str(start_y+node_size*0.25)+");\n")
+                        color = 'blue'
                     else:
-                        latex_ag_file.write("\\draw [line width=0.5mm, red][ -latex ] (" +
-                                            str(start_x+node_size)+","+str(start_y+node_size*0.25) +
-                                            ") -- ("+str(start_x+2*node_size)+","+str(start_y+node_size*0.25)+");\n")
+                        color = 'red'
+                    latex_ag_file.write("\\draw [line width=0.5mm, "+color+"][ -latex ] (" +
+                                        str(start_x+node_size)+","+str(start_y+node_size*0.25) +
+                                        ") -- ("+str(start_x+2*node_size)+","+str(start_y+node_size*0.25)+");\n")
 
-                if ag.has_edge(return_node_number(i+1, j, 0),return_node_number(i, j, 0)):
+                if ag.has_edge(return_node_number(i+1, j, 0), return_node_number(i, j, 0)):
                     if shm.edge[return_node_number(i+1, j, 0)][return_node_number(i, j, 0)]["LinkHealth"]:
-                        latex_ag_file.write("\\draw [line width=0.5mm, blue][ -latex ] (" +
-                                            str(start_x+2*node_size)+","+str(start_y+node_size*0.75) +
-                                            ") -- ("+str(start_x+node_size)+","+str(start_y+node_size*0.75)+");\n")
+                        color = 'blue'
                     else:
-                        latex_ag_file.write("\\draw [line width=0.5mm, red][ -latex ] (" +
-                                            str(start_x+2*node_size)+","+str(start_y+node_size*0.75) +
-                                            ") -- ("+str(start_x+node_size)+","+str(start_y+node_size*0.75)+");\n")
+                        color = 'red'
+                    latex_ag_file.write("\\draw [line width=0.5mm, "+color+"][ -latex ] (" +
+                                        str(start_x+2*node_size)+","+str(start_y+node_size*0.75) +
+                                        ") -- ("+str(start_x+node_size)+","+str(start_y+node_size*0.75)+");\n")
 
             if j < Config.ag.y_size-1:
 
-                if ag.has_edge(return_node_number(i, j, 0),return_node_number(i, j+1, 0)):
+                if ag.has_edge(return_node_number(i, j, 0), return_node_number(i, j+1, 0)):
                     if shm.edge[return_node_number(i, j, 0)][return_node_number(i, j+1, 0)]["LinkHealth"]:
-                        latex_ag_file.write("\\draw [line width=.5mm, blue][ -latex ] (" +
-                                            str(start_x+node_size*0.25)+"," + str(start_y+node_size) +
-                                            ") -- ("+str(start_x+node_size*0.25)+","+str(start_y+node_size*2)+");\n")
+                        color = 'blue'
                     else:
-                        latex_ag_file.write("\\draw [line width=.5mm, red][ -latex ] (" +
-                                            str(start_x+node_size*0.25)+"," + str(start_y+node_size) +
-                                            ") -- ("+str(start_x+node_size*0.25)+","+str(start_y+node_size*2)+");\n")
+                        color = 'red'
+                    latex_ag_file.write("\\draw [line width=.5mm, "+color+"][ -latex ] (" +
+                                        str(start_x+node_size*0.25)+"," + str(start_y+node_size) +
+                                        ") -- ("+str(start_x+node_size*0.25)+","+str(start_y+node_size*2)+");\n")
 
-                if ag.has_edge(return_node_number(i, j+1, 0),return_node_number(i, j, 0)):
+                if ag.has_edge(return_node_number(i, j+1, 0), return_node_number(i, j, 0)):
                     if shm.edge[return_node_number(i, j+1, 0)][return_node_number(i, j, 0)]["LinkHealth"]:
-                        latex_ag_file.write("\\draw [line width=0.5mm, blue][ -latex ] (" +
-                                            str(start_x+node_size*0.75)+","+str(start_y+node_size*2) +
-                                            ") -- ("+str(start_x+node_size*0.75)+","+str(start_y+node_size)+");\n")
+                        color = 'blue'
                     else:
-                        latex_ag_file.write("\\draw [line width=0.5mm, red][ -latex ] (" +
-                                            str(start_x+node_size*0.75)+","+str(start_y+node_size*2) +
-                                            ") -- ("+str(start_x+node_size*0.75)+","+str(start_y+node_size)+");\n")
+                        color = 'red'
+                    latex_ag_file.write("\\draw [line width=0.5mm, "+color+"][ -latex ] (" +
+                                        str(start_x+node_size*0.75)+","+str(start_y+node_size*2) +
+                                        ") -- ("+str(start_x+node_size*0.75)+","+str(start_y+node_size)+");\n")
 
             if j == Config.ag.y_size-1:
-                if ag.has_edge(return_node_number(i, j, 0),return_node_number(i, 0, 0)):
+                if ag.has_edge(return_node_number(i, j, 0), return_node_number(i, 0, 0)):
                     if shm.edge[return_node_number(i, j, 0)][return_node_number(i, 0, 0)]["LinkHealth"]:
-                        latex_ag_file.write("\\draw [line width=.5mm, blue][ -latex ] (" +
-                                            str(start_x+node_size)+"," + str(start_y) +
-                                            ") to  [bend left="+str(bend)+"] ("+str(start_x+node_size)+"," +
-                                            str(node_size)+");\n")
+                        color = 'blue'
                     else:
-                        latex_ag_file.write("\\draw [line width=.5mm, red][ -latex ] (" +
-                                            str(start_x+node_size)+"," + str(start_y) +
-                                            ") to  [bend left="+str(bend)+"] ("+str(start_x+node_size)+"," +
-                                            str(node_size)+");\n")
-                if ag.has_edge(return_node_number(i, 0, 0),return_node_number(i, j, 0)):
+                        color = 'red'
+                    latex_ag_file.write("\\draw [line width=.5mm, "+color+"][ -latex ] (" +
+                                        str(start_x+node_size)+"," + str(start_y) +
+                                        ") to  [bend left="+str(bend)+"] ("+str(start_x+node_size)+"," +
+                                        str(node_size)+");\n")
+                if ag.has_edge(return_node_number(i, 0, 0), return_node_number(i, j, 0)):
                     if shm.edge[return_node_number(i, 0, 0)][return_node_number(i, j, 0)]["LinkHealth"]:
-                        latex_ag_file.write("\\draw [line width=.5mm, blue][ -latex ] (" +
-                                            str(start_x)+"," + str(node_size) +
-                                            ") to  [bend left="+str(bend)+"] ("+str(start_x)+"," +
-                                            str(start_y)+");\n")
+                        color = 'blue'
                     else:
-                        latex_ag_file.write("\\draw [line width=.5mm, blue][ -latex ] (" +
-                                            str(start_x)+"," + str(node_size) +
-                                            ") to  [bend left="+str(bend)+"] ("+str(start_x)+"," +
-                                            str(start_y)+");\n")
+                        color = 'red'
+                    latex_ag_file.write("\\draw [line width=.5mm, "+color+"][ -latex ] (" +
+                                        str(start_x)+"," + str(node_size) +
+                                        ") to  [bend left="+str(bend)+"] ("+str(start_x)+"," +
+                                        str(start_y)+");\n")
 
             if i == Config.ag.x_size-1:
-                if ag.has_edge(return_node_number(i, j, 0),return_node_number(0, j, 0)):
+                if ag.has_edge(return_node_number(i, j, 0), return_node_number(0, j, 0)):
+
                     if shm.edge[return_node_number(i, j, 0)][return_node_number(0, j, 0)]["LinkHealth"]:
-                        latex_ag_file.write("\\draw [line width=.5mm, blue][ -latex ] (" +
-                                            str(start_x)+"," + str(start_y) +
-                                            ") to  [bend left="+str(bend)+"] ("+str(node_size)+"," +
-                                            str(start_y)+");\n")
+                        color = 'blue'
                     else:
-                        latex_ag_file.write("\\draw [line width=.5mm, red][ -latex ] (" +
-                                            str(start_x)+"," + str(start_y) +
-                                            ") to  [bend left="+str(bend)+"] ("+str(node_size)+"," +
-                                            str(start_y)+");\n")
-                if ag.has_edge(return_node_number(0, j, 0),return_node_number(i, j, 0)):
+                        color = 'red'
+                    latex_ag_file.write("\\draw [line width=.5mm, "+color+"][ -latex ] (" +
+                                        str(start_x)+"," + str(start_y) +
+                                        ") to  [bend left="+str(bend)+"] ("+str(node_size)+"," +
+                                        str(start_y)+");\n")
+                if ag.has_edge(return_node_number(0, j, 0), return_node_number(i, j, 0)):
                     if shm.edge[return_node_number(0, j, 0)][return_node_number(i, j, 0)]["LinkHealth"]:
-                        latex_ag_file.write("\\draw [line width=.5mm, blue][ -latex ] (" +
-                                            str(node_size)+"," + str(start_y+node_size) +
-                                            ") to  [bend left="+str(bend)+"] ("+str(start_x)+"," +
-                                            str(start_y+node_size)+");\n")
+                        color = 'blue'
                     else:
-                        latex_ag_file.write("\\draw [line width=.5mm, red][ -latex ] (" +
-                                            str(node_size)+"," + str(start_y+node_size) +
-                                            ") to  [bend left="+str(bend)+"] ("+str(start_x)+"," +
-                                            str(start_y+node_size)+");\n")
+                        color = 'red'
+                    latex_ag_file.write("\\draw [line width=.5mm, "+color+"][ -latex ] (" +
+                                        str(node_size)+"," + str(start_y+node_size) +
+                                        ") to  [bend left="+str(bend)+"] ("+str(start_x)+"," +
+                                        str(start_y+node_size)+");\n")
 
     latex_ag_file.write("\\end{tikzpicture}\n")
     latex_ag_file.write("\\end{document}\n")
