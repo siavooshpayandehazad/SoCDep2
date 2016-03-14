@@ -7,6 +7,13 @@ from ConfigAndPackages import Config
 
 
 def optimize_ag_vertical_links(ag, shmu, logging):
+    """
+    Optimizes the vertical link placement by calling the appropriate optimization function
+    :param ag: architecture graph
+    :param shmu: System Health Monitoring Unit
+    :param logging: logging file
+    :return: True if gets a valid optimization algorithm name from Config file else, raise value error
+    """
     ag_cost_file = open('Generated_Files/Internal/vl_opt_cost.txt', 'w')
     ag_cost_file.close()
 

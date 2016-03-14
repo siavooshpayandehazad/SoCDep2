@@ -60,10 +60,10 @@ class ArchGraph:
         self.type = 'Generic'
         # in case of Generic AG_type
         # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
-        self.topology = '2DMesh'
+        self.topology = '3DMesh'
         self.x_size = 3
         self.y_size = 3
-        self.z_size = 1
+        self.z_size = 3
         # Todo: virtual channel
         self.virtual_channel_num = 0
 
@@ -78,7 +78,7 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 ################################################
 #          VL Config
 ################################################
-FindOptimumAG = False
+FindOptimumAG = True
 
 
 class VerticalLinkPlacementOpt:
@@ -114,7 +114,7 @@ vl_opt = VerticalLinkPlacementOpt()
 # Available Turn Models :
 #         2D Turn Models: XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel
 #         3D Turn Models: XYZ_TurnModel, NegativeFirst3D_TurnModel
-UsedTurnModel = PackageFile.XY_TurnModel
+UsedTurnModel = PackageFile.NegativeFirst3D_TurnModel
 
 # Available choices: 'MinimalPath', 'NonMinimalPath'
 RotingType = 'MinimalPath'

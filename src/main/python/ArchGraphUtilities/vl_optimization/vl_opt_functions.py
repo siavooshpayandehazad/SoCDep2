@@ -36,34 +36,53 @@ def remove_all_vertical_links(shmu, ag):
 
 
 def find_feasible_ag_vertical_link_placement(shmu):
+    """
+    generates a feasible vertical link placement
+    :param shmu: system health monitoring unit
+    :return: list of vertical links
+    """
     new_vertical_link_lists = []
     for i in range(0, Config.vl_opt.vl_num):
+        source_node,destination_node = place_a_random_vl(shmu)
+        new_vertical_link_lists.append((source_node, destination_node))
+    return new_vertical_link_lists
+
+
+def place_a_random_vl(shmu):
+    """
+    finds a random vl to restore
+    :param shmu: system health monitoring unit
+    :return: tuple of source node and destination node of the chosen vertical link
+    """
+    # todo: we can make this function better by finding all broken VLs and choosing randomly one from the list
+    # choose a random source node
+    source_x = random.randint(0, Config.ag.x_size-1)
+    source_y = random.randint(0, Config.ag.y_size-1)
+    source_z = random.randint(0, Config.ag.z_size-1)
+    source_node = return_node_number(source_x, source_y, source_z)
+    # find possibility of having up or down link
+    possible_z = []
+    if source_z+1 <= Config.ag.z_size-1:
+        possible_z.append(source_z+1)
+    if 0 <= source_z-1:
+        possible_z.append(source_z-1)
+    # find destination node
+    destination_node = return_node_number(source_x, source_y, random.choice(possible_z))
+    # check if the chosen node is HEALTHY, meaning that it is in place! if so, find another link
+    while shmu.SHM.edge[source_node][destination_node]['LinkHealth']:
         source_x = random.randint(0, Config.ag.x_size-1)
         source_y = random.randint(0, Config.ag.y_size-1)
         source_z = random.randint(0, Config.ag.z_size-1)
         source_node = return_node_number(source_x, source_y, source_z)
         possible_z = []
-        if source_z+1 <= Config.ag.z_size-1:
+        if source_z + 1 <= Config.ag.z_size-1:
             possible_z.append(source_z+1)
         if 0 <= source_z-1:
             possible_z.append(source_z-1)
         destination_node = return_node_number(source_x, source_y, random.choice(possible_z))
-        while shmu.SHM.edge[source_node][destination_node]['LinkHealth']:
-            source_x = random.randint(0, Config.ag.x_size-1)
-            source_y = random.randint(0, Config.ag.y_size-1)
-            source_z = random.randint(0, Config.ag.z_size-1)
-            source_node = return_node_number(source_x, source_y, source_z)
-            possible_z = []
-            if source_z + 1 <= Config.ag.z_size-1:
-                possible_z.append(source_z+1)
-            if 0 <= source_z-1:
-                possible_z.append(source_z-1)
-            destination_node = return_node_number(source_x, source_y, random.choice(possible_z))
-
-        # here we have a candidate to restore
-        shmu.restore_broken_link((source_node, destination_node), False)
-        new_vertical_link_lists.append((source_node, destination_node))
-    return new_vertical_link_lists
+    # here we have a candidate to restore
+    shmu.restore_broken_link((source_node, destination_node), False)
+    return source_node, destination_node
 
 
 def return_to_solution(ag, shmu, vertical_link_list):
@@ -71,7 +90,7 @@ def return_to_solution(ag, shmu, vertical_link_list):
     Takes a list of vertical links and applies this configuration to the system. used for moving back
     to an old solution
     :param ag: architecture graph
-    :param shm: system health monitoring unit
+    :param shmu: system health monitoring unit
     :param vertical_link_list: list of vertical links to be placed
     :return: None
     """
@@ -82,36 +101,18 @@ def return_to_solution(ag, shmu, vertical_link_list):
 
 
 def move_to_new_vertical_link_configuration(shmu, vertical_link_lists):
+    """
+    Takes a vertical link configuration and moves to a neighbor solution
+    :param shmu: systme health monitoring unit
+    :param vertical_link_lists: current list of vertical links
+    :return: new list of vertical links
+    """
     new_vertical_link_lists = copy.deepcopy(vertical_link_lists)
     chosen_link_to_fix = random.choice(new_vertical_link_lists)
     new_vertical_link_lists.remove(chosen_link_to_fix)
     shmu.break_link(chosen_link_to_fix, False)
 
-    source_x = random.randint(0, Config.ag.x_size-1)
-    source_y = random.randint(0, Config.ag.y_size-1)
-    source_z = random.randint(0, Config.ag.z_size-1)
-    source_node = return_node_number(source_x, source_y, source_z)
-    possible_z = []
-    if source_z + 1 <= Config.ag.z_size-1:
-        possible_z.append(source_z + 1)
-    if 0 <= source_z - 1:
-        possible_z.append(source_z - 1)
-    destination_node = return_node_number(source_x, source_y, random.choice(possible_z))
-
-    while source_node == destination_node or \
-            shmu.SHM.edge[source_node][destination_node]['LinkHealth']:
-        source_x = random.randint(0, Config.ag.x_size-1)
-        source_y = random.randint(0, Config.ag.y_size-1)
-        source_z = random.randint(0, Config.ag.z_size-1)
-        source_node = return_node_number(source_x, source_y, source_z)
-        possible_z = []
-        if source_z+1 <= Config.ag.z_size-1:
-            possible_z.append(source_z+1)
-        if 0 <= source_z-1:
-            possible_z.append(source_z-1)
-        destination_node = return_node_number(source_x, source_y, random.choice(possible_z))
-    # here we have a candidate to restore
-    shmu.restore_broken_link((source_node, destination_node), False)
+    source_node,destination_node = place_a_random_vl(shmu)
     new_vertical_link_lists.append((source_node, destination_node))
     return new_vertical_link_lists
 

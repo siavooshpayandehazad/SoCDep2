@@ -118,6 +118,13 @@ def draw_vl_opt():
 
 
 def gen_latex_ag(ag, shm):
+    """
+    Generates a latex (.tex) file that will draw the architecture graph along with health of links
+    and partitioning information
+    :param ag: Architecture graph
+    :param shm: System Health Map
+    :return: None
+    """
     if Config.ag.z_size > 1:
         return None
 
@@ -240,3 +247,4 @@ def gen_latex_ag(ag, shm):
     latex_ag_file.write("\\end{tikzpicture}\n")
     latex_ag_file.write("\\end{document}\n")
     latex_ag_file.close()
+    return None
