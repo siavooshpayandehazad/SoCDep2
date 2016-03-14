@@ -64,7 +64,6 @@ class CounterThreshold:
         else:
             self.health_counters[location] = 1
 
-
         self.update_report_dict(ag)
         logging.info("Increasing health counter at location: "+location +
                      " Counter: "+str(self.health_counters[location]))
@@ -363,6 +362,12 @@ class CounterThreshold:
             self.update_report_list(location)
 
     def update_report_list(self, location):
+        # todo: I have to do something about this. this function is probably THE worst report function ever
+        # The problem is that i need to update these with some sort of time stamp. however,
+        # im generating this time stamp by increasing viz_counter_list. The problem with this is
+        # that im calling this function from 2 different places. one is inside this class and the other
+        # is from the simulator (every clock cycle). Now, every time we increase/reset a counter in the system
+        # we add one extra time stamp... Im thinking about how i can remove this!
         if location not in self.counters_f_report.keys():
             self.counters_f_report[location] = []
             self.counters_h_report[location] = []
@@ -371,37 +376,11 @@ class CounterThreshold:
         if location in self.fault_counters.keys():
 
             if self.fault_counters[location] > self.counters_f_report[location][-1]:
-                self.counters_f_report[location].append(self.counters_f_report[location][-1])
-                self.counters_i_report[location].append(self.intermittent_counters[location])
-                self.counters_h_report[location].append(self.health_counters[location])
-                self.viz_counter_list[location].append(self.viz_counter_list[location][-1]+1)
-
-                self.counters_f_report[location].append(self.fault_counters[location])
-                self.counters_i_report[location].append(self.intermittent_counters[location])
-                self.counters_h_report[location].append(self.health_counters[location])
-                self.viz_counter_list[location].append(self.viz_counter_list[location][-1])
-
+                self.add_location_to_viz_counters(location, 'F')
             elif self.intermittent_counters[location] > self.counters_i_report[location][-1]:
-                self.counters_f_report[location].append(self.fault_counters[location])
-                self.counters_i_report[location].append(self.counters_i_report[location][-1])
-                self.counters_h_report[location].append(self.health_counters[location])
-                self.viz_counter_list[location].append(self.viz_counter_list[location][-1]+1)
-
-                self.counters_f_report[location].append(self.fault_counters[location])
-                self.counters_i_report[location].append(self.intermittent_counters[location])
-                self.counters_h_report[location].append(self.health_counters[location])
-                self.viz_counter_list[location].append(self.viz_counter_list[location][-1])
-
+                self.add_location_to_viz_counters(location, 'I')
             elif self.health_counters[location] > self.counters_h_report[location][-1]:
-                self.counters_f_report[location].append(self.fault_counters[location])
-                self.counters_i_report[location].append(self.intermittent_counters[location])
-                self.counters_h_report[location].append(self.counters_h_report[location][-1])
-                self.viz_counter_list[location].append(self.viz_counter_list[location][-1]+1)
-
-                self.counters_f_report[location].append(self.fault_counters[location])
-                self.counters_i_report[location].append(self.intermittent_counters[location])
-                self.counters_h_report[location].append(self.health_counters[location])
-                self.viz_counter_list[location].append(self.viz_counter_list[location][-1])
+                self.add_location_to_viz_counters(location, 'H')
             else:
                 self.counters_f_report[location].append(self.fault_counters[location])
                 self.counters_i_report[location].append(self.intermittent_counters[location])
@@ -431,6 +410,27 @@ class CounterThreshold:
             else:
                 self.viz_counter_list[location].append(self.viz_counter_list[location][-1]+1)
         return None
+
+    def add_location_to_viz_counters(self, location, fault_type):
+        if fault_type == 'I':
+            self.counters_f_report[location].append(self.fault_counters[location])
+            self.counters_i_report[location].append(self.counters_i_report[location][-1])
+            self.counters_h_report[location].append(self.health_counters[location])
+        elif fault_type == 'F':
+            self.counters_f_report[location].append(self.counters_f_report[location][-1])
+            self.counters_i_report[location].append(self.intermittent_counters[location])
+            self.counters_h_report[location].append(self.health_counters[location])
+        elif fault_type == 'H':
+            self.counters_f_report[location].append(self.fault_counters[location])
+            self.counters_i_report[location].append(self.intermittent_counters[location])
+            self.counters_h_report[location].append(self.counters_h_report[location][-1])
+
+        self.viz_counter_list[location].append(self.viz_counter_list[location][-1]+1)
+
+        self.counters_f_report[location].append(self.fault_counters[location])
+        self.counters_i_report[location].append(self.intermittent_counters[location])
+        self.counters_h_report[location].append(self.health_counters[location])
+        self.viz_counter_list[location].append(self.viz_counter_list[location][-1])
 
     def return_allocated_memory(self):
         return len(self.health_counters) + len(self.fault_counters) + len(self.intermittent_counters)

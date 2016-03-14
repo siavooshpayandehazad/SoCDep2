@@ -99,8 +99,8 @@ def counter_threshold_viz(ag, counter_threshold):
             ax1.fill_between(counter_threshold.viz_counter_list[location]+[last_number, last_number],
                              counter_threshold.counters_i_report[location]+[0, max_threshold_value], 0, edgecolor='k')
             # disable x and y axis ticks
-            # if link_counter != len(ag.edges()):
-            plt.setp(ax1.get_xticklabels(), visible=False)
+            if link_counter != len(ag.edges()):
+                plt.setp(ax1.get_xticklabels(), visible=False)
             plt.setp(ax1.get_yticklabels(), visible=False)
             # move the y labels away
             ax1.yaxis.set_label_coords(-0.01, 0)

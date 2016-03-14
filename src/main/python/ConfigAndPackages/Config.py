@@ -4,7 +4,7 @@ import copy
 ################################################
 #          Program  Config
 ################################################
-enable_simulator = False
+enable_simulator = True
 ProgramRunTime = 200      # in cycles
 DebugInfo = False
 DebugDetails = False
