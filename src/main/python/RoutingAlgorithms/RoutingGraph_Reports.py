@@ -9,6 +9,11 @@ import matplotlib.patches as patches
 
 
 def draw_rg(rg):
+    """
+    draws routing graph in GraphDrawings/RG.png
+    :param rg: routing graph
+    :return: None
+    """
     print ("===========================================")
     print ("GENERATING ROUTING GRAPH VISUALIZATION...")
     line_width = 5

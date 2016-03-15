@@ -102,7 +102,7 @@ def alap_scheduling(logging=None):
 
 def schedule_test_in_tg(tg, ag, shm, report, logging):
     """
-
+    Schedules the Test tasks
     :param tg: Task Graph
     :param ag: Architecture Graph
     :param shm: System Health Map

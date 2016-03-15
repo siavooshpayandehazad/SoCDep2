@@ -4,6 +4,12 @@ from ArchGraphUtilities import AG_Functions
 
 
 def report_gsnoc_friendly_reachability_in_file(ag):
+    """
+    generates a GSNoC readable reachability file. (how ever last time i checked,
+    i couldn't find any trace of the tool online.)
+    :param ag: architecture graph
+    :return: None
+    """
     reachability_file = open("Generated_Files/GSNoC_RectangleFile.txt", 'w')
     for node in ag.nodes():
         node_x, node_y, node_z = AG_Functions.return_node_location(node)
@@ -30,6 +36,7 @@ def report_gsnoc_friendly_reachability_in_file(ag):
                     reachability_file.write(str(direction)+" NetLocCube(invalid)\n")
         reachability_file.write("\n")
     reachability_file.close()
+    return None
 
 
 def report_reachability(ag):
@@ -47,6 +54,12 @@ def report_reachability(ag):
 
 
 def report_reachability_in_file(ag, file_name):
+    """
+    Reports the non reachable areas for each port for each node in a file!
+    :param ag: architecture graph
+    :param file_name: name of the file that we dump this info in!
+    :return: None
+    """
     reachability_file = open('Generated_Files/'+file_name+".txt", 'w')
     for node in ag.nodes():
         reachability_file.write("=====================================\n")
