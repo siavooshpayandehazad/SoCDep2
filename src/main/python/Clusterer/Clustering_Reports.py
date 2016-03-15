@@ -6,6 +6,12 @@ import matplotlib.pyplot as plt
 
 
 def report_ctg(ctg, filename):
+    """
+    Reports Clustered Task Graph in the Console and draws CTG in file
+    :param ctg: clustered task graph
+    :param filename: drawing file name
+    :return: None
+    """
     print "==========================================="
     print "      REPORTING CLUSTERED TASK GRAPH"
     print "==========================================="

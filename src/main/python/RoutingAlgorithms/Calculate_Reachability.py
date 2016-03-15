@@ -11,6 +11,12 @@ from ArchGraphUtilities import AG_Functions
 
 
 def calculate_reachability(ag, noc_rg):
+    """
+    adds non-reachable nodes from each node's port to that port's unreachable list
+    :param ag: Architecture Graph
+    :param noc_rg: NoC Routing Graph
+    :return: None
+    """
     if '3D' in Config.ag.topology:
         port_list = ['U', 'N', 'E', 'W', 'S', 'D']
     else:
@@ -25,10 +31,19 @@ def calculate_reachability(ag, noc_rg):
                     if not is_destination_reachable_via_port(noc_rg, source_node, port, destination_node, False):
                         # print ("No Path From", SourceNode,Port,"To",DestinationNode)
                         ag.node[source_node]['Router'].unreachable[port].append(destination_node)
+    return None
 
 
 def is_destination_reachable_via_port(noc_rg, source_node, port, destination_node, report):
-
+    """
+    checks if there is a path from source node's port to local port of destination node
+    :param noc_rg: NoC Routing Graph
+    :param source_node: source node ID
+    :param port: port from which a path search starts from source node
+    :param destination_node: destination node ID
+    :param report: boolean, which enables printing reports to console
+    :return: True if there is a path from source's port to destination, False, if no path is found
+    """
     # the Source port should be output port since this is output of router to other routers
     source = str(source_node)+str(port)+str('O')
     # the destination port should be output port since this is output of router to PE
@@ -43,6 +58,14 @@ def is_destination_reachable_via_port(noc_rg, source_node, port, destination_nod
 
 
 def is_destination_reachable_from_source(noc_rg, source_node, destination_node):
+    """
+    checks if destination is reachable from the local port of the source node
+    the search starts from the local port
+    :param noc_rg: NoC routing graph
+    :param source_node: source node id
+    :param destination_node: destination node id
+    :return: True if there is a path else, False
+    """
 
     # the Source port should be input port since this is input of router
     # (which will be connected to PE's output port)
@@ -57,6 +80,13 @@ def is_destination_reachable_from_source(noc_rg, source_node, destination_node):
 
 
 def how_many_paths_from_source(noc_rg, source_node, destination_node):
+    """
+    returns the number of paths from the source's local port to destination
+    :param noc_rg: NoC routing graph
+    :param source_node: source node
+    :param destination_node: destination node
+    :return: number of paths from source node to destination
+    """
     source = str(source_node)+str('L')+str('I')
     destination = str(destination_node)+str('L')+str('O')
     if networkx.has_path(noc_rg, source, destination):
@@ -67,6 +97,13 @@ def how_many_paths_from_source(noc_rg, source_node, destination_node):
 
 
 def optimize_reachability_rectangles(ag, number_of_rectangles):
+    """
+    optimizes the rectangles in non-reachable lists of AG to reduce it to number of
+    rectangles
+    :param ag: Architecture Graph
+    :param number_of_rectangles: number of available rectangles
+    :return: None
+    """
     # the idea of merging is that we make a rectangle with representing 2 vertex of it,
     # namely north-west and south-east vertex.
     # Then we try to generate optimal rectangle set that covers all of the nodes...
@@ -82,12 +119,18 @@ def optimize_reachability_rectangles(ag, number_of_rectangles):
             else:
                 rectangle_list = copy.deepcopy(merge_node_with_rectangles(rectangle_list,
                                                                           ag.node[node]['Router'].unreachable[port]))
-            ag.node[node]['Router'].unreachable[port] = rectangle_list
+            ag.node[node]['Router'].unreachable[port] = copy.deepcopy(rectangle_list)
     print ("RECTANGLE OPTIMIZATION FINISHED...")
     return None
 
 
 def merge_node_with_rectangles(rectangle_list, unreachable_node_list):
+    """
+
+    :param rectangle_list:
+    :param unreachable_node_list: un-reachable nodes that are initially populating the unreachable list
+    :return: rectangle list
+    """
     # todo: in this function if we can not perform any loss-less merge, we terminate the process...
     # which is bad... we need to make sure that this node is covered
     for unreachable_node in unreachable_node_list:
@@ -133,6 +176,12 @@ def merge_node_with_rectangles(rectangle_list, unreachable_node_list):
 
 
 def is_node_inside_rectangle(rect, node):
+    """
+    Checks if the node id is inside the rectangle
+    :param rect: rectangle represented by 2 coordinates lower_left, upper_right
+    :param node: node id
+    :return: True if node id is inside rectangle else, False
+    """
     r1x, r1y, r1z = AG_Functions.return_node_location(rect[0])
     r2x, r2y, r2z = AG_Functions.return_node_location(rect[1])
     node_x, node_y, node_z = AG_Functions.return_node_location(node)
@@ -143,6 +192,13 @@ def is_node_inside_rectangle(rect, node):
 
 
 def merge_rectangle_with_node(rect_ll, rect_ur, node):
+    """
+    Merges a rectangle with a node
+    :param rect_ll: rectangle lower left position
+    :param rect_ur:  rectangle upper right position
+    :param node: ID of the node to be merged
+    :return: coordination of final rectangle (rect_ll, rect_ur)
+    """
     x1, y1, z1 = AG_Functions.return_node_location(rect_ll)
     x2, y2, z2 = AG_Functions.return_node_location(rect_ur)
     node_x, node_y, node_z = AG_Functions.return_node_location(node)
@@ -158,6 +214,11 @@ def merge_rectangle_with_node(rect_ll, rect_ur, node):
 
 
 def clear_reachability_calculations(ag):
+    """
+    clears all the unreachable lists in the network
+    :param ag: architecture graph
+    :return: None
+    """
     for node in ag.nodes():
         for port in ag.node[node]['Router'].unreachable:
             ag.node[node]['Router'].unreachable[port] = {}
@@ -165,6 +226,12 @@ def clear_reachability_calculations(ag):
 
 
 def calculate_reachability_with_regions(ag, shmu):
+    """
+    calculates the routing graph for different regions of partitioned network
+    :param ag: architecture graph
+    :param shmu: system health monitoring unit
+    :return: routing graph of critical partition and non-critical partition
+    """
     # first Add the VirtualBrokenLinksForNonCritical
     already_broken_links = []
     for virtual_broken_link in Config.VirtualBrokenLinksForNonCritical:

@@ -43,7 +43,7 @@ def find_feasible_ag_vertical_link_placement(shmu):
     """
     new_vertical_link_lists = []
     for i in range(0, Config.vl_opt.vl_num):
-        source_node,destination_node = place_a_random_vl(shmu)
+        source_node, destination_node = place_a_random_vl(shmu)
         new_vertical_link_lists.append((source_node, destination_node))
     return new_vertical_link_lists
 
@@ -112,7 +112,7 @@ def move_to_new_vertical_link_configuration(shmu, vertical_link_lists):
     new_vertical_link_lists.remove(chosen_link_to_fix)
     shmu.break_link(chosen_link_to_fix, False)
 
-    source_node,destination_node = place_a_random_vl(shmu)
+    source_node, destination_node = place_a_random_vl(shmu)
     new_vertical_link_lists.append((source_node, destination_node))
     return new_vertical_link_lists
 

@@ -105,6 +105,14 @@ def opt_ag_vertical_link_sa(ag, shmu, cost_file_name, logging):
 
 
 def metropolis(current_cost, new_cost, temperature):
+    """
+    returns Metropolis function for finding the probability of the next move
+    in Simulated Annealing
+    :param current_cost: cost of the current solution
+    :param new_cost: cost of the chosen neighbor solution
+    :param temperature: current temperature of the process
+    :return: Metropolis probability
+    """
     if new_cost < current_cost:
         probability = exp((new_cost-current_cost)/temperature)
     else:
@@ -113,6 +121,14 @@ def metropolis(current_cost, new_cost, temperature):
 
 
 def next_temp(initial_temp, iteration, max_iteration, current_temp):
+    """
+    Temperature calculator for simulated annealing
+    :param initial_temp: starting temperature of the process
+    :param iteration: current iteration number
+    :param max_iteration: max number of iterations
+    :param current_temp: current temperature of the process
+    :return: temperature chosen for next iteration
+    """
     if Config.vl_opt.sa_annealing_schedule == 'Linear':
         temp = (float(max_iteration-iteration)/max_iteration)*initial_temp
         print ("\033[36m* COOLING::\033[0m CURRENT TEMP: "+str(temp))
