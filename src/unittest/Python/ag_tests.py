@@ -312,7 +312,7 @@ class ArchGraphTesting(unittest.TestCase):
     def test_return_healthy_nodes(self):
         ag_4_test = copy.deepcopy(generate_ag(logging=None))
         shmu_4_test = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
-        shmu_4_test.setup_noc_shm(ag_4_test, Config.TurnsHealth)
+        shmu_4_test.setup_noc_shm(ag_4_test, Config.TurnsHealth, False)
 
         healthy_nodes = copy.deepcopy(ag_4_test.nodes())
         for node in ag_4_test.nodes():

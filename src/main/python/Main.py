@@ -10,9 +10,10 @@ import logging
 from ConfigAndPackages import Config, PackageFile, Check_Config
 from Utilities import Logger, Benchmark_Alg_Downloader
 import SystemInitialization
-from GUI_Util import GUI_old, GUI
+from GUI_Util import GUI
 from pympler import tracker
 from Simulator import Simulator
+from ArchGraphUtilities import list_all_turn_models
 # from Simulator import FaultInjector
 
 tr = None
@@ -36,6 +37,9 @@ elif '-GUI' in sys.argv[1:]:
     main_window.mainloop()
     if not main_window.apply_button:
         sys.exit()
+elif '-LTM' in sys.argv[1:]: # list turn model
+    list_all_turn_models.list_all_3d_turn_models()
+    sys.exit()
 elif '-UTEST' in sys.argv[1:]:
     os.system('python ../../unittest/Python/Unit_tests.py')
     sys.exit()

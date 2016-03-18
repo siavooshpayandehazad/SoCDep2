@@ -16,9 +16,10 @@ class SystemHealthMonitoringUnit:
         self.SnapShot = None
         self.MPM = {}                     # Most Probable Mapping Lib
 
-    def setup_noc_shm(self, ag, turns_health):
-        print ("===========================================")
-        print ("PREPARING SYSTEM HEALTH MAP...")
+    def setup_noc_shm(self, ag, turns_health, report):
+        if report:
+            print ("===========================================")
+            print ("PREPARING SYSTEM HEALTH MAP...")
         if not Config.SetRoutingFromFile:
             for node in ag.nodes():
                 self.SHM.add_node(node, TurnsHealth=copy.deepcopy(turns_health), NodeHealth=True, NodeSpeed=100,
@@ -53,7 +54,8 @@ class SystemHealthMonitoringUnit:
                                       NodeSpeed=100, RouterTemp=0, NodeTemp=0)
         for link in ag.edges():
             self.SHM.add_edge(link[0], link[1], LinkHealth=True)
-        print ("SYSTEM HEALTH MAP CREATED...")
+        if report:
+            print ("SYSTEM HEALTH MAP CREATED...")
 
     ##################################################
     def break_link(self, link, report):

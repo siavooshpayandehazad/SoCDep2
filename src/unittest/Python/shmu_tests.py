@@ -20,7 +20,7 @@ class SystemHealthMonitoringUnitTesting(unittest.TestCase):
     def test_shmu_breaking_and_restore(self):
         ag_4_test = copy.deepcopy(generate_ag(logging=None))
         shmu_4_test = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
-        shmu_4_test.setup_noc_shm(ag_4_test, Config.TurnsHealth)
+        shmu_4_test.setup_noc_shm(ag_4_test, Config.TurnsHealth, False)
         for node in shmu_4_test.SHM.nodes():
             shmu_4_test.break_node(node, False)
             self.assertEqual(shmu_4_test.SHM.node[node]['NodeHealth'], False)
@@ -50,7 +50,7 @@ class SystemHealthMonitoringUnitTesting(unittest.TestCase):
     def test_shmu_aging(self):
         ag_4_test = copy.deepcopy(generate_ag(logging=None))
         shmu_4_test = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
-        shmu_4_test.setup_noc_shm(ag_4_test, Config.TurnsHealth)
+        shmu_4_test.setup_noc_shm(ag_4_test, Config.TurnsHealth, False)
         for Node in shmu_4_test.SHM.nodes():
             shmu_4_test.introduce_aging(Node, 0.5, False)
             self.assertEqual(shmu_4_test.SHM.node[Node]['NodeSpeed'], 50)
@@ -63,7 +63,7 @@ class SystemHealthMonitoringUnitTesting(unittest.TestCase):
         # todo: generate some random faults and put them in Config and then return to normal
         ag_4_test = copy.deepcopy(generate_ag(logging=None))
         shmu_4_test = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
-        shmu_4_test.setup_noc_shm(ag_4_test, Config.TurnsHealth)
+        shmu_4_test.setup_noc_shm(ag_4_test, Config.TurnsHealth, False)
         SHMU_Functions.apply_initial_faults(shmu_4_test)
         for broken_link in Config.ListOfBrokenLinks:
             self.assertEqual(shmu_4_test.SHM.edge[broken_link[0]][broken_link[1]]['LinkHealth'], False)
