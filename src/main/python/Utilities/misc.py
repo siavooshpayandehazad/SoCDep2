@@ -76,8 +76,14 @@ def generate_file_directories():
     file_list = [tex_file for tex_file in os.listdir(latex_directory) if tex_file.endswith(".tex")]
     for tex_file in file_list:
         os.remove(latex_directory+'/'+tex_file)
-    return None
 
+    turn_model_directory = "Generated_Files/Turn_Model_Lists"
+    if not os.path.isdir(turn_model_directory):
+        os.makedirs(turn_model_directory)
+    file_list = [txt_file for txt_file in os.listdir(turn_model_directory) if txt_file.endswith(".txt")]
+    for txt_file in file_list:
+        os.remove(turn_model_directory+'/'+txt_file)
+    return None
 
 def check_for_dependencies():
     for module in PackageFile.ImportModules:

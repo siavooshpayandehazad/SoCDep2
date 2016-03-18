@@ -15,6 +15,7 @@ from pympler import tracker
 from Simulator import Simulator
 from ArchGraphUtilities import list_all_turn_models
 # from Simulator import FaultInjector
+from multiprocessing import Pool
 
 tr = None
 if Config.MemoryProfiler:
@@ -38,7 +39,14 @@ elif '-GUI' in sys.argv[1:]:
     if not main_window.apply_button:
         sys.exit()
 elif '-LTM' in sys.argv[1:]: # list turn model
-    list_all_turn_models.list_all_3d_turn_models()
+    misc.generate_file_directories()
+    if __name__ == '__main__':
+        p = Pool(6)
+        args = list(range(1, 24))
+        p = p.map(list_all_turn_models.list_all_3d_turn_models, args)
+        p.start()
+        p.join()
+
     sys.exit()
 elif '-UTEST' in sys.argv[1:]:
     os.system('python ../../unittest/Python/Unit_tests.py')
