@@ -14,7 +14,6 @@ from GUI_Util import GUI
 from pympler import tracker
 from Simulator import Simulator
 from ArchGraphUtilities import list_all_turn_models
-# from Simulator import FaultInjector
 from multiprocessing import Pool
 
 tr = None
@@ -38,7 +37,7 @@ elif '-GUI' in sys.argv[1:]:
     main_window.mainloop()
     if not main_window.apply_button:
         sys.exit()
-elif '-LTM' in sys.argv[1:]: # list turn model
+elif '-LTM' in sys.argv[1:]:     # list turn model
     misc.generate_file_directories()
     if __name__ == '__main__':
         p = Pool(6)
@@ -46,7 +45,6 @@ elif '-LTM' in sys.argv[1:]: # list turn model
         p = p.map(list_all_turn_models.list_all_3d_turn_models, args)
         p.start()
         p.join()
-
     sys.exit()
 elif '-UTEST' in sys.argv[1:]:
     os.system('python ../../unittest/Python/Unit_tests.py')
@@ -92,7 +90,6 @@ print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:"+str(round(system_starting_time-
 
 if Config.enable_simulator:
     Simulator.run_simulator(Config.ProgramRunTime, ag, shmu, noc_rg, logging)
-    # FaultInjector.FaultInjector(system_starting_time, ag, shmu, noc_rg)
 logging.info('Logging finished...')
 
 if Config.MemoryProfiler:

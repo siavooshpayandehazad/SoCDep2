@@ -15,15 +15,16 @@ def sim_report(env, ag, counter_threshold):
     while True:
         counter_threshold.update_report_dict(ag)
         yield env.timeout(1)
+        # if env.now >= Config.ProgramRunTime:
+        #     env.exit()
 
 
-def processor_sim(env, ag, node, schedule, schedule_length, fault_time_dict, counter_threshold, logging):
+def processor_sim(env, ag, node, schedule_length, fault_time_dict, counter_threshold, logging):
     """
     Runs tasks on each node
     :param env: simulation environment
     :param ag: architecture graph
     :param node: Node ID number
-    :param schedule: schedule of the tasks on the Node
     :param schedule_length: schedule makespan
     :param fault_time_dict: Dictionary with Fault time as key and (Location, Type) tuple as value
     :param counter_threshold: counter threshold object
@@ -33,6 +34,7 @@ def processor_sim(env, ag, node, schedule, schedule_length, fault_time_dict, cou
     found = False
     task_num = None
     length = 0
+    schedule = ag.node[node]['PE'].scheduling
     while True:
         for key in schedule.keys():
             # checks if there is a task that starts at this time!
@@ -59,15 +61,16 @@ def processor_sim(env, ag, node, schedule, schedule_length, fault_time_dict, cou
             found = False
         else:
             yield env.timeout(1)
+        # if env.now >= Config.ProgramRunTime:
+        #     env.exit()
 
 
-def router_sim(env, ag, node, schedule, schedule_length, fault_time_dict, counter_threshold, logging):
+def router_sim(env, ag, node, schedule_length, fault_time_dict, counter_threshold, logging):
     """
     runs tasks on the routers
     :param env: simulation environment
     :param ag: architecture graph
     :param node: ID of the node to be simulated
-    :param schedule: schedule of the tasks on the Router
     :param schedule_length: schedule makespan
     :param fault_time_dict: Dictionary with Fault time as key and (Location, Type) tuple as value
     :param counter_threshold: counter threshold object
@@ -77,6 +80,7 @@ def router_sim(env, ag, node, schedule, schedule_length, fault_time_dict, counte
     found = False
     task_num = None
     length = 0
+    schedule = ag.node[node]['Router'].scheduling
     # print "HERE:",Schedule
     while True:
 
@@ -107,15 +111,16 @@ def router_sim(env, ag, node, schedule, schedule_length, fault_time_dict, counte
             found = False
         else:
             yield env.timeout(1)
+        # if env.now >= Config.ProgramRunTime:
+        #    env.exit()
 
 
-def link_sim(env, ag, link, schedule, schedule_length, fault_time_dict, counter_threshold, logging):
+def link_sim(env, ag, link, schedule_length, fault_time_dict, counter_threshold, logging):
     """
     Runs tasks on each link
     :param env: simulation environment
     :param ag: architecture graph
     :param link: link number
-    :param schedule: schedule of the tasks on the link
     :param schedule_length: schedule makespan
     :param fault_time_dict: Dictionary with Fault time as key and (Location, Type) tuple as value
     :param counter_threshold: counter threshold object
@@ -125,6 +130,7 @@ def link_sim(env, ag, link, schedule, schedule_length, fault_time_dict, counter_
     found = False
     task_num = None
     length = 0
+    schedule = ag.edge[link[0]][link[1]]["Scheduling"]
     while True:
         for key in schedule.keys():
             # checks if there is a task that starts at this time!
@@ -151,6 +157,8 @@ def link_sim(env, ag, link, schedule, schedule_length, fault_time_dict, counter_
             found = False
         else:
             yield env.timeout(1)
+        # if env.now >= Config.ProgramRunTime:
+        #     env.exit()
 
 
 def run_simulator(runtime, ag, shmu, noc_rg, logging):
@@ -196,15 +204,15 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
     print "SETTING UP ROUTERS AND PES..."
     for node in ag.nodes():
         # print node, AG.node[node]["Scheduling"]
-        env.process(processor_sim(env, ag, node, ag.node[node]['PE'].scheduling, schedule_length,
+        env.process(processor_sim(env, ag, node, schedule_length,
                                   fault_time_dict, counter_threshold, logging))
-        env.process(router_sim(env, ag, node, ag.node[node]['Router'].scheduling, schedule_length,
+        env.process(router_sim(env, ag, node, schedule_length,
                                fault_time_dict, counter_threshold, logging))
 
     print "SETTING UP LINKS..."
     for link in ag.edges():
         # print link, AG.edge[link[0]][link[1]]["Scheduling"]
-        env.process(link_sim(env, ag, link, ag.edge[link[0]][link[1]]["Scheduling"], schedule_length,
+        env.process(link_sim(env, ag, link, schedule_length,
                              fault_time_dict, counter_threshold, logging))
 
     env.process(sim_report(env, ag, counter_threshold))
