@@ -237,6 +237,19 @@ def gen_noc_route_graph_from_file(ag, shm, routing_file_path, report, detailed_r
     return noc_rg
 
 
+def check_deadlock_freeness(noc_rg):
+    """
+    Checks if routing graph is a directed acyclic graph which would result
+    in a deadlock-free routing algorithm
+    :param noc_rg: NoC Routing Graph
+    :return: True if noc_rg is deadlock free else False!
+    """
+    if networkx.is_directed_acyclic_graph(noc_rg):
+        return True
+    else:
+        return False
+
+
 def report_turn_model(turn_model):
     """
     prints the turn model for a 2D network in the console

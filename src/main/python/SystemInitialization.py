@@ -62,6 +62,7 @@ def initialize_system(logging):
     else:
         noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
                                                                 Config.DebugInfo, Config.DebugDetails))
+    Routing.check_deadlock_freeness(noc_rg)
     print ("\033[92mTIME::\033[0m ROUTING GRAPH GENERATION TOOK: " +
            str(round(time.time()-routing_graph_start_time))+" SECONDS")
     # this is for double checking...

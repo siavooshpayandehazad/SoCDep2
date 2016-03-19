@@ -13,6 +13,11 @@ def list_all_3d_turn_models(combination):
     """
     Lists all 3D deadlock free turn models in "deadlock_free_turns" in "Generated_Files"
     folder!
+    ---------------------
+        We have 16,777,216 turns in 3D Mesh NoC! if it takes one second to calculate
+        deadlock freeness Then it takes almost 194.2 Days (almost 6.4 Months) to
+        check all of them. that is the reason we need to make this parallel!
+    ---------------------
     :param combination: number of turns which should be checked for combination!
     :return: None
     """
@@ -46,11 +51,11 @@ def list_all_3d_turn_models(combination):
         if networkx.is_directed_acyclic_graph(noc_rg):
             deadlock_free_counter += 1
             print counter, "\t \033[92mDF\033[0m \t", list(turns)
-            all_turns_file.write(str(counter)+"\t\t\t"+str(list(turns))+"\n")
+            all_turns_file.write(str(counter)+"\t\tDF\t"+str(list(turns))+"\n")
         else:
             deadlock_counter += 1
             print counter, "\t \033[31mDL\033[0m   \t", list(turns)
-            # all_turns_file.write(str(counter)+"\t  DL  \t"+str(list(turns))+"\n")
+            all_turns_file.write(str(counter)+"\t\tDL\t"+str(list(turns))+"\n")
         del shmu
         del noc_rg
     all_turns_file.write("---------------------------"+"\n")
