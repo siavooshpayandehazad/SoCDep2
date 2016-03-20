@@ -303,7 +303,7 @@ Task_SlackCount = 0               # this is used for number of repetitions of th
 #          System's Fault  Config
 ################################################
 MTTF = None     # Mean time to failure in seconds have not used MTTF yet...
-MTBF = 1       # Mean time between failures in clock cycles
+MTBF = 0.5      # Mean time between failures in clock cycles
 SD4MTBF = 0.1   # Standard deviation for Distribution of faults in a normal distribution
 # ------------------------
 classification_method = "counter_threshold"     # can be "counter_threshold" or "machine_learning"
@@ -365,7 +365,7 @@ class Viz:
         self.ttg = False
         self.mapping_distribution = False
         self.mapping = True
-        self.scheduling = False
+        self.scheduling = True
         self.shm = True     # if True generates SHM Drawing
         self.mapping_frames = False  # If True, generates the frames for animation
         self.frame_resolution = 20   # Resolution in dpi. for resolutions above 50, text is added to the tasks

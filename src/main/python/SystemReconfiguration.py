@@ -33,4 +33,4 @@ def system_reconfiguration(tg, ag, shmu, noc_rg, critical_rg, noncritical_rg, it
         draw_mapping(tg, ag, shmu.SHM, "Mapping_post_opt_"+str(iteration))
     if Config.viz.scheduling:
         generate_gantt_charts(tg, ag, "SchedulingTG_"+str(iteration))
-    return True
+    return tg, ag,

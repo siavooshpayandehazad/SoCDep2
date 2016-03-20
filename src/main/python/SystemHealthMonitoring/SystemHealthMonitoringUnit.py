@@ -22,7 +22,7 @@ class SystemHealthMonitoringUnit:
         degradation = self.calculate_system_degradation()
         # print degradation, self.system_degradation
         # todo: this should not be a fix number! system should check if the conditions are ok or not
-        if degradation > self.system_degradation * 1.05:
+        if degradation > self.system_degradation * 1.02:
             self.system_degradation = degradation
             self.signal_reconfiguration = True
         else:

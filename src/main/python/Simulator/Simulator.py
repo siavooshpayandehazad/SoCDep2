@@ -2,6 +2,7 @@
 
 # starting to write the simulator with SimPy...
 import simpy
+import copy
 import numpy
 from SystemHealthMonitoring import SHMU_Functions
 from ConfigAndPackages import Config
@@ -223,12 +224,13 @@ def run_simulator(runtime, tg, ag, shmu, noc_rg, critical_rg, noncritical_rg, lo
     env.run()
     iteration = 1
     time_passed = env.now
+    del env
 
     while time_passed < Config.ProgramRunTime:
         Config.ProgramRunTime -= time_passed
-        del env
         shmu.signal_reconfiguration = False
-        system_reconfiguration(tg, ag, shmu, noc_rg, critical_rg, noncritical_rg, iteration, logging)
+        tg, ag = copy.deepcopy(system_reconfiguration(tg, ag, shmu, noc_rg, critical_rg, noncritical_rg,
+                                                      iteration, logging))
         print "SETTING UP THE SIMULATOR..."
         env = simpy.Environment()
         env.process(fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict,
@@ -253,6 +255,7 @@ def run_simulator(runtime, tg, ag, shmu, noc_rg, critical_rg, noncritical_rg, lo
         env.run()
         iteration += 1
         time_passed = env.now
+        del env
     print "SIMULATION FINISHED..."
     print "SYSTEM DEGRADATION:", shmu.system_degradation
     counter_threshold.report(len(ag.nodes()), len(ag.edges()))
