@@ -80,7 +80,7 @@ misc.generate_configfile()
 ####################################################################
 # Initialization of the system
 
-ag, shmu, noc_rg, CriticalRG, NonCriticalRG, pmcg = SystemInitialization.initialize_system(logging)
+tg, ag, shmu, noc_rg, CriticalRG, NonCriticalRG, pmcg = SystemInitialization.initialize_system(logging)
 
 # just to have a sense of how much time we are spending in each section
 print ("===========================================")
@@ -89,7 +89,7 @@ print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:"+str(round(system_starting_time-
        " SECONDS AFTER PROGRAM START...")
 
 if Config.enable_simulator:
-    Simulator.run_simulator(Config.ProgramRunTime, ag, shmu, noc_rg, logging)
+    Simulator.run_simulator(Config.ProgramRunTime, tg, ag, shmu, noc_rg, CriticalRG, NonCriticalRG, logging)
 logging.info('Logging finished...')
 
 if Config.MemoryProfiler:

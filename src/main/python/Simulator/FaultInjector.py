@@ -44,7 +44,9 @@ def fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict, counter
                     if start_time < env.now % schedule_length < end_time:
                         SHMU_Functions.apply_fault_event(ag, shmu, noc_rg, fault_location, fault_type)
                         if random.random() > Config.error_correction_rate:
-                            counter_threshold.increase_fault_counter(ag, fault_location, logging)
+                            over_flow = counter_threshold.increase_fault_counter(ag, fault_location, logging)
+                            if over_flow:
+                                SHMU_Functions.apply_fault_event(ag, shmu, noc_rg, fault_location, 'P')
                         else:
                             counter_threshold.increase_intermittent_counter(ag, fault_location, logging)
 
@@ -55,7 +57,9 @@ def fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict, counter
                     if start_time < env.now % schedule_length < end_time:
                         SHMU_Functions.apply_fault_event(ag, shmu, noc_rg, fault_location, fault_type)
                         if random.random() > Config.error_correction_rate:
-                            counter_threshold.increase_fault_counter(ag, fault_location, logging)
+                            over_flow = counter_threshold.increase_fault_counter(ag, fault_location, logging)
+                            if over_flow:
+                                SHMU_Functions.apply_fault_event(ag, shmu, noc_rg, fault_location, 'P')
                         else:
                             counter_threshold.increase_intermittent_counter(ag, fault_location, logging)
 
@@ -66,10 +70,12 @@ def fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict, counter
                     if start_time < env.now % schedule_length < end_time:
                         SHMU_Functions.apply_fault_event(ag, shmu, noc_rg, fault_location, fault_type)
                         if random.random() > Config.error_correction_rate:
-                            counter_threshold.increase_fault_counter(ag, fault_location, logging)
+                            over_flow = counter_threshold.increase_fault_counter(ag, fault_location, logging)
+                            if over_flow:
+                                SHMU_Functions.apply_fault_event(ag, shmu, noc_rg, fault_location, 'P')
                         else:
                             counter_threshold.increase_intermittent_counter(ag, fault_location, logging)
             fault = False
         yield env.timeout(0.1)
-        # if env.now >= Config.ProgramRunTime:
-        #     env.exit()
+        if shmu.signal_reconfiguration or env.now >= Config.ProgramRunTime:
+            env.exit()

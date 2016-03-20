@@ -688,3 +688,29 @@ def read_mapping_from_file(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, fil
             map_task_to_node(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, task, node, logging)
 
     return None
+
+
+def clear_mapping_for_reconfiguration(tg, ag):
+    """
+    Removes the mapping and clears TG, AG and CTG mapping related attributes
+    :param tg: Task Graph
+    :param ag: Architecture Graph
+    :return: True
+    """
+    for node in tg.nodes():
+        tg.node[node]['Node'] = None
+        tg.node[node]['Cluster'] = None
+    for edge in tg.edges():
+        tg.edge[edge[0]][edge[1]]['Link'] = []
+    for node in ag.nodes():
+        ag.node[node]['PE'].mapped_tasks = []
+        ag.node[node]['PE'].utilization = 0
+        ag.node[node]['PE'].scheduling = {}
+
+        ag.node[node]['Router'].scheduling = {}
+        ag.node[node]['Router'].mapped_tasks = {}
+
+    for link in ag.edges():
+        ag.edge[link[0]][link[1]]['MappedTasks'] = {}
+        ag.edge[link[0]][link[1]]['Scheduling'] = {}
+    return True

@@ -132,6 +132,7 @@ class CounterThreshold:
         return None
 
     def increase_fault_counter(self, ag, location, logging):
+        over_flow = False
         if type(location) is dict:
             # location is a router: {node_1: [turn]}
             # print location, str(location.keys()[0])+str(location[location.keys()[0]])
@@ -172,14 +173,15 @@ class CounterThreshold:
         # Check for reaching threshold
         if self.fault_counters[location] == self.fault_threshold:
             logging.info("Declaring component: "+location+" dead!")
-            self.threshold_handler(location, "Intermittent")
+            self.threshold_handler(location, "Fault")
+            over_flow = True
 
         current_memory_usage = self.return_allocated_memory()
         if current_memory_usage > self.memory_counter:
             self.memory_counter = current_memory_usage
         if len(self.comp_of_interest) > self.max_comp_of_interest:
             self.max_comp_of_interest = len(self.comp_of_interest)
-        return None
+        return over_flow
 
     def threshold_handler(self, location, threshold):
         if Config.state_config == "1":

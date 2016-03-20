@@ -9,17 +9,19 @@ from FaultInjector import fault_event
 from SystemHealthMonitoring.FaultClassifier import CounterThreshold, Counter_Threshold_Viz     # Rene's addition
 from SystemHealthMonitoring.FaultClassifier import MachineLearning      # Rene's addition
 from Scheduler import Scheduling_Reports, Scheduling_Functions
+from SystemReconfiguration import system_reconfiguration
 
 
-def sim_report(env, ag, counter_threshold):
+def sim_report(env, ag, shmu, counter_threshold):
     while True:
         counter_threshold.update_report_dict(ag)
+        shmu.check_for_reconfiguration()
         yield env.timeout(1)
-        # if env.now >= Config.ProgramRunTime:
-        #     env.exit()
+        if shmu.signal_reconfiguration or env.now >= Config.ProgramRunTime:
+            env.exit()
 
 
-def processor_sim(env, ag, node, schedule_length, fault_time_dict, counter_threshold, logging):
+def processor_sim(env, ag, shmu, node, schedule_length, fault_time_dict, counter_threshold, logging):
     """
     Runs tasks on each node
     :param env: simulation environment
@@ -61,11 +63,11 @@ def processor_sim(env, ag, node, schedule_length, fault_time_dict, counter_thres
             found = False
         else:
             yield env.timeout(1)
-        # if env.now >= Config.ProgramRunTime:
-        #     env.exit()
+        if shmu.signal_reconfiguration or env.now >= Config.ProgramRunTime:
+            env.exit()
 
 
-def router_sim(env, ag, node, schedule_length, fault_time_dict, counter_threshold, logging):
+def router_sim(env, ag, shmu, node, schedule_length, fault_time_dict, counter_threshold, logging):
     """
     runs tasks on the routers
     :param env: simulation environment
@@ -111,11 +113,11 @@ def router_sim(env, ag, node, schedule_length, fault_time_dict, counter_threshol
             found = False
         else:
             yield env.timeout(1)
-        # if env.now >= Config.ProgramRunTime:
-        #    env.exit()
+        if shmu.signal_reconfiguration or env.now >= Config.ProgramRunTime:
+            env.exit()
 
 
-def link_sim(env, ag, link, schedule_length, fault_time_dict, counter_threshold, logging):
+def link_sim(env, ag, shmu, link, schedule_length, fault_time_dict, counter_threshold, logging):
     """
     Runs tasks on each link
     :param env: simulation environment
@@ -157,11 +159,11 @@ def link_sim(env, ag, link, schedule_length, fault_time_dict, counter_threshold,
             found = False
         else:
             yield env.timeout(1)
-        # if env.now >= Config.ProgramRunTime:
-        #     env.exit()
+        if shmu.signal_reconfiguration or env.now >= Config.ProgramRunTime:
+            env.exit()
 
 
-def run_simulator(runtime, ag, shmu, noc_rg, logging):
+def run_simulator(runtime, tg, ag, shmu, noc_rg, critical_rg, noncritical_rg, logging):
     """
     prepares and runs the simulator
     :param runtime: duration of which the user wants to run the program in cycles
@@ -199,26 +201,60 @@ def run_simulator(runtime, ag, shmu, noc_rg, logging):
             time_until_next_fault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
             fault_time += time_until_next_fault
 
-        env.process(fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict, counter_threshold, logging))
+        env.process(fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict,
+                                counter_threshold, logging))
 
     print "SETTING UP ROUTERS AND PES..."
     for node in ag.nodes():
         # print node, AG.node[node]["Scheduling"]
-        env.process(processor_sim(env, ag, node, schedule_length,
-                                  fault_time_dict, counter_threshold, logging))
-        env.process(router_sim(env, ag, node, schedule_length,
+        env.process(processor_sim(env, ag, shmu, node, schedule_length,
+                                  fault_time_dict, counter_threshold,  logging))
+        env.process(router_sim(env, ag, shmu, node, schedule_length,
                                fault_time_dict, counter_threshold, logging))
 
     print "SETTING UP LINKS..."
     for link in ag.edges():
         # print link, AG.edge[link[0]][link[1]]["Scheduling"]
-        env.process(link_sim(env, ag, link, schedule_length,
+        env.process(link_sim(env, ag, shmu, link, schedule_length,
                              fault_time_dict, counter_threshold, logging))
 
-    env.process(sim_report(env, ag, counter_threshold))
+    env.process(sim_report(env, ag, shmu, counter_threshold))
     print "STARTING SIMULATION..."
-    env.run(until=runtime)
+    env.run()
+    iteration = 1
+    time_passed = env.now
+
+    while time_passed < Config.ProgramRunTime:
+        Config.ProgramRunTime -= time_passed
+        del env
+        shmu.signal_reconfiguration = False
+        system_reconfiguration(tg, ag, shmu, noc_rg, critical_rg, noncritical_rg, iteration, logging)
+        print "SETTING UP THE SIMULATOR..."
+        env = simpy.Environment()
+        env.process(fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict,
+                                counter_threshold, logging))
+        print "SETTING UP ROUTERS AND PES..."
+        for node in ag.nodes():
+            # print node, AG.node[node]["Scheduling"]
+            env.process(processor_sim(env, ag, shmu, node, schedule_length,
+                                      fault_time_dict, counter_threshold,  logging))
+            env.process(router_sim(env, ag, shmu, node, schedule_length,
+                                   fault_time_dict, counter_threshold, logging))
+        print "SETTING UP LINKS..."
+        for link in ag.edges():
+            # print link, AG.edge[link[0]][link[1]]["Scheduling"]
+            env.process(link_sim(env, ag, shmu, link, schedule_length,
+                                 fault_time_dict, counter_threshold, logging))
+        print "SETTING UP SIM MONITORS..."
+        env.process(sim_report(env, ag, shmu, counter_threshold))
+
+        print "RESTARTING SIMULATION..."
+        print "REMAINING SIM TIME:", Config.ProgramRunTime
+        env.run()
+        iteration += 1
+        time_passed = env.now
     print "SIMULATION FINISHED..."
+    print "SYSTEM DEGRADATION:", shmu.system_degradation
     counter_threshold.report(len(ag.nodes()), len(ag.edges()))
     Counter_Threshold_Viz.counter_threshold_viz(ag, counter_threshold)
     Scheduling_Reports.report_scheduling_memory_usage(ag)

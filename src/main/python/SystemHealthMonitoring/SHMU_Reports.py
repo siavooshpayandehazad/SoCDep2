@@ -111,7 +111,7 @@ def draw_temp_distribution(shm):
     return None
 
 
-def draw_shm(shm):
+def draw_shm(shm, iteration=None):
     """
 
     :param shm: System Health Map
@@ -327,7 +327,10 @@ def draw_shm(shm):
                                                   dz*z_offset, dz*z_offset, width=0.01, color=color))
 
     fig.text(0.25, 0.02, "System Health Map", fontsize=35)
-    plt.savefig("GraphDrawings/SHM.png", dpi=200)
+    if iteration is None:
+        plt.savefig("GraphDrawings/SHM.png", dpi=200)
+    else:
+        plt.savefig("GraphDrawings/SHM_"+str(iteration)+".png", dpi=200)
     plt.clf()
     plt.close(fig)
     print("\033[35m* VIZ::\033[0mSYSTEM HEALTH MAP DRAWING CREATED AT: GraphDrawings/SHM.png")

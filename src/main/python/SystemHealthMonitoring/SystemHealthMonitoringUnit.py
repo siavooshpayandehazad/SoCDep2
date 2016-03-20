@@ -15,6 +15,33 @@ class SystemHealthMonitoringUnit:
         self.SHM = networkx.DiGraph()   # System Health Map
         self.SnapShot = None
         self.MPM = {}                     # Most Probable Mapping Lib
+        self.signal_reconfiguration = False
+        self.system_degradation = 0
+
+    def check_for_reconfiguration(self):
+        degradation = self.calculate_system_degradation()
+        # print degradation, self.system_degradation
+        # todo: this should not be a fix number! system should check if the conditions are ok or not
+        if degradation > self.system_degradation * 1.05:
+            self.system_degradation = degradation
+            self.signal_reconfiguration = True
+        else:
+            pass
+
+    def calculate_system_degradation(self):
+        broken_components = 0
+        for node in self.SHM.nodes():
+            if not self.SHM.node[node]['NodeHealth']:
+                broken_components += 1
+            for turn in self.SHM.node[node]['TurnsHealth']:
+                if not self.SHM.node[node]['TurnsHealth'][turn]:
+                    broken_components += 1
+        for link in self.SHM.edges():
+            if not self.SHM.edge[link[0]][link[1]]['LinkHealth']:
+                broken_components += 1
+        total_components = len(self.SHM.nodes())*(1+len(self.SHM.node[0]['TurnsHealth'])) + len(self.SHM.edges())
+        degradation = float(broken_components)/total_components
+        return degradation
 
     def setup_noc_shm(self, ag, turns_health, report):
         if report:
@@ -54,6 +81,8 @@ class SystemHealthMonitoringUnit:
                                       NodeSpeed=100, RouterTemp=0, NodeTemp=0)
         for link in ag.edges():
             self.SHM.add_edge(link[0], link[1], LinkHealth=True)
+
+        self.system_degradation = self.calculate_system_degradation()
         if report:
             print ("SYSTEM HEALTH MAP CREATED...")
 

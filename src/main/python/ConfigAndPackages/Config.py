@@ -5,7 +5,7 @@ import copy
 #          Program  Config
 ################################################
 enable_simulator = True
-ProgramRunTime = 200      # in cycles
+ProgramRunTime = 900      # in cycles
 DebugInfo = False
 DebugDetails = False
 
@@ -60,10 +60,10 @@ class ArchGraph:
         self.type = 'Generic'
         # in case of Generic AG_type
         # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
-        self.topology = '3DMesh'
+        self.topology = '2DMesh'
         self.x_size = 3
         self.y_size = 3
-        self.z_size = 3
+        self.z_size = 1
         # Todo: virtual channel
         self.virtual_channel_num = 0
 
@@ -78,7 +78,7 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 ################################################
 #          VL Config
 ################################################
-FindOptimumAG = True
+FindOptimumAG = False
 
 
 class VerticalLinkPlacementOpt:
@@ -114,7 +114,7 @@ vl_opt = VerticalLinkPlacementOpt()
 # Available Turn Models :
 #         2D Turn Models: XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel
 #         3D Turn Models: XYZ_TurnModel, NegativeFirst3D_TurnModel
-UsedTurnModel = PackageFile.NegativeFirst3D_TurnModel
+UsedTurnModel = PackageFile.XY_TurnModel
 
 # Available choices: 'MinimalPath', 'NonMinimalPath'
 RotingType = 'MinimalPath'
@@ -315,7 +315,7 @@ enable_router_counters = False
 enable_pe_counters = False
 error_correction_rate = 0.2
 # state config can be an integer from 1 to 5 and represents the state machine which is implemented for classification
-state_config = "2"
+state_config = "1"
 ################################################
 #           Network Partitioning
 ################################################
@@ -364,9 +364,9 @@ class Viz:
         self.pmcg = False
         self.ttg = False
         self.mapping_distribution = False
-        self.mapping = False
+        self.mapping = True
         self.scheduling = False
-        self.shm = False     # if True generates SHM Drawing
+        self.shm = True     # if True generates SHM Drawing
         self.mapping_frames = False  # If True, generates the frames for animation
         self.frame_resolution = 20   # Resolution in dpi. for resolutions above 50, text is added to the tasks
 

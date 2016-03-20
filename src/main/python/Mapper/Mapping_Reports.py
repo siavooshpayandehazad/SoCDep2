@@ -178,7 +178,7 @@ def draw_mapping(tg, ag, shm, mapping_file_name):
     fig.savefig("GraphDrawings/"+mapping_file_name+".png", bbox_inches='tight')
     plt.clf()
     plt.close(fig)
-    print ("\033[35m* VIZ::\033[0mMAPPING DRAWING CREATED AT: GraphDrawings/Mapping.png")
+    print ("\033[35m* VIZ::\033[0mMAPPING DRAWING CREATED AT: GraphDrawings/"+mapping_file_name+".png")
     return None
 
 

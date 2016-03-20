@@ -137,4 +137,4 @@ def initialize_system(logging):
     TrafficTableGenerator.generate_gsnoc_traffic_table(ag, tg)
     if Config.viz.mapping_frames:
         Mapping_Animation.generate_frames(ag, shmu.SHM)
-    return ag, shmu, noc_rg, critical_rg, noncritical_rg, pmcg
+    return tg, ag, shmu, noc_rg, critical_rg, noncritical_rg, pmcg

@@ -85,8 +85,8 @@ def apply_fault_event(ag, shmu, noc_rg, fault_location, fault_type):
                 port = ag.edge[fault_location[0]][fault_location[1]]['Port']
                 from_port = str(fault_location[0])+str(port[0])+str('O')
                 to_port = str(fault_location[1])+str(port[1])+str('I')
-                Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
                 shmu.break_link(fault_location, True)
+                Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
         elif type(fault_location) is dict:   # its a Turn fault
             current_node = fault_location.keys()[0]
             current_turn = fault_location[current_node]
