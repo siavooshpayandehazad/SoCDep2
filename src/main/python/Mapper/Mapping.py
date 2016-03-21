@@ -10,7 +10,7 @@ from Mapping_Heuristics import SimpleGreedy, Local_Search, SimulatedAnnealing, N
 from Scheduler import Scheduler, Scheduling_Reports, Scheduling_Functions
 
 
-def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
+def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging, iteration=None):
     """
     Calculate different mapping algorithms
     Returns tg And ag after Mapping in case of success
@@ -83,7 +83,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
             # Mapping CTG on AG
             random_seed = Config.mapping_random_seed
             if Mapping_Functions.make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, non_critical_rg,
-                                                      True, logging, random_seed):
+                                                      True, logging, random_seed, iteration):
                 if Config.DistanceBetweenMapping:
                     init_mapping_string = Mapping_Functions.mapping_into_string(tg)
                     # print (init_mapping_string)
@@ -116,7 +116,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                     tg = copy.deepcopy(best_tg)
                     ag = copy.deepcopy(best_ag)
                     del best_tg, best_ctg, best_ag
-                    Mapping_Reports.viz_mapping_opt('LocalSearchMappingCost')
+                    Mapping_Reports.viz_mapping_opt('LocalSearchMappingCost', iteration)
                 elif Config.Mapping_Function == 'IterativeLocalSearch':
                     (best_tg, best_ctg, best_ag) = \
                         Local_Search.mapping_opt_iterative_local_search(tg, ctg, ag, noc_rg, critical_rg,
@@ -128,13 +128,13 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                     tg = copy.deepcopy(best_tg)
                     ag = copy.deepcopy(best_ag)
                     del best_tg, best_ctg, best_ag
-                    Mapping_Reports.viz_mapping_opt('LocalSearchMappingCost')
+                    Mapping_Reports.viz_mapping_opt('LocalSearchMappingCost', iteration)
                 elif Config.Mapping_Function == 'SimulatedAnnealing':
                     (best_tg, best_ctg, best_ag) = SimulatedAnnealing.optimize_mapping_sa(tg, ctg, ag, noc_rg,
                                                                                           critical_rg, non_critical_rg,
                                                                                           shm, 'SA_MappingCost',
                                                                                           logging)
-                    Mapping_Reports.viz_mapping_opt('SA_MappingCost')
+                    Mapping_Reports.viz_mapping_opt('SA_MappingCost', iteration=None)
                     if Config.SA_AnnealingSchedule == 'Adaptive':
                         Mapping_Reports.viz_cost_slope()
                     elif Config.SA_AnnealingSchedule == 'Huang':

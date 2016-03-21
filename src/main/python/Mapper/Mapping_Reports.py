@@ -182,7 +182,7 @@ def draw_mapping(tg, ag, shm, mapping_file_name):
     return None
 
 
-def viz_mapping_opt(cost_file_name):
+def viz_mapping_opt(cost_file_name, iteration=None):
     """
     Visualizes the cost of solutions during local search mapping optimization process
     :param cost_file_name: Name of the Cost File (Holds values of cost function for different mapping steps)
@@ -240,11 +240,17 @@ def viz_mapping_opt(cost_file_name):
                 tl.set_color('g')
         except IOError:
             print ('CAN NOT OPEN SATemp.txt')
-
-    plt.savefig("GraphDrawings/Mapping_Opt_Process.png", dpi=300)
+    if iteration is None:
+        plt.savefig("GraphDrawings/Mapping_Opt_Process.png", dpi=300)
+        print ("\033[35m* VIZ::\033[0mMAPPING OPTIMIZATION PROCESS " +
+               "GRAPH CREATED AT: GraphDrawings/Mapping_Opt_Process.png")
+    else:
+        plt.savefig("GraphDrawings/Mapping_Opt_Process_"+str(iteration)+".png", dpi=300)
+        print ("\033[35m* VIZ::\033[0mMAPPING OPTIMIZATION PROCESS " +
+               "GRAPH CREATED AT: GraphDrawings/Mapping_Opt_Process"+str(iteration)+".png")
     plt.clf()
     plt.close(fig)
-    print ("\033[35m* VIZ::\033[0mMAPPING OPTIMIZATION PROCESS GRAPH CREATED AT: GraphDrawings/Mapping_Opt_Process.png")
+
     return None
 
 

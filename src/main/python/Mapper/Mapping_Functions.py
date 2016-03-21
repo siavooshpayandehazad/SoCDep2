@@ -11,7 +11,8 @@ from ArchGraphUtilities import AG_Functions
 import ConfigParser
 
 
-def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, report, logging, random_seed):
+def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, report,
+                         logging, random_seed, iteration=None):
     """
     Generates Initial Mapping
     :param tg:  Task Graphs
@@ -45,7 +46,10 @@ def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, 
     if report:
         print ("INITIAL MAPPING READY... ")
         if Config.viz.mapping:
-            draw_mapping(tg, ag, shm, "Mapping_init")
+            if iteration is None:
+                draw_mapping(tg, ag, shm, "Mapping_init")
+            else:
+                draw_mapping(tg, ag, shm, "Mapping_init_"+str(iteration))
     return True
 
 

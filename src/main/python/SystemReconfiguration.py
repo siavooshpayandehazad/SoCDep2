@@ -20,7 +20,7 @@ def system_reconfiguration(tg, ag, shmu, noc_rg, critical_rg, noncritical_rg, it
                                Config.mapping_file_path, logging)
         schedule_all(tg, ag, shmu.SHM, False, logging)
     else:
-        best_tg, best_ag = mapping(tg, ag, noc_rg, critical_rg, noncritical_rg, shmu.SHM, logging)
+        best_tg, best_ag = mapping(tg, ag, noc_rg, critical_rg, noncritical_rg, shmu.SHM, logging, iteration)
         if best_ag is not None and best_tg is not None:
             tg = copy.deepcopy(best_tg)
             ag = copy.deepcopy(best_ag)
