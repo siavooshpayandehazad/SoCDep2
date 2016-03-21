@@ -11,7 +11,7 @@ from ArchGraphUtilities import AG_Functions
 import ConfigParser
 
 
-def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritica_rg, report, logging, random_seed):
+def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, report, logging, random_seed):
     """
     Generates Initial Mapping
     :param tg:  Task Graphs
@@ -20,7 +20,7 @@ def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritica_rg, r
     :param shm:     System Health Map
     :param noc_rg:   NoC Routing Graph
     :param critical_rg:  Critical Region Routing Graph
-    :param noncritica_rg: Non-Critical Region Routing Graph
+    :param noncritical_rg: Non-Critical Region Routing Graph
     :param report:
     :param logging: Logging File
     :return: True if mapping pass with success False if mapping fails
@@ -35,6 +35,21 @@ def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritica_rg, r
         random.seed(random_seed)
     else:
         random.seed(None)
+
+    counter = 0
+    while not try_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, report, logging):
+        clear_mapping(tg, ctg, ag)
+        counter += 1
+        if counter == 10*len(ctg.nodes()):
+            return False
+    if report:
+        print ("INITIAL MAPPING READY... ")
+        if Config.viz.mapping:
+            draw_mapping(tg, ag, shm, "Mapping_init")
+    return True
+
+
+def try_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, report, logging):
     iteration = 0
     for cluster in ctg.nodes():
         destination_node = random.choice(ag.nodes())
@@ -43,7 +58,7 @@ def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritica_rg, r
                 destination_node = random.choice(ag.nodes())
         # print (CTG.node[Cluster]['Criticality'],AG.node[destination_node]['Region'])
         while not add_cluster_to_node(tg, ctg, ag, shm, noc_rg, critical_rg,
-                                      noncritica_rg, cluster, destination_node, logging):
+                                      noncritical_rg, cluster, destination_node, logging):
             iteration += 1
             destination_node = random.choice(ag.nodes())        # try another node
             if Config.EnablePartitioning:
@@ -59,10 +74,6 @@ def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritica_rg, r
                 return False
         logging.info("MAPPED CLUSTER "+str(cluster)+" ON NODE "+str(destination_node))
         iteration = 0
-    if report:
-        print ("INITIAL MAPPING READY... ")
-        if Config.viz.mapping:
-            draw_mapping(tg, ag, shm, "Mapping_init")
     return True
 
 

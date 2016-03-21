@@ -227,12 +227,26 @@ def run_simulator(runtime, tg, ag, shmu, noc_rg, critical_rg, noncritical_rg, lo
     del env
 
     while time_passed < Config.ProgramRunTime:
+        print "==========================================="
         Config.ProgramRunTime -= time_passed
         shmu.signal_reconfiguration = False
         tg, ag = copy.deepcopy(system_reconfiguration(tg, ag, shmu, noc_rg, critical_rg, noncritical_rg,
                                                       iteration, logging))
         print "SETTING UP THE SIMULATOR..."
         env = simpy.Environment()
+
+        fault_time_dict = {}
+        fault_time = 0
+        schedule_length = Scheduling_Functions.find_schedule_make_span(ag)
+        if Config.EventDrivenFaultInjection:
+            time_until_next_fault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
+            fault_time += time_until_next_fault
+            while fault_time < runtime:
+                fault_location, fault_type = SHMU_Functions.random_fault_generation(shmu.SHM)
+                fault_time_dict[float("{0:.1f}".format(fault_time))] = (fault_location, fault_type)
+                time_until_next_fault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
+                fault_time += time_until_next_fault
+
         env.process(fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict,
                                 counter_threshold, logging))
         print "SETTING UP ROUTERS AND PES..."

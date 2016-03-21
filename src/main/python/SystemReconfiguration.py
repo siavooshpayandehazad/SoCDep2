@@ -17,7 +17,7 @@ def system_reconfiguration(tg, ag, shmu, noc_rg, critical_rg, noncritical_rg, it
     SHMU_Reports.draw_shm(shmu.SHM, iteration=iteration)
     if Config.read_mapping_from_file:
         read_mapping_from_file(tg, ag, shmu.SHM, noc_rg, critical_rg, noncritical_rg,
-                                                 Config.mapping_file_path, logging)
+                               Config.mapping_file_path, logging)
         schedule_all(tg, ag, shmu.SHM, False, logging)
     else:
         best_tg, best_ag = mapping(tg, ag, noc_rg, critical_rg, noncritical_rg, shmu.SHM, logging)
