@@ -392,6 +392,12 @@ def return_node_util(tg, ag, node):
     return utilization
 
 
+def return_link_util(tg, ag, link):
+    utilization = 0
+    for task in ag.edge[link[0]][link[1]]['MappedTasks']:
+        utilization += tg.edge[task[0]][task[1]]['ComWeight']
+    return utilization
+
 def return_healthy_nodes(ag, system_health_map):
     """
     Returns Nodes in AG which are tagged Healthy in SHM

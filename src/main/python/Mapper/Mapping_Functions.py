@@ -430,17 +430,25 @@ def mapping_cost_function(tg, ag, shm, report, initial_mapping_string=None):
     link_makspan_max = max(link_makespan_list)
 
     node_util_list = []
+    link_util_list = []
     for node in ag.nodes():
         if shm.node[node]['NodeHealth'] and (not ag.node[node]['PE'].dark):
             node_util_list.append(AG_Functions.return_node_util(tg, ag, node))
+    for link in ag.edges():
+            link_util_list.append(AG_Functions.return_link_util(tg,ag,link))
     node_util_sd = statistics.stdev(node_util_list)
+    link_util_sd = statistics.stdev(link_util_list)
 
     if Config.Mapping_CostFunctionType == 'SD':
         cost = node_makspan_sd + link_makspan_sd
     elif Config.Mapping_CostFunctionType == 'Node_SD':
         cost = node_makspan_sd
+    elif Config.Mapping_CostFunctionType == 'Link_Util_SD':
+        cost = link_util_sd
     elif Config.Mapping_CostFunctionType == 'Node_Util_SD':
         cost = node_util_sd
+    elif Config.Mapping_CostFunctionType == 'Util_SD':
+        cost = node_util_sd + link_util_sd
     elif Config.Mapping_CostFunctionType == 'Link_SD':
         cost = link_makspan_sd
     elif Config.Mapping_CostFunctionType == 'SD+MAX':

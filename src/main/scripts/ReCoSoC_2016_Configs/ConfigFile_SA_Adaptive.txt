@@ -90,7 +90,7 @@ sloperangeforcooling = 0.02
 markovtempstep = 0
 delta = 0
 huangalpha = 0
-mapping_costfunctiontype = Node_Util_SD
+mapping_costfunctiontype = Util_SD
 distancebetweenmapping = False
 
 [Scheduling_Config]

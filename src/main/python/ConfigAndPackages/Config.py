@@ -4,7 +4,7 @@ import copy
 ################################################
 #          Program  Config
 ################################################
-enable_simulator = True
+enable_simulator = False
 ProgramRunTime = 900      # in cycles
 DebugInfo = False
 DebugDetails = False
@@ -286,11 +286,13 @@ elif Mapping_Function == 'SimulatedAnnealing':
 # 'SD' = Com_MakeSpan_SD + Node_MakeSpan_SD
 # 'Node_SD' = Node_MakeSpan_SD
 # 'Node_Util_SD' = node_util_sd
+# 'Link_Util_SD' = link_util_sd
+# 'Util_SD' = link_util_sd + node_util_sd
 # 'Link_SD' = Com_MakeSpan_SD
 # 'MAX' = MaxLinkMakeSpan + MaxNodeMakeSpan
 # 'SD+MAX' = Link_MakeSpan_SD + MaxLinkMakeSpan + Node_MakeSpan_SD + MaxNodeMakeSpan
 # 'CONSTANT' = 1   ---> can be used if user needs only distance
-Mapping_CostFunctionType = 'MAX'
+Mapping_CostFunctionType = 'Util_SD'
 # if 'DistanceBetweenMapping' is true => Cost += Hamming distance between the current
 # solution and the neighbour solution
 DistanceBetweenMapping = False
