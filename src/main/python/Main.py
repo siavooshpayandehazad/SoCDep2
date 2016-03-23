@@ -37,14 +37,23 @@ elif '-GUI' in sys.argv[1:]:
     main_window.mainloop()
     if not main_window.apply_button:
         sys.exit()
-elif '-LTM' in sys.argv[1:]:     # list turn model
+elif '-ETM' in sys.argv[1:]:     # Enumerate turn model
     misc.generate_file_directories()
     if __name__ == '__main__':
         p = Pool(6)
-        args = list(range(1, 24))
-        p = p.map(list_all_turn_models.list_all_3d_turn_models, args)
-        p.start()
-        p.join()
+        args = list(range(0, len(PackageFile.FULL_TurnModel_3D)+1))
+        p = p.map(list_all_turn_models.enumerate_all_3d_turn_models, args)
+        #p.start()
+        #p.join()
+    sys.exit()
+elif '-ETMD' in sys.argv[1:]:     # Enumerate turn model based on deadlock
+    misc.generate_file_directories()
+    if __name__ == '__main__':
+        p = Pool(6)
+        args = list(range(0, len(PackageFile.FULL_TurnModel_3D)+1))
+        p = p.map(list_all_turn_models.enumerate_all_3d_turn_models_based_on_df, args)
+        #p.start()
+        #p.join()
     sys.exit()
 elif '-UTEST' in sys.argv[1:]:
     os.system('python ../../unittest/Python/Unit_tests.py')
