@@ -6,6 +6,7 @@ import itertools
 import AG_Functions
 from RoutingAlgorithms import Routing
 from SystemHealthMonitoring import SystemHealthMonitoringUnit
+from RoutingAlgorithms import Calculate_Reachability
 import networkx
 
 
@@ -49,13 +50,14 @@ def enumerate_all_3d_turn_models_based_on_df(combination):
         shmu.setup_noc_shm(ag, turns_health, False)
         noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, list(turns), False,  False))
         if networkx.is_directed_acyclic_graph(noc_rg):
+            connectivity_metric  = Calculate_Reachability.reachability_metric(ag, noc_rg, False)
             deadlock_free_counter += 1
-            print counter, "\t \033[92mDF\033[0m \t", list(turns)
-            all_turns_file.write(str(counter)+"\t\tDF\t"+str(list(turns))+"\n")
+            print counter, "\t \033[92mDF\033[0m \t", list(turns), connectivity_metric
+            all_turns_file.write(str(counter)+"\t\tDF\t"+str(list(turns))+"\t\t"+str(connectivity_metric)+"\n")
         else:
             deadlock_counter += 1
-            print counter, "\t \033[31mDL\033[0m   \t", list(turns)
-            all_turns_file.write(str(counter)+"\t\tDL\t"+str(list(turns))+"\n")
+            print counter, "\t \033[31mDL\033[0m   \t", list(turns), "----"
+            all_turns_file.write(str(counter)+"\t\tDL\t"+str(list(turns))+"\t\t-----""\n")
         del shmu
         del noc_rg
     all_turns_file.write("---------------------------"+"\n")
