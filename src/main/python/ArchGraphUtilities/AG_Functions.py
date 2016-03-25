@@ -44,7 +44,7 @@ def generate_manual_ag(proc_element_list, ag_edge_list, ag_edge_port_list):
     return ag
 
 
-def generate_generic_topology_ag(topology, logging=None):
+def generate_generic_topology_ag(topology, logging=None, report=True):
     """
     Takes a generic topology: 2DTorus, 2DMesh, 2DLine, 2DRing etc. and returns AG
     :param topology: a string with topology name
@@ -55,12 +55,13 @@ def generate_generic_topology_ag(topology, logging=None):
     size_y = Config.ag.y_size
     size_z = Config.ag.z_size
     supported_topologies = ['2DTorus', '2DMesh', '2DRing', '2DLine', '3DMesh']
-    print ("===========================================")
-    print ("PREPARING AN ARCHITECTURE GRAPH (AG)...")
-    print ("TOPOLOGY: "+topology)
-    print ("X SIZE:"+str(size_x))
-    print ("Y SIZE:"+str(size_y))
-    print ("Z SIZE:"+str(size_z))
+    if report:
+        print ("===========================================")
+        print ("PREPARING AN ARCHITECTURE GRAPH (AG)...")
+        print ("TOPOLOGY: "+topology)
+        print ("X SIZE:"+str(size_x))
+        print ("Y SIZE:"+str(size_y))
+        print ("Z SIZE:"+str(size_z))
     ag = networkx.DiGraph()
 
     if topology not in supported_topologies:
@@ -190,18 +191,19 @@ def generate_generic_topology_ag(topology, logging=None):
                     logging.info("CONNECTING  "+str(next_node)+" TO "+str(current_node))
                 ag.add_edge(current_node, next_node, Port=('E', 'W'), MappedTasks={}, Scheduling={})
                 ag.add_edge(next_node, current_node, Port=('W', 'E'), MappedTasks={}, Scheduling={})
-    print("ARCHITECTURE GRAPH (AG) IS READY...")
+    if report:
+        print("ARCHITECTURE GRAPH (AG) IS READY...")
     return ag
 
 
-def generate_ag(logging=None):
+def generate_ag(logging=None, report=True):
     """
     This function generates the architecture graph based on the configuration in Config File
     :param logging: logging file
     :return: returns the generated Architecture Graph
     """
     if Config.ag.type == 'Generic':
-        return generate_generic_topology_ag(Config.ag.topology, logging)
+        return generate_generic_topology_ag(Config.ag.topology, logging, report=report)
     elif Config.ag.type == 'Manual':
         return generate_manual_ag(Config.PE_List, Config.AG_Edge_List, Config.AG_Edge_Port_List)
     else:

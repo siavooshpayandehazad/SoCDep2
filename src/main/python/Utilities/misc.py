@@ -83,7 +83,15 @@ def generate_file_directories():
     file_list = [txt_file for txt_file in os.listdir(turn_model_directory) if txt_file.endswith(".txt")]
     for txt_file in file_list:
         os.remove(turn_model_directory+'/'+txt_file)
+
+    turn_model_eval_directory = "Generated_Files/Turn_Model_Eval"
+    if not os.path.isdir(turn_model_eval_directory):
+        os.makedirs(turn_model_eval_directory)
+    file_list = [txt_file for txt_file in os.listdir(turn_model_eval_directory) if txt_file.endswith(".txt")]
+    for txt_file in file_list:
+        os.remove(turn_model_eval_directory+'/'+txt_file)
     return None
+
 
 def check_for_dependencies():
     for module in PackageFile.ImportModules:

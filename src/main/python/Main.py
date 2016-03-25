@@ -15,6 +15,8 @@ from pympler import tracker
 from Simulator import Simulator
 from ArchGraphUtilities import list_all_turn_models
 from multiprocessing import Pool
+from functools import partial
+
 
 tr = None
 if Config.MemoryProfiler:
@@ -43,8 +45,7 @@ elif '-ETM' in sys.argv[1:]:     # Enumerate turn model
         p = Pool(6)
         args = list(range(0, len(PackageFile.FULL_TurnModel_3D)+1))
         p = p.map(list_all_turn_models.enumerate_all_3d_turn_models, args)
-        #p.start()
-        #p.join()
+        del p
     sys.exit()
 elif '-ETMD' in sys.argv[1:]:     # Enumerate turn model based on deadlock
     misc.generate_file_directories()
@@ -52,8 +53,21 @@ elif '-ETMD' in sys.argv[1:]:     # Enumerate turn model based on deadlock
         p = Pool(6)
         args = list(range(0, len(PackageFile.FULL_TurnModel_3D)+1))
         p = p.map(list_all_turn_models.enumerate_all_3d_turn_models_based_on_df, args)
-        #p.start()
-        #p.join()
+        del p
+    sys.exit()
+elif '-TMFT' in sys.argv[1:]:     # check All 2D turn model's fault tolerance
+    misc.generate_file_directories()
+    if __name__ == '__main__':
+        for turn_model in PackageFile.routing_alg_list_2d:
+            Config.ag.topology = '2DMesh'
+            Config.ag.x_size = 3
+            Config.ag.y_size = 3
+            Config.ag.z_size = 1
+            p = Pool(4)
+            args = list(range(0, 25))
+            function = partial(list_all_turn_models.report_turn_model_fault_tolerance, turn_model)
+            p = p.map(function, args)
+            del p
     sys.exit()
 elif '-UTEST' in sys.argv[1:]:
     os.system('python ../../unittest/Python/Unit_tests.py')
