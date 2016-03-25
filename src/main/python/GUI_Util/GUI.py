@@ -212,7 +212,9 @@ class MainView(tk.Tk):
                     elif self.p2.routing_alg.get() == 'XYZ':
                         Config.UsedTurnModel = PackageFile.XYZ_TurnModel
                 elif '2D' in self.p2.topology.get():
-                    if self.p2.routing_alg.get() == 'XY':
+                    if self.p2.routing_alg.get() == 'YX':
+                        Config.UsedTurnModel = PackageFile.YX_TurnModel
+                    elif self.p2.routing_alg.get() == 'XY':
                         Config.UsedTurnModel = PackageFile.XY_TurnModel
                     elif self.p2.routing_alg.get() == 'West First':
                         Config.UsedTurnModel = PackageFile.WestFirst_TurnModel

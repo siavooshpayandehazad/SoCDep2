@@ -13,6 +13,7 @@ FULL_TurnModel_3D = ['E2N', 'E2S', 'W2N', 'W2S', 'S2W', 'S2E', 'N2W', 'N2E',
 
 # 2D Turn Models:
 XY_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S']
+YX_TurnModel = ['N2E', 'S2E', 'N2W', 'S2W']
 WestFirst_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'S2E', 'N2E']
 NorthLast_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'N2W', 'N2E']
 NegativeFirst2D_TurnModel = ['E2N', 'E2S', 'W2N', 'S2E', 'N2W', 'N2E']
@@ -25,7 +26,7 @@ NegativeFirst3D_TurnModel = ['E2N', 'E2S', 'W2N', 'S2E', 'N2W', 'N2E',
                              'N2U', 'N2D', 'S2U', 'W2U', 'E2U', 'E2D',
                              'U2N', 'U2S', 'U2E', 'U2W', 'D2N', 'D2E']
 
-routing_alg_list_2d = [XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel]
+routing_alg_list_2d = [YX_TurnModel, XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel]
 routing_alg_list_3d = [XYZ_TurnModel, NegativeFirst3D_TurnModel]
 ################################################
 #          SHM Sets

@@ -9,7 +9,7 @@ class Page2(Page):  # architecture graph
 
     vlp_alg_list = ['LocalSearch', 'IterativeLocalSearch']
 
-    routing_dict = {'2D': ['XY', 'West First', 'North Last', 'Negative First', 'From File'],
+    routing_dict = {'2D': ['XY', 'YX', 'West First', 'North Last', 'Negative First', 'From File'],
                     '3D': ['XYZ', 'Negative First', 'From File']}
 
     flow_control_list = ['Wormhole', 'StoreAndForward']

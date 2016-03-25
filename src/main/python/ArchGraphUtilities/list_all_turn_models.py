@@ -104,7 +104,9 @@ def report_turn_model_fault_tolerance(turn_model, combination):
 
     ag = copy.deepcopy(AG_Functions.generate_ag(report=False))
 
-    if Config.UsedTurnModel == PackageFile.XY_TurnModel:
+    if Config.UsedTurnModel == PackageFile.YX_TurnModel:
+        turn_model_name = 'YX'
+    elif Config.UsedTurnModel == PackageFile.XY_TurnModel:
         turn_model_name = 'XY'
     elif Config.UsedTurnModel == PackageFile.WestFirst_TurnModel:
         turn_model_name = 'West_First'
