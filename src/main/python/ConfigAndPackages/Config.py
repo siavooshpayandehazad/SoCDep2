@@ -112,7 +112,7 @@ vl_opt = VerticalLinkPlacementOpt()
 ################################################
 # Todo: introduce more turn models
 # Available Turn Models :
-#         2D Turn Models: XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel
+#         2D Turn Models: XY_TurnModel, YX_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel
 #         3D Turn Models: XYZ_TurnModel, NegativeFirst3D_TurnModel
 UsedTurnModel = PackageFile.XY_TurnModel
 

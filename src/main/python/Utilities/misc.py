@@ -179,6 +179,8 @@ def update_config(config_file_path):
     # ------------------------------------------------
     if config.get("Routing_Config", "UsedTurnModel") == "XY_TurnModel":
         Config.UsedTurnModel = PackageFile.XY_TurnModel
+    elif config.get("Routing_Config", "UsedTurnModel") == "YX_TurnModel":
+        Config.UsedTurnModel = PackageFile.YX_TurnModel
     elif config.get("Routing_Config", "UsedTurnModel") == "WestFirst_TurnModel":
         Config.UsedTurnModel = PackageFile.WestFirst_TurnModel
     elif config.get("Routing_Config", "UsedTurnModel") == "NorthLast_TurnModel":
@@ -376,6 +378,8 @@ def generate_configfile():
 
     if Config.UsedTurnModel == PackageFile.XY_TurnModel:
         cnfgpars.set('Routing_Config', 'UsedTurnModel', "XY_TurnModel")
+    elif Config.UsedTurnModel == PackageFile.YX_TurnModel:
+        cnfgpars.set('Routing_Config', 'UsedTurnModel', "YX_TurnModel")
     elif Config.UsedTurnModel == PackageFile.WestFirst_TurnModel:
         cnfgpars.set('Routing_Config', 'UsedTurnModel', "WestFirst_TurnModel")
     elif Config.UsedTurnModel == PackageFile.NorthLast_TurnModel:
