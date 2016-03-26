@@ -33,6 +33,8 @@ if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("-ETM\t: Enumerates turn models")
     print("-ETMD\t: Enumerates turn models based on deadlock-free-ness")
     print("-TMFT  [Dimension] [number of threads]\t: Checks the fault tolerant of  implemented routing algorithms")
+    print("\t\t\t Dimension: 2D or 3D")
+    print("\t\t\t number of threads: number of threads in integer")
     print("")
     sys.exit()
 elif '-GUI' in sys.argv[1:]:

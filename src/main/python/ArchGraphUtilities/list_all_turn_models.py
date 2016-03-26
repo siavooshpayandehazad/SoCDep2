@@ -214,7 +214,7 @@ def report_3d_turn_model_fault_tolerance(turn_model, combination):
     metric_sum = 0
 
     list_of_avg = []
-    number_of_combinations = comb(105, combination)
+    number_of_combinations = comb(108, combination)
     while True:
         sub_ag = sample(ag.edges(), combination)
         shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
