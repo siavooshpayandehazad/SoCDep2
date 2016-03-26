@@ -9,7 +9,12 @@ from SystemHealthMonitoring import SystemHealthMonitoringUnit
 from RoutingAlgorithms import Calculate_Reachability
 import networkx
 from statistics import stdev
-from random import shuffle
+from random import shuffle, sample
+import matplotlib.pyplot as plt
+from scipy.misc import comb
+from functools import partial
+from RoutingAlgorithms.Routing import return_turn_model_name
+from multiprocessing import Pool
 
 
 def enumerate_all_3d_turn_models_based_on_df(combination):
@@ -97,39 +102,62 @@ def enumerate_all_3d_turn_models(combination):
     return None
 
 
-def report_turn_model_fault_tolerance(turn_model, combination):
+def check_fault_tolerance_of_routing_algs(dimension, number_of_multi_threads):
+    if dimension == '2D':
+        Config.ag.topology = '2DMesh'
+        Config.ag.z_size = 1
+        args = list(range(0, 25))
+        turn_model_list = PackageFile.routing_alg_list_2d
+    elif dimension == '3D':
+        Config.ag.topology = '3DMesh'
+        Config.ag.z_size = 3
+        args = list(range(0, 108, 4))
+        turn_model_list = PackageFile.routing_alg_list_3d
+    else:
+        print "Please choose a valid dimension!"
+        return False
+
+    for turn_model in turn_model_list:
+        p = Pool(number_of_multi_threads)
+        if dimension == '2D':
+            function = partial(report_2d_turn_model_fault_tolerance, turn_model)
+            p = p.map(function, args)
+        elif dimension == '3D':
+            function = partial(report_3d_turn_model_fault_tolerance, turn_model)
+            p = p.map(function, args)
+        del p
+    for turn_model in turn_model_list:
+        for arg in args:
+            turn_model_name = return_turn_model_name(turn_model)
+            file_name = None
+            if dimension == '2D':
+                file_name = str(turn_model_name) + "_eval_" + str(24-arg)
+            elif dimension == '3D':
+                file_name = str(turn_model_name) + "_eval_" + str(108-arg)
+            viz_turn_model_evaluation(file_name)
+    return True
+
+
+def report_2d_turn_model_fault_tolerance(turn_model, combination):
 
     Config.UsedTurnModel = copy.deepcopy(turn_model)
     Config.TurnsHealth = copy.deepcopy(Config.setup_turns_health())
 
     ag = copy.deepcopy(AG_Functions.generate_ag(report=False))
 
-    if Config.UsedTurnModel == PackageFile.YX_TurnModel:
-        turn_model_name = 'YX'
-    elif Config.UsedTurnModel == PackageFile.XY_TurnModel:
-        turn_model_name = 'XY'
-    elif Config.UsedTurnModel == PackageFile.WestFirst_TurnModel:
-        turn_model_name = 'West_First'
-    elif Config.UsedTurnModel == PackageFile.NorthLast_TurnModel:
-        turn_model_name = 'North_Last'
-    elif Config.UsedTurnModel == PackageFile.NegativeFirst2D_TurnModel:
-        turn_model_name = 'Neg_First'
-    elif Config.UsedTurnModel == PackageFile.XYZ_TurnModel:
-        turn_model_name = 'XYZ'
-    elif Config.UsedTurnModel == PackageFile.NegativeFirst3D_TurnModel:
-        turn_model_name = 'Neg_First_3D'
-    else:
-        turn_model_name = None
+    turn_model_name = Routing.return_turn_model_name(Config.UsedTurnModel)
 
-    turn_model_eval_file = open('Generated_Files/Turn_Model_Eval/'+str(turn_model_name) +
-                                '_eval_'+str(len(ag.edges())-combination)+'.txt', 'w')
+    file_name = str(turn_model_name)+'_eval'
+    file_name_viz = str(turn_model_name)+'_eval_'+str(len(ag.edges())-combination)
+    turn_model_eval_file = open('Generated_Files/Turn_Model_Eval/'+file_name+'.txt', 'a+')
+    turn_model_eval_viz_file = open('Generated_Files/Internal/'+file_name_viz+'.txt', 'w')
     counter = 0
     metric_sum = 0
-    print "here1"
+
     sub_ag_list = list(itertools.combinations(ag.edges(), combination))
-    print "here2"
+
     shuffle(sub_ag_list)
-    print "here3"
+
     list_of_avg = []
     for sub_ag in sub_ag_list:
         shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
@@ -147,13 +175,14 @@ def report_turn_model_fault_tolerance(turn_model, combination):
             list_of_avg.pop(0)
             std = stdev(list_of_avg)
             if std < 0.009:
-                turn_model_eval_file.write("STD of the last 5000 average samples is bellow 0.009\n")
-                turn_model_eval_file.write("Terminating the search!\n")
+                # turn_model_eval_file.write("STD of the last 5000 average samples is bellow 0.009\n")
+                # turn_model_eval_file.write("Terminating the search!\n")
                 del shmu
                 del noc_rg
                 break
-        turn_model_eval_file.write(str(counter)+"\t\t"+str(connectivity_metric)+"\n")
-        print str(counter)+"\t\t"+str(connectivity_metric)+"\t\t", float(metric_sum)/counter, "\t\t", std
+        turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
+        print "#:"+str(counter)+"\t\tC.M.:"+str(connectivity_metric)+"\t\t avg:", \
+            float(metric_sum)/counter, "\t\tstd:", std
         del shmu
         del noc_rg
 
@@ -161,7 +190,107 @@ def report_turn_model_fault_tolerance(turn_model, combination):
         avg_connectivity = float(metric_sum)/counter
     else:
         avg_connectivity = 0
-    turn_model_eval_file.write("==============================================\n")
-    turn_model_eval_file.write("Combination: "+str(len(ag.edges())-combination)+"\n" +
+    turn_model_eval_file.write("Combination: "+str(len(ag.edges())-combination)+"\t\t" +
+                               "AVG Connectivity: "+str(avg_connectivity)+"\n")
+    turn_model_eval_viz_file.close()
+    turn_model_eval_file.close()
+    return None
+
+
+def report_3d_turn_model_fault_tolerance(turn_model, combination):
+
+    Config.UsedTurnModel = copy.deepcopy(turn_model)
+    Config.TurnsHealth = copy.deepcopy(Config.setup_turns_health())
+
+    ag = copy.deepcopy(AG_Functions.generate_ag(report=False))
+
+    turn_model_name = Routing.return_turn_model_name(Config.UsedTurnModel)
+
+    file_name = str(turn_model_name)+'_eval'
+    file_name_viz = str(turn_model_name)+'_eval_'+str(len(ag.edges())-combination)
+    turn_model_eval_file = open('Generated_Files/Turn_Model_Eval/'+file_name+'.txt', 'a+')
+    turn_model_eval_viz_file = open('Generated_Files/Internal/'+file_name_viz+'.txt', 'w')
+    counter = 0
+    metric_sum = 0
+
+    list_of_avg = []
+    number_of_combinations = comb(105, combination)
+    while True:
+        sub_ag = sample(ag.edges(), combination)
+        shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
+        shmu.setup_noc_shm(ag, copy.deepcopy(Config.TurnsHealth), False)
+        for link in list(sub_ag):
+            shmu.break_link(link, False)
+        noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
+                                                                False,  False))
+        connectivity_metric = Calculate_Reachability.reachability_metric(ag, noc_rg, False)
+        counter += 1
+        metric_sum += connectivity_metric
+        std = None
+        list_of_avg.append(float(metric_sum)/counter)
+        if len(list_of_avg) > 5000:
+            list_of_avg.pop(0)
+            std = stdev(list_of_avg)
+            if std < 0.009:
+                # turn_model_eval_file.write("STD of the last 5000 average samples is bellow 0.009\n")
+                # turn_model_eval_file.write("Terminating the search!\n")
+                del shmu
+                del noc_rg
+                break
+        if counter == number_of_combinations:
+            del shmu
+            del noc_rg
+            break
+        turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
+        print "#:"+str(counter)+"\t\tC.M.:"+str(connectivity_metric)+"\t\t avg:", \
+            float(metric_sum)/counter, "\t\tstd:", std
+        del shmu
+        del noc_rg
+
+    if counter > 0:
+        avg_connectivity = float(metric_sum)/counter
+    else:
+        avg_connectivity = 0
+    turn_model_eval_file.write("Combination: "+str(len(ag.edges())-combination)+"\t\t" +
                                "   AVG Connectivity: "+str(avg_connectivity)+"\n")
+
+    turn_model_eval_file.close()
+    turn_model_eval_viz_file.close()
+    return None
+
+
+def viz_turn_model_evaluation(cost_file_name):
+    """
+    Visualizes the cost of solutions during local search mapping optimization process
+    :param cost_file_name: Name of the Cost File (Holds values of cost function for different mapping steps)
+    :return: None
+    """
+    print ("===========================================")
+    print ("GENERATING TURN MODEL OPTIMIZATION VISUALIZATIONS...")
+    print 'READING Generated_Files/Internal/'+cost_file_name+'.txt'
+    fig, ax1 = plt.subplots()
+    try:
+        viz_file = open('Generated_Files/Internal/'+cost_file_name+'.txt', 'r')
+        con_metric = []
+        line = viz_file.readline()
+        con_metric.append(float(line))
+        while line != "":
+            con_metric.append(float(line))
+            line = viz_file.readline()
+        solution_num = range(0, len(con_metric))
+        viz_file.close()
+
+        ax1.set_ylabel('Connectivity Metric')
+        ax1.set_xlabel('time')
+        ax1.plot(solution_num, con_metric, '#5095FD')
+
+    except IOError:
+        print ('CAN NOT OPEN', cost_file_name+'.txt')
+
+    plt.savefig("GraphDrawings/"+str(cost_file_name)+".png", dpi=300)
+    print ("\033[35m* VIZ::\033[0m Turn Model Evaluation " +
+           "GRAPH CREATED AT: GraphDrawings/"+str(cost_file_name)+".png")
+    plt.clf()
+    plt.close(fig)
+
     return None

@@ -2,7 +2,7 @@
 
 import networkx
 import re
-from ConfigAndPackages import Config
+from ConfigAndPackages import Config, PackageFile
 from ArchGraphUtilities import AG_Functions
 
 
@@ -350,3 +350,23 @@ def return_minimal_paths(current_rg, source_node, destination_node):
         if (len(Path)-2)/2 <= max_hop_count:
             all_minimal_paths.append(Path)
     return all_minimal_paths
+
+
+def return_turn_model_name(turn_model):
+    if turn_model == PackageFile.YX_TurnModel:
+        turn_model_name = 'YX'
+    elif turn_model == PackageFile.XY_TurnModel:
+        turn_model_name = 'XY'
+    elif turn_model == PackageFile.WestFirst_TurnModel:
+        turn_model_name = 'West_First'
+    elif turn_model == PackageFile.NorthLast_TurnModel:
+        turn_model_name = 'North_Last'
+    elif turn_model == PackageFile.NegativeFirst2D_TurnModel:
+        turn_model_name = 'Neg_First'
+    elif turn_model == PackageFile.XYZ_TurnModel:
+        turn_model_name = 'XYZ'
+    elif turn_model == PackageFile.NegativeFirst3D_TurnModel:
+        turn_model_name = 'Neg_First_3D'
+    else:
+        turn_model_name = None
+    return turn_model_name

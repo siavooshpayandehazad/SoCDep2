@@ -15,7 +15,6 @@ from pympler import tracker
 from Simulator import Simulator
 from ArchGraphUtilities import list_all_turn_models
 from multiprocessing import Pool
-from functools import partial
 
 
 tr = None
@@ -27,10 +26,13 @@ if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("Options and arguments:")
     print("-GUI\t\t:Graphical User Interface for Configuration")
     print("-UTEST\t\t:Runs Unit Tests")
-    print("-BENCHMARK\t: Runs Benchmark Algorithms:")
+    print("-BENCHMARK [Benchmark Name] \t: Runs Benchmark Algorithms:")
     print("\t\t\t * idct: Inverse Discrete Cosine Transform")
     print("\t\t\t * fdct: Forward Discrete Cosine Transform")
     print("\t\t\t * mi: Matrix Inverse")
+    print("-ETM\t: Enumerates turn models")
+    print("-ETMD\t: Enumerates turn models based on deadlock-free-ness")
+    print("-TMFT  [Dimension] [number of threads]\t: Checks the fault tolerant of  implemented routing algorithms")
     print("")
     sys.exit()
 elif '-GUI' in sys.argv[1:]:
@@ -57,18 +59,13 @@ elif '-ETMD' in sys.argv[1:]:     # Enumerate turn model based on deadlock
     sys.exit()
 elif '-TMFT' in sys.argv[1:]:     # check All 2D turn model's fault tolerance
     misc.generate_file_directories()
-    if __name__ == '__main__':
-        for turn_model in PackageFile.routing_alg_list_2d:
-            Config.ag.topology = '2DMesh'
-            Config.ag.x_size = 3
-            Config.ag.y_size = 3
-            Config.ag.z_size = 1
-            p = Pool(4)
-            args = list(range(0, 25))
-            function = partial(list_all_turn_models.report_turn_model_fault_tolerance, turn_model)
-            p = p.map(function, args)
-            del p
+    Config.ag.x_size = 3
+    Config.ag.y_size = 3
+    number_of_multi_threads = int(sys.argv[sys.argv.index('-TMFT') + 2])
+    dimension = sys.argv[sys.argv.index('-TMFT') + 1]
+    list_all_turn_models.check_fault_tolerance_of_routing_algs(dimension, number_of_multi_threads)
     sys.exit()
+
 elif '-UTEST' in sys.argv[1:]:
     os.system('python ../../unittest/Python/Unit_tests.py')
     sys.exit()
