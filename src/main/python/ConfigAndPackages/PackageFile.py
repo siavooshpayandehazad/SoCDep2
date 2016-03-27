@@ -13,7 +13,7 @@ FULL_TurnModel_3D = ['E2N', 'E2S', 'W2N', 'W2S', 'S2W', 'S2E', 'N2W', 'N2E',
 
 # 2D Turn Models:
 XY_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S']
-YX_TurnModel = ['N2E', 'S2E', 'N2W', 'S2W']
+YX_TurnModel = ['S2W', 'S2E', 'N2W', 'N2E']
 WestFirst_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'S2E', 'N2E']
 NorthLast_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'N2W', 'N2E']
 NegativeFirst2D_TurnModel = ['E2N', 'E2S', 'W2N', 'S2E', 'N2W', 'N2E']

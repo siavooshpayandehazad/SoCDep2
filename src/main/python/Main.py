@@ -31,7 +31,9 @@ if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("\t\t\t * fdct: Forward Discrete Cosine Transform")
     print("\t\t\t * mi: Matrix Inverse")
     print("-ETM\t: Enumerates turn models")
-    print("-ETMD\t: Enumerates turn models based on deadlock-free-ness")
+    print("-ETMD\t [Dimension] [number of threads]: Enumerates turn models based on deadlock-free-ness")
+    print("\t\t\t Dimension: 2D or 3D")
+    print("\t\t\t number of threads: number of threads in integer")
     print("-TMFT  [Dimension] [number of threads]\t: Checks the fault tolerant of  implemented routing algorithms")
     print("\t\t\t Dimension: 2D or 3D")
     print("\t\t\t number of threads: number of threads in integer")
@@ -47,16 +49,25 @@ elif '-ETM' in sys.argv[1:]:     # Enumerate turn model
     misc.generate_file_directories()
     if __name__ == '__main__':
         p = Pool(6)
-        args = list(range(0, len(PackageFile.FULL_TurnModel_3D)+1))
-        p = p.map(list_all_turn_models.enumerate_all_3d_turn_models, args)
+        if sys.argv[sys.argv.index('-ETM') + 1] == '3D':
+            args = list(range(0, len(PackageFile.FULL_TurnModel_3D)+1))
+            p = p.map(list_all_turn_models.enumerate_all_3d_turn_models, args)
+        if sys.argv[sys.argv.index('-ETM') + 1] == '2D':
+            args = list(range(0, len(PackageFile.FULL_TurnModel_2D)+1))
+            p = p.map(list_all_turn_models.enumerate_all_2d_turn_models, args)
         del p
     sys.exit()
 elif '-ETMD' in sys.argv[1:]:     # Enumerate turn model based on deadlock
     misc.generate_file_directories()
     if __name__ == '__main__':
-        p = Pool(6)
-        args = list(range(0, len(PackageFile.FULL_TurnModel_3D)+1))
-        p = p.map(list_all_turn_models.enumerate_all_3d_turn_models_based_on_df, args)
+        number_of_multi_threads = int(sys.argv[sys.argv.index('-ETMD') + 2])
+        p = Pool(number_of_multi_threads)
+        if sys.argv[sys.argv.index('-ETMD') + 1] == '3D':
+            args = list(range(0, len(PackageFile.FULL_TurnModel_3D)+1))
+            p = p.map(list_all_turn_models.enumerate_all_3d_turn_models_based_on_df, args)
+        if sys.argv[sys.argv.index('-ETMD') + 1] == '2D':
+            args = list(range(0, len(PackageFile.FULL_TurnModel_2D)+1))
+            p = p.map(list_all_turn_models.enumerate_all_2d_turn_models_based_on_df, args)
         del p
     sys.exit()
 elif '-TMFT' in sys.argv[1:]:     # check All 2D turn model's fault tolerance
