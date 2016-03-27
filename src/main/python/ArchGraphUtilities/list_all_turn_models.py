@@ -179,7 +179,7 @@ def enumerate_all_2d_turn_models(combination):
     return None
 
 
-def check_fault_tolerance_of_routing_algs(dimension, number_of_multi_threads):
+def check_fault_tolerance_of_routing_algs(dimension, number_of_multi_threads, viz):
     if dimension == '2D':
         Config.ag.topology = '2DMesh'
         Config.ag.z_size = 1
@@ -193,33 +193,33 @@ def check_fault_tolerance_of_routing_algs(dimension, number_of_multi_threads):
     else:
         print "Please choose a valid dimension!"
         return False
-
     for turn_model in turn_model_list:
         if dimension == '2D':
             p = Pool(number_of_multi_threads)
-            function = partial(report_2d_turn_model_fault_tolerance, turn_model)
+            function = partial(report_2d_turn_model_fault_tolerance, turn_model, viz)
             p.map(function, args)
             p.terminate()
         elif dimension == '3D':
             p = Pool(number_of_multi_threads)
-            function = partial(report_3d_turn_model_fault_tolerance, turn_model)
+            function = partial(report_3d_turn_model_fault_tolerance, turn_model, viz)
             p.map(function, args)
             p.terminate()
-
-    # for turn_model in turn_model_list:
-    #     for arg in args:
-    #         turn_model_name = return_turn_model_name(turn_model)
-    #         file_name = None
-    #         if dimension == '2D':
-    #             file_name = str(turn_model_name) + "_eval_" + str(24-arg)
-    #         elif dimension == '3D':
-    #            file_name = str(turn_model_name) + "_eval_" + str(108-arg)
-    #         viz_turn_model_evaluation(file_name)
-    viz_all_turn_models_against_each_other()
+    if viz:
+        for turn_model in turn_model_list:
+            for arg in args:
+                turn_model_name = return_turn_model_name(turn_model)
+                file_name = None
+                if dimension == '2D':
+                    file_name = str(turn_model_name) + "_eval_" + str(24-arg)
+                elif dimension == '3D':
+                   file_name = str(turn_model_name) + "_eval_" + str(108-arg)
+                viz_turn_model_evaluation(file_name)
+    if dimension == '2D':
+        viz_all_turn_models_against_each_other()
     return True
 
 
-def report_2d_turn_model_fault_tolerance(turn_model, combination):
+def report_2d_turn_model_fault_tolerance(turn_model, viz, combination):
 
     Config.UsedTurnModel = copy.deepcopy(turn_model)
     Config.TurnsHealth = copy.deepcopy(Config.setup_turns_health())
@@ -229,9 +229,10 @@ def report_2d_turn_model_fault_tolerance(turn_model, combination):
     turn_model_name = Routing.return_turn_model_name(Config.UsedTurnModel)
 
     file_name = str(turn_model_name)+'_eval'
-    # file_name_viz = str(turn_model_name)+'_eval_'+str(len(ag.edges())-combination)
     turn_model_eval_file = open('Generated_Files/Turn_Model_Eval/'+file_name+'.txt', 'a+')
-    # turn_model_eval_viz_file = open('Generated_Files/Internal/'+file_name_viz+'.txt', 'w')
+    if viz:
+        file_name_viz = str(turn_model_name)+'_eval_'+str(len(ag.edges())-combination)
+        turn_model_eval_viz_file = open('Generated_Files/Internal/'+file_name_viz+'.txt', 'w')
     counter = 0
     metric_sum = 0
 
@@ -261,7 +262,8 @@ def report_2d_turn_model_fault_tolerance(turn_model, combination):
                 del shmu
                 del noc_rg
                 break
-        # turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
+        if viz:
+            turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
         print "#:"+str(counter)+"\t\tC.M.:"+str(connectivity_metric)+"\t\t avg:", \
             float(metric_sum)/counter, "\t\tstd:", std
         del shmu
@@ -272,12 +274,13 @@ def report_2d_turn_model_fault_tolerance(turn_model, combination):
     else:
         avg_connectivity = 0
     turn_model_eval_file.write(str(len(ag.edges())-combination)+"\t\t"+str(avg_connectivity)+"\n")
-    # turn_model_eval_viz_file.close()
+    if viz:
+        turn_model_eval_viz_file.close()
     turn_model_eval_file.close()
     return None
 
 
-def report_3d_turn_model_fault_tolerance(turn_model, combination):
+def report_3d_turn_model_fault_tolerance(turn_model, combination, viz):
 
     Config.UsedTurnModel = copy.deepcopy(turn_model)
     Config.TurnsHealth = copy.deepcopy(Config.setup_turns_health())
@@ -287,9 +290,10 @@ def report_3d_turn_model_fault_tolerance(turn_model, combination):
     turn_model_name = Routing.return_turn_model_name(Config.UsedTurnModel)
 
     file_name = str(turn_model_name)+'_eval'
-    # file_name_viz = str(turn_model_name)+'_eval_'+str(len(ag.edges())-combination)
     turn_model_eval_file = open('Generated_Files/Turn_Model_Eval/'+file_name+'.txt', 'a+')
-    # turn_model_eval_viz_file = open('Generated_Files/Internal/'+file_name_viz+'.txt', 'w')
+    if viz:
+        file_name_viz = str(turn_model_name)+'_eval_'+str(len(ag.edges())-combination)
+        turn_model_eval_viz_file = open('Generated_Files/Internal/'+file_name_viz+'.txt', 'w')
     counter = 0
     metric_sum = 0
 
@@ -321,7 +325,8 @@ def report_3d_turn_model_fault_tolerance(turn_model, combination):
             del shmu
             del noc_rg
             break
-        # turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
+        if viz:
+            turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
         print "#:"+str(counter)+"\t\tC.M.:"+str(connectivity_metric)+"\t\t avg:", \
             float(metric_sum)/counter, "\t\tstd:", std
         del shmu
@@ -333,7 +338,8 @@ def report_3d_turn_model_fault_tolerance(turn_model, combination):
         avg_connectivity = 0
     turn_model_eval_file.write(str(len(ag.edges())-combination)+"\t\t"+str(avg_connectivity)+"\n")
     turn_model_eval_file.close()
-    # turn_model_eval_viz_file.close()
+    if viz:
+        turn_model_eval_viz_file.close()
     return None
 
 
