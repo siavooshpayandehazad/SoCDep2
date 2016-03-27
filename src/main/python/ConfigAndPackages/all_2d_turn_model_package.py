@@ -1,3 +1,8 @@
+# Copyright (C) 2015 Siavoosh Payandeh Azad
+# this list contains all the 2D Deadlock-free turn models that provide full connectivity
+# for connectivity metric, number of pairs of nodes that can communicate under the
+# routing algorithm is used.
+
 all_2d_turn_models = [['E2N', 'E2S', 'W2N', 'W2S'],
                       ['E2N', 'E2S', 'W2N', 'N2E'],
                       ['E2N', 'E2S', 'W2S', 'S2E'],

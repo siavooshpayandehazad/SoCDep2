@@ -185,6 +185,7 @@ def check_fault_tolerance_of_routing_algs(dimension, number_of_multi_threads, vi
         Config.ag.z_size = 1
         args = list(range(0, 25))
         turn_model_list = all_2d_turn_model_package.all_2d_turn_models
+        viz_2d_turn_model()
     elif dimension == '3D':
         Config.ag.topology = '3DMesh'
         Config.ag.z_size = 3
@@ -350,7 +351,7 @@ def viz_turn_model_evaluation(cost_file_name):
     :return: None
     """
     print ("===========================================")
-    print ("GENERATING TURN MODEL OPTIMIZATION VISUALIZATIONS...")
+    print ("GENERATING TURN MODEL EVALUATION VISUALIZATIONS...")
     print 'READING Generated_Files/Internal/'+cost_file_name+'.txt'
     fig, ax1 = plt.subplots()
     try:
@@ -381,7 +382,7 @@ def viz_turn_model_evaluation(cost_file_name):
 
 def viz_all_turn_models_against_each_other():
     print ("===========================================")
-    print ("GENERATING TURN MODEL OPTIMIZATION VISUALIZATIONS...")
+    print ("GENERATING TURN MODEL EVALUATION VISUALIZATIONS...")
     fig = plt.figure()
 
     ax1 = plt.subplot(111)
@@ -415,4 +416,86 @@ def viz_all_turn_models_against_each_other():
     plt.close(fig)
     print ("\033[35m* VIZ::\033[0m Turn Model Evaluation " +
            "GRAPH CREATED AT: GraphDrawings/Turn_Models_Fault_Tolerance_Eval.png")
+    return None
+
+
+def viz_2d_turn_model():
+    fig = plt.figure(figsize=(19, 12))
+    count = 1
+    for turn_model in all_2d_turn_model_package.all_2d_turn_models:
+        ax1 = plt.subplot(7, 8, count)
+        if "E2S" in turn_model:
+            ax1.annotate("",
+                         xy=(0, 0.5), xycoords='data',
+                         xytext=(0.2, 0.7), textcoords='data',
+                         size=20,
+                         arrowprops=dict(arrowstyle="->",
+                                         connectionstyle="angle, angleA=0, angleB=90, rad=0")
+                         )
+        if "S2W" in turn_model:
+            ax1.annotate("",
+                         xy=(0.2, 0.7), xycoords='data',
+                         xytext=(0.4, 0.5), textcoords='data',
+                         size=20,
+                         arrowprops=dict(arrowstyle="->",
+                                         connectionstyle="angle, angleA=90, angleB=0, rad=0")
+                         )
+        if "N2E" in turn_model:
+            ax1.annotate("",
+                         xy=(0.2, 0.3), xycoords='data',
+                         xytext=(0.0, 0.5), textcoords='data',
+                         size=20,
+                         arrowprops=dict(arrowstyle="->",
+                                         connectionstyle="angle, angleA=90, angleB=0, rad=0")
+                         )
+        if "W2N" in turn_model:
+            ax1.annotate("",
+                         xy=(0.4, 0.5), xycoords='data',
+                         xytext=(0.2, 0.3), textcoords='data',
+                         size=20,
+                         arrowprops=dict(arrowstyle="->",
+                                         connectionstyle="angle, angleA=0, angleB=90, rad=0")
+                         )
+        # #######################
+        if "S2E" in turn_model:
+            ax1.annotate("",
+                         xy=(0.75, 0.7), xycoords='data',
+                         xytext=(0.55, 0.5), textcoords='data',
+                         size=20,
+                         arrowprops=dict(arrowstyle="->",
+                                         connectionstyle="angle, angleA=90, angleB=0, rad=0")
+                         )
+        if "W2S" in turn_model:
+            ax1.annotate("",
+                         xy=(0.95, 0.5), xycoords='data',
+                         xytext=(0.75, 0.7), textcoords='data',
+                         size=20,
+                         arrowprops=dict(arrowstyle="->",
+                                         connectionstyle="angle, angleA=0, angleB=90, rad=0")
+                         )
+        if "E2N" in turn_model:
+            ax1.annotate("",
+                         xy=(0.55, 0.5), xycoords='data',
+                         xytext=(0.75, 0.3), textcoords='data',
+                         size=20,
+                         arrowprops=dict(arrowstyle="->",
+                                         connectionstyle="angle, angleA=180, angleB=90, rad=0")
+                         )
+        if "N2W" in turn_model:
+            ax1.annotate("",
+                         xy=(0.75, 0.3), xycoords='data',
+                         xytext=(0.95, 0.5), textcoords='data',
+                         size=20,
+                         arrowprops=dict(arrowstyle="->",
+                                         connectionstyle="angle, angleA=90, angleB=0, rad=0")
+                         )
+        ax1.text(0, 0.8, str(turn_model), fontsize=5)
+        count += 1
+        ax1.axis('off')
+    plt.axis('off')
+    plt.savefig("GraphDrawings/Turn_Model.png", dpi=300, bbox_inches='tight')
+    plt.clf()
+    plt.close(fig)
+    # print ("\033[35m* VIZ::\033[0m Turn Model viz " +
+    #       "TURN MODEL VIZ CREATED AT: GraphDrawings/Turn_Model_"+turn_model_name+".png")
     return None
