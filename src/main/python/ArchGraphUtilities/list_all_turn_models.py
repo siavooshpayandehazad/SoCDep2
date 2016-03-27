@@ -1,7 +1,8 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad  and Thilo Kogge
 
-from ConfigAndPackages import PackageFile, Config
+from ConfigAndPackages import PackageFile, Config, all_2d_turn_model_package
 import copy
+import random
 import itertools
 import AG_Functions
 from RoutingAlgorithms import Routing
@@ -9,6 +10,7 @@ from SystemHealthMonitoring import SystemHealthMonitoringUnit
 from RoutingAlgorithms import Calculate_Reachability
 import networkx
 from statistics import stdev
+import os
 from random import shuffle, sample
 import matplotlib.pyplot as plt
 from scipy.misc import comb
@@ -182,7 +184,7 @@ def check_fault_tolerance_of_routing_algs(dimension, number_of_multi_threads):
         Config.ag.topology = '2DMesh'
         Config.ag.z_size = 1
         args = list(range(0, 25))
-        turn_model_list = PackageFile.routing_alg_list_2d
+        turn_model_list = all_2d_turn_model_package.all_2d_turn_models
     elif dimension == '3D':
         Config.ag.topology = '3DMesh'
         Config.ag.z_size = 3
@@ -193,23 +195,27 @@ def check_fault_tolerance_of_routing_algs(dimension, number_of_multi_threads):
         return False
 
     for turn_model in turn_model_list:
-        p = Pool(number_of_multi_threads)
         if dimension == '2D':
+            p = Pool(number_of_multi_threads)
             function = partial(report_2d_turn_model_fault_tolerance, turn_model)
-            p = p.map(function, args)
+            p.map(function, args)
+            p.terminate()
         elif dimension == '3D':
+            p = Pool(number_of_multi_threads)
             function = partial(report_3d_turn_model_fault_tolerance, turn_model)
-            p = p.map(function, args)
-        del p
-    for turn_model in turn_model_list:
-        for arg in args:
-            turn_model_name = return_turn_model_name(turn_model)
-            file_name = None
-            if dimension == '2D':
-                file_name = str(turn_model_name) + "_eval_" + str(24-arg)
-            elif dimension == '3D':
-                file_name = str(turn_model_name) + "_eval_" + str(108-arg)
-            viz_turn_model_evaluation(file_name)
+            p.map(function, args)
+            p.terminate()
+
+    # for turn_model in turn_model_list:
+    #     for arg in args:
+    #         turn_model_name = return_turn_model_name(turn_model)
+    #         file_name = None
+    #         if dimension == '2D':
+    #             file_name = str(turn_model_name) + "_eval_" + str(24-arg)
+    #         elif dimension == '3D':
+    #            file_name = str(turn_model_name) + "_eval_" + str(108-arg)
+    #         viz_turn_model_evaluation(file_name)
+    viz_all_turn_models_against_each_other()
     return True
 
 
@@ -223,9 +229,9 @@ def report_2d_turn_model_fault_tolerance(turn_model, combination):
     turn_model_name = Routing.return_turn_model_name(Config.UsedTurnModel)
 
     file_name = str(turn_model_name)+'_eval'
-    file_name_viz = str(turn_model_name)+'_eval_'+str(len(ag.edges())-combination)
+    # file_name_viz = str(turn_model_name)+'_eval_'+str(len(ag.edges())-combination)
     turn_model_eval_file = open('Generated_Files/Turn_Model_Eval/'+file_name+'.txt', 'a+')
-    turn_model_eval_viz_file = open('Generated_Files/Internal/'+file_name_viz+'.txt', 'w')
+    # turn_model_eval_viz_file = open('Generated_Files/Internal/'+file_name_viz+'.txt', 'w')
     counter = 0
     metric_sum = 0
 
@@ -255,7 +261,7 @@ def report_2d_turn_model_fault_tolerance(turn_model, combination):
                 del shmu
                 del noc_rg
                 break
-        turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
+        # turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
         print "#:"+str(counter)+"\t\tC.M.:"+str(connectivity_metric)+"\t\t avg:", \
             float(metric_sum)/counter, "\t\tstd:", std
         del shmu
@@ -265,9 +271,8 @@ def report_2d_turn_model_fault_tolerance(turn_model, combination):
         avg_connectivity = float(metric_sum)/counter
     else:
         avg_connectivity = 0
-    turn_model_eval_file.write("Combination: "+str(len(ag.edges())-combination)+"\t\t" +
-                               "AVG Connectivity: "+str(avg_connectivity)+"\n")
-    turn_model_eval_viz_file.close()
+    turn_model_eval_file.write(str(len(ag.edges())-combination)+"\t\t"+str(avg_connectivity)+"\n")
+    # turn_model_eval_viz_file.close()
     turn_model_eval_file.close()
     return None
 
@@ -282,9 +287,9 @@ def report_3d_turn_model_fault_tolerance(turn_model, combination):
     turn_model_name = Routing.return_turn_model_name(Config.UsedTurnModel)
 
     file_name = str(turn_model_name)+'_eval'
-    file_name_viz = str(turn_model_name)+'_eval_'+str(len(ag.edges())-combination)
+    # file_name_viz = str(turn_model_name)+'_eval_'+str(len(ag.edges())-combination)
     turn_model_eval_file = open('Generated_Files/Turn_Model_Eval/'+file_name+'.txt', 'a+')
-    turn_model_eval_viz_file = open('Generated_Files/Internal/'+file_name_viz+'.txt', 'w')
+    # turn_model_eval_viz_file = open('Generated_Files/Internal/'+file_name_viz+'.txt', 'w')
     counter = 0
     metric_sum = 0
 
@@ -316,7 +321,7 @@ def report_3d_turn_model_fault_tolerance(turn_model, combination):
             del shmu
             del noc_rg
             break
-        turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
+        # turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
         print "#:"+str(counter)+"\t\tC.M.:"+str(connectivity_metric)+"\t\t avg:", \
             float(metric_sum)/counter, "\t\tstd:", std
         del shmu
@@ -326,11 +331,9 @@ def report_3d_turn_model_fault_tolerance(turn_model, combination):
         avg_connectivity = float(metric_sum)/counter
     else:
         avg_connectivity = 0
-    turn_model_eval_file.write("Combination: "+str(len(ag.edges())-combination)+"\t\t" +
-                               "   AVG Connectivity: "+str(avg_connectivity)+"\n")
-
+    turn_model_eval_file.write(str(len(ag.edges())-combination)+"\t\t"+str(avg_connectivity)+"\n")
     turn_model_eval_file.close()
-    turn_model_eval_viz_file.close()
+    # turn_model_eval_viz_file.close()
     return None
 
 
@@ -367,5 +370,43 @@ def viz_turn_model_evaluation(cost_file_name):
            "GRAPH CREATED AT: GraphDrawings/"+str(cost_file_name)+".png")
     plt.clf()
     plt.close(fig)
+    return None
 
+
+def viz_all_turn_models_against_each_other():
+    print ("===========================================")
+    print ("GENERATING TURN MODEL OPTIMIZATION VISUALIZATIONS...")
+    fig = plt.figure()
+
+    ax1 = plt.subplot(111)
+    turn_model_eval_directory = "Generated_Files/Turn_Model_Eval"
+    file_list = [txt_file for txt_file in os.listdir(turn_model_eval_directory) if txt_file.endswith(".txt")]
+    counter = 0
+    for txt_file in file_list:
+        viz_file = open(turn_model_eval_directory+"/"+txt_file, 'r')
+        line = viz_file.readline()
+        value_list = []
+        while line != "":
+            value = line.split()
+            value_list.append(float(value[1]))
+            line = viz_file.readline()
+        index_list = range(0, len(value_list))
+        viz_file.close()
+        value_list = sorted(value_list)
+        random.seed(counter)
+        r = random.randrange(0, 255)
+        g = random.randrange(0, 255)
+        b = random.randrange(0, 255)
+        color = '#%02X%02X%02X' % (r, g, b)
+        file_name = txt_file.split("_")
+        ax1.plot(index_list, value_list, color, label=str(file_name[1]))
+        counter += 1
+    lgd = ax1.legend(loc='center left', bbox_to_anchor=(1, 0.5), ncol=3)
+    ax1.grid('on')
+    plt.savefig("GraphDrawings/Turn_Models_Fault_Tolerance_Eval.png", bbox_extra_artists=(lgd,),
+                bbox_inches='tight', dpi=300)
+    plt.clf()
+    plt.close(fig)
+    print ("\033[35m* VIZ::\033[0m Turn Model Evaluation " +
+           "GRAPH CREATED AT: GraphDrawings/Turn_Models_Fault_Tolerance_Eval.png")
     return None
