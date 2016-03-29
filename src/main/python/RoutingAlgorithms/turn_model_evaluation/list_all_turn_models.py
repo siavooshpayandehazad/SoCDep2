@@ -1,25 +1,23 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad  and Thilo Kogge
 
-from ConfigAndPackages import PackageFile, Config, all_2d_turn_model_package
 import copy
-import ast
-import random
 import itertools
-import AG_Functions
+from random import shuffle, sample
+from functools import partial
+from multiprocessing import Pool
+
+import networkx
+from statistics import stdev
+from scipy.misc import comb
+
+from ConfigAndPackages import PackageFile, Config, all_2d_turn_model_package
+from ArchGraphUtilities import AG_Functions
 from RoutingAlgorithms import Routing
 from SystemHealthMonitoring import SystemHealthMonitoringUnit
 from RoutingAlgorithms import Calculate_Reachability
-import networkx
-from statistics import stdev
-import os
-from random import shuffle, sample
-import matplotlib.pyplot as plt
-from scipy.misc import comb
-from functools import partial
 from RoutingAlgorithms.Routing import return_turn_model_name
-from multiprocessing import Pool
-from turn_model_viz import viz_2d_turn_model, draw_turn_model_counter_clockwise, draw_turn_model_counter_clockwise_yz
-from turn_model_viz import draw_turn_model_clockwise, draw_turn_model_clockwise_yz
+from RoutingAlgorithms.turn_model_evaluation.turn_model_viz import viz_2d_turn_model, viz_3d_turn_model, viz_all_turn_models_against_each_other
+from RoutingAlgorithms.turn_model_evaluation.turn_model_viz import viz_turn_model_evaluation
 
 
 def enumerate_all_2d_turn_models_based_on_df(combination):
@@ -350,118 +348,4 @@ def report_3d_turn_model_fault_tolerance(turn_model, combination, viz):
     turn_model_eval_file.close()
     if viz:
         turn_model_eval_viz_file.close()
-    return None
-
-
-def viz_turn_model_evaluation(cost_file_name):
-    """
-    Visualizes the cost of solutions during local search mapping optimization process
-    :param cost_file_name: Name of the Cost File (Holds values of cost function for different mapping steps)
-    :return: None
-    """
-    print ("===========================================")
-    print ("GENERATING TURN MODEL EVALUATION VISUALIZATIONS...")
-    print 'READING Generated_Files/Internal/'+cost_file_name+'.txt'
-    fig, ax1 = plt.subplots()
-    try:
-        viz_file = open('Generated_Files/Internal/'+cost_file_name+'.txt', 'r')
-        con_metric = []
-        line = viz_file.readline()
-        con_metric.append(float(line))
-        while line != "":
-            con_metric.append(float(line))
-            line = viz_file.readline()
-        solution_num = range(0, len(con_metric))
-        viz_file.close()
-
-        ax1.set_ylabel('Connectivity Metric')
-        ax1.set_xlabel('time')
-        ax1.plot(solution_num, con_metric, '#5095FD')
-
-    except IOError:
-        print ('CAN NOT OPEN', cost_file_name+'.txt')
-
-    plt.savefig("GraphDrawings/"+str(cost_file_name)+".png", dpi=300)
-    print ("\033[35m* VIZ::\033[0m Turn Model Evaluation " +
-           "GRAPH CREATED AT: GraphDrawings/"+str(cost_file_name)+".png")
-    plt.clf()
-    plt.close(fig)
-    return None
-
-
-def viz_all_turn_models_against_each_other():
-    print ("===========================================")
-    print ("GENERATING TURN MODEL EVALUATION VISUALIZATIONS...")
-    fig = plt.figure()
-
-    ax1 = plt.subplot(111)
-    turn_model_eval_directory = "Generated_Files/Turn_Model_Eval"
-    file_list = [txt_file for txt_file in os.listdir(turn_model_eval_directory) if txt_file.endswith(".txt")]
-    counter = 0
-    for txt_file in file_list:
-        viz_file = open(turn_model_eval_directory+"/"+txt_file, 'r')
-        line = viz_file.readline()
-        value_list = []
-        while line != "":
-            value = line.split()
-            value_list.append(float(value[1]))
-            line = viz_file.readline()
-        index_list = range(0, len(value_list))
-        viz_file.close()
-        value_list = sorted(value_list)
-        random.seed(counter)
-        r = random.randrange(0, 255)
-        g = random.randrange(0, 255)
-        b = random.randrange(0, 255)
-        color = '#%02X%02X%02X' % (r, g, b)
-        file_name = txt_file.split("_")
-        ax1.plot(index_list, value_list, color, label=str(file_name[1]))
-        counter += 1
-    lgd = ax1.legend(loc='center left', bbox_to_anchor=(1, 0.5), ncol=3)
-    ax1.grid('on')
-    plt.savefig("GraphDrawings/Turn_Models_Fault_Tolerance_Eval.png", bbox_extra_artists=(lgd,),
-                bbox_inches='tight', dpi=300)
-    plt.clf()
-    plt.close(fig)
-    print ("\033[35m* VIZ::\033[0m Turn Model Evaluation " +
-           "GRAPH CREATED AT: GraphDrawings/Turn_Models_Fault_Tolerance_Eval.png")
-    return None
-
-
-def viz_3d_turn_model(file_name, size_x, size_y, rows, columns):
-    print ("===========================================")
-    print ("GENERATING TURN MODEL VISUALIZATIONS...")
-    fig = plt.figure(figsize=(size_x, size_y))
-    count = 1
-    data_file = open('ConfigAndPackages/turn_models_3D/'+file_name+'.txt', 'r')
-    line = data_file.readline()
-    while line != "":
-        start = line.index("[")
-        end = line.index("]")+1
-        turn_model = ast.literal_eval(line[start:end])
-        ax1 = plt.subplot(rows, columns, count)
-
-        turn_set = ["E2S", "S2W", "N2E", "W2N"]
-        draw_turn_model_counter_clockwise(ax1, turn_model, turn_set, 0.1, 0.1, "60", "0")
-        turn_set = ["E2D", "D2W", "U2E", "W2U"]
-        draw_turn_model_counter_clockwise(ax1, turn_model, turn_set, 0.15, 0.35, "90", "0")
-        draw_turn_model_counter_clockwise_yz(ax1, turn_model, 0, 0.22)
-
-        turn_set = ["S2E", "W2S", "E2N", "N2W"]
-        draw_turn_model_clockwise(ax1, turn_model, turn_set, 0.55, 0.1, "60", "0")
-        turn_set = ["D2E", "W2D", "E2U", "U2W"]
-        draw_turn_model_clockwise(ax1, turn_model, turn_set,  0.6, 0.35, "90", "0")
-        draw_turn_model_clockwise_yz(ax1, turn_model, 0.45, 0.22)
-
-        ax1.text(0, 0.6, str(count), fontsize=5)
-        count += 1
-        ax1.axis('off')
-        line = data_file.readline()
-
-    plt.axis('off')
-    plt.savefig("GraphDrawings/"+file_name+".png", dpi=300, bbox_inches='tight')
-    plt.clf()
-    plt.close(fig)
-    # print ("\033[35m* VIZ::\033[0m Turn Model viz " +
-    #       "TURN MODEL VIZ CREATED AT: GraphDrawings/Turn_Model_"+turn_model_name+".png")
     return None

@@ -13,7 +13,7 @@ import SystemInitialization
 from GUI_Util import GUI
 from pympler import tracker
 from Simulator import Simulator
-from ArchGraphUtilities import list_all_turn_models
+from RoutingAlgorithms.turn_model_evaluation import list_all_turn_models
 from multiprocessing import Pool
 
 
