@@ -196,7 +196,9 @@ def viz_3d_turn_model(file_name, size_x, size_y, rows, columns):
     print ("===========================================")
     print ("GENERATING TURN MODEL VISUALIZATIONS...")
     fig = plt.figure(figsize=(size_x, size_y))
+    page_counter = 0
     count = 1
+    turn_model_counter = 0
     data_file = open('ConfigAndPackages/turn_models_3D/'+file_name+'.txt', 'r')
     line = data_file.readline()
     while line != "":
@@ -217,15 +219,33 @@ def viz_3d_turn_model(file_name, size_x, size_y, rows, columns):
         draw_turn_model_clockwise(ax1, turn_model, turn_set,  0.6, 0.35, "90", "0")
         draw_turn_model_clockwise_yz(ax1, turn_model, 0.45, 0.22)
 
-        ax1.text(0, 0.6, str(count), fontsize=5)
+        ax1.text(0, 0.62, str(turn_model_counter), fontsize=10)
         count += 1
+        turn_model_counter += 1
         ax1.axis('off')
+        if count == rows*columns+1:
+            plt.axis('off')
+            plt.savefig("GraphDrawings/"+file_name+str(page_counter)+".png", dpi=50, bbox_inches='tight')
+            plt.clf()
+            plt.close(fig)
+            page_counter += 1
+            count = 1
+            del fig
+            del ax1
+            print ("GENERATING TURN MODEL VISUALIZATIONS... Page:"+str(page_counter))
+            fig = plt.figure(figsize=(size_x, size_y))
         line = data_file.readline()
 
-    plt.axis('off')
-    plt.savefig("GraphDrawings/"+file_name+".png", dpi=300, bbox_inches='tight')
-    plt.clf()
-    plt.close(fig)
+    if page_counter == 0:
+        plt.axis('off')
+        plt.savefig("GraphDrawings/"+file_name+".png", dpi=50, bbox_inches='tight')
+        plt.clf()
+        plt.close(fig)
+    else:
+        plt.axis('off')
+        plt.savefig("GraphDrawings/"+file_name+str(page_counter)+".png", dpi=50, bbox_inches='tight')
+        plt.clf()
+        plt.close(fig)
     # print ("\033[35m* VIZ::\033[0m Turn Model viz " +
     #       "TURN MODEL VIZ CREATED AT: GraphDrawings/Turn_Model_"+turn_model_name+".png")
     print ("TURN MODEL VISUALIZATIONS READY...")

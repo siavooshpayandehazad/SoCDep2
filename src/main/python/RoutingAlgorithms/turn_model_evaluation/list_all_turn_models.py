@@ -193,6 +193,13 @@ def check_fault_tolerance_of_routing_algs(dimension, number_of_multi_threads, vi
         args = list(range(0, 108, 4))
         turn_model_list = PackageFile.routing_alg_list_3d
         viz_3d_turn_model("all_3D_10t_turn_models", 40, 30, 12, 13)
+        viz_3d_turn_model("all_3D_11t_turn_models", 40, 30, 14, 13)
+        viz_3d_turn_model("all_3D_12t_turn_models", 40, 30, 14, 13)
+        viz_3d_turn_model("all_3D_13t_turn_models", 40, 30, 14, 13)
+        viz_3d_turn_model("all_3D_14t_turn_models", 40, 30, 14, 13)
+        viz_3d_turn_model("all_3D_15t_turn_models", 40, 30, 14, 13)
+        viz_3d_turn_model("all_3D_16t_turn_models", 40, 30, 14, 13)
+        viz_3d_turn_model("all_3D_17t_turn_models", 50, 45, 14, 13)
         viz_3d_turn_model("all_3D_18t_turn_models", 50, 45, 14, 13)
     else:
         print "Please choose a valid dimension!"
