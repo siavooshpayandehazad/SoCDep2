@@ -512,7 +512,7 @@ def viz_3d_turn_model(file_name, size_x, size_y, rows, columns):
     print ("GENERATING TURN MODEL VISUALIZATIONS...")
     fig = plt.figure(figsize=(size_x, size_y))
     count = 1
-    data_file = open('ConfigAndPackages/Turn_Models_3D/'+file_name+'.txt', 'r')
+    data_file = open('ConfigAndPackages/turn_models_3D/'+file_name+'.txt', 'r')
     line = data_file.readline()
     while line != "":
         start = line.index("[")
