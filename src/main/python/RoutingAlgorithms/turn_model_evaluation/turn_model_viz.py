@@ -7,6 +7,22 @@ import os
 import ast
 
 
+def viz_all_turn_models(dimension):
+    if dimension == '2D':
+        viz_2d_turn_model()
+    if dimension == '3D':
+        viz_3d_turn_model("all_3D_10t_turn_models", 40, 30, 12, 13)
+        viz_3d_turn_model("all_3D_11t_turn_models", 40, 30, 14, 13)
+        viz_3d_turn_model("all_3D_12t_turn_models", 40, 30, 14, 13)
+        viz_3d_turn_model("all_3D_13t_turn_models", 40, 30, 14, 13)
+        viz_3d_turn_model("all_3D_14t_turn_models", 40, 30, 14, 13)
+        viz_3d_turn_model("all_3D_15t_turn_models", 40, 30, 14, 13)
+        viz_3d_turn_model("all_3D_16t_turn_models", 40, 30, 14, 13)
+        viz_3d_turn_model("all_3D_17t_turn_models", 50, 45, 14, 13)
+        viz_3d_turn_model("all_3D_18t_turn_models", 50, 45, 14, 13)
+    return None
+
+
 def viz_turn_model_evaluation(cost_file_name):
     """
     Visualizes the cost of solutions during local search mapping optimization process

@@ -13,7 +13,7 @@ import SystemInitialization
 from GUI_Util import GUI
 from pympler import tracker
 from Simulator import Simulator
-from RoutingAlgorithms.turn_model_evaluation import list_all_turn_models
+from RoutingAlgorithms.turn_model_evaluation import list_all_turn_models, turn_model_viz
 from multiprocessing import Pool
 
 
@@ -38,6 +38,8 @@ if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("\t\t\t Dimension: 2D or 3D")
     print("\t\t\t number of threads: number of threads in integer")
     print("\t\t\t -V: Enables visualization of every step of routing algorithm checks ")
+    print("-TMFT  [Dimension] \t: visualizes the turn models in the given dimension")
+    print("\t\t\t Dimension: 2D or 3D")
     print("")
     sys.exit()
 elif '-GUI' in sys.argv[1:]:
@@ -74,11 +76,16 @@ elif '-ETMD' in sys.argv[1:]:     # Enumerate turn model based on deadlock
             p.map(list_all_turn_models.enumerate_all_2d_turn_models_based_on_df, args)
             p.terminate()
     sys.exit()
-elif '-TMFT' in sys.argv[1:]:     # check All 2D turn model's fault tolerance
+elif '-TMFT' in sys.argv[1:]:     # check All turn model's fault tolerance
     misc.generate_file_directories()
     Config.ag.x_size = 3
     Config.ag.y_size = 3
     number_of_multi_threads = int(sys.argv[sys.argv.index('-TMFT') + 2])
+    if "2D" in sys.argv[1:] or "3D" in sys.argv[1:]:
+        pass
+    else:
+        print "MISSING ARGUMENT:: A dimension value is required for this command"
+        sys.exit()
     dimension = sys.argv[sys.argv.index('-TMFT') + 1]
     if "-V" in sys.argv[1:]:
         viz = True
@@ -86,7 +93,16 @@ elif '-TMFT' in sys.argv[1:]:     # check All 2D turn model's fault tolerance
         viz = False
     list_all_turn_models.check_fault_tolerance_of_routing_algs(dimension, number_of_multi_threads, viz)
     sys.exit()
-
+elif '-VIZTM' in sys.argv[1:]:     # visualizes the turn models in 2D or 3D
+    misc.generate_file_directories()
+    if "2D" in sys.argv[1:] or "3D" in sys.argv[1:]:
+        pass
+    else:
+        print "MISSING ARGUMENT:: A dimension value is required for this command"
+        sys.exit()
+    dimension = sys.argv[sys.argv.index('-VIZTM') + 1]
+    turn_model_viz.viz_all_turn_models(dimension)
+    sys.exit()
 elif '-UTEST' in sys.argv[1:]:
     os.system('python ../../unittest/Python/Unit_tests.py')
     sys.exit()

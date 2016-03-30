@@ -5,18 +5,16 @@ import itertools
 from random import shuffle, sample
 from functools import partial
 from multiprocessing import Pool
-
 import networkx
 from statistics import stdev
 from scipy.misc import comb
-
 from ConfigAndPackages import PackageFile, Config, all_2d_turn_model_package
 from ArchGraphUtilities import AG_Functions
 from RoutingAlgorithms import Routing
 from SystemHealthMonitoring import SystemHealthMonitoringUnit
 from RoutingAlgorithms import Calculate_Reachability
 from RoutingAlgorithms.Routing import return_turn_model_name
-from RoutingAlgorithms.turn_model_evaluation.turn_model_viz import viz_2d_turn_model, viz_3d_turn_model, viz_all_turn_models_against_each_other
+from RoutingAlgorithms.turn_model_evaluation.turn_model_viz import viz_all_turn_models_against_each_other
 from RoutingAlgorithms.turn_model_evaluation.turn_model_viz import viz_turn_model_evaluation
 
 
@@ -186,21 +184,11 @@ def check_fault_tolerance_of_routing_algs(dimension, number_of_multi_threads, vi
         Config.ag.z_size = 1
         args = list(range(0, 25))
         turn_model_list = all_2d_turn_model_package.all_2d_turn_models
-        viz_2d_turn_model()
     elif dimension == '3D':
         Config.ag.topology = '3DMesh'
         Config.ag.z_size = 3
         args = list(range(0, 108, 4))
         turn_model_list = PackageFile.routing_alg_list_3d
-        viz_3d_turn_model("all_3D_10t_turn_models", 40, 30, 12, 13)
-        viz_3d_turn_model("all_3D_11t_turn_models", 40, 30, 14, 13)
-        viz_3d_turn_model("all_3D_12t_turn_models", 40, 30, 14, 13)
-        viz_3d_turn_model("all_3D_13t_turn_models", 40, 30, 14, 13)
-        viz_3d_turn_model("all_3D_14t_turn_models", 40, 30, 14, 13)
-        viz_3d_turn_model("all_3D_15t_turn_models", 40, 30, 14, 13)
-        viz_3d_turn_model("all_3D_16t_turn_models", 40, 30, 14, 13)
-        viz_3d_turn_model("all_3D_17t_turn_models", 50, 45, 14, 13)
-        viz_3d_turn_model("all_3D_18t_turn_models", 50, 45, 14, 13)
     else:
         print "Please choose a valid dimension!"
         return False
