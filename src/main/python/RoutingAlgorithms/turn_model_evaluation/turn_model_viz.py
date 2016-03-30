@@ -97,6 +97,9 @@ def viz_all_turn_models_against_each_other():
 
     lgd = ax1.legend(handles2, labels2, loc='center left',  bbox_to_anchor=(1, 0.5), ncol=3)
     ax1.grid('on')
+    plt.axvline(24, color='b', linestyle='--')
+    plt.xlabel('Number of working links in the network', fontsize=16)
+    plt.ylabel('Average connectivity metric', fontsize=16)
     plt.savefig("GraphDrawings/Turn_Models_Fault_Tolerance_Eval.png", bbox_extra_artists=(lgd,),
                 bbox_inches='tight', dpi=300)
     plt.clf()
