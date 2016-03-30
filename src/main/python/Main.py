@@ -38,7 +38,7 @@ if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("\t\t\t Dimension: 2D or 3D")
     print("\t\t\t number of threads: number of threads in integer")
     print("\t\t\t -V: Enables visualization of every step of routing algorithm checks ")
-    print("-TMFT  [Dimension] \t: visualizes the turn models in the given dimension")
+    print("-VIZTM  [Dimension] \t: visualizes the turn models in the given dimension")
     print("\t\t\t Dimension: 2D or 3D")
     print("")
     sys.exit()
