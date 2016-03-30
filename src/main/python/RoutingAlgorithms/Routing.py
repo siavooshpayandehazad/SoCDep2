@@ -355,7 +355,7 @@ def return_minimal_paths(current_rg, source_node, destination_node):
 def return_turn_model_name(turn_model):
     if turn_model in all_2d_turn_model_package.all_2d_turn_models:
         tm_index = all_2d_turn_model_package.all_2d_turn_models.index(turn_model)
-        turn_model_name = "2d_"+str(tm_index)
+        turn_model_name = str(tm_index)
     elif turn_model == PackageFile.XYZ_TurnModel:
         turn_model_name = '3d_XYZ'
     elif turn_model == PackageFile.NegativeFirst3D_TurnModel:

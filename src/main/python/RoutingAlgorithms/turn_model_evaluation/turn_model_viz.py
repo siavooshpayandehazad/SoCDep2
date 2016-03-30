@@ -206,7 +206,8 @@ def viz_2d_turn_model():
                                      connectionstyle="angle, angleA=90, angleB=0, rad=0")
                      )
 
-        ax1.text(0, 0.8, str(Routing.return_turn_model_name(turn_model))+": "+str(turn_model), fontsize=5)
+        ax1.text(0, 0.9, str(Routing.return_turn_model_name(turn_model)), fontsize=10)
+        ax1.text(0, 0.8, str(turn_model), fontsize=5)
         count += 1
         ax1.axis('off')
     plt.axis('off')
