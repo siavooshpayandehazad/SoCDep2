@@ -5,6 +5,7 @@ from RoutingAlgorithms import Routing
 import random
 import os
 import ast
+import operator
 
 
 def viz_all_turn_models(dimension):
@@ -67,6 +68,7 @@ def viz_all_turn_models_against_each_other():
     ax1 = plt.subplot(111)
     turn_model_eval_directory = "Generated_Files/Turn_Model_Eval"
     file_list = [txt_file for txt_file in os.listdir(turn_model_eval_directory) if txt_file.endswith(".txt")]
+    sorted(file_list)
     counter = 0
     for txt_file in file_list:
         viz_file = open(turn_model_eval_directory+"/"+txt_file, 'r')
@@ -85,9 +87,15 @@ def viz_all_turn_models_against_each_other():
         b = random.randrange(0, 255)
         color = '#%02X%02X%02X' % (r, g, b)
         file_name = txt_file.split("_")
-        ax1.plot(index_list, value_list, color, label=str(file_name[1]))
+        ax1.plot(index_list, value_list, color, label=str("{0:0=2d}".format(int(file_name[1]))))
         counter += 1
-    lgd = ax1.legend(loc='center left', bbox_to_anchor=(1, 0.5), ncol=3)
+
+    handles, labels = ax1.get_legend_handles_labels()
+    hl = sorted(zip(handles, labels),
+            key=operator.itemgetter(1))
+    handles2, labels2 = zip(*hl)
+
+    lgd = ax1.legend(handles2, labels2, loc='center left',  bbox_to_anchor=(1, 0.5), ncol=3)
     ax1.grid('on')
     plt.savefig("GraphDrawings/Turn_Models_Fault_Tolerance_Eval.png", bbox_extra_artists=(lgd,),
                 bbox_inches='tight', dpi=300)
