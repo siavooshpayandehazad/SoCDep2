@@ -316,3 +316,26 @@ def reachability_metric(ag, noc_rg, report):
     if report:
         print ("REACH-ABILITY METRIC: "+str(r_metric))
     return r_metric
+
+def reachability_metric_number_of_paths(ag, noc_rg, report):
+    """
+    :param ag: architecture graph
+    :param noc_rg: NoC routing graph
+    :param report: report switch
+    :return: reachability metric
+    """
+    if report:
+        print ("=====================================")
+        print ("CALCULATING REACH-ABILITY METRIC OF THE CURRENT ROUTING ALGORITHM UNDER CURRENT FAULT CONFIG")
+    reachability_counter = 0
+    for source_node in ag.nodes():
+        for destination_node in ag.nodes():
+            if source_node != destination_node:
+                if is_destination_reachable_from_source(noc_rg, source_node, destination_node):
+                    reachability_counter += len(list(networkx.all_simple_paths(noc_rg,
+                                                                      str(source_node)+str('L')+str('I'),
+                                                                      str(destination_node)+str('L')+str('O'))))
+    r_metric = float(reachability_counter)
+    if report:
+        print ("REACH-ABILITY METRIC: "+str(r_metric))
+    return r_metric
