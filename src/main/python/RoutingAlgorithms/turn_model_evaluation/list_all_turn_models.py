@@ -36,7 +36,7 @@ def enumerate_all_2d_turn_models_based_on_df(combination):
     Config.ag.x_size = 3
     Config.ag.y_size = 3
     Config.ag.z_size = 1
-    Config.RotingType == 'NonMinimalPath'
+    Config.RotingType = 'NonMinimalPath'
 
     ag = copy.deepcopy(AG_Functions.generate_ag())
     turn_model_list = copy.deepcopy(PackageFile.FULL_TurnModel_2D)
