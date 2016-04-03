@@ -36,6 +36,7 @@ def enumerate_all_2d_turn_models_based_on_df(combination):
     Config.ag.x_size = 3
     Config.ag.y_size = 3
     Config.ag.z_size = 1
+    Config.RotingType == 'NonMinimalPath'
 
     ag = copy.deepcopy(AG_Functions.generate_ag())
     turn_model_list = copy.deepcopy(PackageFile.FULL_TurnModel_2D)
@@ -53,15 +54,16 @@ def enumerate_all_2d_turn_models_based_on_df(combination):
         noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, list(turns), False,  False))
         if networkx.is_directed_acyclic_graph(noc_rg):
             connectivity_metric = Calculate_Reachability.reachability_metric(ag, noc_rg, False)
-            connectivity_metric2 = Calculate_Reachability.reachability_metric_number_of_paths(ag, noc_rg, False)
+            doa = Calculate_Reachability.degree_of_adaptiveness(ag, noc_rg, False)
+            doa_ex = Calculate_Reachability.extended_degree_of_adaptiveness(ag, noc_rg, False)
             deadlock_free_counter += 1
             # print counter, "\t \033[92mDF\033[0m \t", list(turns), "\t\t", connectivity_metric
             all_turns_file.write(str(counter)+"\t\tDF\t"+str(list(turns))+"\t\t"+str(connectivity_metric) +
-                                 "\t\t"+str(connectivity_metric2)+"\n")
+                                 "\t\t"+str(doa)+"\t\t"+str(doa_ex)+"\n")
         else:
             deadlock_counter += 1
             # print counter, "\t \033[31mDL\033[0m   \t", list(turns), "\t\t----"
-            all_turns_file.write(str(counter)+"\t\tDL\t"+str(list(turns))+"\t\t-----""\n")
+            all_turns_file.write(str(counter)+"\t\tDL\t"+str(list(turns))+"\t\t-----"+"\t\t-----"+"\t\t-----"+"\n")
         del shmu
         del noc_rg
     all_turns_file.write("---------------------------"+"\n")
