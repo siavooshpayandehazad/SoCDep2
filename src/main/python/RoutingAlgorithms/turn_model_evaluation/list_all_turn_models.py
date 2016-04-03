@@ -185,6 +185,14 @@ def enumerate_all_2d_turn_models(combination):
 
 
 def check_fault_tolerance_of_routing_algs(dimension, number_of_multi_threads, viz):
+    """
+    runs appropriate functions for checking fault tolerance of the network according to the topology,
+    on number_of_multi_threads parallel threads
+    :param dimension: defines the topology of the network, either "2D" or "3D"
+    :param number_of_multi_threads: number of threads for running the program
+    :param viz: boolean, if True, generates visualization of convergence of the connectivity metirc
+    :return: False if the Dimension is wrong, other wise True
+    """
     if dimension == '2D':
         Config.ag.topology = '2DMesh'
         Config.ag.z_size = 1
@@ -225,7 +233,14 @@ def check_fault_tolerance_of_routing_algs(dimension, number_of_multi_threads, vi
 
 
 def report_2d_turn_model_fault_tolerance(turn_model, viz, combination):
-
+    """
+    generates 2D architecture graph with all combinations C(len(ag.nodes), combination)
+    of links and writes the average connectivity metric in a file.
+    :param turn_model: list of allowed turns for generating the routing graph
+    :param viz: if true, generates the visualization files
+    :param combination: number of links to be present in the network
+    :return: None
+    """
     Config.UsedTurnModel = copy.deepcopy(turn_model)
     Config.TurnsHealth = copy.deepcopy(Config.setup_turns_health())
 
@@ -244,7 +259,6 @@ def report_2d_turn_model_fault_tolerance(turn_model, viz, combination):
     metric_sum = 0
 
     sub_ag_list = list(itertools.combinations(ag.edges(), combination))
-
     shuffle(sub_ag_list)
 
     list_of_avg = []
@@ -288,7 +302,14 @@ def report_2d_turn_model_fault_tolerance(turn_model, viz, combination):
 
 
 def report_3d_turn_model_fault_tolerance(turn_model, combination, viz):
-
+    """
+    generates 3D architecture graph with all combinations C(len(ag.nodes), combination)
+    of links and writes the average connectivity metric in a file.
+    :param turn_model: list of allowed turns for generating the routing graph
+    :param viz: if true, generates the visualization files
+    :param combination: number of links to be present in the network
+    :return: None
+    """
     Config.UsedTurnModel = copy.deepcopy(turn_model)
     Config.TurnsHealth = copy.deepcopy(Config.setup_turns_health())
 

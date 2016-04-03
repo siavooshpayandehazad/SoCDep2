@@ -9,6 +9,11 @@ import operator
 
 
 def viz_all_turn_models(dimension):
+    """
+    Draws all the turn models in 2D or 3D
+    :param dimension: 2D or 3D
+    :return: None
+    """
     if dimension == '2D':
         viz_2d_turn_model()
     if dimension == '3D':
@@ -61,6 +66,11 @@ def viz_turn_model_evaluation(cost_file_name):
 
 
 def viz_all_turn_models_against_each_other():
+    """
+    Generates visualization of average connectivity metric vs number of links present
+    in the network
+    :return: None
+    """
     print ("===========================================")
     print ("GENERATING TURN MODEL EVALUATION VISUALIZATIONS...")
     fig = plt.figure()
@@ -91,8 +101,7 @@ def viz_all_turn_models_against_each_other():
         counter += 1
 
     handles, labels = ax1.get_legend_handles_labels()
-    hl = sorted(zip(handles, labels),
-            key=operator.itemgetter(1))
+    hl = sorted(zip(handles, labels), key=operator.itemgetter(1))
     handles2, labels2 = zip(*hl)
 
     lgd = ax1.legend(handles2, labels2, loc='center left',  bbox_to_anchor=(1, 0.5), ncol=3)
@@ -110,6 +119,10 @@ def viz_all_turn_models_against_each_other():
 
 
 def viz_2d_turn_model():
+    """
+    Reads all the 2D turn models and draw them in a file at GraphDrawings/Turn_Model.png
+    :return: None
+    """
     print ("===========================================")
     print ("GENERATING TURN MODEL VISUALIZATIONS...")
     fig = plt.figure(figsize=(19, 12))
@@ -221,6 +234,16 @@ def viz_2d_turn_model():
 
 
 def viz_3d_turn_model(file_name, size_x, size_y, rows, columns):
+    """
+    Draws all the turn models in the file "file_name" in a canvas of size_x*size_y and
+    in "rows" rows and "columns" columns.
+    :param file_name: source file of the turn models
+    :param size_x: width of the picture
+    :param size_y: height of the picture
+    :param rows: number of rows of turn models per canvas
+    :param columns: number of columns of turn models per canvas
+    :return: None
+    """
     print ("===========================================")
     print ("GENERATING TURN MODEL VISUALIZATIONS...")
     fig = plt.figure(figsize=(size_x, size_y))
