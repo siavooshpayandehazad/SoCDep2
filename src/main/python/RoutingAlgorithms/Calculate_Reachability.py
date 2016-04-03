@@ -74,7 +74,16 @@ def is_destination_reachable_from_source(noc_rg, source_node, destination_node):
     # (which will be connected to PE's input port)
     destination = str(destination_node)+str('L')+str('O')
     if networkx.has_path(noc_rg, source, destination):
-        return True
+        if Config.RotingType == 'MinimalPath':
+            path_length = networkx.shortest_path_length(noc_rg, source, destination)
+            minimal_hop_count = AG_Functions.manhattan_distance(source_node, destination_node)
+            # print networkx.shortest_path(noc_rg, source, destination)
+            # print source, destination, (path_length/2), minimal_hop_count
+            if (path_length/2) == minimal_hop_count:
+
+                return True
+        else:
+            return True
     else:
         return False
 

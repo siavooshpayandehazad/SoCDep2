@@ -34,8 +34,10 @@ if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("-ETMD\t [Dimension] [number of threads]: Enumerates turn models based on deadlock-free-ness")
     print("\t\t\t Dimension: 2D or 3D")
     print("\t\t\t number of threads: number of threads in integer")
-    print("-TMFT  [Dimension] [number of threads] [-V]\t: Checks the fault tolerant of implemented routing algorithms")
+    print("-TMFT  [Dimension] [Routing Type] [number of threads] [-V]\t: Checks the fault tolerant" +
+          " of implemented routing algorithms")
     print("\t\t\t Dimension: 2D or 3D")
+    print("\t\t\t Routing Type: \"M\" for minimal and \"NM\" for non-minimal")
     print("\t\t\t number of threads: number of threads in integer")
     print("\t\t\t -V: Enables visualization of every step of routing algorithm checks ")
     print("-VIZTM  [Dimension] \t: visualizes the turn models in the given dimension")
@@ -80,7 +82,15 @@ elif '-TMFT' in sys.argv[1:]:     # check All turn model's fault tolerance
     misc.generate_file_directories()
     Config.ag.x_size = 3
     Config.ag.y_size = 3
-    number_of_multi_threads = int(sys.argv[sys.argv.index('-TMFT') + 2])
+    routing_type = sys.argv[sys.argv.index('-TMFT') + 2]
+    if routing_type == "M":
+        Config.RotingType = 'MinimalPath'
+    elif routing_type == "NM":
+        Config.RotingType = 'NonMinimalPath'
+    else:
+        print "ARGUMENT ERROR:: Routing type should be either M or NM..."
+
+    number_of_multi_threads = int(sys.argv[sys.argv.index('-TMFT') + 3])
     if "2D" in sys.argv[1:] or "3D" in sys.argv[1:]:
         pass
     else:
