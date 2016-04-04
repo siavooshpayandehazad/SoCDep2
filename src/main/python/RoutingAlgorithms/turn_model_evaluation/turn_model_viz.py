@@ -97,7 +97,7 @@ def viz_all_turn_models_against_each_other():
         b = random.randrange(0, 255)
         color = '#%02X%02X%02X' % (r, g, b)
         file_name = txt_file.split("_")
-        ax1.plot(index_list, value_list, color, label=str("{0:0=2d}".format(int(file_name[1]))))
+        ax1.plot(index_list, value_list, color, label=str("{0:0=2d}".format(int(file_name[0]))))
         counter += 1
 
     handles, labels = ax1.get_legend_handles_labels()
