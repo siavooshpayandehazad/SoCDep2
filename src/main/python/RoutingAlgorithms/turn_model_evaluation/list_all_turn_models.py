@@ -301,13 +301,13 @@ def report_2d_turn_model_fault_tolerance(turn_model, viz, combination):
     return None
 
 
-def report_3d_turn_model_fault_tolerance(turn_model, combination, viz):
+def report_3d_turn_model_fault_tolerance(turn_model, viz, combination):
     """
     generates 3D architecture graph with all combinations C(len(ag.nodes), combination)
     of links and writes the average connectivity metric in a file.
     :param turn_model: list of allowed turns for generating the routing graph
-    :param viz: if true, generates the visualization files
     :param combination: number of links to be present in the network
+    :param viz: if true, generates the visualization files
     :return: None
     """
     Config.UsedTurnModel = copy.deepcopy(turn_model)
