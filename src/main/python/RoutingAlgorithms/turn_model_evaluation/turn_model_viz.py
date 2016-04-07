@@ -15,10 +15,8 @@ def viz_all_turn_models(dimension, routing_type):
     :return: None
     """
     if dimension == '2D':
-        if routing_type == "M":
-            viz_2d_turn_model(all_2d_turn_model_package.turn_models_non_minimal)
-        elif routing_type == "NM":
-            viz_2d_turn_model(all_2d_turn_model_package.turn_models_minimal)
+        if routing_type in ["M", "NM"]:
+            viz_2d_turn_model(all_2d_turn_model_package.all_2d_turn_models)
         else:
             print "ARGUMENT ERROR:: Routing type should be either M or NM..."
 

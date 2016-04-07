@@ -69,7 +69,7 @@ elif '-ETM' in sys.argv[1:]:     # Enumerate turn model
 elif '-ETMD' in sys.argv[1:]:     # Enumerate turn model based on deadlock
     misc.generate_file_directories()
     if __name__ == '__main__':
-        routing_type = sys.argv[sys.argv.index('-TMFT') + 2]
+        routing_type = sys.argv[sys.argv.index('-ETMD') + 2]
         if routing_type == "M":
             Config.RotingType = 'MinimalPath'
         elif routing_type == "NM":
@@ -120,7 +120,7 @@ elif '-VIZTM' in sys.argv[1:]:     # visualizes the turn models in 2D or 3D
         print "MISSING ARGUMENT:: A dimension value is required for this command"
         sys.exit()
     dimension = sys.argv[sys.argv.index('-VIZTM') + 1]
-    routing_type = sys.argv[sys.argv.index('-TMFT') + 2]
+    routing_type = sys.argv[sys.argv.index('-VIZTM') + 2]
     turn_model_viz.viz_all_turn_models(dimension, routing_type)
     sys.exit()
 elif '-UTEST' in sys.argv[1:]:
