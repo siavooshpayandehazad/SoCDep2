@@ -8,14 +8,20 @@ import ast
 import operator
 
 
-def viz_all_turn_models(dimension):
+def viz_all_turn_models(dimension, routing_type):
     """
     Draws all the turn models in 2D or 3D
     :param dimension: 2D or 3D
     :return: None
     """
     if dimension == '2D':
-        viz_2d_turn_model()
+        if routing_type == "M":
+            viz_2d_turn_model(all_2d_turn_model_package.turn_models_non_minimal)
+        elif routing_type == "NM":
+            viz_2d_turn_model(all_2d_turn_model_package.turn_models_minimal)
+        else:
+            print "ARGUMENT ERROR:: Routing type should be either M or NM..."
+
     if dimension == '3D':
         viz_3d_turn_model("all_3D_10t_turn_models", 40, 30, 12, 13)
         viz_3d_turn_model("all_3D_11t_turn_models", 40, 30, 14, 13)
@@ -118,7 +124,7 @@ def viz_all_turn_models_against_each_other():
     return None
 
 
-def viz_2d_turn_model():
+def viz_2d_turn_model(turn_model_list):
     """
     Reads all the 2D turn models and draw them in a file at GraphDrawings/Turn_Model.png
     :return: None
@@ -127,7 +133,7 @@ def viz_2d_turn_model():
     print ("GENERATING TURN MODEL VISUALIZATIONS...")
     fig = plt.figure(figsize=(19, 12))
     count = 1
-    for turn_model in all_2d_turn_model_package.all_2d_turn_models:
+    for turn_model in turn_model_list:
         ax1 = plt.subplot(7, 8, count)
         if "E2S" in turn_model:
             color = 'black'

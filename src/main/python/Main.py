@@ -31,8 +31,9 @@ if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("\t\t\t * fdct: Forward Discrete Cosine Transform")
     print("\t\t\t * mi: Matrix Inverse")
     print("-ETM\t: Enumerates turn models")
-    print("-ETMD\t [Dimension] [number of threads]: Enumerates turn models based on deadlock-free-ness")
+    print("-ETMD\t [Dimension] [Routing Type] [number of threads]: Enumerates turn models based on deadlock-free-ness")
     print("\t\t\t Dimension: 2D or 3D")
+    print("\t\t\t Routing Type: \"M\" for minimal and \"NM\" for non-minimal")
     print("\t\t\t number of threads: number of threads in integer")
     print("-TMFT  [Dimension] [Routing Type] [number of threads] [-V]\t: Checks the fault tolerant" +
           " of implemented routing algorithms")
@@ -40,7 +41,8 @@ if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("\t\t\t Routing Type: \"M\" for minimal and \"NM\" for non-minimal")
     print("\t\t\t number of threads: number of threads in integer")
     print("\t\t\t -V: Enables visualization of every step of routing algorithm checks ")
-    print("-VIZTM  [Dimension] \t: visualizes the turn models in the given dimension")
+    print("-VIZTM  [Dimension] [Routing Type]\t: visualizes the turn models in the given dimension")
+    print("\t\t\t Routing Type: \"M\" for minimal and \"NM\" for non-minimal")
     print("\t\t\t Dimension: 2D or 3D")
     print("")
     sys.exit()
@@ -67,7 +69,14 @@ elif '-ETM' in sys.argv[1:]:     # Enumerate turn model
 elif '-ETMD' in sys.argv[1:]:     # Enumerate turn model based on deadlock
     misc.generate_file_directories()
     if __name__ == '__main__':
-        number_of_multi_threads = int(sys.argv[sys.argv.index('-ETMD') + 2])
+        routing_type = sys.argv[sys.argv.index('-TMFT') + 2]
+        if routing_type == "M":
+            Config.RotingType = 'MinimalPath'
+        elif routing_type == "NM":
+            Config.RotingType = 'NonMinimalPath'
+        else:
+            print "ARGUMENT ERROR:: Routing type should be either M or NM..."
+        number_of_multi_threads = int(sys.argv[sys.argv.index('-ETMD') + 3])
         p = Pool(number_of_multi_threads)
         if sys.argv[sys.argv.index('-ETMD') + 1] == '3D':
             args = list(range(0, len(PackageFile.FULL_TurnModel_3D)+1))
@@ -111,7 +120,8 @@ elif '-VIZTM' in sys.argv[1:]:     # visualizes the turn models in 2D or 3D
         print "MISSING ARGUMENT:: A dimension value is required for this command"
         sys.exit()
     dimension = sys.argv[sys.argv.index('-VIZTM') + 1]
-    turn_model_viz.viz_all_turn_models(dimension)
+    routing_type = sys.argv[sys.argv.index('-TMFT') + 2]
+    turn_model_viz.viz_all_turn_models(dimension, routing_type)
     sys.exit()
 elif '-UTEST' in sys.argv[1:]:
     os.system('python ../../unittest/Python/Unit_tests.py')
