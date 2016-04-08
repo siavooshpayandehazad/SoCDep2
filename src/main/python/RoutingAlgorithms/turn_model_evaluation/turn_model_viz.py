@@ -21,15 +21,24 @@ def viz_all_turn_models(dimension, routing_type):
             print "ARGUMENT ERROR:: Routing type should be either M or NM..."
 
     if dimension == '3D':
-        viz_3d_turn_model("all_3D_10t_turn_models", 40, 30, 12, 13)
-        viz_3d_turn_model("all_3D_11t_turn_models", 40, 30, 14, 13)
-        viz_3d_turn_model("all_3D_12t_turn_models", 40, 30, 14, 13)
-        viz_3d_turn_model("all_3D_13t_turn_models", 40, 30, 14, 13)
-        viz_3d_turn_model("all_3D_14t_turn_models", 40, 30, 14, 13)
-        viz_3d_turn_model("all_3D_15t_turn_models", 40, 30, 14, 13)
-        viz_3d_turn_model("all_3D_16t_turn_models", 40, 30, 14, 13)
-        viz_3d_turn_model("all_3D_17t_turn_models", 50, 45, 14, 13)
-        viz_3d_turn_model("all_3D_18t_turn_models", 50, 45, 14, 13)
+        if routing_type == "NM":
+            viz_3d_turn_model("Non_Minimal/all_3D_10t_turn_models", 40, 30, 12, 13)
+            viz_3d_turn_model("Non_Minimal/all_3D_11t_turn_models", 40, 30, 14, 13)
+            viz_3d_turn_model("Non_Minimal/all_3D_12t_turn_models", 40, 30, 14, 13)
+            viz_3d_turn_model("Non_Minimal/all_3D_13t_turn_models", 40, 30, 14, 13)
+            viz_3d_turn_model("Non_Minimal/all_3D_14t_turn_models", 40, 30, 14, 13)
+            viz_3d_turn_model("Non_Minimal/all_3D_15t_turn_models", 40, 30, 14, 13)
+            viz_3d_turn_model("Non_Minimal/all_3D_16t_turn_models", 40, 30, 14, 13)
+            viz_3d_turn_model("Non_Minimal/all_3D_17t_turn_models", 50, 45, 14, 13)
+            viz_3d_turn_model("Non_Minimal/all_3D_18t_turn_models", 50, 45, 14, 13)
+        elif routing_type == "M":
+            viz_3d_turn_model("Minimal/all_3D_12t_turn_models", 50, 45, 14, 13)
+            viz_3d_turn_model("Minimal/all_3D_13t_turn_models", 50, 45, 14, 13)
+            viz_3d_turn_model("Minimal/all_3D_14t_turn_models", 50, 45, 14, 13)
+            viz_3d_turn_model("Minimal/all_3D_15t_turn_models", 50, 45, 14, 13)
+            viz_3d_turn_model("Minimal/all_3D_16t_turn_models", 50, 45, 14, 13)
+            viz_3d_turn_model("Minimal/all_3D_17t_turn_models", 50, 45, 14, 13)
+            viz_3d_turn_model("Minimal/all_3D_18t_turn_models", 50, 45, 14, 13)
     return None
 
 
