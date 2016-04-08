@@ -29,5 +29,5 @@ Copyright (C) 2015-2016 as collective work done by Siavoosh Payandeh Azad, René
 ===============================================================================
  	  FOR DOCUMENTATIONS PLEASE REFER TO WIKI!
 ===============================================================================
-See our page at: http://siavooshpayandehazad.github.io/ScheduleAndDepend/
+See our page at: http://siavooshpayandehazad.github.io/SoCDep2/
 Join the chat at https://gitter.im/siavooshpayandehazad/ScheduleAndDepend
