@@ -289,7 +289,7 @@ def viz_3d_turn_model(file_name, size_x, size_y, rows, columns):
         ax1.axis('off')
         if count == rows*columns+1:
             plt.axis('off')
-            plt.savefig("GraphDrawings/"+file_name+str(page_counter)+".png", dpi=100, bbox_inches='tight')
+            plt.savefig("GraphDrawings/"+file_name[file_name.find("/"):]+str(page_counter)+".png", dpi=100, bbox_inches='tight')
             plt.clf()
             plt.close(fig)
             page_counter += 1
@@ -299,15 +299,14 @@ def viz_3d_turn_model(file_name, size_x, size_y, rows, columns):
             print ("GENERATING TURN MODEL VISUALIZATIONS... Page:"+str(page_counter))
             fig = plt.figure(figsize=(size_x, size_y))
         line = data_file.readline()
-
     if page_counter == 0:
         plt.axis('off')
-        plt.savefig("GraphDrawings/"+file_name+".png", dpi=100, bbox_inches='tight')
+        plt.savefig("GraphDrawings/"+file_name[file_name.find("/"):]+".png", dpi=100, bbox_inches='tight')
         plt.clf()
         plt.close(fig)
     else:
         plt.axis('off')
-        plt.savefig("GraphDrawings/"+file_name+str(page_counter)+".png", dpi=100, bbox_inches='tight')
+        plt.savefig("GraphDrawings/"+file_name[file_name.find("/"):]+str(page_counter)+".png", dpi=100, bbox_inches='tight')
         plt.clf()
         plt.close(fig)
     # print ("\033[35m* VIZ::\033[0m Turn Model viz " +
