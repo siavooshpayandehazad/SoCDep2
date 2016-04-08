@@ -1,18 +1,18 @@
 READMEFILE="../../../README.txt"
 
 echo ==============================================================================		> $READMEFILE
-echo "                                                       ___      " >> $READMEFILE
-echo "                                                     / ___ \    " >> $READMEFILE
-echo "                                                    /\_\ /\ \   " >> $READMEFILE
-echo "	 _____            _____    _____                  \/_/// /__  " >> $READMEFILE
-echo "	/\  _  \        /\  _  \ /\  _  \                    // /_\ \ " >> $READMEFILE
-echo "	\ \,\L\_\    ___\ \ \/\_\\ \ \/\ \     __   _____   /\______/ " >> $READMEFILE
-echo "	 \/_\__ \   / __ \ \ \/_/_\ \ \ \ \  / __ \/\  __ \ \/_____/ " >> $READMEFILE
-echo "	   /\ \L\ \/\ \L\ \ \ \L\ \\ \ \_\ \/\  __/\ \ \L\ \         " >> $READMEFILE
-echo "	   \  \____\ \____/\ \____/ \ \____/\ \____\\ \ ,__/         " >> $READMEFILE
-echo "	    \/_____/\/___/  \/___/   \/___/  \/____/ \ \ \/          " >> $READMEFILE
-echo "	                                              \ \_\          " >> $READMEFILE
-echo "	                                               \/_/          " >> $READMEFILE
+echo "                                                              ___ " >> $READMEFILE
+echo " 						           / ___ \ " >> $READMEFILE
+echo " 			  				  /\_\ /\ \ " >> $READMEFILE
+echo " 	 ____            ____     ____                    \/_/// /__ " >> $READMEFILE
+echo " 	/\  _ \         /\  _ \  /\  _ \                     // /_\ \ " >> $READMEFILE
+echo " 	\ \ \L\_\    ___\ \ \/\_\\ \ \/\ \     __   _____   /\______/ " >> $READMEFILE
+echo " 	 \/_\__ \   / __ \ \ \/_/_\ \ \ \ \  / __ \/\  __ \ \/_____/ " >> $READMEFILE
+echo " 	   /\ \L\ \/\ \L\ \ \ \L\ \\ \ \_\ \/\  __/\ \ \L\ \ " >> $READMEFILE
+echo " 	   \  \____\ \____/\ \____/ \ \____/\ \____\\ \  __/ " >> $READMEFILE
+echo " 	    \/_____/\/___/  \/___/   \/___/  \/____/ \ \ \/ " >> $READMEFILE
+echo " 	                                              \ \_\ " >> $READMEFILE
+echo " 	                                               \/_/ " >> $READMEFILE
 echo ==============================================================================		>> $READMEFILE
 echo AUTHORS:  																			>> $READMEFILE
 echo ' \t '		SIAVOOSH PAYANDEH AZAD		>> $READMEFILE
