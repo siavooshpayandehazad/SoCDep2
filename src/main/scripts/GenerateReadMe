@@ -33,5 +33,5 @@ echo ' \t '		FOR DOCUMENTATIONS PLEASE REFER TO WIKI!								>> $READMEFILE
 echo ===============================================================================	>> $READMEFILE
 # echo Project Directory Map: '\n'														>> $READMEFILE
 # tree -a ../../../src -I "*.log|*.png|*.pyc|results|configs|Generated_Files|.DS_Store|__init__.py" >> $READMEFILE
-echo See our page at: http://siavooshpayandehazad.github.io/ScheduleAndDepend/ >> $READMEFILE
+echo See our page at: http://siavooshpayandehazad.github.io/SoCDep2/ >> $READMEFILE
 echo Join the chat at https://gitter.im/siavooshpayandehazad/ScheduleAndDepend >> $READMEFILE
