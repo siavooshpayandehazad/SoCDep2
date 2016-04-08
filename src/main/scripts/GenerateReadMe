@@ -1,24 +1,18 @@
 READMEFILE="../../../README.txt"
 
 echo ==============================================================================		> $READMEFILE
-echo "	  _________      .__               .___    .__" >> $READMEFILE 		
-echo "	 /   _____/ ____ |  |__   ____   __| _/_ __|  |   ____" >> $READMEFILE
-echo "	 \_____  \_/ ___\|  |  \_/ __ \ / __ |  |  \  | _/ __ \ " >> $READMEFILE
-echo "	 /        \  \___|   Y  \  ___// /_/ |  |  /  |_\  ___/" >> $READMEFILE
-echo "	/_______  /\___  >___|  /\___  >____ |____/|____/\___  >" >> $READMEFILE
-echo "	        \/     \/     \/     \/     \/               \/	" >> $READMEFILE
-echo "	                   .___" >> $READMEFILE
-echo "	_____    ____    __| _/" >> $READMEFILE
-echo "	\__  \  /    \  / __ |" >> $READMEFILE
-echo "	 / __ \|   |  \/ /_/ |" >> $READMEFILE
-echo "	(____  /___|  /\____ |" >> $READMEFILE
-echo "	     \/     \/      \/" >> $READMEFILE
-echo "	________                                   .___" >> $READMEFILE
-echo "	\______ \   ____ ______   ____   ____    __| _/" >> $READMEFILE
-echo "	 |    |  \_/ __ \\____ \_/ __ \ /    \  / __ | " >> $READMEFILE
-echo "	 |    \`   \  ___/|  |_> >  ___/|   |  \/ /_/ | " >> $READMEFILE
-echo "	/_______  /\___  >   __/ \___  >___|  /\____ | " >> $READMEFILE
-echo "	        \/     \/|__|        \/     \/      \/  " >> $READMEFILE
+echo "                                                       ___      " >> $READMEFILE
+echo "						                               / ___ \    " >> $READMEFILE
+echo "			  	                                      /\_\ /\ \   " >> $READMEFILE
+echo "	 ____            ____     ____                    \/_/// /__  " >> $READMEFILE
+echo "	/\  _ \         /\  _ \  /\  _ \                     // /_\ \ " >> $READMEFILE
+echo "	\ \,\L\_\    ___\ \ \/\_\\ \ \/\ \     __   _____   /\______/ " >> $READMEFILE
+echo "	 \/_\__ \   / __ \ \ \/_/_\ \ \ \ \  / __ \/\  __ \ \/_____/ " >> $READMEFILE
+echo "	   /\ \L\ \/\ \L\ \ \ \L\ \\ \ \_\ \/\  __/\ \ \L\ \         " >> $READMEFILE
+echo "	   \  \____\ \____/\ \____/ \ \____/\ \____\\ \ ,__/         " >> $READMEFILE
+echo "	    \/_____/\/___/  \/___/   \/___/  \/____/ \ \ \/          " >> $READMEFILE
+echo "	                                              \ \_\          " >> $READMEFILE
+echo "	                                               \/_/          " >> $READMEFILE
 echo ==============================================================================		>> $READMEFILE
 echo AUTHORS:  																			>> $READMEFILE
 echo ' \t '		SIAVOOSH PAYANDEH AZAD		>> $READMEFILE
@@ -38,6 +32,6 @@ echo ===========================================================================
 echo ' \t '		FOR DOCUMENTATIONS PLEASE REFER TO WIKI!								>> $READMEFILE
 echo ===============================================================================	>> $READMEFILE
 # echo Project Directory Map: '\n'														>> $READMEFILE
-# tree -a ../../../src -I "*.log|*.png|*.pyc|results|configs|Generated_Files|.DS_Store|__init__.py" 	>> $READMEFILE
+# tree -a ../../../src -I "*.log|*.png|*.pyc|results|configs|Generated_Files|.DS_Store|__init__.py" >> $READMEFILE
 echo See our page at: http://siavooshpayandehazad.github.io/ScheduleAndDepend/ >> $READMEFILE
 echo Join the chat at https://gitter.im/siavooshpayandehazad/ScheduleAndDepend >> $READMEFILE
