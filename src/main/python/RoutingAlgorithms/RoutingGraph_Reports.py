@@ -27,7 +27,7 @@ def draw_rg(rg):
     """
     print ("===========================================")
     print ("GENERATING ROUTING GRAPH VISUALIZATION...")
-    line_width = 5
+    line_width = 2
     pos = {}
     color_list = []
     plt.figure(figsize=(10*Config.ag.x_size, 10*Config.ag.y_size))

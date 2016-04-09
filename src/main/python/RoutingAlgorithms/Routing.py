@@ -7,13 +7,13 @@ from ArchGraphUtilities.AG_Functions import manhattan_distance
 from RoutingGraph_Reports import report_turn_model
 
 
-def generate_noc_route_graph(ag, shm, turn_model, report, detailed_report):
+def generate_noc_route_graph(ag, shmu, turn_model, report, detailed_report):
     """
     This function takes the Architecture graph and the health status of the Architecture
     and generates the route graph... route graph is a graph that has all the paths available
     and we can find graph algorithms to find paths...
     :param ag: Architecture Graph
-    :param shm: System Health Map
+    :param shmu: System Health Monitoring Unit
     :param turn_model: turn model for the network
     :param report: boolean, which decides if function should print reports to console?
     :param detailed_report: boolean, decides if function should print detailed report to console
@@ -84,8 +84,8 @@ def generate_noc_route_graph(ag, shm, turn_model, report, detailed_report):
         if detailed_report:
             print ("CONNECTING TURNS:")
         for turn in turn_model:
-            if turn in shm.SHM.node[node]['TurnsHealth']:
-                if shm.SHM.node[node]['TurnsHealth'][turn]:
+            if turn in shmu.SHM.node[node]['TurnsHealth']:
+                if shmu.SHM.node[node]['TurnsHealth'][turn]:
                     in_port = turn[0]
                     out_port = turn[2]
                     if in_port != out_port:
@@ -102,7 +102,7 @@ def generate_noc_route_graph(ag, shm, turn_model, report, detailed_report):
 
     for link in ag.edges():     # here we should connect connections between routers
         port = ag.edge[link[0]][link[1]]['Port']
-        if shm.SHM[link[0]][link[1]]['LinkHealth']:
+        if shmu.SHM[link[0]][link[1]]['LinkHealth']:
             if detailed_report:
                 print ("CONNECTING LINK:", link, "BY CONNECTING:", str(link[0])+str(port[0])+str('-Out'),
                        "TO:", str(link[1])+str(port[1])+str('-In'))
@@ -115,12 +115,12 @@ def generate_noc_route_graph(ag, shm, turn_model, report, detailed_report):
     return noc_rg
 
 
-def gen_noc_route_graph_from_file(ag, shm, routing_file_path, report, detailed_report):
+def gen_noc_route_graph_from_file(ag, shmu, routing_file_path, report, detailed_report):
     """
     This function might come very handy specially in relation to different routing algorithms that we can
     implement to increase reachability... (for example odd-even)
     :param ag: Architecture graph
-    :param shm: System health map
+    :param shmu: System health monitoring unit
     :param routing_file_path: is the path to a file that contains routing information for each individual router
     :param report: boolean, which decides if function should print reports to console?
     :param detailed_report: boolean, decides if function should print detailed report to console
@@ -177,8 +177,8 @@ def gen_noc_route_graph_from_file(ag, shm, routing_file_path, report, detailed_r
             line = routing_file.readline()
             turns_list = line.split()
             for turn in turns_list:
-                if turn in shm.SHM.node[node_id]['TurnsHealth']:
-                    if shm.SHM.node[node_id]['TurnsHealth'][turn]:
+                if turn in shmu.SHM.node[node_id]['TurnsHealth']:
+                    if shmu.SHM.node[node_id]['TurnsHealth'][turn]:
                         in_port = turn[0]
                         out_port = turn[2]
                         if in_port != out_port:
@@ -225,7 +225,7 @@ def gen_noc_route_graph_from_file(ag, shm, routing_file_path, report, detailed_r
 
     for link in ag.edges():     # here we should connect connections between routers
         port = ag.edge[link[0]][link[1]]['Port']
-        if shm.SHM[link[0]][link[1]]['LinkHealth']:
+        if shmu.SHM[link[0]][link[1]]['LinkHealth']:
             if detailed_report:
                 print ("CONNECTING LINK:", link, "BY CONNECTING:", str(link[0])+str(port[0])+str('-Out'),
                        "TO:", str(link[1])+str(port[1])+str('-In'))
