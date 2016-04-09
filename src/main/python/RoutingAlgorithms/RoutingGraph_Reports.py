@@ -1,11 +1,22 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
-import re
-from ArchGraphUtilities import AG_Functions
+from re import search
+from ArchGraphUtilities.AG_Functions import return_node_location
 import matplotlib.pyplot as plt
-import networkx
+from networkx import draw
 from ConfigAndPackages import Config
 import matplotlib.patches as patches
+
+
+def report_turn_model(turn_model):
+    """
+    prints the turn model for a 2D network in the console
+    Only usable if there is a uniform Turn model over the network
+    :param turn_model: set of allowed turns in a 2D network
+    :return: None
+    """
+    print "\tUSING TURN MODEL: ", turn_model
+    return None
 
 
 def draw_rg(rg):
@@ -23,8 +34,8 @@ def draw_rg(rg):
     distance = 100*Config.ag.z_size
     step = (distance*0.8)/Config.ag.z_size
     for node in rg.nodes():
-        chosen_node = int(re.search(r'\d+', node).group())
-        location = AG_Functions.return_node_location(chosen_node)
+        chosen_node = int(search(r'\d+', node).group())
+        location = return_node_location(chosen_node)
         circle1 = plt.Circle((location[0]*distance+step*location[2], location[1]*distance+step*location[2]),
                              radius=35, color='#8ABDFF', fill=False, lw=line_width)
         plt.gca().add_patch(circle1)
@@ -103,8 +114,8 @@ def draw_rg(rg):
 
         pos[node] = [location[0]*distance+offset_x+step*location[2], location[1]*distance+offset_y+step*location[2]]
 
-    networkx.draw(rg, pos, with_labels=False, arrows=False, node_size=140, node_color=color_list,
-                  linewidths=line_width, width=line_width)
+    draw(rg, pos, with_labels=False, arrows=False, node_size=140, node_color=color_list,
+         linewidths=line_width, width=line_width)
 
     plt.text(0, -100, 'X', fontsize=15)
     plt.text(-100, 0, 'Y', fontsize=15)

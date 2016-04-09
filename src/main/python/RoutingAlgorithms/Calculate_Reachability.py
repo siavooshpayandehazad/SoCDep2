@@ -3,11 +3,11 @@
 # NoCDepend: A flexible and scalable Dependability Technique for 3D Networks-on-Chip
 # how ever, at the moment we only implemented a 2D version of it.
 
-import networkx
-import copy
+from networkx import has_path, shortest_path_length, all_simple_paths
+from copy import deepcopy
 from ConfigAndPackages import Config
-import Routing
-from ArchGraphUtilities import AG_Functions
+from Routing import generate_noc_route_graph
+from ArchGraphUtilities.AG_Functions import manhattan_distance, return_node_number, return_node_location
 
 
 def calculate_reachability(ag, noc_rg):
@@ -49,7 +49,7 @@ def is_destination_reachable_via_port(noc_rg, source_node, port, destination_nod
     # the destination port should be output port since this is output of router to PE
     # (which will be connected to PE's input port)
     destination = str(destination_node)+str('L')+str('O')
-    if networkx.has_path(noc_rg, source, destination):
+    if has_path(noc_rg, source, destination):
         return True
     else:
         if report:
@@ -73,12 +73,10 @@ def is_destination_reachable_from_source(noc_rg, source_node, destination_node):
     # the destination port should be output port since this is output of router to PE
     # (which will be connected to PE's input port)
     destination = str(destination_node)+str('L')+str('O')
-    if networkx.has_path(noc_rg, source, destination):
+    if has_path(noc_rg, source, destination):
         if Config.RotingType == 'MinimalPath':
-            path_length = networkx.shortest_path_length(noc_rg, source, destination)
-            minimal_hop_count = AG_Functions.manhattan_distance(source_node, destination_node)
-            # print networkx.shortest_path(noc_rg, source, destination)
-            # print source, destination, (path_length/2), minimal_hop_count
+            path_length = shortest_path_length(noc_rg, source, destination)
+            minimal_hop_count = manhattan_distance(source_node, destination_node)
             if (path_length/2) == minimal_hop_count:
 
                 return True
@@ -98,8 +96,8 @@ def how_many_paths_from_source(noc_rg, source_node, destination_node):
     """
     source = str(source_node)+str('L')+str('I')
     destination = str(destination_node)+str('L')+str('O')
-    if networkx.has_path(noc_rg, source, destination):
-        number_of_paths = len(list(networkx.all_simple_paths(noc_rg, source, destination)))
+    if has_path(noc_rg, source, destination):
+        number_of_paths = len(list(all_simple_paths(noc_rg, source, destination)))
         return number_of_paths
     else:
         return 0
@@ -126,9 +124,9 @@ def optimize_reachability_rectangles(ag, number_of_rectangles):
             if len(ag.node[node]['Router'].unreachable[port]) == Config.ag.x_size*Config.ag.y_size:
                 rectangle_list[0] = (0, Config.ag.x_size*Config.ag.y_size-1)
             else:
-                rectangle_list = copy.deepcopy(merge_node_with_rectangles(rectangle_list,
-                                                                          ag.node[node]['Router'].unreachable[port]))
-            ag.node[node]['Router'].unreachable[port] = copy.deepcopy(rectangle_list)
+                rectangle_list = deepcopy(merge_node_with_rectangles(rectangle_list,
+                                                                     ag.node[node]['Router'].unreachable[port]))
+            ag.node[node]['Router'].unreachable[port] = deepcopy(rectangle_list)
     print ("RECTANGLE OPTIMIZATION FINISHED...")
     return None
 
@@ -164,17 +162,16 @@ def merge_node_with_rectangles(rectangle_list, unreachable_node_list):
                     for network_node_x in range(location_1[0], location_2[0]+1):        # (merged_x_1, merged_x_2+1)
                         for network_node_y in range(location_1[1], location_2[1]+1):
                             for network_node_z in range(location_1[2], location_2[2]+1):
-                                node_number = AG_Functions.return_node_number(network_node_x, network_node_y,
-                                                                              network_node_z)
+                                node_number = return_node_number(network_node_x, network_node_y, network_node_z)
                                 if node_number not in unreachable_node_list:
                                     loss_less_merge = False
                                     break
                     # if we are not losing any Node, we perform Merge...
                     if loss_less_merge:
                         #                                            merged X      Merged Y       Merged Z
-                        merged_1 = AG_Functions.return_node_number(location_1[0], location_1[1], location_1[2])
-                        merged_2 = AG_Functions.return_node_number(location_2[0], location_2[1], location_2[2])
-                        rectangle_list[rectangle] = copy.deepcopy((merged_1, merged_2))
+                        merged_1 = return_node_number(location_1[0], location_1[1], location_1[2])
+                        merged_2 = return_node_number(location_2[0], location_2[1], location_2[2])
+                        rectangle_list[rectangle] = deepcopy((merged_1, merged_2))
                         covered = True
                         break
         if not covered:
@@ -191,9 +188,9 @@ def is_node_inside_rectangle(rect, node):
     :param node: node id
     :return: True if node id is inside rectangle else, False
     """
-    r1x, r1y, r1z = AG_Functions.return_node_location(rect[0])
-    r2x, r2y, r2z = AG_Functions.return_node_location(rect[1])
-    node_x, node_y, node_z = AG_Functions.return_node_location(node)
+    r1x, r1y, r1z = return_node_location(rect[0])
+    r2x, r2y, r2z = return_node_location(rect[1])
+    node_x, node_y, node_z = return_node_location(node)
     if r1x <= node_x <= r2x and r1y <= node_y <= r2y and r1z <= node_z <= r2z:
         return True
     else:
@@ -208,9 +205,9 @@ def merge_rectangle_with_node(rect_ll, rect_ur, node):
     :param node: ID of the node to be merged
     :return: coordination of final rectangle (rect_ll, rect_ur)
     """
-    x1, y1, z1 = AG_Functions.return_node_location(rect_ll)
-    x2, y2, z2 = AG_Functions.return_node_location(rect_ur)
-    node_x, node_y, node_z = AG_Functions.return_node_location(node)
+    x1, y1, z1 = return_node_location(rect_ll)
+    x2, y2, z2 = return_node_location(rect_ur)
+    node_x, node_y, node_z = return_node_location(node)
     merged_x1 = min(x1, node_x)
     merged_y1 = min(y1, node_y)
     merged_z1 = min(z1, node_z)
@@ -249,17 +246,17 @@ def calculate_reachability_with_regions(ag, shmu):
         else:
             already_broken_links.append(virtual_broken_link)
     # Construct The RoutingGraph
-    non_critical_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel, False, False))
+    non_critical_rg = deepcopy(generate_noc_route_graph(ag, shmu, Config.UsedTurnModel, False, False))
     # calculate the rectangles for Non-Critical
     calculate_reachability(ag, non_critical_rg)
     # save Non Critical rectangles somewhere
     non_critical_rect = {}
     gate_way_rect = {}
     for node in Config.GateToNonCritical:
-        gate_way_rect[node] = copy.deepcopy(ag.node[node]['Router'].unreachable)
+        gate_way_rect[node] = deepcopy(ag.node[node]['Router'].unreachable)
     for node in ag.nodes():
         if node not in Config.CriticalRegionNodes:
-            non_critical_rect[node] = copy.deepcopy(ag.node[node]['Router'].unreachable)
+            non_critical_rect[node] = deepcopy(ag.node[node]['Router'].unreachable)
     # Restore the VirtualBrokenLinksForNonCritical
     for virtual_broken_link in Config.VirtualBrokenLinksForNonCritical:
         if virtual_broken_link not in already_broken_links:
@@ -274,15 +271,15 @@ def calculate_reachability_with_regions(ag, shmu):
             already_broken_links.append(virtual_broken_link)
     clear_reachability_calculations(ag)
     # Construct The RoutingGraph
-    critical_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel, False, False))
+    critical_rg = deepcopy(generate_noc_route_graph(ag, shmu, Config.UsedTurnModel, False, False))
     # calculate the rectangles for Critical
     calculate_reachability(ag, critical_rg)
     # save Critical rectangles somewhere
     critical_rect = {}
     for node in Config.CriticalRegionNodes:
-        critical_rect[node] = copy.deepcopy(ag.node[node]['Router'].unreachable)
+        critical_rect[node] = deepcopy(ag.node[node]['Router'].unreachable)
     for node in Config.GateToCritical:
-        gate_way_rect[node] = copy.deepcopy(ag.node[node]['Router'].unreachable)
+        gate_way_rect[node] = deepcopy(ag.node[node]['Router'].unreachable)
     # Restore the VirtualBrokenLinksForNonCritical
     for virtual_broken_link in Config.VirtualBrokenLinksForCritical:
         if virtual_broken_link not in already_broken_links:
@@ -291,13 +288,13 @@ def calculate_reachability_with_regions(ag, shmu):
     # Combine Lists
     for node in ag.nodes():
         if node in critical_rect:
-            ag.node[node]['Router'].unreachable = copy.deepcopy(critical_rect[node])
+            ag.node[node]['Router'].unreachable = deepcopy(critical_rect[node])
         elif node in Config.GateToCritical:
-            ag.node[node]['Router'].unreachable = copy.deepcopy(gate_way_rect[node])
+            ag.node[node]['Router'].unreachable = deepcopy(gate_way_rect[node])
         elif node in Config.GateToNonCritical:
-            ag.node[node]['Router'].unreachable = copy.deepcopy(gate_way_rect[node])
+            ag.node[node]['Router'].unreachable = deepcopy(gate_way_rect[node])
         else:
-            ag.node[node]['Router'].unreachable = copy.deepcopy(non_critical_rect[node])
+            ag.node[node]['Router'].unreachable = deepcopy(non_critical_rect[node])
     # optimize the results
     optimize_reachability_rectangles(ag, Config.NumberOfRects)
     return critical_rg, non_critical_rg
@@ -321,54 +318,6 @@ def reachability_metric(ag, noc_rg, report):
             if source_node != destination_node:
                 if is_destination_reachable_from_source(noc_rg, source_node, destination_node):
                     reachability_counter += 1
-    r_metric = float(reachability_counter)
-    if report:
-        print ("REACH-ABILITY METRIC: "+str(r_metric))
-    return r_metric
-
-
-def extended_degree_of_adaptiveness(ag, noc_rg, report):
-    """
-    :param ag: architecture graph
-    :param noc_rg: NoC routing graph
-    :param report: report switch
-    :return: reachability metric
-    """
-    if report:
-        print ("=====================================")
-        print ("CALCULATING REACH-ABILITY METRIC OF THE CURRENT ROUTING ALGORITHM UNDER CURRENT FAULT CONFIG")
-    reachability_counter = 0
-    for source_node in ag.nodes():
-        for destination_node in ag.nodes():
-            if source_node != destination_node:
-                if is_destination_reachable_from_source(noc_rg, source_node, destination_node):
-                    reachability_counter += len(list(networkx.all_simple_paths(noc_rg,
-                                                str(source_node)+str('L')+str('I'),
-                                                str(destination_node)+str('L')+str('O'))))
-    r_metric = float(reachability_counter)
-    if report:
-        print ("REACH-ABILITY METRIC: "+str(r_metric))
-    return r_metric
-
-
-def degree_of_adaptiveness(ag, noc_rg, report):
-    """
-    :param ag: architecture graph
-    :param noc_rg: NoC routing graph
-    :param report: report switch
-    :return: reachability metric
-    """
-    if report:
-        print ("=====================================")
-        print ("CALCULATING REACH-ABILITY METRIC OF THE CURRENT ROUTING ALGORITHM UNDER CURRENT FAULT CONFIG")
-    reachability_counter = 0
-    for source_node in ag.nodes():
-        for destination_node in ag.nodes():
-            if source_node != destination_node:
-                if is_destination_reachable_from_source(noc_rg, source_node, destination_node):
-                    reachability_counter += len(list(networkx.all_shortest_paths(noc_rg,
-                                                str(source_node)+str('L')+str('I'),
-                                                str(destination_node)+str('L')+str('O'))))
     r_metric = float(reachability_counter)
     if report:
         print ("REACH-ABILITY METRIC: "+str(r_metric))

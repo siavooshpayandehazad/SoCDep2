@@ -5,15 +5,15 @@ import itertools
 from random import shuffle, sample
 from functools import partial
 from multiprocessing import Pool
-import networkx
 from statistics import stdev
 from scipy.misc import comb
 from ConfigAndPackages import PackageFile, Config, all_2d_turn_model_package
 from ArchGraphUtilities import AG_Functions
 from RoutingAlgorithms import Routing
 from SystemHealthMonitoring import SystemHealthMonitoringUnit
-from RoutingAlgorithms import Calculate_Reachability
-from RoutingAlgorithms.Routing import return_turn_model_name
+from RoutingAlgorithms.Routing_Functions import extended_degree_of_adaptiveness, degree_of_adaptiveness, \
+    check_deadlock_freeness, return_turn_model_name
+from RoutingAlgorithms.Calculate_Reachability import reachability_metric
 from RoutingAlgorithms.turn_model_evaluation.turn_model_viz import viz_all_turn_models_against_each_other
 from RoutingAlgorithms.turn_model_evaluation.turn_model_viz import viz_turn_model_evaluation
 
@@ -52,10 +52,10 @@ def enumerate_all_2d_turn_models_based_on_df(combination):
         shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
         shmu.setup_noc_shm(ag, turns_health, False)
         noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, list(turns), False,  False))
-        if networkx.is_directed_acyclic_graph(noc_rg):
-            connectivity_metric = Calculate_Reachability.reachability_metric(ag, noc_rg, False)
-            doa = Calculate_Reachability.degree_of_adaptiveness(ag, noc_rg, False)
-            doa_ex = Calculate_Reachability.extended_degree_of_adaptiveness(ag, noc_rg, False)
+        if check_deadlock_freeness(noc_rg):
+            connectivity_metric = reachability_metric(ag, noc_rg, False)
+            doa = degree_of_adaptiveness(ag, noc_rg, False)
+            doa_ex = extended_degree_of_adaptiveness(ag, noc_rg, False)
             deadlock_free_counter += 1
             # print counter, "\t \033[92mDF\033[0m \t", list(turns), "\t\t", connectivity_metric
             all_turns_file.write(str(counter)+"\t\tDF\t"+str(list(turns))+"\t\t"+str(connectivity_metric) +
@@ -113,9 +113,9 @@ def enumerate_all_3d_turn_models_based_on_df(combination):
         shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
         shmu.setup_noc_shm(ag, turns_health, False)
         noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, list(turns), False,  False))
-        if networkx.is_directed_acyclic_graph(noc_rg):
-            connectivity_metric = Calculate_Reachability.reachability_metric(ag, noc_rg, False)
-            doa = Calculate_Reachability.degree_of_adaptiveness(ag, noc_rg, False)
+        if check_deadlock_freeness(noc_rg):
+            connectivity_metric = reachability_metric(ag, noc_rg, False)
+            doa = degree_of_adaptiveness(ag, noc_rg, False)
             deadlock_free_counter += 1
             # print counter, "\t \033[92mDF\033[0m \t", list(turns), "\t\t", connectivity_metric
             all_turns_file.write(str(counter)+"\t\tDF\t"+str(list(turns))+"\t\t"+str(connectivity_metric) +
@@ -246,7 +246,7 @@ def report_2d_turn_model_fault_tolerance(turn_model, viz, combination):
 
     ag = copy.deepcopy(AG_Functions.generate_ag(report=False))
 
-    turn_model_name = Routing.return_turn_model_name(Config.UsedTurnModel)
+    turn_model_name = return_turn_model_name(Config.UsedTurnModel)
 
     file_name = str(turn_model_name)+'_eval'
     turn_model_eval_file = open('Generated_Files/Turn_Model_Eval/'+file_name+'.txt', 'a+')
@@ -269,7 +269,7 @@ def report_2d_turn_model_fault_tolerance(turn_model, viz, combination):
             shmu.break_link(link, False)
         noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
                                                                 False,  False))
-        connectivity_metric = Calculate_Reachability.reachability_metric(ag, noc_rg, False)
+        connectivity_metric = reachability_metric(ag, noc_rg, False)
         counter += 1
         metric_sum += connectivity_metric
         # std = None
@@ -315,7 +315,7 @@ def report_3d_turn_model_fault_tolerance(turn_model, viz, combination):
 
     ag = copy.deepcopy(AG_Functions.generate_ag(report=False))
 
-    turn_model_name = Routing.return_turn_model_name(Config.UsedTurnModel)
+    turn_model_name = return_turn_model_name(Config.UsedTurnModel)
 
     file_name = str(turn_model_name)+'_eval'
     turn_model_eval_file = open('Generated_Files/Turn_Model_Eval/'+file_name+'.txt', 'a+')
@@ -337,7 +337,7 @@ def report_3d_turn_model_fault_tolerance(turn_model, viz, combination):
             shmu.break_link(link, False)
         noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
                                                                 False,  False))
-        connectivity_metric = Calculate_Reachability.reachability_metric(ag, noc_rg, False)
+        connectivity_metric = reachability_metric(ag, noc_rg, False)
         counter += 1
         metric_sum += connectivity_metric
         # std = None

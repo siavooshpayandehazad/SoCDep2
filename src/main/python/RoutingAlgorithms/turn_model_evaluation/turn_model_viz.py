@@ -1,7 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 from ConfigAndPackages import all_2d_turn_model_package
 import matplotlib.pyplot as plt
-from RoutingAlgorithms import Routing
+from RoutingAlgorithms.Routing_Functions import return_turn_model_name
 import random
 import os
 import ast
@@ -232,7 +232,7 @@ def viz_2d_turn_model(turn_model_list):
                                      connectionstyle="angle, angleA=90, angleB=0, rad=0")
                      )
 
-        ax1.text(0, 0.9, str(Routing.return_turn_model_name(turn_model)), fontsize=10)
+        ax1.text(0, 0.9, str(return_turn_model_name(turn_model)), fontsize=10)
         ax1.text(0, 0.8, str(turn_model), fontsize=5)
         count += 1
         ax1.axis('off')
@@ -289,7 +289,8 @@ def viz_3d_turn_model(file_name, size_x, size_y, rows, columns):
         ax1.axis('off')
         if count == rows*columns+1:
             plt.axis('off')
-            plt.savefig("GraphDrawings/"+file_name[file_name.find("/"):]+str(page_counter)+".png", dpi=100, bbox_inches='tight')
+            plt.savefig("GraphDrawings/"+file_name[file_name.find("/"):]+str(page_counter)+".png",
+                        dpi=100, bbox_inches='tight')
             plt.clf()
             plt.close(fig)
             page_counter += 1
@@ -306,7 +307,8 @@ def viz_3d_turn_model(file_name, size_x, size_y, rows, columns):
         plt.close(fig)
     else:
         plt.axis('off')
-        plt.savefig("GraphDrawings/"+file_name[file_name.find("/"):]+str(page_counter)+".png", dpi=100, bbox_inches='tight')
+        plt.savefig("GraphDrawings/"+file_name[file_name.find("/"):]+str(page_counter)+".png",
+                    dpi=100, bbox_inches='tight')
         plt.clf()
         plt.close(fig)
     # print ("\033[35m* VIZ::\033[0m Turn Model viz " +

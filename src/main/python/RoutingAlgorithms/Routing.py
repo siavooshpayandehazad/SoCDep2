@@ -1,9 +1,10 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
-import networkx
-import re
-from ConfigAndPackages import Config, PackageFile, all_2d_turn_model_package
-from ArchGraphUtilities import AG_Functions
+from networkx import all_simple_paths, DiGraph, has_path, all_shortest_paths
+from re import search
+from ConfigAndPackages import Config
+from ArchGraphUtilities.AG_Functions import manhattan_distance
+from RoutingGraph_Reports import report_turn_model
 
 
 def generate_noc_route_graph(ag, shm, turn_model, report, detailed_report):
@@ -51,7 +52,7 @@ def generate_noc_route_graph(ag, shm, turn_model, report, detailed_report):
     elif Config.ag.z_size > 1:
         port_list = ['U', 'N', 'W', 'L', 'E', 'S', 'D']
 
-    noc_rg = networkx.DiGraph()
+    noc_rg = DiGraph()
     for node in ag.nodes():
         if detailed_report:
             print ("GENERATING PORTS:")
@@ -128,7 +129,7 @@ def gen_noc_route_graph_from_file(ag, shm, routing_file_path, report, detailed_r
     if report:
         print ("===========================================")
         print ("STARTING BUILDING ROUTING ARCHITECTURE...")
-    noc_rg = networkx.DiGraph()
+    noc_rg = DiGraph()
     try:
         routing_file = open(routing_file_path, 'r')
     except IOError:
@@ -142,7 +143,7 @@ def gen_noc_route_graph_from_file(ag, shm, routing_file_path, report, detailed_r
             if detailed_report:
                 print ("PortList", port_list)
         if "Node" in line:
-            node_id = int(re.search(r'\d+', line).group())
+            node_id = int(search(r'\d+', line).group())
             nodes_covered_in_file.append(node_id)
             if detailed_report:
                 print ("NodeID", node_id)
@@ -237,30 +238,6 @@ def gen_noc_route_graph_from_file(ag, shm, routing_file_path, report, detailed_r
     return noc_rg
 
 
-def check_deadlock_freeness(noc_rg):
-    """
-    Checks if routing graph is a directed acyclic graph which would result
-    in a deadlock-free routing algorithm
-    :param noc_rg: NoC Routing Graph
-    :return: True if noc_rg is deadlock free else False!
-    """
-    if networkx.is_directed_acyclic_graph(noc_rg):
-        return True
-    else:
-        return False
-
-
-def report_turn_model(turn_model):
-    """
-    prints the turn model for a 2D network in the console
-    Only usable if there is a uniform Turn model over the network
-    :param turn_model: set of allowed turns in a 2D network
-    :return: None
-    """
-    print "\tUSING TURN MODEL: ", turn_model
-    return None
-
-
 def update_noc_route_graph(noc_rg, from_port, to_port, add_or_remove):
     """
     we would like to eliminate the path or turn that is not working anymore...
@@ -308,11 +285,11 @@ def find_route_in_route_graph(noc_rg, critical_rg, non_critical_rg, source_node,
         current_rg = noc_rg
     source = str(source_node)+str('L')+str('I')
     destination = str(destination_node)+str('L')+str('O')
-    if networkx.has_path(current_rg, source, destination):
+    if has_path(current_rg, source, destination):
         if Config.RotingType == 'MinimalPath':
             all_paths = return_minimal_paths(current_rg, source_node, destination_node)
         elif Config.RotingType == 'NonMinimalPath':
-            all_paths = list(networkx.all_simple_paths(current_rg, source, destination))
+            all_paths = list(all_simple_paths(current_rg, source, destination))
         else:
             raise ValueError("Invalid RotingType")
         all_links = []
@@ -320,8 +297,8 @@ def find_route_in_route_graph(noc_rg, critical_rg, non_critical_rg, source_node,
             path = all_paths[j]
             links = []
             for i in range(0, len(path)-1):
-                if int(re.search(r"\d+", path[i]).group()) != int(re.search(r"\d+", path[i+1]).group()):
-                    links.append((int(re.search(r"\d+", path[i]).group()), int(re.search(r"\d+", path[i+1]).group())))
+                if int(search(r"\d+", path[i]).group()) != int(search(r"\d+", path[i+1]).group()):
+                    links.append((int(search(r"\d+", path[i]).group()), int(search(r"\d+", path[i+1]).group())))
             all_links.append(links)
         if report:
             print "\t\tFINDING PATH(S) FROM: ", source, "TO:", destination, " ==>", all_links
@@ -342,24 +319,11 @@ def return_minimal_paths(current_rg, source_node, destination_node):
     :return: list of all minimal paths
     """
     all_minimal_paths = []
-    max_hop_count = AG_Functions.manhattan_distance(source_node, destination_node)
+    max_hop_count = manhattan_distance(source_node, destination_node)
     source = str(source_node)+str('L')+str('I')
     destination = str(destination_node)+str('L')+str('O')
-    all_paths = list(networkx.all_shortest_paths(current_rg, source, destination))
+    all_paths = list(all_shortest_paths(current_rg, source, destination))
     for Path in all_paths:
         if (len(Path)-2)/2 <= max_hop_count:
             all_minimal_paths.append(Path)
     return all_minimal_paths
-
-
-def return_turn_model_name(turn_model):
-    if turn_model in all_2d_turn_model_package.all_2d_turn_models:
-        tm_index = all_2d_turn_model_package.all_2d_turn_models.index(turn_model)
-        turn_model_name = str(tm_index)
-    elif turn_model == PackageFile.XYZ_TurnModel:
-        turn_model_name = '3d_XYZ'
-    elif turn_model == PackageFile.NegativeFirst3D_TurnModel:
-        turn_model_name = '3d_NegFirst'
-    else:
-        turn_model_name = None
-    return turn_model_name

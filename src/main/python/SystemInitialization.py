@@ -8,7 +8,8 @@ from ArchGraphUtilities.vl_optimization import vl_opt, vl_opt_functions
 from ConfigAndPackages import Config
 from Mapper import Mapping, Mapping_Reports, Mapping_Animation
 from Mapper import Mapping_Functions
-from RoutingAlgorithms import Routing, Calculate_Reachability, ReachabilityReports, RoutingGraph_Reports
+from RoutingAlgorithms import Routing, Calculate_Reachability, ReachabilityReports, \
+    RoutingGraph_Reports, Routing_Functions
 from Scheduler import Scheduling_Reports, TrafficTableGenerator, Scheduler
 from SystemHealthMonitoring import SystemHealthMonitoringUnit, SHMU_Reports, \
     SHMU_Functions, TestSchedulingUnit
@@ -62,7 +63,7 @@ def initialize_system(logging):
     else:
         noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
                                                                 Config.DebugInfo, Config.DebugDetails))
-    Routing.check_deadlock_freeness(noc_rg)
+    Routing_Functions.check_deadlock_freeness(noc_rg)
     print ("\033[92mTIME::\033[0m ROUTING GRAPH GENERATION TOOK: " +
            str(round(time.time()-routing_graph_start_time))+" SECONDS")
     # this is for double checking...
