@@ -5,10 +5,31 @@ import ast
 
 def classify_3d_turn_models():
     data_file = open('ConfigAndPackages/turn_models_3D/Minimal/all_3D_18t_turn_models.txt', 'r')
+    result_file = open('Generated_Files/Turn_Model_Eval/3D_18_turns_classification.txt', 'w')
     line = data_file.readline()
-    print "\t\t Restricted Turns\t\t|\t  Classes \t\tNumber of Digits"
-    print "\tXY\t\tXZ\t\tYZ\t|\txy  xz  yz \t\t1s  2s  3s"
+
     print "----------------------------------------------------------------------------------------------"
+    print "Description of classes:"
+    print "1: both restricted turns, start from the same direction"
+    print "2: both restricted turns, end to the same direction"
+    print "3: beginning direction of one restricted turn is ending direction of the other restricted turn"
+    print "0: none of above"
+    print "----------------------------------------------------------------------------------------------"
+
+    result_file.write("----------------------------------------------------------------------------------------------\n")
+    result_file.write("Description of classes:\n")
+    result_file.write("1: both restricted turns, start from the same direction\n")
+    result_file.write("2: both restricted turns, end to the same direction\n")
+    result_file.write("3: beginning direction of one restricted turn is ending direction of the other restricted turn\n")
+    result_file.write("0: none of above\n")
+    result_file.write("----------------------------------------------------------------------------------------------\n")
+    print "\t\t Restricted Turns\t\t|\t  Classes \t\tBad Turn"
+    print "\tXY\t\tXZ\t\tYZ\t|\txy  xz  yz \t\tModel"
+
+    result_file.write("\t\t\t\t Restricted Turns\t\t\t\t|\t  Classes \t\tBad Turn\n")
+    result_file.write("\t\tXY\t\t\t\tXZ\t\t\t\tYZ\t\t|\txy xz yz \t\tModel\n")
+    print "----------------------------------------------------------------------------------------------"
+    result_file.write("----------------------------------------------------------------------------------------------\n")
     while line != "":
         start = line.index("[")
         end = line.index("]")+1
@@ -42,17 +63,52 @@ def classify_3d_turn_models():
         else:
             yz_class = 0
 
+        all_out_ports = str(xy[0][2])+str(xy[1][2])+str(xz[0][2])+str(xz[1][2])+str(yz[0][2])+str(yz[1][2])
+        number_of_different_ports = 0
+        found_ports = []
+        for port in all_out_ports:
+            if port not in found_ports:
+                number_of_different_ports+=1
+                found_ports.append(port)
+
+        all_in_ports = str(xy[0][0])+str(xy[1][0])+str(xz[0][0])+str(xz[1][0])+str(yz[0][0])+str(yz[1][0])
+        number_of_different_in_ports = 0
+        found_in_ports = []
+        for port in all_in_ports:
+            if port not in found_in_ports:
+                number_of_different_in_ports+=1
+                found_in_ports.append(port)
+
         general_class = str(xy_class)+str(xz_class)+str(yz_class)
 
-        number_1 = general_class.count('1')
-        number_2 = general_class.count('2')
-        number_3 = general_class.count('3')
+        case_2_2_3_2 = 0
+        if number_of_different_ports == 2:
+            if general_class in ["223", "232", "322"]:
+                case_2_2_3_2 = 1
+
+        case_1_1_3_2 = 0
+        if number_of_different_in_ports == 2:
+            if general_class in ["113", "131", "311"]:
+                case_1_1_3_2 = 1
+
+        case_3_3 = 0
+        if number_of_different_in_ports == 3 and number_of_different_ports == 3:
+            case_3_3 = 1
+
+
+        bad_turn_model = 0
+        if case_2_2_3_2 == 1 or case_1_1_3_2 == 1 or case_3_3 == 1:
+            bad_turn_model = 1
 
         print xy, "\t", xz, "\t", yz, "\t|\t", xy_class, " ", xz_class, " ", yz_class, \
-            "\t\t", number_1, " ", number_2, " ", number_3
+            "\t\t", bad_turn_model
+
+        result_file.write(str(xy)+"\t"+str(xz)+"\t"+str(yz)+"\t|\t"+str(xy_class)+" "+str(xz_class)+" "+str(yz_class) +
+                          "\t\t\t"+str(bad_turn_model)+"\n")
         # print "-------------------------------------------------------------------"
         line = data_file.readline()
     data_file.close()
+    result_file.close()
     return None
 
 
