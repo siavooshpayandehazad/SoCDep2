@@ -13,7 +13,7 @@ import SystemInitialization
 from GUI_Util import GUI
 from pympler import tracker
 from Simulator import Simulator
-from RoutingAlgorithms.turn_model_evaluation import list_all_turn_models, turn_model_viz
+from RoutingAlgorithms.turn_model_evaluation import list_all_turn_models, turn_model_viz, turn_mode_classifier
 from multiprocessing import Pool
 
 
@@ -25,7 +25,6 @@ if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("Usage:    python Main.py [option1]")
     print("Options and arguments:")
     print("-GUI\t\t:Graphical User Interface for Configuration")
-    print("-UTEST\t\t:Runs Unit Tests")
     print("-BENCHMARK [Benchmark Name] \t: Runs Benchmark Algorithms:")
     print("\t\t\t * idct: Inverse Discrete Cosine Transform")
     print("\t\t\t * fdct: Forward Discrete Cosine Transform")
@@ -44,6 +43,7 @@ if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
     print("-VIZTM  [Dimension] [Routing Type]\t: visualizes the turn models in the given dimension")
     print("\t\t\t Routing Type: \"M\" for minimal and \"NM\" for non-minimal")
     print("\t\t\t Dimension: 2D or 3D")
+    print ("-TMC\t: 3D 18-turn, turn model classification")
     print("")
     sys.exit()
 elif '-GUI' in sys.argv[1:]:
@@ -123,8 +123,8 @@ elif '-VIZTM' in sys.argv[1:]:     # visualizes the turn models in 2D or 3D
     routing_type = sys.argv[sys.argv.index('-VIZTM') + 2]
     turn_model_viz.viz_all_turn_models(dimension, routing_type)
     sys.exit()
-elif '-UTEST' in sys.argv[1:]:
-    os.system('python ../../unittest/Python/Unit_tests.py')
+elif '-TMC' in sys.argv[1:]:
+    turn_mode_classifier.classify_3d_turn_models()
     sys.exit()
 elif '-CONF' in sys.argv[1:]:
     if len(sys.argv) == 2:
