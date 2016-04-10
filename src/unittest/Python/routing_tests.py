@@ -12,10 +12,9 @@ path.append(current_path)
 from RoutingAlgorithms.Routing import generate_noc_route_graph
 from RoutingAlgorithms.Routing_Functions import check_deadlock_freeness, degree_of_adaptiveness, \
     extended_degree_of_adaptiveness, return_turn_model_name
-from ConfigAndPackages import PackageFile
 from ArchGraphUtilities.AG_Functions import generate_ag
 from SystemHealthMonitoring import SystemHealthMonitoringUnit
-from ConfigAndPackages import Config
+from ConfigAndPackages import Config, PackageFile
 
 
 class RoutingTesting(TestCase):
