@@ -18,10 +18,10 @@ THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME DEPENDABILITY ME
 Copyright (C) 2015-2016 as collective work done by Siavoosh Payandeh Azad, René Pihlak and Behrad Niazmand
 
  
- 	  IN CASE YOU WANT SOMETHING TO BE IMPLEMENTED,
- 	  PLEASE CONTACT: siavoosh[AT]ati[DOT]ttu[DOT]ee
- 
- 	  FOR DOCUMENTATIONS PLEASE REFER TO WIKI!
+IN CASE YOU WANT SOMETHING TO BE IMPLEMENTED, PLEASE CONTACT: siavoosh[AT]ati[DOT]ttu[DOT]ee
+
+FOR DOCUMENTATIONS PLEASE REFER TO WIKI!
  
 See our page at: http://siavooshpayandehazad.github.io/SoCDep2/
+
 Join the chat at https://gitter.im/siavooshpayandehazad/SoCDep2
