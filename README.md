@@ -2,17 +2,17 @@
 
 ----------
 
-AUTHORS:
-* SIAVOOSH PAYANDEH AZAD
-* BEHRAD NIAZMAND
-* RENÉ PIHLAK
-* NEVIN GEORGE
+Authors:
+* Siavoosh Payandeh Azad 
+* Behrad Niazmand
+* René pihlak 
+* Nevin George
 
-DATE: MAY 2015
+date: may 2015
 
-PYTHON VER: 2.7.6
+python ver: 2.7.6
 
-THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME DEPENDABILITY MECHANISMS ON DIFFERENT ARCHITECTURES....
+The goal of this program is to provide a framwork for testing dependability mechanisms on different architecures... 
 
 ----------
 LICENSE: GNU GENERAL PUBLIC LICENSE Version 2
@@ -21,9 +21,9 @@ LICENSE: GNU GENERAL PUBLIC LICENSE Version 2
 
 ----------
  
-IN CASE YOU WANT SOMETHING TO BE IMPLEMENTED, PLEASE CONTACT: siavoosh[AT]ati[DOT]ttu[DOT]ee
+In case you want something to be implemented, please write to: siavoosh[AT]ati[DOT]ttu[DOT]ee  maybe we can do something about it!
 
-FOR DOCUMENTATIONS PLEASE REFER TO WIKI!
+for documentations please refer to [wiki](https://github.com/siavooshpayandehazad/SoCDep2/wiki)!
  
 See our page at: http://siavooshpayandehazad.github.io/SoCDep2/
 
