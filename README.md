@@ -1,5 +1,6 @@
 ![alt tag](https://cloud.githubusercontent.com/assets/6337603/14418625/cacaca68-ffc8-11e5-962d-f59383848a74.png)
 
+----------
 
 AUTHORS:
 * SIAVOOSH PAYANDEH AZAD
@@ -9,14 +10,16 @@ AUTHORS:
 
 DATE: MAY 2015
 
-LICENSE: GNU GENERAL PUBLIC LICENSE Version 2
-
 PYTHON VER: 2.7.6
 
 THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME DEPENDABILITY MECHANISMS ON DIFFERENT ARCHITECTURES....
 
-Copyright (C) 2015-2016 as collective work done by Siavoosh Payandeh Azad, René Pihlak and Behrad Niazmand
+----------
+LICENSE: GNU GENERAL PUBLIC LICENSE Version 2
 
+>Copyright (C) 2015-2016 as collective work done by Siavoosh Payandeh Azad, René Pihlak and Behrad Niazmand
+
+----------
  
 IN CASE YOU WANT SOMETHING TO BE IMPLEMENTED, PLEASE CONTACT: siavoosh[AT]ati[DOT]ttu[DOT]ee
 
