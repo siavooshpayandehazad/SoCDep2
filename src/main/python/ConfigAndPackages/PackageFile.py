@@ -16,15 +16,15 @@ XY_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S']
 YX_TurnModel = ['S2W', 'S2E', 'N2W', 'N2E']
 WestFirst_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'S2E', 'N2E']
 NorthLast_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'N2W', 'N2E']
-NegativeFirst2D_TurnModel = ['E2N', 'E2S', 'W2N', 'S2E', 'N2W', 'N2E']
+NegativeFirst2D_TurnModel = ['E2N', 'E2S', 'W2N', 'S2E', 'W2S', 'N2E']
 
 # 3D Turn Models:
 XYZ_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'S2U', 'S2D', 'N2U', 'N2D', 'W2U', 'W2D', 'E2U', 'E2D']
 
 # based on description in "Turn model based router design for 3D network on chip" by Chemli and Zitouni
-NegativeFirst3D_TurnModel = ['E2N', 'E2S', 'W2N', 'S2E', 'N2W', 'N2E',
-                             'N2U', 'N2D', 'S2U', 'W2U', 'E2U', 'E2D',
-                             'U2N', 'U2S', 'U2E', 'U2W', 'D2N', 'D2E']
+NegativeFirst3D_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'S2E', 'N2E', 
+                             'N2U', 'N2D', 'S2U', 'S2D', 'E2U', 'E2D', 'W2U', 'W2D',
+                             'U2N', 'U2S', 'U2E', 'D2S', 'D2N', 'D2E']
 
 routing_alg_list_2d = [YX_TurnModel, XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel]
 routing_alg_list_3d = [XYZ_TurnModel, NegativeFirst3D_TurnModel]
