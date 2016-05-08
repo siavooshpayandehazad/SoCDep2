@@ -88,6 +88,14 @@ def generate_file_directories():
     file_list = [txt_file for txt_file in os.listdir(turn_model_eval_directory) if txt_file.endswith(".txt")]
     for txt_file in file_list:
         os.remove(turn_model_eval_directory+'/'+txt_file)
+
+    if Config.EventDrivenFaultInjection:
+        fault_drawing_directory = "GraphDrawings/Components_Fault_Drawings"
+        if not os.path.isdir(fault_drawing_directory):
+            os.makedirs(fault_drawing_directory)
+        file_list = [png_file for png_file in os.listdir(fault_drawing_directory) if png_file.endswith(".png")]
+        for png_file in file_list:
+            os.remove(fault_drawing_directory+'/'+png_file)
     return None
 
 
