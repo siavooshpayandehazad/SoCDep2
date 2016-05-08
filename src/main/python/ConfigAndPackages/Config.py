@@ -4,7 +4,7 @@ import copy
 ################################################
 #          Program  Config
 ################################################
-enable_simulator = False
+enable_simulator = True
 ProgramRunTime = 900      # in cycles
 DebugInfo = False
 DebugDetails = False
@@ -12,6 +12,10 @@ DebugDetails = False
 TestMode = False
 MemoryProfiler = False
 EventDrivenFaultInjection = True
+# todo: this should be added to the config parser!
+# can be "from_file" or "random"
+fault_injection_method = "random"
+fault_injection_file = "fault_injector_input.txt"
 ################################################
 #          TG Config
 ################################################
@@ -366,9 +370,9 @@ class Viz:
         self.pmcg = False
         self.ttg = False
         self.mapping_distribution = False
-        self.mapping = True
-        self.scheduling = True
-        self.shm = True     # if True generates SHM Drawing
+        self.mapping = False
+        self.scheduling = False
+        self.shm = False     # if True generates SHM Drawing
         self.mapping_frames = False  # If True, generates the frames for animation
         self.frame_resolution = 20   # Resolution in dpi. for resolutions above 50, text is added to the tasks
 

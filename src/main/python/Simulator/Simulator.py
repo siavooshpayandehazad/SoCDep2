@@ -3,8 +3,8 @@
 # starting to write the simulator with SimPy...
 import simpy
 import copy
-import numpy
-from SystemHealthMonitoring import SHMU_Functions
+from simulator_functions import generate_random_fault_time_dict, generate_fault_time_dict_from_file, \
+                                update_fault_time_dict
 from ConfigAndPackages import Config
 from FaultInjector import fault_event
 from SystemHealthMonitoring.FaultClassifier import CounterThreshold, Counter_Threshold_Viz     # Rene's addition
@@ -190,17 +190,15 @@ def run_simulator(runtime, tg, ag, shmu, noc_rg, critical_rg, noncritical_rg, lo
     else:
         raise ValueError("Unknown Classification Method!! Check config file")
 
+    # the fault_time_dictionary looks like this:
+    # fault_time_dictionary[fault_time] = (fault_location, fault_type)
     fault_time_dict = {}
-    fault_time = 0
     schedule_length = Scheduling_Functions.find_schedule_make_span(ag)
     if Config.EventDrivenFaultInjection:
-        time_until_next_fault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
-        fault_time += time_until_next_fault
-        while fault_time < runtime:
-            fault_location, fault_type = SHMU_Functions.random_fault_generation(shmu.SHM)
-            fault_time_dict[float("{0:.1f}".format(fault_time))] = (fault_location, fault_type)
-            time_until_next_fault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
-            fault_time += time_until_next_fault
+        if Config.fault_injection_method == "random":
+            fault_time_dict = copy.deepcopy(generate_random_fault_time_dict(runtime, shmu.SHM))
+        elif Config.fault_injection_method == "from_file":
+            fault_time_dict = generate_fault_time_dict_from_file(runtime, shmu.SHM)
 
         env.process(fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict,
                                 counter_threshold, logging))
@@ -235,20 +233,12 @@ def run_simulator(runtime, tg, ag, shmu, noc_rg, critical_rg, noncritical_rg, lo
         print "SETTING UP THE SIMULATOR..."
         env = simpy.Environment()
 
-        fault_time_dict = {}
-        fault_time = 0
+        # fault_time_dict = {}
         schedule_length = Scheduling_Functions.find_schedule_make_span(ag)
         if Config.EventDrivenFaultInjection:
-            time_until_next_fault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
-            fault_time += time_until_next_fault
-            while fault_time < runtime:
-                fault_location, fault_type = SHMU_Functions.random_fault_generation(shmu.SHM)
-                fault_time_dict[float("{0:.1f}".format(fault_time))] = (fault_location, fault_type)
-                time_until_next_fault = numpy.random.normal(Config.MTBF, Config.SD4MTBF)
-                fault_time += time_until_next_fault
-
-        env.process(fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict,
-                                counter_threshold, logging))
+            fault_time_dict = copy.deepcopy(update_fault_time_dict(time_passed, fault_time_dict))
+            env.process(fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict,
+                                    counter_threshold, logging))
         print "SETTING UP ROUTERS AND PES..."
         for node in ag.nodes():
             # print node, AG.node[node]["Scheduling"]
