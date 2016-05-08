@@ -14,8 +14,8 @@ MemoryProfiler = False
 EventDrivenFaultInjection = True
 # todo: this should be added to the config parser!
 # can be "from_file" or "random"
-fault_injection_method = "random"
-fault_injection_file = "fault_injector_input.txt"
+fault_injection_method = "from_file"
+fault_injection_file = "Injected_Faults.txt"
 ################################################
 #          TG Config
 ################################################
