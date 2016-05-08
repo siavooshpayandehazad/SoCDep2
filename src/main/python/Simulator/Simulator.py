@@ -198,7 +198,7 @@ def run_simulator(runtime, tg, ag, shmu, noc_rg, critical_rg, noncritical_rg, lo
         if Config.fault_injection_method == "random":
             fault_time_dict = copy.deepcopy(generate_random_fault_time_dict(runtime, shmu.SHM))
         elif Config.fault_injection_method == "from_file":
-            fault_time_dict = generate_fault_time_dict_from_file(runtime, shmu.SHM)
+            fault_time_dict = generate_fault_time_dict_from_file()
 
         env.process(fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict,
                                 counter_threshold, logging))

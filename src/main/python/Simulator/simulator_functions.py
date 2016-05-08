@@ -8,7 +8,6 @@ from SystemHealthMonitoring import SHMU_Functions
 import matplotlib.pyplot as plt
 
 
-
 def generate_random_fault_time_dict(runtime, shm):
     """
     generates random fault time dictionary
@@ -32,7 +31,7 @@ def generate_random_fault_time_dict(runtime, shm):
     return fault_time_dict
 
 
-def generate_fault_time_dict_from_file(runtime, shm):
+def generate_fault_time_dict_from_file():
     fault_time_dict = {}
     fault_file = open(Config.fault_injection_file, 'r')
     line = fault_file.readline()
