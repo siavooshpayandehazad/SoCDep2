@@ -46,15 +46,14 @@ def generate_fault_time_dict_from_file():
 
 
 def update_fault_time_dict(current_time, fault_time_dictionary):
-    fault_time_dict = copy.deepcopy(fault_time_dictionary)
-    for fault_time in fault_time_dict.keys():
+    temp_dict = {}
+    for fault_time in fault_time_dictionary.keys():
         if fault_time < current_time:
-            fault_time_dict.pop(fault_time, None)
+            pass
         else:
-            dict_value = fault_time_dict[fault_time]
-            fault_time_dict.pop(fault_time, None)
-            fault_time_dict[fault_time-current_time] = dict_value
-    return fault_time_dict
+            dict_value = fault_time_dictionary[fault_time]
+            temp_dict[fault_time-current_time] = dict_value
+    return temp_dict
 
 
 def draw_faults_locations(fault_time_dict):
