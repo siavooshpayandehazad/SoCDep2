@@ -4,6 +4,11 @@ import PackageFile
 
 
 def check_config_file():
+    """
+    Checks parts of the config file for sanity check before running the tool. for finding obvious
+    mistakes before running the tool. how ever, tests should be expanded.
+    :return: True if all tests are passed
+    """
     check_tg_config()
     check_ag_config()
     check_routing_config()

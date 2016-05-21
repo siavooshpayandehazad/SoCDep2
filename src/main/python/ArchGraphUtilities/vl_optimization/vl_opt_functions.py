@@ -55,6 +55,8 @@ def place_a_random_vl(shmu):
     :return: tuple of source node and destination node of the chosen vertical link
     """
     # todo: we can make this function better by finding all broken VLs and choosing randomly one from the list
+    # the function is: find_all_broken_vls it has to be integrated
+
     # choose a random source node
     source_x = random.randint(0, Config.ag.x_size-1)
     source_y = random.randint(0, Config.ag.y_size-1)
@@ -84,6 +86,20 @@ def place_a_random_vl(shmu):
     shmu.restore_broken_link((source_node, destination_node), False)
     return source_node, destination_node
 
+
+def find_all_broken_vls(ag, shm):
+    """
+    Returns a list of all broken VLs in the Architecture Graph
+    :param ag: architecture graph
+    :param shm: system health map
+    :return: list of broken vertical links
+    """
+    list_of_broken_vls = []
+    all_vertical_links = find_all_vertical_links(ag)
+    for link in all_vertical_links:
+        if not shm.edge[link[0]][link[1]]['LinkHealth']:
+            list_of_broken_vls.append(link)
+    return list_of_broken_vls
 
 def return_to_solution(ag, shmu, vertical_link_list):
     """
