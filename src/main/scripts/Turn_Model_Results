@@ -12,26 +12,26 @@ rm -rf ../results/*
 fi
 
 cd ../python
-#python Main.py -ETM 2D
-#
-FILES=Generated_Files/Turn_Model_Lists/*.txt
-#DEST_FOLDER=../results/2D_TM
-#mkdir $DEST_FOLDER
-#for f in $FILES
-#do
-#   echo copying $f to $DEST_FOLDER 
-#   cp $f $DEST_FOLDER
-#done
+python Main.py -ETM 2D
 
-#python Main.py -ETM 3D
-#
-#DEST_FOLDER=../results/3D_TM
-#mkdir $DEST_FOLDER
-#for f in $FILES
-#do
-#   echo copying $f to $DEST_FOLDER 
-#   cp $f $DEST_FOLDER
-#done
+FILES=Generated_Files/Turn_Model_Lists/*.txt
+DEST_FOLDER=../results/2D_TM
+mkdir $DEST_FOLDER
+for f in $FILES
+do
+   echo copying $f to $DEST_FOLDER 
+   cp $f $DEST_FOLDER
+done
+
+python Main.py -ETM 3D
+
+DEST_FOLDER=../results/3D_TM
+mkdir $DEST_FOLDER
+for f in $FILES
+do
+   echo copying $f to $DEST_FOLDER 
+   cp $f $DEST_FOLDER
+done
 
 # 2D deadlock free minimal and non-minimal 
 python Main.py -ETMD 2D M 4
