@@ -1,10 +1,13 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
-
-from Utilities import misc
-misc.check_for_dependencies()
-
 import sys
 import os
+from Utilities import misc
+
+if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
+    pass
+else:
+    misc.check_for_dependencies()
+
 import time
 import logging
 from ConfigAndPackages import Config, PackageFile, Check_Config
