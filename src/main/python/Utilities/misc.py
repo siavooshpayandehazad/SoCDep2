@@ -524,3 +524,47 @@ def generate_configfile():
     cfg_file.close()
 
     return None
+
+
+def print_help_man():
+    print("Usage:    python Main.py [option] [argument 1]... [argument n]")
+    print ""
+    print("Options and arguments:")
+    print("\t-GUI\t\t:Graphical User Interface for Configuration")
+    print ""
+
+    print("\t-BENCHMARK [Benchmark Name] \t: Runs Benchmark Algorithms:")
+    print("\t\t * idct: Inverse Discrete Cosine Transform")
+    print("\t\t * fdct: Forward Discrete Cosine Transform")
+    print("\t\t * mi: Matrix Inverse")
+    print ""
+
+    print "\t-ETM  [Dimension] : Enumerates turn models regardless of their characteristics."
+    print "\t\t Dimension: 2D or 3D"
+    print "\t\t *The result will be stored in Generated_Files/Turn_Model_Lists folder."
+    print ""
+
+    print "\t-ETMD [Dimension] [Routing Type] [number of threads]: Enumerates turn models based on " \
+          "deadlock-free-ness and reports the \n\t\treachability metric (number of connected pairs), doa and doa-ex"
+    print "\t\t Dimension: 2D or 3D"
+    print "\t\t Routing Type: \"M\" for minimal and \"NM\" for non-minimal"
+    print "\t\t number of threads: number of threads in integer"
+    print "\t\t *The result will be stored in Generated_Files/Turn_Model_Lists folder."
+    print ""
+
+    print("\t-TMFT  [Dimension] [Routing Type] [number of threads] [-V] : Checks the fault tolerance" +
+          " of implemented routing algorithms \n\t\tand calculates the average reachability metric (number of" +
+          "reachable pairs) for different number of faults in the network.")
+    print("\t\t Dimension: 2D or 3D")
+    print("\t\t Routing Type: \"M\" for minimal and \"NM\" for non-minimal")
+    print("\t\t number of threads: number of threads in integer")
+    print("\t\t -V: Enables visualization of every step of routing algorithm checks ")
+    print ""
+
+    print("\t-VIZTM [Dimension] [Routing Type]: visualizes the turn models in the given dimension")
+    print("\t\t Dimension: 2D or 3D")
+    print("\t\t Routing Type: \"M\" for minimal and \"NM\" for non-minimal")
+    print ""
+
+    print ("\t-TMC: 3D 18-turn, turn model classification")
+    print("")

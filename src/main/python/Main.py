@@ -22,29 +22,7 @@ if Config.MemoryProfiler:
     tr = tracker.SummaryTracker()
 
 if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
-    print("Usage:    python Main.py [option1]")
-    print("Options and arguments:")
-    print("-GUI\t\t:Graphical User Interface for Configuration")
-    print("-BENCHMARK [Benchmark Name] \t: Runs Benchmark Algorithms:")
-    print("\t\t\t * idct: Inverse Discrete Cosine Transform")
-    print("\t\t\t * fdct: Forward Discrete Cosine Transform")
-    print("\t\t\t * mi: Matrix Inverse")
-    print("-ETM\t: Enumerates turn models")
-    print("-ETMD\t [Dimension] [Routing Type] [number of threads]: Enumerates turn models based on deadlock-free-ness")
-    print("\t\t\t Dimension: 2D or 3D")
-    print("\t\t\t Routing Type: \"M\" for minimal and \"NM\" for non-minimal")
-    print("\t\t\t number of threads: number of threads in integer")
-    print("-TMFT  [Dimension] [Routing Type] [number of threads] [-V]\t: Checks the fault tolerant" +
-          " of implemented routing algorithms")
-    print("\t\t\t Dimension: 2D or 3D")
-    print("\t\t\t Routing Type: \"M\" for minimal and \"NM\" for non-minimal")
-    print("\t\t\t number of threads: number of threads in integer")
-    print("\t\t\t -V: Enables visualization of every step of routing algorithm checks ")
-    print("-VIZTM  [Dimension] [Routing Type]\t: visualizes the turn models in the given dimension")
-    print("\t\t\t Routing Type: \"M\" for minimal and \"NM\" for non-minimal")
-    print("\t\t\t Dimension: 2D or 3D")
-    print ("-TMC\t: 3D 18-turn, turn model classification")
-    print("")
+    misc.print_help_man()
     sys.exit()
 elif '-GUI' in sys.argv[1:]:
     main_window = GUI.MainView(None)
@@ -82,10 +60,12 @@ elif '-ETMD' in sys.argv[1:]:     # Enumerate turn model based on deadlock
             args = list(range(0, len(PackageFile.FULL_TurnModel_3D)+1))
             p.map(list_all_turn_models.enumerate_all_3d_turn_models_based_on_df, args)
             p.terminate()
-        if sys.argv[sys.argv.index('-ETMD') + 1] == '2D':
+        elif sys.argv[sys.argv.index('-ETMD') + 1] == '2D':
             args = list(range(0, len(PackageFile.FULL_TurnModel_2D)+1))
             p.map(list_all_turn_models.enumerate_all_2d_turn_models_based_on_df, args)
             p.terminate()
+        else:
+            print "ARGUMENT ERROR:: Dimension should be specified as 2D or 3D..."
     sys.exit()
 elif '-TMFT' in sys.argv[1:]:     # check All turn model's fault tolerance
     misc.generate_file_directories()
