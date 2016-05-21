@@ -23,18 +23,8 @@ do
    cp $f $DEST_FOLDER
 done
 
-python Main.py -ETM 3D
-
-DEST_FOLDER=../results/3D_TM
-mkdir $DEST_FOLDER
-for f in $FILES
-do
-   echo copying $f to $DEST_FOLDER 
-   cp $f $DEST_FOLDER
-done
-
 # 2D deadlock free minimal and non-minimal 
-python Main.py -ETMD 2D M 4
+python Main.py -ETMD 2D M 6
 
 DEST_FOLDER=../results/2D_TM_DF_Minimal
 mkdir $DEST_FOLDER
@@ -47,9 +37,7 @@ do
    grep -F "72.0" $f >> $DEST_FOLDER/full_connectivity.txt
 done
 
-
-
-python Main.py -ETMD 2D NM 4
+python Main.py -ETMD 2D NM 6
 
 DEST_FOLDER=../results/2D_TM_DF_Non_Minimal
 mkdir $DEST_FOLDER
@@ -62,27 +50,51 @@ do
    grep -F "72.0" $f >> $DEST_FOLDER/full_connectivity.txt
 done
 
+# 2D turn models fault tolerant evaluation 
+python Main.py -TMFT 2D M 6 -V
+FILES=Generated_Files/Turn_Model_Eval/*.txt
+DEST_FOLDER=../results/2D_TM_Minimal_Eval
+mkdir $DEST_FOLDER
+for f in $FILES
+do
+   echo copying $f to $DEST_FOLDER
+   cp $f $DEST_FOLDER
+done
+
+#python Main.py -ETM 3D
+#
+#DEST_FOLDER=../results/3D_TM
+#mkdir $DEST_FOLDER
+#for f in $FILES
+#do
+#   echo copying $f to $DEST_FOLDER 
+#   cp $f $DEST_FOLDER
+#done
+
 # 3D deadlock free minimal and non-minimal 
-python Main.py -ETMD 3D M 4
+#python Main.py -ETMD 3D M 6
+#
+#DEST_FOLDER=../results/3D_TM_DF_Minimal
+#mkdir $DEST_FOLDER
+#for f in $FILES
+#do
+#   echo copying $f to $DEST_FOLDER
+#   cp $f $DEST_FOLDER
+#   echo "-------------------------" >> $DEST_FOLDER/full_connectivity.txt
+#   echo $f >> $DEST_FOLDER/full_connectivity.txt
+#done
+#
+#python Main.py -ETMD 3D NM 6
+#
+#DEST_FOLDER=../results/3D_TM_DF_Non_Minimal
+#mkdir $DEST_FOLDER
+#for f in $FILES
+#do
+#   echo copying $f to $DEST_FOLDER
+#   cp $f $DEST_FOLDER
+#   echo "-------------------------" >> $DEST_FOLDER/full_connectivity.txt
+#   echo $f >> $DEST_FOLDER/full_connectivity.txt
+#done
 
-DEST_FOLDER=../results/3D_TM_DF_Minimal
-mkdir $DEST_FOLDER
-for f in $FILES
-do
-   echo copying $f to $DEST_FOLDER
-   cp $f $DEST_FOLDER
-   echo "-------------------------" >> $DEST_FOLDER/full_connectivity.txt
-   echo $f >> $DEST_FOLDER/full_connectivity.txt
-done
 
-python Main.py -ETMD 3D NM 4
 
-DEST_FOLDER=../results/3D_TM_DF_Non_Minimal
-mkdir $DEST_FOLDER
-for f in $FILES
-do
-   echo copying $f to $DEST_FOLDER
-   cp $f $DEST_FOLDER
-   echo "-------------------------" >> $DEST_FOLDER/full_connectivity.txt
-   echo $f >> $DEST_FOLDER/full_connectivity.txt
-done
