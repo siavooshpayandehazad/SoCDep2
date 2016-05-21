@@ -1,7 +1,7 @@
 # Copyright (C) Siavoosh Payandeh Azad
 
 from ConfigAndPackages import Config
-from ArchGraphUtilities.AG_Functions import return_node_number, return_node_location
+from ArchGraphUtilities.AG_Functions import return_node_location
 from RoutingAlgorithms import Calculate_Reachability
 import random
 import copy
@@ -58,7 +58,7 @@ def place_a_random_vl(ag, shmu):
     """
 
     all_broken_vls = find_all_broken_vls(ag, shmu.SHM)
-    if len(all_broken_vls)>0:
+    if len(all_broken_vls) > 0:
         random.shuffle(all_broken_vls)
         link = random.choice(all_broken_vls)
     else:
