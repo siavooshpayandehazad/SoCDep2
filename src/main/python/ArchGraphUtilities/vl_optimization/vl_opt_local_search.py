@@ -23,7 +23,7 @@ def opt_ag_vertical_link_local_search(ag, shmu, cost_file_name, logging):
         raise ValueError("ag_cost_file name is not string: "+str(cost_file_name))
 
     remove_all_vertical_links(shmu, ag)
-    vertical_link_list = find_feasible_ag_vertical_link_placement(shmu)
+    vertical_link_list = find_feasible_ag_vertical_link_placement(ag, shmu)
     routing_graph = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
                                                                    Config.DebugInfo, Config.DebugDetails))
     cost = vl_cost_function(ag, routing_graph)
@@ -43,7 +43,7 @@ def opt_ag_vertical_link_local_search(ag, shmu, cost_file_name, logging):
     ag_cost_file.write(str(cost)+"\n")
 
     for i in range(0, Config.vl_opt.ls_iteration):
-        new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(shmu,
+        new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(ag, shmu,
                                                                                        vertical_link_list))
         new_routing_graph = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
                                                                            False, False))
@@ -87,7 +87,7 @@ def opt_ag_vertical_link_iterative_local_search(ag, shmu, cost_file_name, loggin
     starting_cost = None
     for j in range(0, Config.vl_opt.ils_iteration):
         remove_all_vertical_links(shmu, ag)
-        vertical_link_list_init = copy.deepcopy(find_feasible_ag_vertical_link_placement(shmu))
+        vertical_link_list_init = copy.deepcopy(find_feasible_ag_vertical_link_placement(ag, shmu))
         routing_graph = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu,
                                                                        Config.UsedTurnModel, False, False))
         cost = vl_cost_function(ag, routing_graph)
@@ -115,7 +115,7 @@ def opt_ag_vertical_link_iterative_local_search(ag, shmu, cost_file_name, loggin
                       str(cost) + "\t ITERATION: "+str(j*Config.vl_opt.ls_iteration))
         vertical_link_list = vertical_link_list_init[:]
         for i in range(0, Config.vl_opt.ls_iteration):
-            new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(shmu,
+            new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(ag, shmu,
                                                                                            vertical_link_list))
             new_routing_graph = Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
                                                                  False, False)

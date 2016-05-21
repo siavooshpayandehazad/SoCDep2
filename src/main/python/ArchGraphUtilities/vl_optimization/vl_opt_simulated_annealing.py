@@ -35,7 +35,7 @@ def opt_ag_vertical_link_sa(ag, shmu, cost_file_name, logging):
     temperature_file = open('Generated_Files/Internal/vlp_sa_temp.txt', 'w')
 
     remove_all_vertical_links(shmu, ag)
-    vertical_link_list = find_feasible_ag_vertical_link_placement(shmu)
+    vertical_link_list = find_feasible_ag_vertical_link_placement(ag, shmu)
     routing_graph = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
                                                                    Config.DebugInfo, Config.DebugDetails))
     cost = vl_cost_function(ag, routing_graph)
@@ -62,7 +62,7 @@ def opt_ag_vertical_link_sa(ag, shmu, cost_file_name, logging):
     i = 0
     while True:
         i += 1
-        new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(shmu,
+        new_vertical_link_list = copy.deepcopy(move_to_new_vertical_link_configuration(ag, shmu,
                                                                                        vertical_link_list))
         new_routing_graph = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
                                                                            False, False))
