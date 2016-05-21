@@ -135,7 +135,6 @@ def initialize_system(logging):
     print ("SYSTEM IS UP...")
 
     TrafficTableGenerator.generate_noxim_traffic_table(ag, tg)
-    TrafficTableGenerator.generate_gsnoc_traffic_table(ag, tg)
     if Config.viz.mapping_frames:
         Mapping_Animation.generate_frames(ag, shmu.SHM)
     return tg, ag, shmu, noc_rg, critical_rg, noncritical_rg, pmcg
