@@ -60,8 +60,6 @@ class ArchGraphTesting(unittest.TestCase):
         for size_y in range(2, 5):
             for size_x in range(2, 5):
                 for topology in ['2DMesh', '2DTorus', '2DRing', '2DLine']:
-                    # todo:  test if the returned ag is ok!
-
                     Config.ag.x_size = size_x
                     Config.ag.y_size = size_y
                     Config.ag.z_size = size_z
