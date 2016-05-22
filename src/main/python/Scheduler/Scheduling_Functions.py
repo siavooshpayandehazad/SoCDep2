@@ -32,10 +32,11 @@ def clear_scheduling(ag):
 def check_if_all_deadlines_are_met(tg, ag):
     for node in ag:
         for task in ag.node[node]['PE'].scheduling.keys():
-            scheduling_time =  ag.node[node]['PE'].scheduling[task]
-            # print task, scheduling_time
-            if tg.node[task]['task'].deadline < scheduling_time[1]:
-                # print tg.node[task]['task'].deadline, scheduling_time[1]
-                return False
+            if tg.node[task]['task'].criticality == 'H':
+                scheduling_time =  ag.node[node]['PE'].scheduling[task]
+                # print task, scheduling_time
+                if tg.node[task]['task'].deadline < scheduling_time[1]:
+                    # print tg.node[task]['task'].deadline, scheduling_time[1]
+                    return False
     # print "-----------------------------------"
     return True
