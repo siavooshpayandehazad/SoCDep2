@@ -28,6 +28,21 @@ def generate_ctg(num_of_clusters):
     return ctg
 
 
+def gen_transparent_clusters(tg):
+    print ("===========================================")
+    print ("PREPARING FOR CLUSTERING THE TASK GRAPH...")
+    print ("   NUMBER OF CLUSTERS: "+str(len(tg.nodes())))
+    ctg = networkx.DiGraph()
+    for i in range(0, len(tg.nodes())):
+        ctg.add_node(i, TaskList=[], Node=None, Utilization=0,
+                     Criticality='L')
+    for task_id in tg.nodes():
+        add_task_to_ctg(tg, ctg, task_id, task_id)
+    report_ctg(ctg, "CTG.png")
+    return ctg
+
+
+
 def initial_clustering(tg, ctg):
     """
     Randomly assign the tasks to clusters to make the initial solution for optimization...

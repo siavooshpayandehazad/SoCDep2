@@ -16,7 +16,7 @@ class task():     # PROCESSING ELEMENT
         self.distance = distance
         self.release = release
         self.type = type
-        self.deadline = random.randint(150,200)
+        self.deadline = random.randint(300, 350)
 
 
 def generate_manual_tg(task_list, tg_edge_list, task_criticality_list, task_wcet_list, tg_edge_weight):

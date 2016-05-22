@@ -129,6 +129,8 @@ def update_config(config_file_path):
     Config.TestMode = config.getboolean("Program_Config", "TestMode")
     Config.MemoryProfiler = config.getboolean("Program_Config", "MemoryProfiler")
     Config.EventDrivenFaultInjection = config.getboolean("Program_Config", "EventDrivenFaultInjection")
+    Config.fault_injection_method = config.get("Program_Config", "fault_injection_method")
+    Config.fault_injection_file = config.get("Program_Config", "fault_injection_file")
     # ------------------------------------------------
     #               TG_Config
     # ------------------------------------------------
@@ -220,6 +222,7 @@ def update_config(config_file_path):
     # ------------------------------------------------
     #               CTG_Config
     # ------------------------------------------------
+    Config.task_clustering = config.getboolean("CTG_Config", "task_clustering")
     Config.Clustering_Optimization = config.getboolean("CTG_Config", "Clustering_Optimization")
     Config.clustering.iterations = config.getint("CTG_Config", "ClusteringIteration")
     Config.clustering.random_seed = config.getint("CTG_Config", "ctg_random_seed")
@@ -328,6 +331,8 @@ def generate_configfile():
     cnfgpars.set('Program_Config', 'TestMode', Config.TestMode)
     cnfgpars.set('Program_Config', 'MemoryProfiler', Config.MemoryProfiler)
     cnfgpars.set('Program_Config', 'EventDrivenFaultInjection', Config.EventDrivenFaultInjection)
+    cnfgpars.set('Program_Config', 'fault_injection_method', Config.fault_injection_method)
+    cnfgpars.set('Program_Config', 'fault_injection_file', Config.fault_injection_file)
     # ------------------------------------------------
     #               TG_Config
     # ------------------------------------------------
@@ -422,6 +427,7 @@ def generate_configfile():
     #               CTG_Config
     # ------------------------------------------------
     cnfgpars.add_section('CTG_Config')
+    cnfgpars.set('CTG_Config', 'task_clustering', Config.task_clustering)
     cnfgpars.set('CTG_Config', 'Clustering_Optimization', Config.Clustering_Optimization)
     cnfgpars.set('CTG_Config', 'ClusteringIteration', Config.clustering.iterations)
     cnfgpars.set('CTG_Config', 'ctg_random_seed', Config.clustering.random_seed)

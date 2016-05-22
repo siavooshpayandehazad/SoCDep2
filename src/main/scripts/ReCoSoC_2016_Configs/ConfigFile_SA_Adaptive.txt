@@ -56,6 +56,7 @@ listofbrokenturns = {}
 maxtemp = 100
 
 [CTG_Config]
+task_clustering = True
 clustering_optimization = True
 clusteringiteration = 70
 ctg_random_seed = 100

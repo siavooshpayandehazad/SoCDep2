@@ -27,12 +27,12 @@ class TaskGraph:
         self.type = 'RandomDependent'
         # For Random TG_Type:
         self.num_of_tasks = 25
-        self.num_of_critical_tasks = 0
+        self.num_of_critical_tasks = 10
         self.num_of_edges = 35
         self.wcet_range = 25
         self.edge_weight_range = 5
         self.release_range = 5  # task release time range
-        self.random_seed = 1000
+        self.random_seed = 2000
         # For Generic Traffic:
         self.generic_traffic = 'random_uniform'
         self.injection_rate = 1
@@ -65,8 +65,8 @@ class ArchGraph:
         # in case of Generic AG_type
         # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
         self.topology = '2DMesh'
-        self.x_size = 3
-        self.y_size = 3
+        self.x_size = 6
+        self.y_size = 6
         self.z_size = 1
         # Todo: virtual channel
         self.virtual_channel_num = 0
@@ -194,6 +194,7 @@ MaxTemp = 100
 ################################################
 #          Clustering Function  Config
 ################################################
+task_clustering = False
 Clustering_Optimization = True     # If false, Turns the clustering off. Each Cluster would have only one Task in it.
 
 
@@ -231,8 +232,8 @@ mapping_file_path = "mapping_report.txt"
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
 Mapping_Function = 'IterativeLocalSearch'
-LocalSearchIteration = 10
-IterativeLocalSearchIterations = 5
+LocalSearchIteration = 100
+IterativeLocalSearchIterations = 10
 mapping_random_seed = 2000
 #######################
 SimulatedAnnealingIteration = 1000
@@ -325,7 +326,7 @@ state_config = "1"
 ################################################
 #           Network Partitioning
 ################################################
-EnablePartitioning = False
+EnablePartitioning = True
 VirtualBrokenLinksForNonCritical = []
 VirtualBrokenLinksForCritical = []
 # Critical Region Nodes:
