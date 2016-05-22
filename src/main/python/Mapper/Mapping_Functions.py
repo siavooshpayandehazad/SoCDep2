@@ -414,8 +414,7 @@ def mapping_cost_function(tg, ag, shm, report, initial_mapping_string=None):
     :param initial_mapping_string: Initial mapping string used for calculating distance from the current mapping
     :return: cost of the mapping
     """
-    if not check_if_all_deadlines_are_met(tg, ag):
-        return 1000
+
     node_makespan_list = []
     link_makespan_list = []
     for node in ag.nodes():
@@ -480,7 +479,11 @@ def mapping_cost_function(tg, ag, shm, report, initial_mapping_string=None):
 
     if cost == 0:
             raise ValueError("Mapping with 0 cost... Something is wrong here...")
-    return cost
+    if check_if_all_deadlines_are_met(tg, ag):
+        return cost
+    else:
+        return cost+1000
+
 
 
 def calculate_reliability_cost(tg, logging):
