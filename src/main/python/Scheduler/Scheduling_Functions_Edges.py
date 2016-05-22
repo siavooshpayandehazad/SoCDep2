@@ -102,7 +102,7 @@ def find_edge_predecessors_finish_time(tg, ag, edge, batch):
     :return: Finish Time
     """
     finish_time = 0
-    source_node = tg.node[edge[0]]['Node']
+    source_node = tg.node[edge[0]]['task'].node
     if edge[0] in ag.node[source_node]['PE'].scheduling:
         finish_time = max(ag.node[source_node]['PE'].scheduling[edge[0]][1], finish_time)
 

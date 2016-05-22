@@ -13,10 +13,10 @@ def report_task_graph(tg, logging):
     logging.info('TASK GRAPH REPORT:')
     logging.info('TASK GRAPH Type:\t'+str(Config.tg.type))
     for Node in tg.nodes():
-        massage = "TASK:"+str(Node)+"\tWCET:"+str(tg.node[Node]['WCET'])+"\tCRITICALITY:" +\
-                  str(tg.node[Node]['Criticality'])+"\tCLUSTER:"+str(tg.node[Node]['Cluster']) +\
-                  "\tNODE:"+str(tg.node[Node]['Node'])+"\tPRIORITY:"+str(tg.node[Node]['Priority']) +\
-                  "\tRELEASE:"+str(tg.node[Node]['Release'])
+        massage = "TASK:"+str(Node)+"\tWCET:"+str(tg.node[Node]['task'].wcet)+"\tCRITICALITY:" +\
+                  str(tg.node[Node]['task'].criticality)+"\tCLUSTER:"+str(tg.node[Node]['task'].cluster) +\
+                  "\tNODE:"+str(tg.node[Node]['task'].node)+"\tPRIORITY:"+str(tg.node[Node]['task'].priority) +\
+                  "\tRELEASE:"+str(tg.node[Node]['task'].release)
         logging.info(massage)
         print (massage)
     print ("====================")
@@ -39,11 +39,11 @@ def draw_task_graph(tg, ttg=None):
     plt.figure()
     node_colors = []
     for Node in tg.nodes():
-        if tg.node[Node]['Criticality'] == 'H':
+        if tg.node[Node]['task'].criticality == 'H':
             node_colors.append('#FF878B')
-        elif tg.node[Node]['Criticality'] == 'GH':
+        elif tg.node[Node]['task'].criticality == 'GH':
             node_colors.append('#FFC29C')
-        elif tg.node[Node]['Criticality'] == 'GNH':
+        elif tg.node[Node]['task'].criticality == 'GNH':
             node_colors.append('#928AFF')
         else:
             node_colors.append('#A0CBE2')
@@ -69,14 +69,14 @@ def draw_task_graph(tg, ttg=None):
         for current_distance in range(0, max_distance+1):
             num_tasks_with_same_distance = 0
             for node in tg.nodes():
-                if tg.node[node]['Type'] == 'App':
-                    distance = tg.node[node]['Distance']
+                if tg.node[node]['task'].type == 'App':
+                    distance = tg.node[node]['task'].distance
                     if current_distance == distance:
                         num_tasks_with_same_distance += 1
             counter = 0
             for node in tg.nodes():
-                if tg.node[node]['Type'] == 'App':
-                    distance = tg.node[node]['Distance']
+                if tg.node[node]['task'].type == 'App':
+                    distance = tg.node[node]['task'].distance
                     if current_distance == distance:
                         counter += 1
                         pos[node] = (counter*(width/num_tasks_with_same_distance)+width,
@@ -84,7 +84,7 @@ def draw_task_graph(tg, ttg=None):
         if ttg is not None:
             temp_pos = networkx.shell_layout(ttg)
             for test_node in tg.nodes():
-                if tg.node[test_node]['Type'] == 'Test':
+                if tg.node[test_node]['task'].type == 'Test':
                     pos[test_node] = [temp_pos[test_node][0]*(width/2)+width/2, 
                                       temp_pos[test_node][1]*(height/2)+height/2]
 

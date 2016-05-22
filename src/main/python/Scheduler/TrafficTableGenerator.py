@@ -40,12 +40,12 @@ def generate_noxim_traffic_table(ag, tg):
         if len(ag.node[Node]['PE'].mapped_tasks) > 0:
             for Task in ag.node[Node]['PE'].mapped_tasks:
                 for Edge in tg.edges():
-                    if Edge[0] == Task and (translate_node_number_to_noxim_system(tg.node[Edge[0]]['Node']) !=
-                                            translate_node_number_to_noxim_system(tg.node[Edge[1]]['Node'])):
+                    if Edge[0] == Task and (translate_node_number_to_noxim_system(tg.node[Edge[0]]['task'].node) !=
+                                            translate_node_number_to_noxim_system(tg.node[Edge[1]]['task'].node)):
                         # in Noxim's traffic table, since each router has only one IP core connected
                         # to it, Node(i) cannot send data to Node(i)
-                        source_node_noxim = translate_node_number_to_noxim_system(tg.node[Edge[0]]['Node'])
-                        destination_node_noxim = translate_node_number_to_noxim_system(tg.node[Edge[1]]['Node'])
+                        source_node_noxim = translate_node_number_to_noxim_system(tg.node[Edge[0]]['task'].node)
+                        destination_node_noxim = translate_node_number_to_noxim_system(tg.node[Edge[1]]['task'].node)
                         # StringToWrite: source + destination
                         string_to_write = str(source_node_noxim) + " " + str(destination_node_noxim)
 #                       StringToWrite += " 0" # Region ID (used for bLBDR/Virtualization)

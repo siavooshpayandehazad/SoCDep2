@@ -15,13 +15,13 @@ def remove_task_from_ctg(tg, ctg, task):
     :param task: Task ID
     :return: None
     """
-    task_cluster = tg.node[task]['Cluster']
+    task_cluster = tg.node[task]['task'].cluster
     # print ("\tREMOVING TASK:", Task, " FROM CLUSTER:", task_cluster)
     for edge in tg.edges():
         if task in edge:
             weight_to_remove = tg.edge[edge[0]][edge[1]]['ComWeight']
-            source_cluster = tg.node[edge[0]]['Cluster']
-            destination_cluster = tg.node[edge[1]]['Cluster']
+            source_cluster = tg.node[edge[0]]['task'].cluster
+            destination_cluster = tg.node[edge[1]]['task'].cluster
             if source_cluster is not None and destination_cluster is not None:
                 if source_cluster != destination_cluster:
                     # print ("\t\tREMOVING TG EDGE:", edge, "WITH WEIGHT", weight_to_remove, "FROM CLUSTER:", \
@@ -39,11 +39,11 @@ def remove_task_from_ctg(tg, ctg, task):
                         else:
                             print ("\t\033[31mERROR\033[0m::FINAL WEIGHT IS NEGATIVE")
                             raise ValueError("remove_task_from_ctg::FINAL WEIGHT IS NEGATIVE")
-    tg.node[task]['Cluster'] = None
+    tg.node[task]['task'].cluster = None
     ctg.node[task_cluster]['TaskList'].remove(task)
     if len(ctg.node[task_cluster]['TaskList']) == 0:
         ctg.node[task_cluster]['Criticality'] = 'L'
-    ctg.node[task_cluster]['Utilization'] -= tg.node[task]['WCET']
+    ctg.node[task_cluster]['Utilization'] -= tg.node[task]['task'].wcet
     return None
 
 
@@ -59,21 +59,21 @@ def add_task_to_ctg(tg, ctg, task, cluster):
     """
     # print ("\tADDING TASK:", task, " TO CLUSTER:", cluster)
     if len(ctg.node[cluster]['TaskList']) == 0:
-        ctg.node[cluster]['Criticality'] = tg.node[task]['Criticality']
+        ctg.node[cluster]['Criticality'] = tg.node[task]['task'].criticality
     else:
         if Config.EnablePartitioning:
-            if ctg.node[cluster]['Criticality'] == tg.node[task]['Criticality']:
+            if ctg.node[cluster]['Criticality'] == tg.node[task]['task'].criticality:
                 pass
             else:
                 return False
     ctg.node[cluster]['TaskList'].append(task)
-    ctg.node[cluster]['Utilization'] += tg.node[task]['WCET']
-    tg.node[task]['Cluster'] = cluster
+    ctg.node[cluster]['Utilization'] += tg.node[task]['task'].wcet
+    tg.node[task]['task'].cluster = cluster
     for edge in tg.edges():
         if task in edge:
             weight_to_add = tg.edge[edge[0]][edge[1]]['ComWeight']
-            source_cluster = tg.node[edge[0]]['Cluster']
-            destination_cluster = tg.node[edge[1]]['Cluster']
+            source_cluster = tg.node[edge[0]]['task'].cluster
+            destination_cluster = tg.node[edge[1]]['task'].cluster
             if source_cluster is not None and destination_cluster is not None:
                 if source_cluster != destination_cluster:
                     if (source_cluster, destination_cluster) in ctg.edges():
@@ -139,7 +139,7 @@ def clear_clustering(tg, ctg):
     :return: None
     """
     for node in tg.nodes():
-        tg.node[node]['Cluster'] = None
+        tg.node[node]['task'].cluster = None
     for cluster in ctg.nodes():
         ctg.node[cluster]['TaskList'] = []
         ctg.node[cluster]['Utilization'] = 0
@@ -183,7 +183,7 @@ def random_task_move(tg, ctg, iteration, logging):
     logging.info("Moving to next solution: random_seed: "+str(random_seed)+"    iteration: "+str(iteration))
 
     random_task = random.choice(tg.nodes())
-    random_task_cluster = tg.node[random_task]['Cluster']
+    random_task_cluster = tg.node[random_task]['task'].cluster
     # remove it and all its connections from CTG
     remove_task_from_ctg(tg, ctg, random_task)
     # randomly choose another cluster
@@ -194,12 +194,12 @@ def random_task_move(tg, ctg, iteration, logging):
         add_task_to_ctg(tg, ctg, random_task, random_task_cluster)
         # double_check_ctg(tg, ctg)
         random_task = random.choice(tg.nodes())
-        random_task_cluster = tg.node[random_task]['Cluster']
+        random_task_cluster = tg.node[random_task]['task'].cluster
 
         remove_task_from_ctg(tg, ctg, random_task)
         random_cluster = random.choice(ctg.nodes())
     logging.info("TASK"+str(random_task)+"MOVED TO CLUSTER"+str(random_cluster)+"RESULTS IN UTILIZATION:" +
-                 str(ctg.node[random_cluster]['Utilization']+tg.node[random_task]['WCET']))
+                 str(ctg.node[random_cluster]['Utilization']+tg.node[random_task]['task'].wcet))
     return None
 
 

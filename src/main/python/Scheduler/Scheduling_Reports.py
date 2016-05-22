@@ -122,7 +122,7 @@ def add_pe_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, rou
                     slack_p.append(0)
                     task_color = 'w'
                     if task in ag.node[node]['PE'].scheduling:
-                        if tg.node[task]['Criticality'] == 'H':
+                        if tg.node[task]['task'].criticality == 'H':
                             start_time = ag.node[node]['PE'].scheduling[task][0]
                             task_length = ag.node[node]['PE'].scheduling[task][1] - ag.node[node]['PE'].scheduling[task][0]
                             end_time = start_time + (task_length/(Config.Task_SlackCount+1))
@@ -157,12 +157,12 @@ def add_pe_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, rou
                             pe_p.append(0.1)
                             pe_t.append(end_time)
                             pe_p.append(0)
-                            if tg.node[task]['Criticality'] == 'GH':
+                            if tg.node[task]['task'].criticality == 'GH':
                                 task_color = '#FFC29C'
-                            elif tg.node[task]['Criticality'] == 'GNH':
+                            elif tg.node[task]['task'].criticality == 'GNH':
                                 task_color = '#928AFF'
                             else:
-                                if tg.node[task]['Type'] == 'Test':
+                                if tg.node[task]['task'].type == 'Test':
                                     if 'S' in task:
                                         task_color = '#FFDA3D'
                                     else:
@@ -181,7 +181,7 @@ def add_pe_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, rou
             for task in ag.node[node]['PE'].mapped_tasks:
                 if task in ag.node[node]['PE'].scheduling:
                     start_time = ag.node[node]['PE'].scheduling[task][0]
-                    if tg.node[task]['Criticality'] == 'H':
+                    if tg.node[task]['task'].criticality == 'H':
                         task_length = (ag.node[node]['PE'].scheduling[task][1] -
                                        ag.node[node]['PE'].scheduling[task][0])/(Config.Task_SlackCount+1)
                         ax1.text(start_time+task_length/2 - len(str(task))/2, 0.01, str(task), fontsize=10)
@@ -340,7 +340,7 @@ def add_routers_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter
                 pe_p.append(0.1)
                 pe_t.append(max_time)
                 pe_p.append(0)
-                if tg.node[task[0]]['Type'] == 'Test' or tg.node[task[1]]['Type'] == 'Test':
+                if tg.node[task[0]]['task'].type == 'Test' or tg.node[task[1]]['task'].type == 'Test':
                     ax1.fill_between(pe_t, pe_p, 0, color=edge_color, edgecolor='k', zorder=zorder, hatch='\\')
                 else:
                     ax1.fill_between(pe_t, pe_p, 0, color=edge_color, edgecolor=edge_color, zorder=zorder)
@@ -486,7 +486,7 @@ def add_links_to_drawing(tg, ag, num_of_plots, fig, node_counter, link_counter, 
                 pe_p.append(0.1)
                 pe_t.append(max_time)
                 pe_p.append(0)
-                if tg.node[task[0]]['Type'] == 'Test' or tg.node[task[1]]['Type'] == 'Test':
+                if tg.node[task[0]]['task'].type == 'Test' or tg.node[task[1]]['task'].type == 'Test':
                     ax1.fill_between(pe_t, pe_p, 0, color=edge_color, edgecolor='k', zorder=zorder, hatch='\\')
                 else:
                     ax1.fill_between(pe_t, pe_p, 0, color=edge_color, edgecolor=edge_color, zorder=zorder)

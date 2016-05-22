@@ -4,12 +4,12 @@ from math import ceil
 import Scheduling_Functions_Tasks
 
 
-def add_tg_task_to_node(tg, ag, task, node, start_time, end_time, logging=None):
+def add_tg_task_to_node(tg, ag, task_id, node, start_time, end_time, logging=None):
     """
     Adds a Task from Task Graph with specific Start time and end time to mapped node in architecture graph
     :param tg: Task Graph
     :param ag: Architecture Graph
-    :param task: Task ID
+    :param task_id: Task ID
     :param node: Node ID
     :param start_time: Scheduling time for Task
     :param end_time: Task duration for scheduling
@@ -17,10 +17,10 @@ def add_tg_task_to_node(tg, ag, task, node, start_time, end_time, logging=None):
     :return: True
     """
     if logging is not None:
-        logging.info("\t\tADDING TASK: "+str(task)+" TO NODE: "+str(node))
+        logging.info("\t\tADDING TASK: "+str(task_id)+" TO NODE: "+str(node))
         logging.info("\t\tSTARTING TIME: "+str(start_time)+" ENDING TIME:"+str(end_time))
-    ag.node[node]['PE'].scheduling[task] = [start_time, end_time]
-    tg.node[task]['Node'] = node
+    ag.node[node]['PE'].scheduling[task_id] = [start_time, end_time]
+    tg.node[task_id]['task'].node = node
     return True
 
 
@@ -49,14 +49,14 @@ def find_last_allocated_time_on_node(ag, node, logging=None):
     return last_allocated_time
 
 
-def find_first_empty_slot_for_task_on_node(tg, ag, shm, node, task, predecessor_end_time, logging=None):
+def find_first_empty_slot_for_task_on_node(tg, ag, shm, node, task_id, predecessor_end_time, logging=None):
     """
 
     :param tg: task graph
     :param ag:
     :param shm: System Health Map
     :param node:
-    :param task:
+    :param task_id: task id
     :param predecessor_end_time:
     :param logging:
     :return:
@@ -65,7 +65,7 @@ def find_first_empty_slot_for_task_on_node(tg, ag, shm, node, task, predecessor_
     first_possible_mapping_time = predecessor_end_time
 
     node_speed_down = 1+((100.0-shm.node[node]['NodeSpeed'])/100)
-    task_execution_on_node = ceil(tg.node[task]['WCET']*node_speed_down)
+    task_execution_on_node = ceil(tg.node[task_id]['task'].wcet*node_speed_down)
 
     start_time_list = []
     end_time_list = []
@@ -85,5 +85,6 @@ def find_first_empty_slot_for_task_on_node(tg, ag, shm, node, task, predecessor_
     if not found:
         first_possible_mapping_time = max(first_possible_mapping_time,
                                           Scheduling_Functions_Tasks.find_task_asap_scheduling(tg, ag, shm,
-                                                                                               task, node, logging)[0])
+                                                                                               task_id, node,
+                                                                                               logging)[0])
     return first_possible_mapping_time

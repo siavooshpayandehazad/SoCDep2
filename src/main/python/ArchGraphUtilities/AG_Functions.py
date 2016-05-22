@@ -390,7 +390,7 @@ def return_node_util(tg, ag, node):
     utilization = 0
     if len(ag.node[node]['PE'].mapped_tasks) > 0:
         for task in ag.node[node]['PE'].mapped_tasks:
-            utilization += tg.node[task]['WCET']
+            utilization += tg.node[task]['task'].wcet
     return utilization
 
 

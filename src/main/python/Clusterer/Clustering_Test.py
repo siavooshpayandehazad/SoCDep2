@@ -11,7 +11,7 @@ def double_check_ctg(tg, ctg):
     :return: True if CTG information is the same as TG, False if otherwise
     """
     for task in tg.nodes():
-        cluster = tg.node[task]['Cluster']
+        cluster = tg.node[task]['task'].cluster
         if cluster in ctg.nodes():
             if task not in ctg.node[cluster]['TaskList']:
                 print ("DOUBLE CHECKING CTG with TG: \t\033[31mFAILED\033[0m")

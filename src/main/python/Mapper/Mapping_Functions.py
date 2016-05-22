@@ -9,7 +9,7 @@ from Mapping_Reports import draw_mapping
 from RoutingAlgorithms import Routing
 from ArchGraphUtilities import AG_Functions
 import ConfigParser
-
+from Scheduler.Scheduling_Functions import check_if_all_deadlines_are_met
 
 def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, report,
                          logging, random_seed, iteration=None):
@@ -103,14 +103,14 @@ def map_task_to_node(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, task, nod
         return False
 
     logging.info("\tADDING TASK: "+str(task)+"TO NODE:"+str(node))
-    tg.node[task]['Node'] = node
+    tg.node[task]['task'].node = node
     ag.node[node]['PE'].mapped_tasks.append(task)
     ag.node[node]['PE'].utilization += tg.node[task]['WCET']
     for edge in tg.edges():
         if task in edge:    # find all the edges that are connected to Task
             # logging.info("\t\tEDGE:"+str(edge)+"CONTAINS Task:"+str(task))
-            source_node = tg.node[edge[0]]['Node']
-            destination_node = tg.node[edge[1]]['Node']
+            source_node = tg.node[edge[0]]['task'].node
+            destination_node = tg.node[edge[1]]['task'].node
             if source_node is not None and destination_node is not None:    # check if both ends of this edge is mapped
                 if source_node != destination_node:
                     # Find the links to be used
@@ -175,8 +175,8 @@ def remove_task_from_node(tg, ag, noc_rg, critical_rg, noncritical_rg, task, nod
     logging.info("\tREMOVING TASK:"+str(task)+"FROM NODE:"+str(node))
     for edge in tg.edges():
         if task in edge:
-            source_node = tg.node[edge[0]]['Node']
-            destination_node = tg.node[edge[1]]['Node']
+            source_node = tg.node[edge[0]]['task'].node
+            destination_node = tg.node[edge[1]]['task'].node
             if source_node is not None and destination_node is not None:
                 if source_node != destination_node:
                     # Find the links to be used
@@ -200,9 +200,9 @@ def remove_task_from_node(tg, ag, noc_rg, critical_rg, noncritical_rg, task, nod
                             # logging.info("\t\t\t\tRemoving Packet "+str(edge)+" To Router:"+str(path[len(path)-1][1]))
                     else:
                         logging.warning("\tNOTHING TO BE REMOVED...")
-    tg.node[task]['Node'] = None
+    tg.node[task]['task'].node = None
     ag.node[node]['PE'].mapped_tasks.remove(task)
-    ag.node[node]['PE'].utilization -= tg.node[task]['WCET']
+    ag.node[node]['PE'].utilization -= tg.node[task]['task'].wcet
     return True
 
 
@@ -232,7 +232,7 @@ def add_cluster_to_node(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, c
     logging.info("\tADDING CLUSTER: "+str(cluster)+"TO NODE:"+str(node))
     ctg.node[cluster]['Node'] = node
     for Task in ctg.node[cluster]['TaskList']:
-        tg.node[Task]['Node'] = node
+        tg.node[Task]['task'].node = node
         ag.node[node]['PE'].mapped_tasks.append(Task)
     ag.node[node]['PE'].utilization += ctg.node[cluster]['Utilization']
 
@@ -254,8 +254,8 @@ def add_cluster_to_node(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, c
                     if list_of_links is not None:
                             # find all the edges in TaskGraph that contribute to this edge in CTG
                             for tg_edge in tg.edges():
-                                if tg.node[tg_edge[0]]['Cluster'] == ctg_edge[0] and \
-                                        tg.node[tg_edge[1]]['Cluster'] == ctg_edge[1]:
+                                if tg.node[tg_edge[0]]['task'].cluster == ctg_edge[0] and \
+                                        tg.node[tg_edge[1]]['task'].cluster == ctg_edge[1]:
                                     list_of_edges.append(tg_edge)
                     # print ("LIST OF LINKS:", list_of_links)
                     # add edges from list of edges to all links from list of links
@@ -339,8 +339,8 @@ def remove_cluster_from_node(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, c
                     if list_of_links is not None:
                         # find all the edges in TaskGraph that contribute to this edge in CTG
                         for tg_edge in tg.edges():
-                            if tg.node[tg_edge[0]]['Cluster'] == ctg_edge[0] and \
-                                    tg.node[tg_edge[1]]['Cluster'] == ctg_edge[1]:
+                            if tg.node[tg_edge[0]]['task'].cluster == ctg_edge[0] and \
+                                    tg.node[tg_edge[1]]['task'].cluster == ctg_edge[1]:
                                 list_of_edges.append(tg_edge)
 
                     # remove edges from list of edges to all links from list of links
@@ -370,7 +370,7 @@ def remove_cluster_from_node(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, c
                         logging.warning("\tNOTHING TO BE REMOVED...")
     ctg.node[cluster]['Node'] = None
     for task in ctg.node[cluster]['TaskList']:
-        tg.node[task]['Node'] = None
+        tg.node[task]['task'].node = None
         ag.node[node]['PE'].mapped_tasks.remove(task)
     ag.node[node]['PE'].utilization -= ctg.node[cluster]['Utilization']
     return True
@@ -385,7 +385,7 @@ def clear_mapping(tg, ctg, ag):
     :return: True
     """
     for node in tg.nodes():
-        tg.node[node]['Node'] = None
+        tg.node[node]['task'].node = None
     for edge in tg.edges():
         tg.edge[edge[0]][edge[1]]['Link'] = []
     for cluster in ctg.nodes():
@@ -414,6 +414,8 @@ def mapping_cost_function(tg, ag, shm, report, initial_mapping_string=None):
     :param initial_mapping_string: Initial mapping string used for calculating distance from the current mapping
     :return: cost of the mapping
     """
+    if not check_if_all_deadlines_are_met(tg, ag):
+        return 1000
     node_makespan_list = []
     link_makespan_list = []
     for node in ag.nodes():
@@ -485,8 +487,8 @@ def calculate_reliability_cost(tg, logging):
     # todo...
     cost = 0
     for edge in tg.edges():
-        node1 = tg.node[edge[0]]['Node']
-        node2 = tg.node[edge[1]]['Node']
+        node1 = tg.node[edge[0]]['task'].node
+        node2 = tg.node[edge[1]]['task'].node
         logging.info("PACKET FROM NODE "+str(node1)+"TO NODE "+str(node2))
     return cost
 
@@ -501,13 +503,13 @@ def unmapped_task_with_smallest_wcet(tg, logging):
     shortest_tasks = []
     smallest_wcet = Config.tg.wcet_range
     for node in tg.nodes():
-        if tg.node[node]['Node'] is None:
-            if tg.node[node]['WCET'] < smallest_wcet:
-                smallest_wcet = tg.node[node]['WCET']
+        if tg.node[node]['task'].node is None:
+            if tg.node[node]['task'].wcet < smallest_wcet:
+                smallest_wcet = tg.node[node]['task'].wcet
     logging.info("THE SHORTEST WCET OF UNMAPPED TASKS IS:"+str(smallest_wcet))
     for node in tg.nodes():
-        if tg.node[node]['Node'] is None:
-            if tg.node[node]['WCET'] == smallest_wcet:
+        if tg.node[node]['task'].node is None:
+            if tg.node[node]['task'].wcet == smallest_wcet:
                 shortest_tasks.append(node)
     logging.info("THE LIST OF SHORTEST UNMAPPED TASKS:"+str(shortest_tasks))
     return shortest_tasks
@@ -523,13 +525,13 @@ def unmapped_task_with_biggest_wcet(tg, logging):
     longest_tasks = []
     biggest_wcet = 0
     for node in tg.nodes():
-        if tg.node[node]['Node'] is None:
-            if tg.node[node]['WCET'] > biggest_wcet:
-                biggest_wcet = tg.node[node]['WCET']
+        if tg.node[node]['task'].node is None:
+            if tg.node[node]['task'].wcet > biggest_wcet:
+                biggest_wcet = tg.node[node]['task'].wcet
     logging.info("THE LONGEST WCET OF UNMAPPED TASKS IS:"+str(biggest_wcet))
     for nodes in tg.nodes():
-        if tg.node[nodes]['Node'] is None:
-            if tg.node[nodes]['WCET'] == biggest_wcet:
+        if tg.node[nodes]['task'].node is None:
+            if tg.node[nodes]['task'].wcet == biggest_wcet:
                 longest_tasks.append(nodes)
     logging.info("THE LIST OF LONGEST UNMAPPED TASKS:"+str(longest_tasks))
     return longest_tasks
@@ -550,21 +552,21 @@ def nodes_with_smallest_ct(ag, tg, shm, task):
     while (not shm.node[random_node]['NodeHealth']) or ag.node[random_node]['PE'].dark:
         random_node = random.choice(ag.nodes())
     node_speed_down = 1+((100.0-shm.node[random_node]['NodeSpeed'])/100)
-    task_execution_on_node = tg.node[task]['WCET']*node_speed_down
+    task_execution_on_node = tg.node[task]['task'].wcet*node_speed_down
     last_allocated_time_on_node = Scheduling_Functions_Nodes.find_last_allocated_time_on_node(ag, random_node,
                                                                                               logging=None)
-    if last_allocated_time_on_node < tg.node[task]['Release']:
-        smallest_completion_time = tg.node[task]['Release'] + task_execution_on_node
+    if last_allocated_time_on_node < tg.node[task]['task'].release:
+        smallest_completion_time = tg.node[task]['task'].release + task_execution_on_node
     else:
         smallest_completion_time = last_allocated_time_on_node + task_execution_on_node
     for node in ag.nodes():
         if shm.node[node]['NodeHealth'] and (not ag.node[random_node]['PE'].dark):
             node_speed_down = 1+((100.0-shm.node[node]['NodeSpeed'])/100)
-            task_execution_on_node = tg.node[task]['WCET']*node_speed_down
+            task_execution_on_node = tg.node[task]['task'].wcet*node_speed_down
             last_allocated_time_on_node = Scheduling_Functions_Nodes.find_last_allocated_time_on_node(ag, node,
                                                                                                       logging=None)
-            if last_allocated_time_on_node < tg.node[task]['Release']:
-                completion_on_node = tg.node[task]['Release'] + task_execution_on_node
+            if last_allocated_time_on_node < tg.node[task]['task'].release:
+                completion_on_node = tg.node[task]['task'].release + task_execution_on_node
             else:
                 completion_on_node = last_allocated_time_on_node + task_execution_on_node
 
@@ -575,9 +577,9 @@ def nodes_with_smallest_ct(ag, tg, shm, task):
             node_speed_down = 1+((100.0-shm.node[node]['NodeSpeed'])/100)
             last_allocated_time_on_node = Scheduling_Functions_Nodes.find_last_allocated_time_on_node(ag, node,
                                                                                                       logging=None)
-            task_execution_on_node = tg.node[task]['WCET']*node_speed_down
-            if last_allocated_time_on_node < tg.node[task]['Release']:
-                completion_on_node = tg.node[task]['Release']+task_execution_on_node
+            task_execution_on_node = tg.node[task]['task'].wcet*node_speed_down
+            if last_allocated_time_on_node < tg.node[task]['task'].release:
+                completion_on_node = tg.node[task]['task'].release+task_execution_on_node
             else:
                 completion_on_node = last_allocated_time_on_node+task_execution_on_node
             if completion_on_node == smallest_completion_time:
@@ -615,7 +617,7 @@ def mapping_into_string(tg):
     """
     mapping_string = ""
     for task in tg.nodes():
-        mapping_string += str(tg.node[task]['Node']) + " "
+        mapping_string += str(tg.node[task]['task'].node) + " "
     return mapping_string
 
 
@@ -721,8 +723,8 @@ def clear_mapping_for_reconfiguration(tg, ag):
     :return: True
     """
     for node in tg.nodes():
-        tg.node[node]['Node'] = None
-        tg.node[node]['Cluster'] = None
+        tg.node[node]['task'].node = None
+        tg.node[node]['task'].cluster = None
     for edge in tg.edges():
         tg.edge[edge[0]][edge[1]]['Link'] = []
     for node in ag.nodes():

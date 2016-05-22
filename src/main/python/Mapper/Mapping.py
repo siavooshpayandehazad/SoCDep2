@@ -93,7 +93,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging, iteratio
                 Mapping_Reports.report_mapping(ag, logging)
                 # Schedule all tasks
                 Scheduling_Functions.clear_scheduling(ag)
-                Scheduler.schedule_all(tg, ag, shm, Config.DebugInfo, logging)
+                Scheduler.schedule_all(tg, ag, shm, Config.DebugDetails, logging)
                 Scheduling_Reports.report_mapped_tasks(ag, logging)
                 Mapping_Functions.mapping_cost_function(tg, ag, shm, Config.DebugInfo)
                 if Config.Mapping_Function == 'LocalSearch':

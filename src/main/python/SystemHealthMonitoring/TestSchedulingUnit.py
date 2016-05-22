@@ -132,9 +132,9 @@ def remove_test_tasks_from_tg(tg):
     # I don't know how we can use this at the moment!
     print ("===========================================")
     print ("REMOVING PMC TASKS FROM TG...")
-    for task in tg.nodes():
-        if tg.node[task]['Type'] == 'Test':
-            tg.remove_node(task)
+    for task_id in tg.nodes():
+        if tg.node[task_id]['task'].type == 'Test':
+            tg.remove_node(task_id)
     return tg
 
 
@@ -148,11 +148,11 @@ def map_test_tasks(tg, ag, shm, noc_rg, logging):
     :param logging: logging file
     :return: None
     """
-    for task in tg.nodes():
-        if tg.node[task]['Type'] == 'Test':
-            node = tg.node[task]['Node']
-            if not Mapping_Functions.map_task_to_node(tg, ag, shm, noc_rg, None, None, task, node, logging):
-                raise ValueError(" MAPPING TEST TASK FAILED WHILE TYING TO MAP ", task, "ON NODE", node)
+    for task_id in tg.nodes():
+        if tg.node[task_id]['task'].type == 'Test':
+            node = tg.node[task_id]['task'].node
+            if not Mapping_Functions.map_task_to_node(tg, ag, shm, noc_rg, None, None, task_id, node, logging):
+                raise ValueError(" MAPPING TEST TASK FAILED WHILE TYING TO MAP ", task_id, "ON NODE", node)
     return None
 
 

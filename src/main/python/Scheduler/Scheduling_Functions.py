@@ -27,3 +27,15 @@ def clear_scheduling(ag):
     for link in ag.edges():
         ag.edge[link[0]][link[1]]['Scheduling'] = {}
     return None
+
+
+def check_if_all_deadlines_are_met(tg, ag):
+    for node in ag:
+        for task in ag.node[node]['PE'].scheduling.keys():
+            scheduling_time =  ag.node[node]['PE'].scheduling[task]
+            # print task, scheduling_time
+            if tg.node[task]['task'].deadline < scheduling_time[1]:
+                # print tg.node[task]['task'].deadline, scheduling_time[1]
+                return False
+    # print "-----------------------------------"
+    return True

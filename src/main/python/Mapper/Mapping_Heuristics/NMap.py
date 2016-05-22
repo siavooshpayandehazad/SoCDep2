@@ -146,7 +146,7 @@ def n_map(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                 if (chosen_task, mapped_task) in tg.edges():
                     # print ("TASK CONNECTED TO MAPPED TASK:", mapped_task)
                     com_weight += tg.edge[chosen_task][mapped_task]["ComWeight"]
-                    destination_node = tg.node[mapped_task]['Node']
+                    destination_node = tg.node[mapped_task]['task'].node
                     # here we check if this node is even reachable from the chosen node?
                     if Calculate_Reachability.is_destination_reachable_from_source(noc_rg, unallocated_node,
                                                                                    destination_node):
@@ -157,7 +157,7 @@ def n_map(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                 elif (mapped_task, chosen_task) in tg.edges():
                     # print ("TASK CONNECTED TO MAPPED TASK:", mapped_task)
                     com_weight += tg.edge[mapped_task][chosen_task]["ComWeight"]
-                    destination_node = tg.node[mapped_task]['Node']
+                    destination_node = tg.node[mapped_task]['task'].node
                     # here we check if this node is even reachable from the chosen node?
                     if Calculate_Reachability.is_destination_reachable_from_source(noc_rg, destination_node,
                                                                                    unallocated_node):
@@ -248,8 +248,8 @@ def calculate_com_cost(tg):
     for edge in tg.edges():
         task_1 = edge[0]
         task_2 = edge[1]
-        node_1 = tg.node[task_1]['Node']
-        node_2 = tg.node[task_2]['Node']
+        node_1 = tg.node[task_1]['task'].node
+        node_2 = tg.node[task_2]['task'].node
         com_weight = tg.edge[edge[0]][edge[1]]["ComWeight"]
         manhatan_distance = AG_Functions.manhattan_distance(node_1, node_2)
         cost += manhatan_distance * com_weight

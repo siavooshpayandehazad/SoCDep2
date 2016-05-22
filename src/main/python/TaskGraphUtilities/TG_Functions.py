@@ -6,14 +6,31 @@ from ConfigAndPackages import Config
 import TG_File_Parser
 
 
+class task():     # PROCESSING ELEMENT
+    def __init__(self,wcet, criticality, cluster, node, priority, distance, release, type, deadline=None):
+        self.wcet = wcet
+        self.criticality = criticality
+        self.cluster = cluster
+        self.node = node
+        self.priority = priority
+        self.distance = distance
+        self.release = release
+        self.type = type
+        self.deadline = random.randint(150,200)
+
+
 def generate_manual_tg(task_list, tg_edge_list, task_criticality_list, task_wcet_list, tg_edge_weight):
     print("PREPARING TASK GRAPH (TG)...")
     tg = networkx.DiGraph()
     edge_criticality_list = []
     # IF both sender and receiver are critical then that transaction is critical
     for i in range(0, len(task_list)):
-        tg.add_node(task_list[i], WCET=task_wcet_list[i], Criticality=task_criticality_list[i],
-                    Cluster=None, Node=None, Priority=None, Distance=None, Release=0, Type='App')
+        tg.add_node(task_list[i], task=task(wcet=task_wcet_list[i],criticality=task_criticality_list[i],
+                                            cluster=None,node=None,priority=None,distance=None,release=0,type='App'))
+
+
+        # tg.add_node(task_list[i], WCET=task_wcet_list[i], Criticality=task_criticality_list[i],
+        #            Cluster=None, Node=None, Priority=None, Distance=None, Release=0, Type='App')
 
     print ("\tCALCULATING THE CRITICALITY OF LINKS...")
     gateway_edges = []
@@ -26,8 +43,11 @@ def generate_manual_tg(task_list, tg_edge_list, task_criticality_list, task_wcet
                 task_criticality_list[task_list.index(edge[1])] == 'L':
             # gateway to Low
             gateway_number = len(task_list)+gateway_counter
-            tg.add_node(gateway_number, WCET=1, Criticality='GNH', Cluster=None, Node=None, Priority=None,
-                        Distance=None, Release=0, Type='App')
+            tg.add_node(gateway_number, task=task(wcet=1,criticality='GNH',
+                                                  cluster=None,node=None,priority=None,distance=None,
+                                                  release=0,type='App'))
+            #tg.add_node(gateway_number, WCET=1, Criticality='GNH', Cluster=None, Node=None, Priority=None,
+            #            Distance=None, Release=0, Type='App')
             tg.add_edge(edge[0], gateway_number, Criticality='H', Link=[],
                         ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
             tg.add_edge(gateway_number, edge[1], Criticality='L', Link=[],
@@ -39,8 +59,11 @@ def generate_manual_tg(task_list, tg_edge_list, task_criticality_list, task_wcet
                 task_criticality_list[task_list.index(edge[1])] == 'H':
             # gateway to high
             gateway_number = len(task_list)+gateway_counter
-            tg.add_node(gateway_number, WCET=1, Criticality='GH',
-                        Cluster=None, Node=None, Priority=None, Distance=None, Release=0, Type='App')
+            tg.add_node(gateway_number, task=task(wcet=1,criticality='GH',
+                                                  cluster=None,node=None,priority=None,distance=None,
+                                                  release=0,type='App'))
+            # tg.add_node(gateway_number, WCET=1, Criticality='GH',
+            #             Cluster=None, Node=None, Priority=None, Distance=None, Release=0, Type='App')
             tg.add_edge(edge[0], gateway_number, Criticality='L', Link=[],
                         ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
             tg.add_edge(gateway_number, edge[1], Criticality='H', Link=[],
@@ -98,8 +121,10 @@ def generate_random_tg(number_of_tasks, number_of_critical_tasks, number_of_edge
             tg_edge_weight.append(random.randrange(1, edge_weight_range))
 
     for i in range(0, len(task_list)):
-        tg.add_node(task_list[i], WCET=task_wcet_list[i], Criticality=task_criticality_list[i],
-                    Cluster=None, Node=None, Priority=None, Distance=None, Release=0, Type='App')
+        tg.add_node(task_list[i], task=task(wcet=task_wcet_list[i],criticality=task_criticality_list[i],
+                                            cluster=None,node=None,priority=None,distance=None,release=0,type='App'))
+        # tg.add_node(task_list[i], WCET=task_wcet_list[i], Criticality=task_criticality_list[i],
+        #            Cluster=None, Node=None, Priority=None, Distance=None, Release=0, Type='App')
 
     print ("\tCALCULATING THE CRITICALITY OF LINKS...")
     gateway_edges = []
@@ -112,8 +137,11 @@ def generate_random_tg(number_of_tasks, number_of_critical_tasks, number_of_edge
                 task_criticality_list[task_list.index(edge[1])] == 'L':
             # gateway to Low
             gateway_number = len(task_list) + gateway_counter
-            tg.add_node(gateway_number, WCET=1, Criticality='GNH', Cluster=None, Node=None, Priority=None,
-                        Distance=None, Release=0, Type='App')
+            tg.add_node(gateway_number, task=task(wcet=1,criticality='GNH',
+                                                  cluster=None,node=None,priority=None,distance=None,
+                                                  release=0,type='App'))
+            # tg.add_node(gateway_number, WCET=1, Criticality='GNH', Cluster=None, Node=None, Priority=None,
+            #            Distance=None, Release=0, Type='App')
             if not networkx.has_path(tg, gateway_number, edge[0]):
                 tg.add_edge(edge[0], gateway_number, Criticality='H', Link=[],
                             ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
@@ -126,8 +154,11 @@ def generate_random_tg(number_of_tasks, number_of_critical_tasks, number_of_edge
                 task_criticality_list[task_list.index(edge[1])] == 'H':
             # gateway to high
             gateway_number = len(task_list)+gateway_counter
-            tg.add_node(gateway_number, WCET=1, Criticality='GH', Cluster=None, Node=None, Priority=None,
-                        Distance=None, Release=0, Type='App')
+            tg.add_node(gateway_number, task=task(wcet=1,criticality='GH',
+                                                  cluster=None,node=None,priority=None,distance=None,
+                                                  release=0,type='App'))
+            #tg.add_node(gateway_number, WCET=1, Criticality='GH', Cluster=None, Node=None, Priority=None,
+            #            Distance=None, Release=0, Type='App')
             if not networkx.has_path(tg, gateway_number, edge[0]):
                 tg.add_edge(edge[0], gateway_number, Criticality='L', Link=[],
                             ComWeight=tg_edge_weight[tg_edge_list.index(edge)])
@@ -187,9 +218,12 @@ def generate_random_independent_tg(number_of_tasks, wcet_range, release_range):
         task_wcet_list.append(random.randrange(1, wcet_range))
         tg_release_list.append(random.randrange(0, release_range))
     for i in range(0, len(task_list)):
-        tg.add_node(task_list[i], WCET=task_wcet_list[i], Criticality=task_criticality_list[i],
-                    Cluster=None, Node=None, Priority=None, Distance=None, Release=tg_release_list[i],
-                    Type='App')
+        tg.add_node(task_list[i], task=task(wcet=task_wcet_list[i],criticality=task_criticality_list[i],
+                                            cluster=None,node=None,priority=None,distance=None,
+                                            release=0,type='App'))
+        # tg.add_node(task_list[i], WCET=task_wcet_list[i], Criticality=task_criticality_list[i],
+        #            Cluster=None, Node=None, Priority=None, Distance=None, Release=tg_release_list[i],
+        #            Type='App')
 
     print("RANDOM TASK GRAPH (TG) WITH INDEPENDENT TASKS IS READY...")
     return tg
@@ -212,7 +246,7 @@ def assign_distance(tg):
     print("ASSIGNING PRIORITIES TO TASK GRAPH (TG)...")
     source_nodes = find_source_nodes(tg)
     for task in source_nodes:
-        tg.node[task]['Distance'] = 0
+        tg.node[task]['task'].distance = 0
 
     for task in tg.nodes():
         distance = []
@@ -223,7 +257,7 @@ def assign_distance(tg):
                     # distance.append(len(shortest_paths)-1)
                     for path in networkx.all_simple_paths(tg, Source, task):
                         distance.append(len(path))
-            tg.node[task]['Distance'] = max(distance)-1
+            tg.node[task]['task'].distance = max(distance)-1
     return None
 
 
@@ -248,9 +282,9 @@ def generate_tg():
 ########################################################
 def calculate_max_distance(tg):
     max_distance = 0
-    for Task in tg:
-        if tg.node[Task]['Distance'] > max_distance:
-            max_distance = tg.node[Task]['Distance']
+    for node in tg.nodes():
+        if tg.node[node]['task'].distance > max_distance:
+            max_distance = tg.node[node]['task'].distance
     return max_distance
 
 

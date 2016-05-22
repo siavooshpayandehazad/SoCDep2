@@ -6,7 +6,7 @@ import copy
 ################################################
 enable_simulator = False
 ProgramRunTime = 900      # in cycles
-DebugInfo = False
+DebugInfo = True
 DebugDetails = False
 
 TestMode = False
@@ -64,10 +64,10 @@ class ArchGraph:
         self.type = 'Generic'
         # in case of Generic AG_type
         # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
-        self.topology = '3DMesh'
+        self.topology = '2DMesh'
         self.x_size = 3
         self.y_size = 3
-        self.z_size = 3
+        self.z_size = 1
         # Todo: virtual channel
         self.virtual_channel_num = 0
 
@@ -82,7 +82,7 @@ AG_Edge_Port_List = [('E', 'W'), ('S', 'N'), ('W', 'E'), ('S', 'N'), ('N', 'S'),
 ################################################
 #          VL Config
 ################################################
-FindOptimumAG = True
+FindOptimumAG = False
 
 
 class VerticalLinkPlacementOpt:
@@ -370,8 +370,8 @@ class Viz:
         self.pmcg = False
         self.ttg = False
         self.mapping_distribution = False
-        self.mapping = False
-        self.scheduling = False
+        self.mapping = True
+        self.scheduling = True
         self.shm = False     # if True generates SHM Drawing
         self.mapping_frames = False  # If True, generates the frames for animation
         self.frame_resolution = 20   # Resolution in dpi. for resolutions above 50, text is added to the tasks

@@ -44,15 +44,15 @@ def asap_scheduling(tg, ag, shm, report, logging=None):
     max_distance = TG_Functions.calculate_max_distance(tg) + 1
     for distance in range(0, max_distance):
         for task in tg.nodes():
-            if tg.node[task]['Type'] == 'App':
-                if tg.node[task]['Distance'] == distance:
-                    node = tg.node[task]['Node']
+            if tg.node[task]['task'].type == 'App':
+                if tg.node[task]['task'].distance == distance:
+                    node = tg.node[task]['task'].node
                     # logging.info("\tSCHEDULING TASK "+str(task)+" ON NODE:"+str(node))
                     (start_time, end_time) = find_task_asap_scheduling(tg, ag, shm, task, node, logging)
                     add_tg_task_to_node(tg, ag, task, node, start_time, end_time, None)
                     for edge in tg.edges():
                         if edge[0] == task:
-                            destination_node = tg.node[edge[1]]['Node']
+                            destination_node = tg.node[edge[1]]['task'].node
                             if len(tg.edge[edge[0]][edge[1]]['Link']) > 0:
                                 for batch_and_link in tg.edge[edge[0]][edge[1]]['Link']:
                                     batch = batch_and_link[0]
@@ -114,14 +114,14 @@ def schedule_test_in_tg(tg, ag, shm, report, logging):
     logging.info("STARTING SCHEDULING TEST TASKS IN TG...")
     for distance in range(0, 2):
         for Task in tg.nodes():
-            if tg.node[Task]['Type'] == 'Test':
-                if tg.node[Task]['Distance'] == distance:
-                    node = tg.node[Task]['Node']
+            if tg.node[Task]['task'].type == 'Test':
+                if tg.node[Task]['task'].distance == distance:
+                    node = tg.node[Task]['task'].node
                     # logging.info("\tSCHEDULING TASK "+str(Task)+" ON NODE:"+str(node))
                     (start_time, end_time) = find_test_task_asap_scheduling(tg, ag, shm, Task, node, logging)
                     add_tg_task_to_node(tg, ag, Task, node, start_time, end_time, None)
                     for edge in tg.edges():
-                        destination_node = tg.node[edge[1]]['Node']
+                        destination_node = tg.node[edge[1]]['task'].node
                         if edge[0] == Task:
                             if len(tg.edge[edge[0]][edge[1]]['Link']) > 0:
                                 for batch_and_link in tg.edge[edge[0]][edge[1]]['Link']:
