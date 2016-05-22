@@ -6,6 +6,8 @@ debugdetails = False
 testmode = False
 memoryprofiler = False
 eventdrivenfaultinjection = True
+fault_injection_method = from_file
+fault_injection_file = Injected_Faults.txt
 
 [TG_Config]
 tg_type = RandomDependent
