@@ -156,6 +156,8 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging, iteratio
             Scheduling_Functions.clear_scheduling(ag)
             Scheduler.schedule_all(tg, ag, shm, False, logging)
             Scheduling_Reports.report_mapped_tasks(ag, logging)
+            if not Scheduling_Functions.check_if_all_deadlines_are_met(tg,ag):
+                raise ValueError("not all critical tasks have met their deadline!")
             Mapping_Functions.mapping_cost_function(tg, ag, shm, True,  initial_mapping_string=init_mapping_string)
             return tg, ag
         else:

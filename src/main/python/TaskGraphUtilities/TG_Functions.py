@@ -16,7 +16,7 @@ class Task():     # Task class
         self.distance = distance
         self.release = release
         self.type = type
-        self.deadline = random.randint(300, 350) # todo: this should be fixed!
+        self.deadline = random.randint(300, 350)    # todo: this should be fixed!
 
 
 def generate_manual_tg(task_list, tg_edge_list, task_criticality_list, task_wcet_list, tg_edge_weight):

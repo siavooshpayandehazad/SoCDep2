@@ -233,7 +233,7 @@ mapping_file_path = "mapping_report.txt"
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
 Mapping_Function = 'IterativeLocalSearch'
 LocalSearchIteration = 100
-IterativeLocalSearchIterations = 10
+IterativeLocalSearchIterations = 100
 mapping_random_seed = 2000
 #######################
 SimulatedAnnealingIteration = 1000
@@ -297,7 +297,7 @@ elif Mapping_Function == 'SimulatedAnnealing':
 # 'MAX' = MaxLinkMakeSpan + MaxNodeMakeSpan
 # 'SD+MAX' = Link_MakeSpan_SD + MaxLinkMakeSpan + Node_MakeSpan_SD + MaxNodeMakeSpan
 # 'CONSTANT' = 1   ---> can be used if user needs only distance
-Mapping_CostFunctionType = 'Util_SD'
+Mapping_CostFunctionType = 'MAX'
 # if 'DistanceBetweenMapping' is true => Cost += Hamming distance between the current
 # solution and the neighbour solution
 DistanceBetweenMapping = False
