@@ -5,6 +5,7 @@
 Authors:
 * Siavoosh Payandeh Azad 
 * Behrad Niazmand
+* Karl Janson
 * René pihlak 
 * Nevin George
 
