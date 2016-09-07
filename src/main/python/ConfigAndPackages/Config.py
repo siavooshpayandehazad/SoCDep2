@@ -4,7 +4,7 @@ import copy
 ################################################
 #          Program  Config
 ################################################
-enable_simulator = False
+enable_simulator = True
 ProgramRunTime = 900      # in cycles
 DebugInfo = True
 DebugDetails = False
@@ -14,7 +14,7 @@ MemoryProfiler = False
 EventDrivenFaultInjection = True
 # todo: this should be added to the config parser!
 # can be "from_file" or "random"
-fault_injection_method = "from_file"
+fault_injection_method = "random"
 fault_injection_file = "Injected_Faults.txt"
 ################################################
 #          TG Config
@@ -27,7 +27,7 @@ class TaskGraph:
         self.type = 'RandomDependent'
         # For Random TG_Type:
         self.num_of_tasks = 25
-        self.num_of_critical_tasks = 10
+        self.num_of_critical_tasks = 0
         self.num_of_edges = 35
         self.wcet_range = 25
         self.edge_weight_range = 5
@@ -65,8 +65,8 @@ class ArchGraph:
         # in case of Generic AG_type
         # available topologies: 2DTorus, 2DMesh, 2DLine, 2DRing, 3DMesh
         self.topology = '2DMesh'
-        self.x_size = 6
-        self.y_size = 6
+        self.x_size = 3
+        self.y_size = 3
         self.z_size = 1
         # Todo: virtual channel
         self.virtual_channel_num = 0
@@ -231,8 +231,8 @@ read_mapping_from_file = False
 mapping_file_path = "mapping_report.txt"
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
-Mapping_Function = 'IterativeLocalSearch'
-LocalSearchIteration = 100
+Mapping_Function = 'LocalSearch'
+LocalSearchIteration = 1000
 IterativeLocalSearchIterations = 100
 mapping_random_seed = 2000
 #######################
@@ -310,7 +310,7 @@ Task_SlackCount = 0               # this is used for number of repetitions of th
 #          System's Fault  Config
 ################################################
 MTTF = None     # Mean time to failure in seconds have not used MTTF yet...
-MTBF = 3      # Mean time between failures in clock cycles
+MTBF = 0.1      # Mean time between failures in clock cycles
 SD4MTBF = 0.5   # Standard deviation for Distribution of faults in a normal distribution
 # ------------------------
 classification_method = "counter_threshold"     # can be "counter_threshold" or "machine_learning"
@@ -326,7 +326,7 @@ state_config = "1"
 ################################################
 #           Network Partitioning
 ################################################
-EnablePartitioning = True
+EnablePartitioning = False
 VirtualBrokenLinksForNonCritical = []
 VirtualBrokenLinksForCritical = []
 # Critical Region Nodes:

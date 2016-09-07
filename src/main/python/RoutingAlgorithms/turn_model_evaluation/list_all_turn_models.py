@@ -310,6 +310,9 @@ def report_3d_turn_model_fault_tolerance(turn_model, viz, combination):
     :param viz: if true, generates the visualization files
     :return: None
     """
+    if combination == 108:
+        raise ValueError("breaking 108 edges out of 108 edges is not possible your connectivity is 0!")
+
     Config.UsedTurnModel = copy.deepcopy(turn_model)
     Config.TurnsHealth = copy.deepcopy(Config.setup_turns_health())
 
@@ -351,12 +354,14 @@ def report_3d_turn_model_fault_tolerance(turn_model, viz, combination):
                 del shmu
                 del noc_rg
                 break
-        if counter == number_of_combinations:
+        if viz:
+            turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
+
+        if counter >= number_of_combinations:
             del shmu
             del noc_rg
             break
-        if viz:
-            turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
+
         # print "#:"+str(counter)+"\t\tC.M.:"+str(connectivity_metric)+"\t\t avg:", \
         #    float(metric_sum)/counter, "\t\tstd:", std
         del shmu
