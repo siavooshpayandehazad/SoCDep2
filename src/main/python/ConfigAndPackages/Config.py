@@ -314,9 +314,9 @@ MTBF = 0.1      # Mean time between failures in clock cycles
 SD4MTBF = 0.5   # Standard deviation for Distribution of faults in a normal distribution
 # ------------------------
 classification_method = "counter_threshold"     # can be "counter_threshold" or "machine_learning"
-health_counter_threshold = 40
-fault_counter_threshold = 2
-intermittent_counter_threshold = 2
+health_counter_threshold = 10
+fault_counter_threshold = 1
+intermittent_counter_threshold = 1
 enable_link_counters = True
 enable_router_counters = False
 enable_pe_counters = False

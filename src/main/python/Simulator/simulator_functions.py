@@ -72,7 +72,7 @@ def draw_faults_locations(fault_time_dict):
         values = []
         x_axis = []
 
-        for i in range(0, Config.ProgramRunTime):
+        for i in range(0, int(Config.ProgramRunTime)):
             if i == 0:
                 values.append(2)
             else:
