@@ -23,7 +23,7 @@ Task_Criticality_List: L, L, L, L, L, L, L, L
 TG_Edge_Weight: 5, 9, 4, 7, 5, 3, 5, 1
 
 # TG DOT FILE PATH
-# you can use this one: http://express.ece.ucsb.edu/benchmark/jpeg/h2v2_smooth_downsample.html
+# you can use this one: http://www.ece.ucsb.edu/EXPRESS/benchmark/classic/fir1.html
 # as example...
 TG_DOT_Path: Something.dot
 
