@@ -155,7 +155,7 @@ def link_sim(env, ag, shmu, link, schedule_length, fault_time_dict, counter_thre
                 else:
                     counter_threshold.increase_health_counter(ag, link, logging)
                 yield env.timeout(1)
-            yield env.timeout(length)
+            # yield env.timeout(length)
             print float("{0:.1f}".format(env.now)), "\tLINK:: Task", task_num, "execution finished on Link", link
             found = False
         else:
