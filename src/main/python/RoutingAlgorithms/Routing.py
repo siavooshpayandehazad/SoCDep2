@@ -247,7 +247,7 @@ def update_noc_route_graph(noc_rg, from_port, to_port, add_or_remove):
     :param add_or_remove: either add or remove path
     :return: None
     """
-    print "ROUTING GRAPH BEING UPDATED..."
+    # print "ROUTING GRAPH BEING UPDATED..."
     if add_or_remove == 'REMOVE':
         if (from_port, to_port) in noc_rg.edges():
             noc_rg.remove_edge(from_port, to_port)
@@ -258,7 +258,7 @@ def update_noc_route_graph(noc_rg, from_port, to_port, add_or_remove):
             print "CONNECTION DIDN'T EXIST IN ROUTE GRAPH"
         else:
             noc_rg.add_edge(from_port, to_port)
-    print "ROUTING GRAPH UPDATED..."
+    # print "ROUTING GRAPH UPDATED..."
     return None
 
 

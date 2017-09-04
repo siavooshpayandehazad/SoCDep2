@@ -172,14 +172,18 @@ def enumerate_all_odd_even_turn_models():
     Config.RotingType = 'MinimalPath'
     ag = copy.deepcopy(AG_Functions.generate_ag())
     number_of_pairs = len(ag.nodes())*(len(ag.nodes())-1)
-    turn_model_list = copy.deepcopy(all_2d_turn_model_package.all_2d_turn_models)
 
+    turn_model_list = []
     #todo: we can change this to exhaustive list! (this is currently 2D deadlock free turn models!)
-    
+    for length in range(0, len(turns_health_2d_network.keys())):
+        for item in list(itertools.combinations(turns_health_2d_network.keys(), length)):
+            if len(item)>0:
+                turn_model_list.append(list(item))
+
     counter = 0
     for turn_model_odd in turn_model_list:
         for turn_model_even in turn_model_list:
-            if turn_model_even != turn_model_odd:
+            if turn_model_even != turn_model_odd:   # taking out the uniform cases!
 
                 turns_health = copy.deepcopy(turns_health_2d_network)
                 shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
@@ -202,12 +206,12 @@ def enumerate_all_odd_even_turn_models():
                             Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
                 if check_deadlock_freeness(noc_rg):
                     if reachability_metric(ag, noc_rg, False) == number_of_pairs:
-
+                        print "deadlock free, fully connected routing found:", turn_model_odd, turn_model_even
                         doa = degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
                         doa_ex = extended_degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
 
-                        all_odd_evens_file.write('%5s' % str(counter)+"  | even turn model:"+'%45s' % str(turn_model_even)+"\t|\n")
-                        all_odd_evens_file.write("       | odd turn model: "+'%45s' % str(turn_model_odd)+" \t|")
+                        all_odd_evens_file.write('%5s' % str(counter)+"  | even turn model:"+'%51s' % str(turn_model_even)+"\t|\n")
+                        all_odd_evens_file.write("       | odd turn model: "+'%51s' % str(turn_model_odd)+" \t|")
 
                         all_odd_evens_file.write(" DoA:" + str("%.2f" %doa)+"\tDoAx:" + str("%.2f" %doa_ex)+"\n")
                         all_odd_evens_file.write("-----------------------------------"*3+"\n")
@@ -215,6 +219,7 @@ def enumerate_all_odd_even_turn_models():
                         #draw_rg(noc_rg)
                         counter += 1
 
+    all_odd_evens_file.close()
     return None
 
 
