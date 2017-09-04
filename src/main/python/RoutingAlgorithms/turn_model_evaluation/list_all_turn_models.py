@@ -174,6 +174,8 @@ def enumerate_all_odd_even_turn_models():
     number_of_pairs = len(ag.nodes())*(len(ag.nodes())-1)
     turn_model_list = copy.deepcopy(all_2d_turn_model_package.all_2d_turn_models)
 
+    #todo: we can change this to exhaustive list! (this is currently 2D deadlock free turn models!)
+    
     counter = 0
     for turn_model_odd in turn_model_list:
         for turn_model_even in turn_model_list:
@@ -207,7 +209,7 @@ def enumerate_all_odd_even_turn_models():
                         all_odd_evens_file.write('%5s' % str(counter)+"  | even turn model:"+'%45s' % str(turn_model_even)+"\t|\n")
                         all_odd_evens_file.write("       | odd turn model: "+'%45s' % str(turn_model_odd)+" \t|")
 
-                        all_odd_evens_file.write(" DoA:" + str(doa)+"\tDoAx:" + str(doa_ex)+"\n")
+                        all_odd_evens_file.write(" DoA:" + str("%.2f" %doa)+"\tDoAx:" + str("%.2f" %doa_ex)+"\n")
                         all_odd_evens_file.write("-----------------------------------"*3+"\n")
                         #SHMU_Reports.draw_shm(shmu.SHM)
                         #draw_rg(noc_rg)
