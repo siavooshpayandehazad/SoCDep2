@@ -33,6 +33,10 @@ elif '-GUI' in sys.argv[1:]:
     main_window.mainloop()
     if not main_window.apply_button:
         sys.exit()
+elif '-EvTM_odd_even' in sys.argv[1:]:
+    list_all_turn_models.enumerate_all_odd_even_turn_models()
+    sys.exit()
+
 elif '-ETM' in sys.argv[1:]:     # Enumerate turn model
     misc.generate_file_directories()
     if __name__ == '__main__':

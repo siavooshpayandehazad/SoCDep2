@@ -66,7 +66,6 @@ def is_destination_reachable_from_source(noc_rg, source_node, destination_node):
     :param destination_node: destination node id
     :return: True if there is a path else, False
     """
-
     # the Source port should be input port since this is input of router
     # (which will be connected to PE's output port)
     source = str(source_node)+str('L')+str('I')
@@ -78,7 +77,6 @@ def is_destination_reachable_from_source(noc_rg, source_node, destination_node):
             path_length = shortest_path_length(noc_rg, source, destination)
             minimal_hop_count = manhattan_distance(source_node, destination_node)
             if (path_length/2) == minimal_hop_count:
-
                 return True
         else:
             return True

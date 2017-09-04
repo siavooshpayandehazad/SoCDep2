@@ -161,6 +161,61 @@ def enumerate_all_3d_turn_models(combination):
     return None
 
 
+def enumerate_all_odd_even_turn_models():
+    all_odd_evens_file = open('Generated_Files/Turn_Model_Lists/all_odd_evens.txt', 'w')
+    turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
+                               "W2N": False, "W2S": False, "E2N": False, "E2S": False}
+    Config.ag.topology = '2DMesh'
+    Config.ag.x_size = 3
+    Config.ag.y_size = 3
+    Config.ag.z_size = 1
+    Config.RotingType = 'MinimalPath'
+    ag = copy.deepcopy(AG_Functions.generate_ag())
+    number_of_pairs = len(ag.nodes())*(len(ag.nodes())-1)
+    turn_model_list = copy.deepcopy(all_2d_turn_model_package.all_2d_turn_models)
+
+    counter = 0
+    for turn_model_odd in turn_model_list:
+        for turn_model_even in turn_model_list:
+            if turn_model_even != turn_model_odd:
+
+                turns_health = copy.deepcopy(turns_health_2d_network)
+                shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
+                shmu.setup_noc_shm(ag, turns_health, False)
+                noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, [], False,  False))
+
+                for node in ag.nodes():
+                    node_x, node_y, node_z = AG_Functions.return_node_location(node)
+                    if node_x % 2 == 1:
+                        for turn in turn_model_odd:
+                            shmu.restore_broken_turn(node, turn, False)
+                            from_port = str(node)+str(turn[0])+"I"
+                            to_port = str(node)+str(turn[2])+"O"
+                            Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
+                    else:
+                        for turn in turn_model_even:
+                            shmu.restore_broken_turn(node, turn, False)
+                            from_port = str(node)+str(turn[0])+"I"
+                            to_port = str(node)+str(turn[2])+"O"
+                            Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
+                if check_deadlock_freeness(noc_rg):
+                    if reachability_metric(ag, noc_rg, False) == number_of_pairs:
+
+                        doa = degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
+                        doa_ex = extended_degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
+
+                        all_odd_evens_file.write('%5s' % str(counter)+"  | even turn model:"+'%45s' % str(turn_model_even)+"\t|\n")
+                        all_odd_evens_file.write("       | odd turn model: "+'%45s' % str(turn_model_odd)+" \t|")
+
+                        all_odd_evens_file.write(" DoA:" + str(doa)+"\tDoAx:" + str(doa_ex)+"\n")
+                        all_odd_evens_file.write("-----------------------------------"*3+"\n")
+                        #SHMU_Reports.draw_shm(shmu.SHM)
+                        #draw_rg(noc_rg)
+                        counter += 1
+
+    return None
+
+
 def enumerate_all_2d_turn_models(combination):
     """
     Lists all 2D deadlock free turn models in "deadlock_free_turns"

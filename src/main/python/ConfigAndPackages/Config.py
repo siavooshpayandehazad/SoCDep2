@@ -37,7 +37,7 @@ class TaskGraph:
         self.generic_traffic = 'random_uniform'
         self.injection_rate = 1
         # TG DOT FILE PATH
-        # you can use this one: http://express.ece.ucsb.edu/benchmark/jpeg/h2v2_smooth_downsample.html
+        # you can use this one: http://express.ece.ucsb.edu/EXPRESS/benchmark/jpeg/h2v2_smooth_downsample.html
         # as example...
         self.dot_file_path = 'Something.dot'
 
