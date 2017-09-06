@@ -1,5 +1,6 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad  and Thilo Kogge
 
+import sys
 import copy
 import itertools
 from random import shuffle, sample
@@ -38,7 +39,11 @@ def enumerate_all_2d_turn_models_based_on_df(combination):
     Config.ag.z_size = 1
     Config.RotingType = 'NonMinimalPath'
 
+    all_turns_file.write("#"+"\t\tDF/D\t"+'%25s'%"turns"+'%20s'%" "+"\t\t"+'%10s'%"c-metric" +
+                         "\t\t"+'%10s'%"DoA"+"\t\t"+'%10s'%"DoAx"+"\n")
+    all_turns_file.write("--------------"*8+"\n")
     ag = copy.deepcopy(AG_Functions.generate_ag())
+    number_of_pairs = len(ag.nodes())*(len(ag.nodes())-1)
     turn_model_list = copy.deepcopy(PackageFile.FULL_TurnModel_2D)
 
     deadlock_free_counter = 0
@@ -54,16 +59,16 @@ def enumerate_all_2d_turn_models_based_on_df(combination):
         noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, list(turns), False,  False))
         if check_deadlock_freeness(noc_rg):
             connectivity_metric = reachability_metric(ag, noc_rg, False)
-            doa = degree_of_adaptiveness(ag, noc_rg, False)
-            doa_ex = extended_degree_of_adaptiveness(ag, noc_rg, False)
+            doa = degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
+            doa_ex = extended_degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
             deadlock_free_counter += 1
             # print counter, "\t \033[92mDF\033[0m \t", list(turns), "\t\t", connectivity_metric
-            all_turns_file.write(str(counter)+"\t\tDF\t"+str(list(turns))+"\t\t"+str(connectivity_metric) +
-                                 "\t\t"+str(doa)+"\t\t"+str(doa_ex)+"\n")
+            all_turns_file.write(str(counter)+"\t\tDF\t"+'%51s'%str(list(turns))+"\t\t"+'%10s'%str(connectivity_metric) +
+                                 "\t\t"+'%10s'%str(round(doa, 2))+"\t\t"+'%10s'%str(round(doa_ex, 2))+"\n")
         else:
             deadlock_counter += 1
             # print counter, "\t \033[31mDL\033[0m   \t", list(turns), "\t\t----"
-            all_turns_file.write(str(counter)+"\t\tDL\t"+str(list(turns))+"\t\t-----"+"\t\t-----"+"\t\t-----"+"\n")
+            all_turns_file.write(str(counter)+"\t\tDL\t"+'%51s'%str(list(turns))+"\t\t-----"+"\t\t-----"+"\t\t-----"+"\n")
         del shmu
         del noc_rg
     all_turns_file.write("---------------------------"+"\n")
@@ -166,21 +171,30 @@ def enumerate_all_odd_even_turn_models():
     turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
                                "W2N": False, "W2S": False, "E2N": False, "E2S": False}
     Config.ag.topology = '2DMesh'
-    Config.ag.x_size = 3
-    Config.ag.y_size = 3
+    Config.ag.x_size = 6
+    Config.ag.y_size = 6
     Config.ag.z_size = 1
     Config.RotingType = 'MinimalPath'
     ag = copy.deepcopy(AG_Functions.generate_ag())
     number_of_pairs = len(ag.nodes())*(len(ag.nodes())-1)
 
     turn_model_list = []
-    #todo: we can change this to exhaustive list! (this is currently 2D deadlock free turn models!)
-    for length in range(0, len(turns_health_2d_network.keys())):
+    for length in range(0, len(turns_health_2d_network.keys())+1):
         for item in list(itertools.combinations(turns_health_2d_network.keys(), length)):
             if len(item)>0:
                 turn_model_list.append(list(item))
 
-    counter = 0
+    classes_of_DoA = {}
+    classes_of_DoAx = {}
+    connected_counter = 0
+    deadlock_free_counter = 0
+    TM_counter = 0
+
+    all_odd_evens_file.write("    #  |                  "+'%51s' % " "+" \t|")
+    all_odd_evens_file.write(" DoA    | \tDoAx | \tC-metric\n")
+    all_odd_evens_file.write("-------|--------------------------------------------"+
+                             "----------------------------|--------|-------|-------------"+"\n")
+
     for turn_model_odd in turn_model_list:
         for turn_model_even in turn_model_list:
             if turn_model_even != turn_model_odd:   # taking out the uniform cases!
@@ -204,21 +218,56 @@ def enumerate_all_odd_even_turn_models():
                             from_port = str(node)+str(turn[0])+"I"
                             to_port = str(node)+str(turn[2])+"O"
                             Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
-                if check_deadlock_freeness(noc_rg):
-                    if reachability_metric(ag, noc_rg, False) == number_of_pairs:
-                        print "deadlock free, fully connected routing found:", turn_model_odd, turn_model_even
+                connectivity_metric = reachability_metric(ag, noc_rg, False)
+                if connectivity_metric == number_of_pairs:
+                    connected_counter += 1
+                    if check_deadlock_freeness(noc_rg):
+                        deadlock_free_counter += 1
+                        #print "deadlock free, fully connected routing found:", turn_model_odd, turn_model_even
                         doa = degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
                         doa_ex = extended_degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
 
-                        all_odd_evens_file.write('%5s' % str(counter)+"  | even turn model:"+'%51s' % str(turn_model_even)+"\t|\n")
+                        if round(doa, 2) not in classes_of_DoA.keys():
+                            classes_of_DoA[round(doa, 2)] = [deadlock_free_counter]
+                        else:
+                            classes_of_DoA[round(doa, 2)].append(deadlock_free_counter)
+
+                        if round(doa_ex, 2) not in classes_of_DoAx.keys():
+                            classes_of_DoAx[round(doa_ex, 2)] = [deadlock_free_counter]
+                        else:
+                            classes_of_DoAx[round(doa_ex, 2)].append(deadlock_free_counter)
+
+
+                        all_odd_evens_file.write('%5s' % str(deadlock_free_counter)+"  | even turn model:"+'%51s' % str(turn_model_even)+"\t|")
+                        all_odd_evens_file.write("        | \t     |\n")
                         all_odd_evens_file.write("       | odd turn model: "+'%51s' % str(turn_model_odd)+" \t|")
 
-                        all_odd_evens_file.write(" DoA:" + str("%.2f" %doa)+"\tDoAx:" + str("%.2f" %doa_ex)+"\n")
-                        all_odd_evens_file.write("-----------------------------------"*3+"\n")
-                        #SHMU_Reports.draw_shm(shmu.SHM)
-                        #draw_rg(noc_rg)
-                        counter += 1
+                        all_odd_evens_file.write(" "+'%5s' % str(round(doa, 2))+"\t |"+'%5s'%str(round(doa_ex, 2))+\
+                                                 "\t |    "+'%5s' % str(round(connectivity_metric,2))+"\n")
+                        all_odd_evens_file.write("-------|--------------------------------------------"+
+                                                 "----------------------------|--------|-------|-------------"+"\n")
+                        # SHMU_Reports.draw_shm(shmu.SHM)
+                        # draw_rg(noc_rg)
 
+                    # else:
+                    #     print "not-fully connected turn model:", turn_model_odd, turn_model_even
+                # else:
+                #    print "Deadlock found in turn model:", turn_model_odd, turn_model_even
+                TM_counter += 1
+                sys.stdout.write("\rchecked TM: %i "% TM_counter +" number of fully connected TM: %i" % connected_counter+" number of deadlock free connected TM: %i" % deadlock_free_counter)
+                sys.stdout.flush()
+
+    print
+    print "----------------------------------------"
+    print "classes of DOA:", sorted(classes_of_DoA.keys())
+    for item in sorted(classes_of_DoA.keys()):
+        print item,  sorted(classes_of_DoA[item])
+        #print
+    print "------------------------------"
+    print "classes of DOA_ex:", sorted(classes_of_DoAx.keys())
+    for item in sorted(classes_of_DoAx.keys()):
+        print item,  sorted(classes_of_DoAx[item])
+        #print
     all_odd_evens_file.close()
     return None
 
