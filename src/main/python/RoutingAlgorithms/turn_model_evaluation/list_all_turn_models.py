@@ -191,9 +191,9 @@ def enumerate_all_odd_even_turn_models():
     TM_counter = 0
 
     all_odd_evens_file.write("    #  |                  "+'%51s' % " "+" \t|")
-    all_odd_evens_file.write(" DoA    | \tDoAx | \tC-metric\n")
+    all_odd_evens_file.write(" DoA    |   DoAx | \tC-metric\n")
     all_odd_evens_file.write("-------|--------------------------------------------"+
-                             "----------------------------|--------|-------|-------------"+"\n")
+                             "----------------------------|--------|--------|-------------"+"\n")
 
     for turn_model_odd in turn_model_list:
         for turn_model_even in turn_model_list:
@@ -239,13 +239,13 @@ def enumerate_all_odd_even_turn_models():
 
 
                         all_odd_evens_file.write('%5s' % str(deadlock_free_counter)+"  | even turn model:"+'%51s' % str(turn_model_even)+"\t|")
-                        all_odd_evens_file.write("        | \t     |\n")
+                        all_odd_evens_file.write("        |        |\n")
                         all_odd_evens_file.write("       | odd turn model: "+'%51s' % str(turn_model_odd)+" \t|")
 
-                        all_odd_evens_file.write(" "+'%5s' % str(round(doa, 2))+"\t |"+'%5s'%str(round(doa_ex, 2))+\
-                                                 "\t |    "+'%5s' % str(round(connectivity_metric,2))+"\n")
+                        all_odd_evens_file.write('%8s' % str(round(doa, 2))+"|"+'%8s'%str(round(doa_ex, 2))+\
+                                                 "|"+'%8s' % str(round(connectivity_metric,2))+"\n")
                         all_odd_evens_file.write("-------|--------------------------------------------"+
-                                                 "----------------------------|--------|-------|-------------"+"\n")
+                                                 "----------------------------|--------|--------|-------------"+"\n")
                         # SHMU_Reports.draw_shm(shmu.SHM)
                         # draw_rg(noc_rg)
 
