@@ -34,7 +34,11 @@ elif '-GUI' in sys.argv[1:]:
     if not main_window.apply_button:
         sys.exit()
 elif '-EvTM_odd_even' in sys.argv[1:]:
-    list_all_turn_models.enumerate_all_odd_even_turn_models()
+    list_all_turn_models.evaluate_doa_for_all_odd_even_turn_model_list()
+    #list_all_turn_models.enumerate_all_odd_even_turn_models()
+    sys.exit()
+elif '-odd_even_viz' in sys.argv[1:]:
+    turn_model_viz.viz_2d_odd_even_turn_model()
     sys.exit()
 
 elif '-ETM' in sys.argv[1:]:     # Enumerate turn model

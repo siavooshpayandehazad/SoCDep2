@@ -2,10 +2,136 @@
 from ConfigAndPackages import all_2d_turn_model_package
 import matplotlib.pyplot as plt
 from RoutingAlgorithms.Routing_Functions import return_turn_model_name
+from  ConfigAndPackages.all_odd_even_turn_model import *
 import random
 import os
 import ast
 import operator
+
+
+def draw_turn_model(turn_model, ax1, x_position):
+    if "E2S" in turn_model:
+        color = 'black'
+    else:
+        color = 'red'
+    ax1.annotate("",
+                 xy=(x_position, 0.2), xycoords='data',
+                 xytext=(x_position+0.2, 0.4), textcoords='data',
+                 size=20,
+                 arrowprops=dict(arrowstyle="->", color=color,
+                                 connectionstyle="angle, angleA=0, angleB=90, rad=0")
+                 )
+    if "S2W" in turn_model:
+        color = 'black'
+    else:
+        color = 'red'
+    ax1.annotate("",
+                 xy=(x_position+0.2, 0.4), xycoords='data',
+                 xytext=(x_position+0.4, 0.2), textcoords='data',
+                 size=20,
+                 arrowprops=dict(arrowstyle="->", color=color,
+                                 connectionstyle="angle, angleA=90, angleB=0, rad=0")
+                 )
+    if "N2E" in turn_model:
+        color = 'black'
+    else:
+        color = 'red'
+    ax1.annotate("",
+                 xy=(x_position+0.2, 0), xycoords='data',
+                 xytext=(x_position, 0.2), textcoords='data',
+                 size=20,
+                 arrowprops=dict(arrowstyle="->", color=color,
+                                 connectionstyle="angle, angleA=90, angleB=0, rad=0")
+                 )
+    if "W2N" in turn_model:
+        color = 'black'
+    else:
+        color = 'red'
+    ax1.annotate("",
+                 xy=(x_position+0.4, 0.2), xycoords='data',
+                 xytext=(x_position+0.2, 0.0), textcoords='data',
+                 size=20,
+                 arrowprops=dict(arrowstyle="->", color=color,
+                                 connectionstyle="angle, angleA=0, angleB=90, rad=0")
+                 )
+    # #######################
+    if "S2E" in turn_model:
+        color = 'black'
+    else:
+        color = 'red'
+    ax1.annotate("",
+                 xy=(x_position+0.2, 1), xycoords='data',
+                 xytext=(x_position+0.0, 0.8), textcoords='data',
+                 size=20,
+                 arrowprops=dict(arrowstyle="->", color=color,
+                                 connectionstyle="angle, angleA=90, angleB=0, rad=0")
+                 )
+    if "W2S" in turn_model:
+        color = 'black'
+    else:
+        color = 'red'
+    ax1.annotate("",
+                 xy=(x_position+0.4, 0.8), xycoords='data',
+                 xytext=(x_position+0.2, 1), textcoords='data',
+                 size=20,
+                 arrowprops=dict(arrowstyle="->", color=color,
+                                 connectionstyle="angle, angleA=0, angleB=90, rad=0")
+                 )
+    if "E2N" in turn_model:
+        color = 'black'
+    else:
+        color = 'red'
+    ax1.annotate("",
+                 xy=(x_position, 0.8), xycoords='data',
+                 xytext=(x_position+0.2, 0.6), textcoords='data',
+                 size=20,
+                 arrowprops=dict(arrowstyle="->", color=color,
+                                 connectionstyle="angle, angleA=180, angleB=90, rad=0")
+                 )
+    if "N2W" in turn_model:
+        color = 'black'
+    else:
+        color = 'red'
+    ax1.annotate("",
+                 xy=(x_position+0.2, 0.6), xycoords='data',
+                 xytext=(x_position+0.4, 0.8), textcoords='data',
+                 size=20,
+                 arrowprops=dict(arrowstyle="->", color=color,
+                                 connectionstyle="angle, angleA=90, angleB=0, rad=0")
+                 )
+    return None
+
+
+def viz_2d_odd_even_turn_model():
+    """
+    Reads all the 2D turn models and draw them in a file at GraphDrawings/Turn_Model.png
+    :return: None
+    """
+    print ("===========================================")
+    print ("GENERATING TURN MODEL VISUALIZATIONS...")
+
+    odd_even_directory = "GraphDrawings/odd_even_viz"
+    if not os.path.isdir(odd_even_directory):
+        os.makedirs(odd_even_directory)
+
+    for turn_model_set in all_odd_even_list:
+        fig = plt.figure(figsize=(19, 12))
+        ax1 = plt.subplot(7, 8, 0)
+        draw_turn_model(turn_model_set[0], ax1, 0)
+        draw_turn_model(turn_model_set[1], ax1, 0.6)
+
+        ax1.text(0.1, 1.1, "odd", fontsize=10)
+        ax1.text(0.7, 1.1, "even", fontsize=10)
+        #ax1.text(0, 0.8, str(turn_model), fontsize=5)
+        ax1.axis('off')
+        plt.axis('off')
+        plt.savefig(odd_even_directory+"/Turn_Model_"+str(all_odd_even_list.index(turn_model_set))+".png", dpi=300, bbox_inches='tight')
+        plt.clf()
+        plt.close(fig)
+    # print ("\033[35m* VIZ::\033[0m Turn Model viz " +
+    #       "TURN MODEL VIZ CREATED AT: GraphDrawings/Turn_Model_"+turn_model_name+".png")
+    print ("TURN MODEL VISUALIZATIONS READY...")
+    return None
 
 
 def viz_all_turn_models(dimension, routing_type):

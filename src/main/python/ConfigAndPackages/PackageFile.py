@@ -22,7 +22,7 @@ NegativeFirst2D_TurnModel = ['E2N', 'E2S', 'W2N', 'S2E', 'W2S', 'N2E']
 XYZ_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'S2U', 'S2D', 'N2U', 'N2D', 'W2U', 'W2D', 'E2U', 'E2D']
 
 # based on description in "Turn model based router design for 3D network on chip" by Chemli and Zitouni
-NegativeFirst3D_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'S2E', 'N2E', 
+NegativeFirst3D_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'S2E', 'N2E',
                              'N2U', 'N2D', 'S2U', 'S2D', 'E2U', 'E2D', 'W2U', 'W2D',
                              'U2N', 'U2S', 'U2E', 'D2S', 'D2N', 'D2E']
 
@@ -47,4 +47,4 @@ TurnsHealth_3DNetwork = {"N2W": True, "N2E": True, "S2W": True, "S2E": True,
 ImportModules = ['Tkinter', 'ttk', 'networkx',
                  'matplotlib', 'scipy', 'PIL',
                  'pympler', 'simpy', 'collections',
-                 'sklearn', 'image']
+                 'sklearn'] #,'image']
