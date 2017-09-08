@@ -11,7 +11,7 @@ else:
 import time
 import logging
 from ConfigAndPackages import Config, PackageFile, Check_Config
-from Utilities import Logger, Benchmark_Alg_Downloader
+from Utilities import Logger, Benchmark_Alg_Downloader, misc
 import SystemInitialization
 from GUI_Util import GUI
 from pympler import tracker
@@ -34,6 +34,7 @@ elif '-GUI' in sys.argv[1:]:
     if not main_window.apply_button:
         sys.exit()
 elif '-EvTM_odd_even' in sys.argv[1:]:
+    misc.generate_file_directories()
     list_all_turn_models.evaluate_doa_for_all_odd_even_turn_model_list()
     #list_all_turn_models.enumerate_all_odd_even_turn_models()
     sys.exit()
