@@ -36,7 +36,7 @@ elif '-GUI' in sys.argv[1:]:
 elif '-EvTM_odd_even' in sys.argv[1:]:
     misc.generate_file_directories()
     for i in range(0, 24):
-        list_all_turn_models.report_odd_even_turn_model_fault_tolerance(True, "non_minimal", i)
+        list_all_turn_models.report_odd_even_turn_model_fault_tolerance(True, "minimal", i)
     list_all_turn_models.viz_all_turn_models_against_each_other()
     #list_all_turn_models.evaluate_doa_for_all_odd_even_turn_model_list()
     #list_all_turn_models.enumerate_all_odd_even_turn_models()
