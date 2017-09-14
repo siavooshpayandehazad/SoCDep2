@@ -19,6 +19,7 @@ from RoutingAlgorithms.turn_model_evaluation.turn_model_viz import viz_all_turn_
 from RoutingAlgorithms.turn_model_evaluation.turn_model_viz import viz_turn_model_evaluation
 from ConfigAndPackages.all_odd_even_turn_model import all_odd_even_list
 
+
 def enumerate_all_2d_turn_models_based_on_df(combination):
     """
     Lists all 2D deadlock free turn models in "deadlock_free_turns" in "Generated_Files"
@@ -246,8 +247,8 @@ def evaluate_doa_for_all_odd_even_turn_model_list():
     turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
                                "W2N": False, "W2S": False, "E2N": False, "E2S": False}
     Config.ag.topology = '2DMesh'
-    Config.ag.x_size = 6
-    Config.ag.y_size = 6
+    Config.ag.x_size = 3
+    Config.ag.y_size = 3
     Config.ag.z_size = 1
     Config.RotingType = 'MinimalPath'
     ag = copy.deepcopy(AG_Functions.generate_ag())
@@ -324,7 +325,7 @@ def evaluate_doa_for_all_odd_even_turn_model_list():
     print "classes of DOA_ex:", sorted(classes_of_DoAx.keys())
     for item in sorted(classes_of_DoAx.keys()):
         print item,  sorted(classes_of_DoAx[item])
-        #print
+
     all_odd_evens_file.close()
     return None
 
@@ -543,4 +544,109 @@ def report_3d_turn_model_fault_tolerance(turn_model, viz, combination):
     turn_model_eval_file.close()
     if viz:
         turn_model_eval_viz_file.close()
+    return None
+
+
+def report_odd_even_turn_model_fault_tolerance(viz, routing_type,combination):
+    """
+    generates 2D architecture graph with all combinations C(len(ag.nodes), combination)
+    of links and writes the average connectivity metric in a file.
+    :param turn_model: list of allowed turns for generating the routing graph
+    :param viz: if true, generates the visualization files
+    :param combination: number of links to be present in the network
+    :return: None
+    """
+    turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
+                               "W2N": False, "W2S": False, "E2N": False, "E2S": False}
+    tm_counter = 0
+    Config.ag.topology = '2DMesh'
+    Config.ag.x_size = 3
+    Config.ag.y_size = 3
+    Config.ag.z_size = 1
+
+    if routing_type == "minimal":
+        Config.RotingType = 'MinimalPath'
+        selected_turn_models =[677, 678, 697, 699, 717, 718, 737, 739, 757, 759, 778, 779, 797, 799, 818, 819]
+    else:
+        selected_turn_models = [679, 738, 777, 798]
+        Config.RotingType = 'NonMinimalPath'
+
+    for id in selected_turn_models:
+        counter = 0
+        metric_sum = 0
+        turn_model = all_odd_even_list[id]
+
+        ag = copy.deepcopy(AG_Functions.generate_ag(report=False))
+        turn_model_odd = turn_model[0]
+        turn_model_even = turn_model[1]
+
+        file_name = str(tm_counter)+'_eval'
+        turn_model_eval_file = open('Generated_Files/Turn_Model_Eval/'+file_name+'.txt', 'a+')
+        if viz:
+            file_name_viz = str(tm_counter)+'_eval_'+str(len(ag.edges())-counter)
+            turn_model_eval_viz_file = open('Generated_Files/Internal/odd_even'+file_name_viz+'.txt', 'w')
+        else:
+            turn_model_eval_viz_file = None
+
+        sub_ag_list = list(itertools.combinations(ag.edges(), combination))
+        list_of_avg = []
+        for sub_ag in sub_ag_list:
+            turns_health = copy.deepcopy(turns_health_2d_network)
+            shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
+            shmu.setup_noc_shm(ag, turns_health, False)
+
+            for link in list(sub_ag):
+                shmu.break_link(link, False)
+
+            noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, [], False,  False))
+            for node in ag.nodes():
+                node_x, node_y, node_z = AG_Functions.return_node_location(node)
+                if node_x % 2 == 1:
+                    for turn in turn_model_odd:
+                        shmu.restore_broken_turn(node, turn, False)
+                        from_port = str(node)+str(turn[0])+"I"
+                        to_port = str(node)+str(turn[2])+"O"
+                        Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
+                else:
+                    for turn in turn_model_even:
+                        shmu.restore_broken_turn(node, turn, False)
+                        from_port = str(node)+str(turn[0])+"I"
+                        to_port = str(node)+str(turn[2])+"O"
+                        Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
+
+            connectivity_metric = reachability_metric(ag, noc_rg, False)
+            counter += 1
+            metric_sum += connectivity_metric
+            # std = None
+            list_of_avg.append(float(metric_sum)/counter)
+            if len(list_of_avg) > 5000:
+                list_of_avg.pop(0)
+                std = stdev(list_of_avg)
+                if std < 0.009:
+                    # turn_model_eval_file.write("STD of the last 5000 average samples is bellow 0.009\n")
+                    # turn_model_eval_file.write("Terminating the search!\n")
+                    del shmu
+                    del noc_rg
+                    break
+            if viz:
+                turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
+            # print "#:"+str(counter)+"\t\tC.M.:"+str(connectivity_metric)+"\t\t avg:", \
+            #     float(metric_sum)/counter, "\t\tstd:", std
+            del shmu
+            del noc_rg
+
+        shuffle(sub_ag_list)
+
+        tm_counter += 1
+
+        if counter > 0:
+            avg_connectivity = float(metric_sum)/counter
+        else:
+            avg_connectivity = 0
+        turn_model_eval_file.write(str(len(ag.edges())-combination)+"\t\t"+str(avg_connectivity)+"\n")
+        if viz:
+            turn_model_eval_viz_file.close()
+        turn_model_eval_file.close()
+        sys.stdout.write("\rchecked TM: %i "% tm_counter+"number of healthy links: %i "% combination  )
+        sys.stdout.flush()
     return None
