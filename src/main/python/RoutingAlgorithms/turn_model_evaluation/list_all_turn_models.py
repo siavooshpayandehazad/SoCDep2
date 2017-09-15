@@ -570,7 +570,7 @@ def report_odd_even_turn_model_fault_tolerance(viz, routing_type, combination):
 
     selected_turn_models = [677, 678, 697, 699, 717, 718, 737, 739, 757, 759, 778, 779, 797,
                             799, 818, 819, 679, 738, 777, 798]
-
+    #selected_turn_models = [677, 798]
     if routing_type == "minimal":
         Config.RotingType = 'MinimalPath'
     else:
@@ -594,11 +594,11 @@ def report_odd_even_turn_model_fault_tolerance(viz, routing_type, combination):
             turn_model_eval_viz_file = None
 
         sub_ag_list = list(itertools.combinations(ag.edges(), combination))
-        for sub_ag in sub_ag_list:
-            turns_health = copy.deepcopy(turns_health_2d_network)
-            shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
-            shmu.setup_noc_shm(ag, turns_health, False)
+        turns_health = copy.deepcopy(turns_health_2d_network)
+        shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
+        shmu.setup_noc_shm(ag, turns_health, False)
 
+        for sub_ag in sub_ag_list:
             for link in list(sub_ag):
                 shmu.break_link(link, False)
 
@@ -625,7 +625,8 @@ def report_odd_even_turn_model_fault_tolerance(viz, routing_type, combination):
                 turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
             # print "#:"+str(counter)+"\t\tC.M.:"+str(connectivity_metric)+"\t\t avg:", \
             #     float(metric_sum)/counter, "\t\tstd:", std
-            del shmu
+            for link in list(sub_ag):
+                shmu.restore_broken_link(link, False)
             del noc_rg
 
         shuffle(sub_ag_list)
