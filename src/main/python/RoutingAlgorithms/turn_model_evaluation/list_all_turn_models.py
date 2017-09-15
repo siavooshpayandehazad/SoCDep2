@@ -594,7 +594,6 @@ def report_odd_even_turn_model_fault_tolerance(viz, routing_type, combination):
             turn_model_eval_viz_file = None
 
         sub_ag_list = list(itertools.combinations(ag.edges(), combination))
-        list_of_avg = []
         for sub_ag in sub_ag_list:
             turns_health = copy.deepcopy(turns_health_2d_network)
             shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
@@ -622,17 +621,6 @@ def report_odd_even_turn_model_fault_tolerance(viz, routing_type, combination):
             connectivity_metric = reachability_metric(ag, noc_rg, False)
             counter += 1
             metric_sum += connectivity_metric
-            # std = None
-            list_of_avg.append(float(metric_sum)/counter)
-            if len(list_of_avg) > 5000:
-                list_of_avg.pop(0)
-                std = stdev(list_of_avg)
-                if std < 0.009:
-                    # turn_model_eval_file.write("STD of the last 5000 average samples is bellow 0.009\n")
-                    # turn_model_eval_file.write("Terminating the search!\n")
-                    del shmu
-                    del noc_rg
-                    break
             if viz:
                 turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
             # print "#:"+str(counter)+"\t\tC.M.:"+str(connectivity_metric)+"\t\t avg:", \
