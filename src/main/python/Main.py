@@ -16,7 +16,6 @@ import SystemInitialization
 from GUI_Util import GUI
 from pympler import tracker
 from Simulator import Simulator
-from RoutingAlgorithms.RoutingGraph_Reports import draw_rg
 from RoutingAlgorithms.turn_model_evaluation import list_all_turn_models, turn_model_viz, turn_mode_classifier
 from multiprocessing import Pool
 
@@ -36,7 +35,10 @@ elif '-GUI' in sys.argv[1:]:
         sys.exit()
 elif '-EvTM_odd_even' in sys.argv[1:]:
     misc.generate_file_directories()
-    list_all_turn_models.evaluate_doa_for_all_odd_even_turn_model_list()
+    for i in range(0, 24):
+        list_all_turn_models.report_odd_even_turn_model_fault_tolerance(True, "minimal", i)
+    list_all_turn_models.viz_all_turn_models_against_each_other()
+    #list_all_turn_models.evaluate_doa_for_all_odd_even_turn_model_list()
     #list_all_turn_models.enumerate_all_odd_even_turn_models()
     sys.exit()
 elif '-odd_even_viz' in sys.argv[1:]:
@@ -152,7 +154,6 @@ misc.generate_configfile()
 
 tg, ag, shmu, noc_rg, CriticalRG, NonCriticalRG, pmcg = SystemInitialization.initialize_system(logging)
 
-draw_rg(noc_rg)
 # just to have a sense of how much time we are spending in each section
 print ("===========================================")
 system_starting_time = time.time()
