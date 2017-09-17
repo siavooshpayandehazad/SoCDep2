@@ -18,6 +18,7 @@ from RoutingAlgorithms.Calculate_Reachability import reachability_metric
 from RoutingAlgorithms.turn_model_evaluation.turn_model_viz import viz_all_turn_models_against_each_other
 from RoutingAlgorithms.turn_model_evaluation.turn_model_viz import viz_turn_model_evaluation
 from ConfigAndPackages.all_odd_even_turn_model import all_odd_even_list
+from RoutingAlgorithms.RoutingGraph_Reports import draw_rg
 
 def enumerate_all_2d_turn_models_based_on_df(combination):
     """
@@ -182,6 +183,56 @@ def check_tm_domination(turn_model_1, turn_model_2):
     else:
         return False
 
+
+def evaluate_actual_odd_even_turn_model():
+    turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
+                               "W2N": False, "W2S": False, "E2N": False, "E2S": False}
+    Config.ag.topology = '2DMesh'
+    Config.ag.x_size = 3
+    Config.ag.y_size = 3
+    Config.ag.z_size = 1
+    Config.RotingType = 'MinimalPath'
+    ag = copy.deepcopy(AG_Functions.generate_ag())
+    number_of_pairs = len(ag.nodes())*(len(ag.nodes())-1)
+
+    turn_model_odd =  ['E2N', 'E2S', 'W2N', 'W2S', 'S2E', 'N2E']
+    turn_model_even = ['E2N', 'E2S', 'S2W', 'S2E', 'N2W', 'N2E']
+
+    if not check_tm_domination(turn_model_odd, turn_model_even):   # taking out the domination!
+        turns_health = copy.deepcopy(turns_health_2d_network)
+        shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
+        shmu.setup_noc_shm(ag, turns_health, False)
+        noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, [], False,  False))
+
+        for node in ag.nodes():
+            node_x, node_y, node_z = AG_Functions.return_node_location(node)
+            if node_x % 2 == 1:
+                for turn in turn_model_odd:
+                    shmu.restore_broken_turn(node, turn, False)
+                    from_port = str(node)+str(turn[0])+"I"
+                    to_port = str(node)+str(turn[2])+"O"
+                    Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
+            else:
+                for turn in turn_model_even:
+                    shmu.restore_broken_turn(node, turn, False)
+                    from_port = str(node)+str(turn[0])+"I"
+                    to_port = str(node)+str(turn[2])+"O"
+                    Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
+        draw_rg(noc_rg)
+        connectivity_metric = reachability_metric(ag, noc_rg, False)
+        print "connectivity_metric:", connectivity_metric
+        if check_deadlock_freeness(noc_rg):
+            print "Deadlock free!"
+
+        doa = degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
+        doa_ex = extended_degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
+        print "doa:", doa
+        print "doa_ex", doa_ex
+
+        sys.stdout.flush()
+
+
+
 def enumerate_all_odd_even_turn_models():
     all_odd_evens_file = open('Generated_Files/Turn_Model_Lists/odd_even_tm_list_dl_free.txt', 'w')
     turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
@@ -246,8 +297,8 @@ def evaluate_doa_for_all_odd_even_turn_model_list():
     turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
                                "W2N": False, "W2S": False, "E2N": False, "E2S": False}
     Config.ag.topology = '2DMesh'
-    Config.ag.x_size = 6
-    Config.ag.y_size = 6
+    Config.ag.x_size = 3
+    Config.ag.y_size = 3
     Config.ag.z_size = 1
     Config.RotingType = 'MinimalPath'
     ag = copy.deepcopy(AG_Functions.generate_ag())

@@ -10,7 +10,8 @@ from Mapping_Heuristics import SimpleGreedy, Local_Search, SimulatedAnnealing, N
 from Scheduler import Scheduler, Scheduling_Reports, Scheduling_Functions
 
 
-def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging, iteration=None):
+def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging, iteration=None
+            , initial_mapping_string = None):
     """
     Calculate different mapping algorithms
     Returns tg And ag after Mapping in case of success
@@ -90,11 +91,11 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging, iteratio
         random_seed = Config.mapping_random_seed
         if Mapping_Functions.make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, non_critical_rg,
                                                   True, logging, random_seed, iteration):
-            if Config.DistanceBetweenMapping:
-                init_mapping_string = Mapping_Functions.mapping_into_string(tg)
+            #if Config.DistanceBetweenMapping:
+            #    init_mapping_string = Mapping_Functions.mapping_into_string(tg)
                 # print (init_mapping_string)
-            else:
-                init_mapping_string = None
+            #else:
+            #    init_mapping_string = None
 
             Mapping_Reports.report_mapping(ag, logging)
             # Schedule all tasks
@@ -104,7 +105,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging, iteratio
             Mapping_Functions.mapping_cost_function(tg, ag, shm, Config.DebugInfo)
             if Config.Mapping_Function == 'LocalSearch':
                 mapping_cost_file = open('Generated_Files/Internal/LocalSearchMappingCost.txt', 'w')
-                current_cost = Mapping_Functions.mapping_cost_function(tg, ag, shm, False)
+                current_cost = Mapping_Functions.mapping_cost_function(tg, ag, shm, False, initial_mapping_string=initial_mapping_string)
                 mapping_cost_file.write(str(current_cost)+"\n")
                 mapping_cost_file.close()
 
@@ -118,7 +119,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging, iteratio
                                                           Config.LocalSearchIteration,
                                                           Config.DebugInfo, Config.DebugDetails, logging,
                                                           "LocalSearchMappingCost", "MappingProcess",
-                                                          Config.mapping_random_seed)
+                                                          Config.mapping_random_seed, initial_mapping_string=initial_mapping_string)
                 tg = copy.deepcopy(best_tg)
                 ag = copy.deepcopy(best_ag)
                 del best_tg, best_ctg, best_ag
@@ -158,7 +159,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging, iteratio
             Scheduling_Reports.report_mapped_tasks(ag, logging)
             if not Scheduling_Functions.check_if_all_deadlines_are_met(tg,ag):
                 raise ValueError("not all critical tasks have met their deadline!")
-            Mapping_Functions.mapping_cost_function(tg, ag, shm, True,  initial_mapping_string=init_mapping_string)
+            Mapping_Functions.mapping_cost_function(tg, ag, shm, True,  initial_mapping_string=initial_mapping_string)
             return tg, ag
         else:
             Mapping_Reports.report_mapping(ag, logging)

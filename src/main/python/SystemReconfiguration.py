@@ -1,5 +1,5 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
-from Mapper.Mapping_Functions import clear_mapping_for_reconfiguration, read_mapping_from_file, write_mapping_to_file
+from Mapper.Mapping_Functions import clear_mapping_for_reconfiguration, read_mapping_from_file, write_mapping_to_file, mapping_into_string
 from Mapper.Mapping_Reports import draw_mapping_distribution, draw_mapping
 from Mapper.Mapping import mapping
 from Scheduler.Scheduling_Functions import clear_scheduling
@@ -11,6 +11,7 @@ import copy
 
 
 def system_reconfiguration(tg, ag, shmu, noc_rg, critical_rg, noncritical_rg, iteration, logging):
+    init_mapping_string = mapping_into_string(tg)
     clear_mapping_for_reconfiguration(tg, ag)
     clear_scheduling(ag)
 
@@ -20,7 +21,7 @@ def system_reconfiguration(tg, ag, shmu, noc_rg, critical_rg, noncritical_rg, it
                                Config.mapping_file_path, logging)
         schedule_all(tg, ag, shmu.SHM, False, logging)
     else:
-        best_tg, best_ag = mapping(tg, ag, noc_rg, critical_rg, noncritical_rg, shmu.SHM, logging, iteration)
+        best_tg, best_ag = mapping(tg, ag, noc_rg, critical_rg, noncritical_rg, shmu.SHM, logging, iteration, initial_mapping_string=init_mapping_string)
         if best_ag is not None and best_tg is not None:
             tg = copy.deepcopy(best_tg)
             ag = copy.deepcopy(best_ag)

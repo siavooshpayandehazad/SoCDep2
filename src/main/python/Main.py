@@ -16,6 +16,7 @@ import SystemInitialization
 from GUI_Util import GUI
 from pympler import tracker
 from Simulator import Simulator
+from RoutingAlgorithms.RoutingGraph_Reports import draw_rg
 from RoutingAlgorithms.turn_model_evaluation import list_all_turn_models, turn_model_viz, turn_mode_classifier
 from multiprocessing import Pool
 
@@ -151,6 +152,7 @@ misc.generate_configfile()
 
 tg, ag, shmu, noc_rg, CriticalRG, NonCriticalRG, pmcg = SystemInitialization.initialize_system(logging)
 
+draw_rg(noc_rg)
 # just to have a sense of how much time we are spending in each section
 print ("===========================================")
 system_starting_time = time.time()

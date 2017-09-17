@@ -464,7 +464,7 @@ def mapping_cost_function(tg, ag, shm, report, initial_mapping_string=None):
     distance = None
     if initial_mapping_string is not None:
         distance = hamming_distance_of_mapping(initial_mapping_string, mapping_into_string(tg))
-        cost += distance
+        cost += 20* distance
     if report:
         print ("===========================================")
         print ("      REPORTING MAPPING COST")

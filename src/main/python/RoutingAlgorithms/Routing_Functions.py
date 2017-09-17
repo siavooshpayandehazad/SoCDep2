@@ -1,5 +1,5 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
-from networkx import all_simple_paths, all_shortest_paths, is_directed_acyclic_graph
+from networkx import all_simple_paths, all_shortest_paths, is_directed_acyclic_graph, find_cycle
 from Calculate_Reachability import is_destination_reachable_from_source
 from ConfigAndPackages import PackageFile, all_2d_turn_model_package
 from ArchGraphUtilities.AG_Functions import manhattan_distance
@@ -64,6 +64,7 @@ def check_deadlock_freeness(noc_rg):
     if is_directed_acyclic_graph(noc_rg):
         return True
     else:
+        print  find_cycle(noc_rg, orientation='original')
         return False
 
 

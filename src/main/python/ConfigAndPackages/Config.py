@@ -200,7 +200,7 @@ Clustering_Optimization = True     # If false, Turns the clustering off. Each Cl
 
 class Clustering:
     def __init__(self):
-        self.iterations = 70
+        self.iterations = 1000
         self.random_seed = 100
         self.report = False
         self.detailed_report = False
@@ -217,7 +217,7 @@ class Clustering:
         # RandomTaskMove: randomly chooses a task from a cluster and moves it to another random cluster
         # Swap: randomly chooses a 2 tasks from 2 clusters and Swaps them
         # Circulate: randomly chooses a N tasks from N clusters and Circulates them (is not implemented yet)
-        self.opt_move = 'RandomTaskMove'
+        self.opt_move = 'Swap'
         self.circulation_length = 3
 
 clustering = Clustering()
@@ -232,7 +232,7 @@ mapping_file_path = "mapping_report.txt"
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
 Mapping_Function = 'LocalSearch'
-LocalSearchIteration = 1000
+LocalSearchIteration = 5000
 IterativeLocalSearchIterations = 100
 mapping_random_seed = 2000
 #######################
@@ -300,7 +300,7 @@ elif Mapping_Function == 'SimulatedAnnealing':
 Mapping_CostFunctionType = 'MAX'
 # if 'DistanceBetweenMapping' is true => Cost += Hamming distance between the current
 # solution and the neighbour solution
-DistanceBetweenMapping = False
+DistanceBetweenMapping = True
 ################################################
 #          Scheduling  Config
 ################################################

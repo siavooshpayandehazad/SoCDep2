@@ -1,4 +1,4 @@
-# Copyright (C) 2015 Siavoosh Payandeh Azad 
+# Copyright (C) 2015 Siavoosh Payandeh Azad
 
 import random
 import copy
@@ -9,7 +9,8 @@ from ConfigAndPackages import Config
 
 def mapping_opt_local_search(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, shm,
                              iteration_num, report, detailed_report, logging,
-                             cost_data_file_name, mapping_process_file_name, random_seed):
+                             cost_data_file_name, mapping_process_file_name, random_seed,
+                             initial_mapping_string=None):
     random.seed(random_seed)
     if report:
         print ("===========================================")
@@ -29,7 +30,7 @@ def mapping_opt_local_search(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, s
     best_tg = copy.deepcopy(tg)
     best_ag = copy.deepcopy(ag)
     best_ctg = copy.deepcopy(ctg)
-    best_cost = Mapping_Functions.mapping_cost_function(tg, ag, shm, False)
+    best_cost = Mapping_Functions.mapping_cost_function(tg, ag, shm, False, initial_mapping_string=initial_mapping_string)
     starting_cost = best_cost
     for iteration in range(0, iteration_num):
         logging.info("       ITERATION:"+str(iteration))
@@ -72,14 +73,14 @@ def mapping_opt_local_search(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, s
                 ctg = copy.deepcopy(ctg)
                 if report:
                     Scheduling_Reports.report_mapped_tasks(ag, logging)
-                    Mapping_Functions.mapping_cost_function(tg, ag, shm, True)
+                    Mapping_Functions.mapping_cost_function(tg, ag, shm, True, initial_mapping_string=initial_mapping_string)
                 return best_tg, best_ctg, best_ag
             try_counter += 1
 
         Scheduling_Functions.clear_scheduling(ag)
         Scheduler.schedule_all(tg, ag, shm, False, logging)
 
-        current_cost = Mapping_Functions.mapping_cost_function(tg, ag, shm, detailed_report)
+        current_cost = Mapping_Functions.mapping_cost_function(tg, ag, shm, detailed_report, initial_mapping_string= initial_mapping_string)
         mapping_process_file.write(Mapping_Functions.mapping_into_string(tg)+"\n")
         mapping_cost_file.write(str(current_cost)+"\n")
         if current_cost <= best_cost:
