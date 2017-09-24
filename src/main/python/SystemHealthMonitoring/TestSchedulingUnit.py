@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from ConfigAndPackages import Config
 from Mapper import Mapping_Functions
 import random
-
+from TaskGraphUtilities.TG_Functions import Task
 
 def gen_one_step_diagnosable_pmcg(ag, shm):
     """
@@ -105,10 +105,13 @@ def generate_test_tg_from_pmcg(pmcg):
     """
     ttg = networkx.DiGraph()
     for edge in pmcg.edges():
-        ttg.add_node("S"+str(edge[0])+str(edge[1]), Criticality='L', WCET=Config.NodeTestExeTime, Node=edge[1],
-                     Cluster=None, Priority=None, Distance=0, Release=0, Type='Test')
-        ttg.add_node("R"+str(edge[0])+str(edge[1]), Criticality='L', WCET=1, Node=edge[0], Cluster=None,
-                     Priority=None, Distance=1, Release=0, Type='Test')
+        ttg.add_node("S"+str(edge[0])+str(edge[1]), task=Task(wcet=Config.NodeTestExeTime, criticality='L',
+                                                              cluster=None, node=edge[1], priority=None, distance=0,
+                                                              release=0, type='Test'))
+
+        ttg.add_node("R"+str(edge[0])+str(edge[1]), task=Task(wcet=1, criticality='L',
+                                                              cluster=None, node=edge[0], priority=None, distance=1,
+                                                              release=0, type='Test'))
         ttg.add_edge("S"+str(edge[0])+str(edge[1]), "R"+str(edge[0])+str(edge[1]), ComWeight=Config.NodeTestComWeight,
                      Criticality='L', Link=[])
     return ttg
@@ -118,13 +121,25 @@ def insert_test_tasks_in_tg(pmcg, tg):
     # I don't know how we can use this at the moment!
     print ("===========================================")
     print ("INSERTING PMC TASKS FROM TG...")
+
     for edge in pmcg.edges():
-        tg.add_node("S"+str(edge[0])+str(edge[1]), Criticality='L', WCET=Config.NodeTestExeTime, Node=edge[1],
-                    Cluster=None, Priority=None, Distance=0, Release=0, Type='Test')
-        tg.add_node("R"+str(edge[0])+str(edge[1]), Criticality='L', WCET=1, Node=edge[0], Cluster=None,
-                    Priority=None, Distance=1, Release=0, Type='Test')
+        tg.add_node("S"+str(edge[0])+str(edge[1]), task=Task(wcet=Config.NodeTestExeTime, criticality='L',
+                                                              cluster=None, node=edge[1], priority=None, distance=0,
+                                                              release=0, type='Test'))
+
+        tg.add_node("R"+str(edge[0])+str(edge[1]), task=Task(wcet=1, criticality='L',
+                                                              cluster=None, node=edge[0], priority=None, distance=1,
+                                                              release=0, type='Test'))
         tg.add_edge("S"+str(edge[0])+str(edge[1]), "R"+str(edge[0])+str(edge[1]), ComWeight=Config.NodeTestComWeight,
-                    Criticality='L', Link=[])
+                     Criticality='L', Link=[])
+
+    #for edge in pmcg.edges():
+    #    tg.add_node("S"+str(edge[0])+str(edge[1]), Criticality='L', WCET=Config.NodeTestExeTime, Node=edge[1],
+    #                Cluster=None, Priority=None, Distance=0, Release=0, Type='Test')
+    #    tg.add_node("R"+str(edge[0])+str(edge[1]), Criticality='L', WCET=1, Node=edge[0], Cluster=None,
+    #                Priority=None, Distance=1, Release=0, Type='Test')
+    #    tg.add_edge("S"+str(edge[0])+str(edge[1]), "R"+str(edge[0])+str(edge[1]), ComWeight=Config.NodeTestComWeight,
+    #                Criticality='L', Link=[])
     return tg
 
 

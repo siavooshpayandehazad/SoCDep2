@@ -105,7 +105,7 @@ def map_task_to_node(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, task, nod
     logging.info("\tADDING TASK: "+str(task)+"TO NODE:"+str(node))
     tg.node[task]['task'].node = node
     ag.node[node]['PE'].mapped_tasks.append(task)
-    ag.node[node]['PE'].utilization += tg.node[task]['WCET']
+    ag.node[node]['PE'].utilization += tg.node[task]['task'].wcet
     for edge in tg.edges():
         if task in edge:    # find all the edges that are connected to Task
             # logging.info("\t\tEDGE:"+str(edge)+"CONTAINS Task:"+str(task))
