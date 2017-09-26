@@ -690,3 +690,87 @@ def report_odd_even_turn_model_fault_tolerance(viz, routing_type, combination):
         sys.stdout.flush()
         tm_counter += 1
     return None
+
+def test():
+    all_odd_evens_file = open('Generated_Files/Turn_Model_Lists/all_odd_evens_doa.txt', 'w')
+    turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
+                               "W2N": False, "W2S": False, "E2N": False, "E2S": False}
+    Config.ag.topology = '2DMesh'
+    Config.ag.x_size = 3
+    Config.ag.y_size = 3
+    Config.ag.z_size = 1
+    Config.RotingType = 'MinimalPath'
+    ag = copy.deepcopy(AG_Functions.generate_ag())
+    number_of_pairs = len(ag.nodes())*(len(ag.nodes())-1)
+
+    max_ratio = 0
+    for turn_model in all_odd_even_list:
+    #for item in selected_turn_models:
+        #print item
+        #turn_model = all_odd_even_list[item]
+        #print turn_model
+        turn_model_index = all_odd_even_list.index(turn_model)
+        turn_model_odd = turn_model[0]
+        turn_model_even = turn_model[1]
+
+        turns_health = copy.deepcopy(turns_health_2d_network)
+        shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
+        shmu.setup_noc_shm(ag, turns_health, False)
+        noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, [], False,  False))
+
+        for node in ag.nodes():
+                node_x, node_y, node_z = AG_Functions.return_node_location(node)
+                if node_x % 2 == 1:
+                    for turn in turn_model_odd:
+                        shmu.restore_broken_turn(node, turn, False)
+                        from_port = str(node)+str(turn[0])+"I"
+                        to_port = str(node)+str(turn[2])+"O"
+                        Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
+                else:
+                    for turn in turn_model_even:
+                        shmu.restore_broken_turn(node, turn, False)
+                        from_port = str(node)+str(turn[0])+"I"
+                        to_port = str(node)+str(turn[2])+"O"
+                        Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
+        #draw_rg(noc_rg)
+        number_of_pairs = len(ag.nodes())*(len(ag.nodes())-1)
+        doa = degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
+        sum_of_paths = 0
+        sum_of_sim_ratio = 0
+        for source_node in ag.nodes():
+                for destination_node in ag.nodes():
+                    if source_node != destination_node:
+                        if is_destination_reachable_from_source(noc_rg, source_node, destination_node):
+                                #print source_node, "--->", destination_node
+                                paths = list(all_shortest_paths(noc_rg, str(source_node)+str('L')+str('I'), str(destination_node)+str('L')+str('O')))
+                                sum_of_paths += len(paths)
+                                #for path in paths:
+                                #    print path
+                                local_sim_ratio = 0
+                                counter = 0
+                                if len(paths) > 1:
+                                    for i in range(0, len(paths)):
+                                        for j in range(i, len(paths)):
+                                            if paths[i] != paths[j]:
+                                                sm=difflib.SequenceMatcher(None,paths[i],paths[j])
+                                                simmilarity_ratio =  sm.ratio()
+                                                counter += 1
+                                                #print "\t", i, "->", j, "\tsimilarity:", simmilarity_ratio
+                                                local_sim_ratio += simmilarity_ratio
+                                    local_sim_ratio = local_sim_ratio/counter
+                                    local_sim_ratio = local_sim_ratio
+                                    sum_of_sim_ratio += local_sim_ratio
+                                else:
+
+                                    sum_of_sim_ratio += 1
+                                #print "average similarity ratio:", local_sim_ratio
+                                #print "--------------------------------------------"
+        #print "number of paths", sum_of_paths
+        doa_ratio = float(doa)/sum_of_sim_ratio
+        if max_ratio < doa_ratio:
+            max_ratio = doa_ratio
+        print "Turn Model ", '%5s' %turn_model_index, "\tdoa:", "{:3.3f}".format(doa), "\tsimilarity ratio:", "{:3.3f}".format(sum_of_sim_ratio), "\t\tfault tolerance metric:","{:3.3f}".format(doa_ratio)
+        #print "--------------------------------------------"
+        del noc_rg
+    print "max doa_ratio", max_ratio
+    return None
