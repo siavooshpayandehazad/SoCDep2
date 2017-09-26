@@ -14,11 +14,12 @@ from RoutingAlgorithms import Routing
 from SystemHealthMonitoring import SystemHealthMonitoringUnit
 from RoutingAlgorithms.Routing_Functions import extended_degree_of_adaptiveness, degree_of_adaptiveness, \
     check_deadlock_freeness, return_turn_model_name
-from RoutingAlgorithms.Calculate_Reachability import reachability_metric
+from RoutingAlgorithms.Calculate_Reachability import reachability_metric, is_destination_reachable_from_source
 from RoutingAlgorithms.turn_model_evaluation.turn_model_viz import viz_all_turn_models_against_each_other
 from RoutingAlgorithms.turn_model_evaluation.turn_model_viz import viz_turn_model_evaluation
 from ConfigAndPackages.all_odd_even_turn_model import all_odd_even_list
-
+from networkx import all_shortest_paths
+import difflib
 
 def enumerate_all_2d_turn_models_based_on_df(combination):
     """
