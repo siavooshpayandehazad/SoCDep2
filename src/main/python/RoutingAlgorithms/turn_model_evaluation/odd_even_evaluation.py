@@ -1,5 +1,5 @@
 from ConfigAndPackages.all_odd_even_turn_model import all_odd_even_list
-from networkx import all_shortest_paths
+from networkx import all_shortest_paths, all_simple_paths
 import difflib
 from ConfigAndPackages import Config
 import copy
@@ -10,6 +10,7 @@ from SystemHealthMonitoring import SystemHealthMonitoringUnit
 from RoutingAlgorithms.Routing_Functions import extended_degree_of_adaptiveness, degree_of_adaptiveness, \
     check_deadlock_freeness
 from RoutingAlgorithms.Calculate_Reachability import reachability_metric, is_destination_reachable_from_source
+from ArchGraphUtilities.AG_Functions import manhattan_distance
 import itertools
 from random import shuffle, sample
 
@@ -309,11 +310,13 @@ def test():
     Config.ag.x_size = 3
     Config.ag.y_size = 3
     Config.ag.z_size = 1
-    Config.RotingType = 'MinimalPath'
+    Config.RotingType = 'NonMinimalPath'
     ag = copy.deepcopy(AG_Functions.generate_ag())
     number_of_pairs = len(ag.nodes())*(len(ag.nodes())-1)
 
     max_ratio = 0
+    classes_of_doa_ratio = []
+    turn_model_class_dict = {}
     for turn_model in all_odd_even_list:
     #for item in selected_turn_models:
         #print item
@@ -344,16 +347,25 @@ def test():
                         Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
         #draw_rg(noc_rg)
         number_of_pairs = len(ag.nodes())*(len(ag.nodes())-1)
+        doa_ex = extended_degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
         doa = degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
         sum_of_paths = 0
         sum_of_sim_ratio = 0
+
         for source_node in ag.nodes():
                 for destination_node in ag.nodes():
                     if source_node != destination_node:
                         if is_destination_reachable_from_source(noc_rg, source_node, destination_node):
                                 #print source_node, "--->", destination_node
-                                paths = list(all_shortest_paths(noc_rg, str(source_node)+str('L')+str('I'), str(destination_node)+str('L')+str('O')))
-                                sum_of_paths += len(paths)
+                                if Config.RotingType == 'MinimalPath':
+                                    shortest_paths = list(all_shortest_paths(noc_rg, str(source_node)+str('L')+str('I'), str(destination_node)+str('L')+str('O')))
+                                    paths = []
+                                    for path in shortest_paths:
+                                        minimal_hop_count = manhattan_distance(source_node, destination_node)
+                                        if (len(path)/2)-1 <= minimal_hop_count:
+                                            paths.append(path)
+                                else:
+                                    paths = list(all_simple_paths(noc_rg, str(source_node)+str('L')+str('I'), str(destination_node)+str('L')+str('O')))
                                 #for path in paths:
                                 #    print path
                                 local_sim_ratio = 0
@@ -363,24 +375,33 @@ def test():
                                         for j in range(i, len(paths)):
                                             if paths[i] != paths[j]:
                                                 sm=difflib.SequenceMatcher(None,paths[i],paths[j])
-                                                simmilarity_ratio =  sm.ratio()
                                                 counter += 1
-                                                #print "\t", i, "->", j, "\tsimilarity:", simmilarity_ratio
-                                                local_sim_ratio += simmilarity_ratio
-                                    local_sim_ratio = local_sim_ratio/counter
-                                    local_sim_ratio = local_sim_ratio
-                                    sum_of_sim_ratio += local_sim_ratio
+                                                local_sim_ratio +=  sm.ratio()
+                                    #print float(local_sim_ratio)/counter
+                                    sum_of_sim_ratio += float(local_sim_ratio)/counter
                                 else:
 
                                     sum_of_sim_ratio += 1
-                                #print "average similarity ratio:", local_sim_ratio
-                                #print "--------------------------------------------"
-        #print "number of paths", sum_of_paths
-        doa_ratio = float(doa)/sum_of_sim_ratio
+        if  Config.RotingType == 'MinimalPath':
+            print "Turn Model ", '%5s' %turn_model_index, "\tdoa:", "{:3.3f}".format(doa), "\tsimilarity ratio:", "{:3.3f}".format(sum_of_sim_ratio), "\t\tfault tolerance metric:","{:3.5f}".format(float(doa)/sum_of_sim_ratio)
+            doa_ratio = float("{:3.5f}".format(float(doa)/sum_of_sim_ratio, 5))
+        else:
+            print "Turn Model ", '%5s' %turn_model_index, "\tdoa:", "{:3.3f}".format(doa_ex), "\tsimilarity ratio:", "{:3.3f}".format(sum_of_sim_ratio), "\t\tfault tolerance metric:","{:3.5f}".format(float(doa_ex)/sum_of_sim_ratio)
+            doa_ratio = float("{:3.5f}".format(float(doa_ex)/sum_of_sim_ratio, 5))
+
+        if doa_ratio not in classes_of_doa_ratio:
+            classes_of_doa_ratio.append(doa_ratio)
+        if doa_ratio in turn_model_class_dict.keys():
+            turn_model_class_dict[doa_ratio].append(turn_model_index)
+        else:
+            turn_model_class_dict[doa_ratio]=[turn_model_index]
         if max_ratio < doa_ratio:
             max_ratio = doa_ratio
-        print "Turn Model ", '%5s' %turn_model_index, "\tdoa:", "{:3.3f}".format(doa), "\tsimilarity ratio:", "{:3.3f}".format(sum_of_sim_ratio), "\t\tfault tolerance metric:","{:3.3f}".format(doa_ratio)
+
         #print "--------------------------------------------"
         del noc_rg
     print "max doa_ratio", max_ratio
+    print "classes of doa_ratio", classes_of_doa_ratio
+    for item in sorted(turn_model_class_dict.keys()):
+        print item, turn_model_class_dict[item]
     return None
