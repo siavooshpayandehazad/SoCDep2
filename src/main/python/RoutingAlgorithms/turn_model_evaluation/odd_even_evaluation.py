@@ -1,11 +1,14 @@
 from ConfigAndPackages.all_odd_even_turn_model import all_odd_even_list
 from networkx import all_shortest_paths, all_simple_paths
 import difflib
+import statistics
 from ConfigAndPackages import Config
 import copy
 import sys
 from ArchGraphUtilities import AG_Functions
 from RoutingAlgorithms import Routing
+from RoutingAlgorithms.RoutingGraph_Reports import draw_rg
+from RoutingAlgorithms.turn_model_evaluation.list_all_turn_models import check_tm_domination
 from SystemHealthMonitoring import SystemHealthMonitoringUnit
 from RoutingAlgorithms.Routing_Functions import extended_degree_of_adaptiveness, degree_of_adaptiveness, \
     check_deadlock_freeness
@@ -13,6 +16,7 @@ from RoutingAlgorithms.Calculate_Reachability import reachability_metric, is_des
 from ArchGraphUtilities.AG_Functions import manhattan_distance
 import itertools
 from random import shuffle, sample
+import re
 
 def evaluate_actual_odd_even_turn_model():
     turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
@@ -227,18 +231,23 @@ def report_odd_even_turn_model_fault_tolerance(viz, routing_type, combination):
 
     selected_turn_models = [677, 678, 697, 699, 717, 718, 737, 739, 757, 759, 778, 779, 797,
                             799, 818, 819, 679, 738, 777, 798]
-    #selected_turn_models = [677, 798]
+    selected_turn_models = [578]
     if routing_type == "minimal":
         Config.RotingType = 'MinimalPath'
     else:
         Config.RotingType = 'NonMinimalPath'
+
+    ag = copy.deepcopy(AG_Functions.generate_ag(report=False))
+    sub_ag_list = list(itertools.combinations(ag.edges(), combination))
+    turns_health = copy.deepcopy(turns_health_2d_network)
+    shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
+    shmu.setup_noc_shm(ag, turns_health, False)
 
     for turn_id in selected_turn_models:
         counter = 0
         metric_sum = 0
         turn_model = all_odd_even_list[turn_id]
 
-        ag = copy.deepcopy(AG_Functions.generate_ag(report=False))
         turn_model_odd = turn_model[0]
         turn_model_even = turn_model[1]
 
@@ -249,11 +258,6 @@ def report_odd_even_turn_model_fault_tolerance(viz, routing_type, combination):
             turn_model_eval_viz_file = open('Generated_Files/Internal/odd_even'+file_name_viz+'.txt', 'w')
         else:
             turn_model_eval_viz_file = None
-
-        sub_ag_list = list(itertools.combinations(ag.edges(), combination))
-        turns_health = copy.deepcopy(turns_health_2d_network)
-        shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
-        shmu.setup_noc_shm(ag, turns_health, False)
 
         for sub_ag in sub_ag_list:
             for link in list(sub_ag):
@@ -284,7 +288,20 @@ def report_odd_even_turn_model_fault_tolerance(viz, routing_type, combination):
             #     float(metric_sum)/counter, "\t\tstd:", std
             for link in list(sub_ag):
                 shmu.restore_broken_link(link, False)
-            del noc_rg
+            for node in ag.nodes():
+                node_x, node_y, node_z = AG_Functions.return_node_location(node)
+                if node_x % 2 == 1:
+                    for turn in turn_model_odd:
+                        shmu.break_turn(node, turn, False)
+                        from_port = str(node)+str(turn[0])+"I"
+                        to_port = str(node)+str(turn[2])+"O"
+                        Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
+                else:
+                    for turn in turn_model_even:
+                        shmu.break_turn(node, turn, False)
+                        from_port = str(node)+str(turn[0])+"I"
+                        to_port = str(node)+str(turn[2])+"O"
+                        Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
 
         shuffle(sub_ag_list)
 
@@ -302,6 +319,46 @@ def report_odd_even_turn_model_fault_tolerance(viz, routing_type, combination):
     return None
 
 
+def return_links_in_path(path):
+    links = []
+    for i in range(0, len(path)-1):
+        start = int(re.findall('\d+',  path[i])[0])
+        end = int(re.findall('\d+',  path[i+1])[0])
+        if start != end:
+            links.append(str(start)+"_"+str(end))
+    return links
+
+
+def find_similarity_in_paths(link_dict,paths):
+    link_dictionary = {}
+    for i in range(0, len(paths)):
+        for link in return_links_in_path(paths[i]):
+            if link in link_dictionary.keys():
+                link_dictionary[link] +=1
+            else:
+                link_dictionary[link] = 1
+
+    for link in sorted(link_dictionary.keys()):
+        if link_dictionary[link] >1:
+            if link_dictionary[link] == float(len(paths)):
+                if link in link_dict.keys():
+                    #link_dict[link] += link_dictionary[link]/float(len(paths))
+                    link_dict[link] += 1.0
+                else:
+                    #link_dict[link] = link_dictionary[link]/float(len(paths))
+                    link_dict[link] = 1.0
+        else:
+            if len(paths)==1:
+                if link in link_dict.keys():
+                    link_dict[link] += 1.0
+                else:
+                    link_dict[link] = 1.0
+            else:
+                pass
+
+    return link_dict
+
+
 def test():
     all_odd_evens_file = open('Generated_Files/Turn_Model_Lists/all_odd_evens_doa.txt', 'w')
     turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
@@ -312,24 +369,25 @@ def test():
     Config.ag.z_size = 1
     Config.RotingType = 'NonMinimalPath'
     ag = copy.deepcopy(AG_Functions.generate_ag())
-    number_of_pairs = len(ag.nodes())*(len(ag.nodes())-1)
+    shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
+    turns_health = copy.deepcopy(turns_health_2d_network)
+    shmu.setup_noc_shm(ag, turns_health, False)
+    noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, [], False,  False))
 
-    max_ratio = 0
+
+
     classes_of_doa_ratio = []
     turn_model_class_dict = {}
+    selected_turn_models =[578, 603, 677, 819, 154, 579,777]
     for turn_model in all_odd_even_list:
     #for item in selected_turn_models:
         #print item
         #turn_model = all_odd_even_list[item]
-        #print turn_model
+
+        link_dict = {}
         turn_model_index = all_odd_even_list.index(turn_model)
         turn_model_odd = turn_model[0]
         turn_model_even = turn_model[1]
-
-        turns_health = copy.deepcopy(turns_health_2d_network)
-        shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
-        shmu.setup_noc_shm(ag, turns_health, False)
-        noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, [], False,  False))
 
         for node in ag.nodes():
                 node_x, node_y, node_z = AG_Functions.return_node_location(node)
@@ -345,13 +403,10 @@ def test():
                         from_port = str(node)+str(turn[0])+"I"
                         to_port = str(node)+str(turn[2])+"O"
                         Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
-        #draw_rg(noc_rg)
-        number_of_pairs = len(ag.nodes())*(len(ag.nodes())-1)
-        doa_ex = extended_degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
-        doa = degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
-        sum_of_paths = 0
-        sum_of_sim_ratio = 0
 
+        number_of_pairs = len(ag.nodes())*(len(ag.nodes())-1)
+
+        all_paths_in_graph = []
         for source_node in ag.nodes():
                 for destination_node in ag.nodes():
                     if source_node != destination_node:
@@ -364,44 +419,54 @@ def test():
                                         minimal_hop_count = manhattan_distance(source_node, destination_node)
                                         if (len(path)/2)-1 <= minimal_hop_count:
                                             paths.append(path)
+                                            all_paths_in_graph.append(path)
                                 else:
                                     paths = list(all_simple_paths(noc_rg, str(source_node)+str('L')+str('I'), str(destination_node)+str('L')+str('O')))
-                                #for path in paths:
-                                #    print path
-                                local_sim_ratio = 0
-                                counter = 0
-                                if len(paths) > 1:
-                                    for i in range(0, len(paths)):
-                                        for j in range(i, len(paths)):
-                                            if paths[i] != paths[j]:
-                                                sm=difflib.SequenceMatcher(None,paths[i],paths[j])
-                                                counter += 1
-                                                local_sim_ratio +=  sm.ratio()
-                                    #print float(local_sim_ratio)/counter
-                                    sum_of_sim_ratio += float(local_sim_ratio)/counter
-                                else:
+                                    all_paths_in_graph+=paths
+                                link_dict = find_similarity_in_paths(link_dict, paths)
 
-                                    sum_of_sim_ratio += 1
-        if  Config.RotingType == 'MinimalPath':
-            print "Turn Model ", '%5s' %turn_model_index, "\tdoa:", "{:3.3f}".format(doa), "\tsimilarity ratio:", "{:3.3f}".format(sum_of_sim_ratio), "\t\tfault tolerance metric:","{:3.5f}".format(float(doa)/sum_of_sim_ratio)
-            doa_ratio = float("{:3.5f}".format(float(doa)/sum_of_sim_ratio, 5))
+        #for item in link_dict.keys():
+        #    print '%7s' %"{:3.3f}".format(link_dict[item]),
+        #print
+        metric = 0
+        for item in link_dict.keys():
+            metric += link_dict[item]
+
+        if Config.RotingType == 'MinimalPath':
+            doa = degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
+            metric = doa/(float(metric)/len(ag.edges()))
+            metric = float("{:3.3f}".format(metric))
+            print "Turn Model ", '%5s' %turn_model_index, "\tdoa:", "{:3.3f}".format(doa), "\tmetric:", "{:3.3f}".format(metric)
         else:
-            print "Turn Model ", '%5s' %turn_model_index, "\tdoa:", "{:3.3f}".format(doa_ex), "\tsimilarity ratio:", "{:3.3f}".format(sum_of_sim_ratio), "\t\tfault tolerance metric:","{:3.5f}".format(float(doa_ex)/sum_of_sim_ratio)
-            doa_ratio = float("{:3.5f}".format(float(doa_ex)/sum_of_sim_ratio, 5))
+            doa_ex = extended_degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
+            metric = doa_ex/(float(metric)/len(ag.edges()))
+            metric = float("{:3.3f}".format(metric))
+            print "Turn Model ", '%5s' %turn_model_index, "\tdoa:", "{:3.3f}".format(doa_ex), "\tmetric:", "{:3.3f}".format(metric)
 
-        if doa_ratio not in classes_of_doa_ratio:
-            classes_of_doa_ratio.append(doa_ratio)
-        if doa_ratio in turn_model_class_dict.keys():
-            turn_model_class_dict[doa_ratio].append(turn_model_index)
+        if metric not in classes_of_doa_ratio:
+            classes_of_doa_ratio.append(metric)
+        if metric in turn_model_class_dict.keys():
+            turn_model_class_dict[metric].append(turn_model_index)
         else:
-            turn_model_class_dict[doa_ratio]=[turn_model_index]
-        if max_ratio < doa_ratio:
-            max_ratio = doa_ratio
+            turn_model_class_dict[metric]=[turn_model_index]
 
-        #print "--------------------------------------------"
-        del noc_rg
-    print "max doa_ratio", max_ratio
+        for node in ag.nodes():
+                node_x, node_y, node_z = AG_Functions.return_node_location(node)
+                if node_x % 2 == 1:
+                    for turn in turn_model_odd:
+                        shmu.break_turn(node, turn, False)
+                        from_port = str(node)+str(turn[0])+"I"
+                        to_port = str(node)+str(turn[2])+"O"
+                        Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
+                else:
+                    for turn in turn_model_even:
+                        shmu.break_turn(node, turn, False)
+                        from_port = str(node)+str(turn[0])+"I"
+                        to_port = str(node)+str(turn[2])+"O"
+                        Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
+
     print "classes of doa_ratio", classes_of_doa_ratio
     for item in sorted(turn_model_class_dict.keys()):
         print item, turn_model_class_dict[item]
+
     return None

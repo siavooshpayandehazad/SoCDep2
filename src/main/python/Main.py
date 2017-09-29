@@ -17,6 +17,7 @@ from GUI_Util import GUI
 from pympler import tracker
 from Simulator import Simulator
 from RoutingAlgorithms.turn_model_evaluation import list_all_turn_models, turn_model_viz, turn_mode_classifier
+from RoutingAlgorithms.turn_model_evaluation import odd_even_evaluation
 from multiprocessing import Pool
 
 
@@ -35,11 +36,12 @@ elif '-GUI' in sys.argv[1:]:
         sys.exit()
 elif '-EvTM_odd_even' in sys.argv[1:]:
     misc.generate_file_directories()
-    for i in range(0, 24):
-        list_all_turn_models.report_odd_even_turn_model_fault_tolerance(True, "minimal", i)
-    list_all_turn_models.viz_all_turn_models_against_each_other()
-    #list_all_turn_models.evaluate_doa_for_all_odd_even_turn_model_list()
-    #list_all_turn_models.enumerate_all_odd_even_turn_models()
+    #for i in range(0, 24):
+    #    odd_even_evaluation.report_odd_even_turn_model_fault_tolerance(True, "nonminimal", i)
+    #odd_even_evaluation.viz_all_turn_models_against_each_other()
+    #odd_even_evaluation.evaluate_doa_for_all_odd_even_turn_model_list()
+    #odd_even_evaluation.enumerate_all_odd_even_turn_models()
+    odd_even_evaluation.test()
     sys.exit()
 elif '-odd_even_viz' in sys.argv[1:]:
     turn_model_viz.viz_2d_odd_even_turn_model()
