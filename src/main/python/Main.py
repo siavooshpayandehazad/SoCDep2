@@ -41,7 +41,7 @@ elif '-EvTM_odd_even' in sys.argv[1:]:
     #odd_even_evaluation.viz_all_turn_models_against_each_other()
     #odd_even_evaluation.evaluate_doa_for_all_odd_even_turn_model_list()
     #odd_even_evaluation.enumerate_all_odd_even_turn_models()
-    odd_even_evaluation.test()
+    odd_even_evaluation.odd_even_fault_tolerance_metric()
     sys.exit()
 elif '-odd_even_viz' in sys.argv[1:]:
     turn_model_viz.viz_2d_odd_even_turn_model()

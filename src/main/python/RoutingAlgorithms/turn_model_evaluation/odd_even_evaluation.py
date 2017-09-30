@@ -29,7 +29,7 @@ def evaluate_actual_odd_even_turn_model():
     ag = copy.deepcopy(AG_Functions.generate_ag())
     number_of_pairs = len(ag.nodes())*(len(ag.nodes())-1)
 
-    turn_model_odd =  ['E2N', 'E2S', 'W2N', 'W2S', 'S2E', 'N2E']
+    turn_model_odd = ['E2N', 'E2S', 'W2N', 'W2S', 'S2E', 'N2E']
     turn_model_even = ['E2N', 'E2S', 'S2W', 'S2E', 'N2W', 'N2E']
 
     if not check_tm_domination(turn_model_odd, turn_model_even):   # taking out the domination!
@@ -331,7 +331,8 @@ def return_links_in_path(path):
 
 def find_similarity_in_paths(link_dict,paths):
     link_dictionary = {}
-    for i in range(0, len(paths)):
+    path_number=len(paths)
+    for i in range(0, path_number):
         for link in return_links_in_path(paths[i]):
             if link in link_dictionary.keys():
                 link_dictionary[link] +=1
@@ -339,37 +340,29 @@ def find_similarity_in_paths(link_dict,paths):
                 link_dictionary[link] = 1
 
     for link in sorted(link_dictionary.keys()):
-        #if link_dictionary[link] >1:
-        if link_dictionary[link] == float(len(paths)):
+        if link_dictionary[link] == path_number:
                 if link in link_dict.keys():
-                    #link_dict[link] += link_dictionary[link]/float(len(paths))
-                    link_dict[link] += 1.0
+                    link_dict[link] += 1
                 else:
-                    #link_dict[link] = link_dictionary[link]/float(len(paths))
-                    link_dict[link] = 1.0
-
-        """
-        else:
-            if len(paths)==1:
-                if link in link_dict.keys():
-                    link_dict[link] += 1.0
-                else:
-                    link_dict[link] = 1.0
-            else:
-                pass
-        """
+                    link_dict[link] = 1
     return link_dict
 
 
-def test():
-    all_odd_evens_file = open('Generated_Files/Turn_Model_Lists/all_odd_evens_doa.txt', 'w')
+def odd_even_fault_tolerance_metric():
+
     turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
                                "W2N": False, "W2S": False, "E2N": False, "E2S": False}
     Config.ag.topology = '2DMesh'
-    Config.ag.x_size = 3
-    Config.ag.y_size = 3
+    Config.ag.x_size = 6
+    Config.ag.y_size = 6
     Config.ag.z_size = 1
-    Config.RotingType = 'NonMinimalPath'
+    Config.RotingType = 'MinimalPath'
+
+    all_odd_evens_file = open('Generated_Files/Turn_Model_Eval/odd_even_metric_'+Config.RotingType+'.txt', 'w')
+    all_odd_evens_file.write("TOPOLOGY::"+str(Config.ag.topology)+"\n")
+    all_odd_evens_file.write("X SIZE:"+str(Config.ag.x_size)+"\n")
+    all_odd_evens_file.write("Y SIZE:"+str(Config.ag.y_size)+"\n")
+    all_odd_evens_file.write("Z SIZE:"+str(Config.ag.z_size)+"\n")
     ag = copy.deepcopy(AG_Functions.generate_ag())
     shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
     turns_health = copy.deepcopy(turns_health_2d_network)
@@ -380,12 +373,16 @@ def test():
 
     classes_of_doa_ratio = []
     turn_model_class_dict = {}
+    tm_counter = 0
     selected_turn_models =[578, 603, 677, 819, 154, 579,777]
     for turn_model in all_odd_even_list:
     #for item in selected_turn_models:
         #print item
         #turn_model = all_odd_even_list[item]
 
+        sys.stdout.write("\rnumber of processed turn models: %i " % tm_counter)
+        sys.stdout.flush()
+        tm_counter += 1
         link_dict = {}
         turn_model_index = all_odd_even_list.index(turn_model)
         turn_model_odd = turn_model[0]
@@ -427,9 +424,6 @@ def test():
                                     all_paths_in_graph+=paths
                                 link_dict = find_similarity_in_paths(link_dict, paths)
 
-        #for item in link_dict.keys():
-        #    print '%7s' %"{:3.3f}".format(link_dict[item]),
-        #print
         metric = 0
         for item in link_dict.keys():
             metric += link_dict[item]
@@ -438,12 +432,12 @@ def test():
             doa = degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
             metric = doa/(float(metric)/len(ag.edges()))
             metric = float("{:3.3f}".format(metric))
-            print "Turn Model ", '%5s' %turn_model_index, "\tdoa:", "{:3.3f}".format(doa), "\tmetric:", "{:3.3f}".format(metric)
+            #print "Turn Model ", '%5s' %turn_model_index, "\tdoa:", "{:3.3f}".format(doa), "\tmetric:", "{:3.3f}".format(metric)
         else:
             doa_ex = extended_degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
             metric = doa_ex/(float(metric)/len(ag.edges()))
             metric = float("{:3.3f}".format(metric))
-            print "Turn Model ", '%5s' %turn_model_index, "\tdoa:", "{:3.3f}".format(doa_ex), "\tmetric:", "{:3.3f}".format(metric)
+            #print "Turn Model ", '%5s' %turn_model_index, "\tdoa:", "{:3.3f}".format(doa_ex), "\tmetric:", "{:3.3f}".format(metric)
 
         if metric not in classes_of_doa_ratio:
             classes_of_doa_ratio.append(metric)
@@ -452,6 +446,7 @@ def test():
         else:
             turn_model_class_dict[metric]=[turn_model_index]
 
+        # return SHMU and RG back to default
         for node in ag.nodes():
                 node_x, node_y, node_z = AG_Functions.return_node_location(node)
                 if node_x % 2 == 1:
@@ -467,7 +462,26 @@ def test():
                         to_port = str(node)+str(turn[2])+"O"
                         Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
 
-    print "classes of metric", classes_of_doa_ratio
+
+
+    all_odd_evens_file.write("classes of metric"+str(classes_of_doa_ratio)+"\n")
+    all_odd_evens_file.write("----------"*3+"\n")
+    all_odd_evens_file.write("turn models of class"+"\n")
+    #print "classes of metric", classes_of_doa_ratio
     for item in sorted(turn_model_class_dict.keys()):
-        print item, turn_model_class_dict[item]
+        #print item, turn_model_class_dict[item]
+        all_odd_evens_file.write(str(item)+" "+str(turn_model_class_dict[item])+"\n")
+
+    all_odd_evens_file.write("----------"*3+"\n")
+    all_odd_evens_file.write("distribution of turn models"+"\n")
+    for item in sorted(turn_model_class_dict.keys()):
+        temp_list = []
+        for tm in turn_model_class_dict[item]:
+            turn_model = all_odd_even_list[tm]
+            number_of_turns = len(turn_model[0])+len(turn_model[1])
+            temp_list.append(number_of_turns)
+        #print item, temp_list.count(8), temp_list.count(9), temp_list.count(10), temp_list.count(11), temp_list.count(12)
+        all_odd_evens_file.write(str(item)+" "+str(temp_list.count(8))+" "+str(temp_list.count(9))+" "+
+                                 str(temp_list.count(10))+" "+str(temp_list.count(11))+" "+str(temp_list.count(12))+"\n")
+    all_odd_evens_file.close()
     return None
