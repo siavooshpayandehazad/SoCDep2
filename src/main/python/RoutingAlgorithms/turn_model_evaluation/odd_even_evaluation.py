@@ -339,14 +339,16 @@ def find_similarity_in_paths(link_dict,paths):
                 link_dictionary[link] = 1
 
     for link in sorted(link_dictionary.keys()):
-        if link_dictionary[link] >1:
-            if link_dictionary[link] == float(len(paths)):
+        #if link_dictionary[link] >1:
+        if link_dictionary[link] == float(len(paths)):
                 if link in link_dict.keys():
                     #link_dict[link] += link_dictionary[link]/float(len(paths))
                     link_dict[link] += 1.0
                 else:
                     #link_dict[link] = link_dictionary[link]/float(len(paths))
                     link_dict[link] = 1.0
+
+        """
         else:
             if len(paths)==1:
                 if link in link_dict.keys():
@@ -355,7 +357,7 @@ def find_similarity_in_paths(link_dict,paths):
                     link_dict[link] = 1.0
             else:
                 pass
-
+        """
     return link_dict
 
 
@@ -465,8 +467,7 @@ def test():
                         to_port = str(node)+str(turn[2])+"O"
                         Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
 
-    print "classes of doa_ratio", classes_of_doa_ratio
+    print "classes of metric", classes_of_doa_ratio
     for item in sorted(turn_model_class_dict.keys()):
         print item, turn_model_class_dict[item]
-
     return None
