@@ -35,13 +35,46 @@ elif '-GUI' in sys.argv[1:]:
     if not main_window.apply_button:
         sys.exit()
 elif '-EvTM_odd_even' in sys.argv[1:]:
-    misc.generate_file_directories()
-    # for i in range(0, 24):
-    #    odd_even_evaluation.report_odd_even_turn_model_fault_tolerance(True, "nonminimal", i)
+    #misc.generate_file_directories()
+
+    """
+    for size in range(3, 4):
+        for routing_type in ["MinimalPath", "NonMinimalPath"]:
+            odd_even_evaluation.odd_even_fault_tolerance_metric(size, routing_type)
+    sys.exit()
+    """
+    ##################################
+    # 2X2 NoC
+    #  DoA
+    # selected_turn_models = [807, 816, 819]
+    #  DoA_ex
+    # selected_turn_models = [807, 787, 816, 796, 819]
+    #  new metric minimal
+    # selected_turn_models = [0, 1, 58]
+    #  new metric non minimal
+    # selected_turn_models = [2, 0, 33, 1, 58]
+
+    ##################################
+    # 3X3 NoC
+    #  DoA
+    # selected_turn_models = [32, 0, 33, 1, 249, 93, 669, 255, 254, 679, 677]
+    #  DoA_ex
+    # selected_turn_models = [8, 284, 52, 680, 287, 264, 256, 244, 685, 682, 660, 37, 245, 121, 273, 56, 288, 257, 247, 76,
+    #                         662, 32, 0 , 55, 260, 265, 274, 286, 38, 39, 53, 40, 684, 278, 79, 275, 33, 259, 277, 267,
+    #                         248, 290, 258, 1 , 4 , 34, 663, 54, 35, 246, 41, 270, 664, 269, 281, 57, 250, 289, 282, 249,
+    #                         693, 263, 670, 5 , 669, 36, 93, 122, 58, 295, 251, 271, 252, 673, 698, 672, 294, 697, 254, 677,
+    #                         126, 255, 679]
+    #  new metric minimal
+    # selected_turn_models = [32, 256, 0,  33, 35, 258, 1,  250, 36, 670, 93, 255, 679]
+    #  new metric non minimal
+    selected_turn_models = [284, 88, 52, 680, 244, 264, 287, 256, 285, 32, 121, 245, 37, 685, 265, 272, 247, 33, 56,
+                            0,  55, 40, 4,  38, 34, 35, 53, 39, 89, 262, 269, 293, 250, 290, 261, 122, 1,  292, 253,
+                            252, 5,  57, 58, 93, 126]
+
+    odd_even_evaluation.evaluate_turn_model_fault_tolerance(selected_turn_models, 3, "nonminimal", 3)
     #odd_even_evaluation.viz_all_turn_models_against_each_other()
     #odd_even_evaluation.evaluate_doa_for_all_odd_even_turn_model_list()
     #odd_even_evaluation.enumerate_all_odd_even_turn_models()
-    odd_even_evaluation.odd_even_fault_tolerance_metric()
     sys.exit()
 elif '-odd_even_viz' in sys.argv[1:]:
     turn_model_viz.viz_2d_odd_even_turn_model()

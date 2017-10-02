@@ -240,7 +240,8 @@ def evaluate_doa_for_all_odd_even_turn_model_list():
     return None
 
 
-def report_odd_even_turn_model_fault_tolerance(viz, routing_type, combination):
+def report_odd_even_turn_model_fault_tolerance(viz, routing_type, combination, network_size, ft_dictionary,
+                                               selected_turn_models):
     """
     generates 2D architecture graph with all combinations C(len(ag.nodes), combination)
     of links and writes the average connectivity metric in a file.
@@ -249,17 +250,16 @@ def report_odd_even_turn_model_fault_tolerance(viz, routing_type, combination):
     :param combination: number of links to be present in the network
     :return: None
     """
+
     turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
                                "W2N": False, "W2S": False, "E2N": False, "E2S": False}
     tm_counter = 0
     Config.ag.topology = '2DMesh'
-    Config.ag.x_size = 3
-    Config.ag.y_size = 3
+    Config.ag.x_size = network_size
+    Config.ag.y_size = network_size
     Config.ag.z_size = 1
 
-    # selected_turn_models = [677, 678, 697, 699, 717, 718, 737, 739, 757, 759, 778, 779, 797,
-    #                        799, 818, 819, 679, 738, 777, 798]
-    selected_turn_models = [578]
+
     if routing_type == "minimal":
         Config.RotingType = 'MinimalPath'
     else:
@@ -338,13 +338,17 @@ def report_odd_even_turn_model_fault_tolerance(viz, routing_type, combination):
         else:
             avg_connectivity = 0
         turn_model_eval_file.write(str(len(ag.edges())-combination)+"\t\t"+str(avg_connectivity)+"\n")
+        if turn_id in ft_dictionary.keys():
+            ft_dictionary[turn_id].append(avg_connectivity)
+        else:
+            ft_dictionary[turn_id] = [avg_connectivity]
         if viz:
             turn_model_eval_viz_file.close()
         turn_model_eval_file.close()
         sys.stdout.write("\rchecked TM: %i " % tm_counter+"\t\t\tnumber of healthy links: %i " % combination)
         sys.stdout.flush()
         tm_counter += 1
-    return None
+    return ft_dictionary
 
 
 def return_links_in_path(path):
@@ -376,17 +380,18 @@ def find_similarity_in_paths(link_dict, paths):
     return link_dict
 
 
-def odd_even_fault_tolerance_metric():
+def odd_even_fault_tolerance_metric(network_size, routing_type):
 
     turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
                                "W2N": False, "W2S": False, "E2N": False, "E2S": False}
     Config.ag.topology = '2DMesh'
-    Config.ag.x_size = 5
-    Config.ag.y_size = 5
+    Config.ag.x_size = network_size
+    Config.ag.y_size = network_size
     Config.ag.z_size = 1
-    Config.RotingType = 'NonMinimalPath'
+    Config.RotingType = routing_type
 
-    all_odd_evens_file = open('Generated_Files/Turn_Model_Eval/odd_even_metric_'+Config.RotingType+'.txt', 'w')
+    all_odd_evens_file = open('Generated_Files/Turn_Model_Eval/'+str(network_size)+"x"+str(network_size)+
+                              '_OE_metric_'+Config.RotingType+'.txt', 'w')
     all_odd_evens_file.write("TOPOLOGY::"+str(Config.ag.topology)+"\n")
     all_odd_evens_file.write("X SIZE:"+str(Config.ag.x_size)+"\n")
     all_odd_evens_file.write("Y SIZE:"+str(Config.ag.y_size)+"\n")
@@ -467,13 +472,15 @@ def odd_even_fault_tolerance_metric():
 
         if Config.RotingType == 'MinimalPath':
             doa = degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
-            metric = doa/(float(metric)/len(ag.edges()))
+            #metric = doa/(float(metric)/len(ag.edges()))
+            metric = 1/(float(metric)/len(ag.edges()))
             metric = float("{:3.3f}".format(metric))
             # print "Turn Model ", '%5s' %turn_model_index, "\tdoa:", "{:3.3f}".format(doa),
             #       "\tmetric:", "{:3.3f}".format(metric)
         else:
             doa_ex = extended_degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
-            metric = doa_ex/(float(metric)/len(ag.edges()))
+            #metric = doa_ex/(float(metric)/len(ag.edges()))
+            metric = 1/(float(metric)/len(ag.edges()))
             metric = float("{:3.3f}".format(metric))
             # print "Turn Model ", '%5s' %turn_model_index, "\tdoa:", "{:3.3f}".format(doa_ex),
             #       "\tmetric:", "{:3.3f}".format(metric)
@@ -524,3 +531,26 @@ def odd_even_fault_tolerance_metric():
                                  str(temp_list.count(12))+"\n")
     all_odd_evens_file.close()
     return None
+
+
+def evaluate_turn_model_fault_tolerance(selected_turn_models, network_size, routing_type, max_number_of_broken_links):
+    print "number of turn models:", len(selected_turn_models)
+    ft_dictionary = {}
+    for i in range(0, max_number_of_broken_links+1):
+        report_odd_even_turn_model_fault_tolerance(True, routing_type, i, network_size,
+                                                   ft_dictionary, selected_turn_models)
+    print
+    for i in range(0, len(selected_turn_models)):
+        item = selected_turn_models[i]
+        print '%5s' %item, "\t",
+        if i>0:
+            prev_item = selected_turn_models[i-1]
+            for j in range(0, len(ft_dictionary[item])):
+                if ft_dictionary[item][j]<ft_dictionary[prev_item][j]:
+                    print '\033[91m'+"{:3.3f}".format(ft_dictionary[item][j])+'\033[0m',"\t",
+                else:
+                    print "{:3.3f}".format(ft_dictionary[item][j]),"\t",
+        else:
+            for value in ft_dictionary[item]:
+                print "{:3.3f}".format(value),"\t",
+        print
