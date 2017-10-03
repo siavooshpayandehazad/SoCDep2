@@ -532,13 +532,29 @@ def odd_even_fault_tolerance_metric(network_size, routing_type):
     return  turn_model_class_dict
 
 
-def evaluate_turn_model_fault_tolerance(selected_turn_models, network_size, routing_type, max_number_of_broken_links):
+def evaluate_turn_model_fault_tolerance(selected_turn_models, network_size, routing_type, list_of_broken_links, previously_calculated_ft):
+
+    ft_dictionary = copy.deepcopy(previously_calculated_ft)
+
+    temp_turn_list = []
+    for item in selected_turn_models:
+        if item not in ft_dictionary.keys():
+            temp_turn_list.append(item)
     print "number of turn models:", len(selected_turn_models)
-    ft_dictionary = {}
-    for i in range(0, max_number_of_broken_links+1):
-        report_odd_even_turn_model_fault_tolerance(True, routing_type, i, network_size,
-                                                   ft_dictionary, selected_turn_models)
+    print "number of unprocessed turn models:", len(temp_turn_list)
+    for i in list_of_broken_links:
+        ft_dictionary = report_odd_even_turn_model_fault_tolerance(True, routing_type, i, network_size,
+                                                                   ft_dictionary, temp_turn_list)
     print
+    print
+    print "\t\t\tnumber of broken links"
+    print "-------------------"*4
+    print '%5s' %"#", "\t",
+    for j in list_of_broken_links:
+            print '%6s' %j,"\t",
+    print
+    print "-------------------"*4
+
     for i in range(0, len(selected_turn_models)):
         item = selected_turn_models[i]
         print '%5s' %item, "\t",
@@ -546,10 +562,11 @@ def evaluate_turn_model_fault_tolerance(selected_turn_models, network_size, rout
             prev_item = selected_turn_models[i-1]
             for j in range(0, len(ft_dictionary[item])):
                 if ft_dictionary[item][j]<ft_dictionary[prev_item][j]:
-                    print '\033[91m'+"{:3.3f}".format(ft_dictionary[item][j])+'\033[0m',"\t",
+                    print '\033[91m'+'%6s' %"{:3.3f}".format(ft_dictionary[item][j])+'\033[0m',"\t",
                 else:
-                    print "{:3.3f}".format(ft_dictionary[item][j]),"\t",
+                    print '%6s' %"{:3.3f}".format(ft_dictionary[item][j]),"\t",
         else:
             for value in ft_dictionary[item]:
-                print "{:3.3f}".format(value),"\t",
+                print '%6s' %"{:3.3f}".format(value),"\t",
         print
+    return ft_dictionary
