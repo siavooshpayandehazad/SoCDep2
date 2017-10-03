@@ -471,8 +471,8 @@ def odd_even_fault_tolerance_metric(network_size, routing_type):
 
         if Config.RotingType == 'MinimalPath':
             doa = degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
-            metric = doa/(float(metric)/len(ag.edges()))
-            #metric = 1/(float(metric)/len(ag.edges()))
+            #metric = doa/(float(metric)/len(ag.edges()))
+            metric = 1/(float(metric)/len(ag.edges()))
             metric = float("{:3.3f}".format(metric))
             # print "Turn Model ", '%5s' %turn_model_index, "\tdoa:", "{:3.3f}".format(doa),
             #       "\tmetric:", "{:3.3f}".format(metric)
