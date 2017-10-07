@@ -136,6 +136,10 @@ def enumerate_all_odd_even_turn_models(network_size, routing_type):
                             from_port = str(node)+str(turn[0])+"I"
                             to_port = str(node)+str(turn[2])+"O"
                             Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
+
+    all_odd_evens_file.write("checked TM: %i " + str(tm_counter) +
+                             " number of fully connected TM: %i" +str(connected_counter) +
+                             " number of deadlock free connected TM: %i"+str(deadlock_free_counter))
     all_odd_evens_file.close()
     return None
 
