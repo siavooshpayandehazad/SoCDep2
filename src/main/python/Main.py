@@ -36,19 +36,15 @@ elif '-GUI' in sys.argv[1:]:
     if not main_window.apply_button:
         sys.exit()
 elif '-EvTM_odd_even' in sys.argv[1:]:
-    #misc.generate_file_directories()
+    misc.generate_file_directories()
+    for size in range(4, 8):
+        for routing_type in ["MinimalPath", "NonMinimalPath"]:
+            odd_even_evaluation.enumerate_all_odd_even_turn_models(size, routing_type)
+            print
     for size in range(2, 5):
         ft_dictionary_minimal = {}
         ft_dictionary_non_minimal = {}
-        max_broken_links = 5
-        if size == 2:
-            list_of_broken_links = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-        elif size == 3:
-            #list_of_broken_links = [0, 1, 2, 8, 16, 22, 23, 24]
-            list_of_broken_links = [0, 1, 2]
-        else:
-            list_of_broken_links = [0, 1, 2]
-
+        list_of_broken_links = [0, 1, 2, 3, 4, 5, 6, 7, 8]
         classes_of_doa, classes_of_doax = odd_even_evaluation.evaluate_doa_for_all_odd_even_turn_model_list(size)
         print
         print "======================================="*2
@@ -84,11 +80,9 @@ elif '-EvTM_odd_even' in sys.argv[1:]:
             print
     sys.exit()
 
-
     #odd_even_evaluation.viz_all_turn_models_against_each_other()
-    #
-    #odd_even_evaluation.enumerate_all_odd_even_turn_models()
     sys.exit()
+
 elif '-odd_even_viz' in sys.argv[1:]:
     turn_model_viz.viz_2d_odd_even_turn_model()
     sys.exit()

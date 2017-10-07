@@ -64,7 +64,7 @@ def check_deadlock_freeness(noc_rg):
     if is_directed_acyclic_graph(noc_rg):
         return True
     else:
-        print  find_cycle(noc_rg, orientation='original')
+        #print find_cycle(noc_rg, orientation='original')
         return False
 
 

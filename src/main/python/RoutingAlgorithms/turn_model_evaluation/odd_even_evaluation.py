@@ -65,15 +65,15 @@ def evaluate_actual_odd_even_turn_model():
         sys.stdout.flush()
 
 
-def enumerate_all_odd_even_turn_models():
+def enumerate_all_odd_even_turn_models(network_size, routing_type):
     all_odd_evens_file = open('Generated_Files/Turn_Model_Lists/odd_even_tm_list_dl_free.txt', 'w')
     turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
                                "W2N": False, "W2S": False, "E2N": False, "E2S": False}
     Config.ag.topology = '2DMesh'
-    Config.ag.x_size = 6
-    Config.ag.y_size = 6
+    Config.ag.x_size = network_size
+    Config.ag.y_size = network_size
     Config.ag.z_size = 1
-    Config.RotingType = 'MinimalPath'
+    Config.RotingType = routing_type
     ag = copy.deepcopy(AG_Functions.generate_ag())
     number_of_pairs = len(ag.nodes())*(len(ag.nodes())-1)
 
@@ -86,14 +86,14 @@ def enumerate_all_odd_even_turn_models():
     connected_counter = 0
     deadlock_free_counter = 0
     tm_counter = 0
+    turns_health = copy.deepcopy(turns_health_2d_network)
+    shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
+    shmu.setup_noc_shm(ag, turns_health, False)
+    noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, [], False,  False))
+
     for turn_model_odd in turn_model_list:
         for turn_model_even in turn_model_list:
             if not check_tm_domination(turn_model_odd, turn_model_even):   # taking out the domination!
-                turns_health = copy.deepcopy(turns_health_2d_network)
-                shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
-                shmu.setup_noc_shm(ag, turns_health, False)
-                noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, [], False,  False))
-
                 for node in ag.nodes():
                     node_x, node_y, node_z = AG_Functions.return_node_location(node)
                     if node_x % 2 == 1:
@@ -120,6 +120,21 @@ def enumerate_all_odd_even_turn_models():
                                  " number of fully connected TM: %i" % connected_counter +
                                  " number of deadlock free connected TM: %i" % deadlock_free_counter)
                 sys.stdout.flush()
+
+                for node in ag.nodes():
+                    node_x, node_y, node_z = AG_Functions.return_node_location(node)
+                    if node_x % 2 == 1:
+                        for turn in turn_model_odd:
+                            shmu.restore_broken_turn(node, turn, False)
+                            from_port = str(node)+str(turn[0])+"I"
+                            to_port = str(node)+str(turn[2])+"O"
+                            Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
+                    else:
+                        for turn in turn_model_even:
+                            shmu.restore_broken_turn(node, turn, False)
+                            from_port = str(node)+str(turn[0])+"I"
+                            to_port = str(node)+str(turn[2])+"O"
+                            Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
     all_odd_evens_file.close()
     return None
 
