@@ -66,7 +66,8 @@ def evaluate_actual_odd_even_turn_model():
 
 
 def enumerate_all_odd_even_turn_models(network_size, routing_type):
-    all_odd_evens_file = open('Generated_Files/Turn_Model_Lists/odd_even_tm_list_dl_free.txt', 'w')
+    all_odd_evens_file = open('Generated_Files/Turn_Model_Lists/'+str(network_size)+"x"
+                              +str(network_size)+'odd_even_tm_list_dl_free.txt', 'w')
     turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
                                "W2N": False, "W2S": False, "E2N": False, "E2S": False}
     Config.ag.topology = '2DMesh'
