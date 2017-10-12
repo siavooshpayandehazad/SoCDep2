@@ -37,49 +37,14 @@ elif '-GUI' in sys.argv[1:]:
         sys.exit()
 elif '-EvTM_odd_even' in sys.argv[1:]:
     misc.generate_file_directories()
+
     for size in range(4, 8):
         for routing_type in ["MinimalPath", "NonMinimalPath"]:
             odd_even_evaluation.enumerate_all_odd_even_turn_models(size, routing_type)
             print
-    for size in range(2, 5):
-        ft_dictionary_minimal = {}
-        ft_dictionary_non_minimal = {}
-        list_of_broken_links = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-        classes_of_doa, classes_of_doax = odd_even_evaluation.evaluate_doa_for_all_odd_even_turn_model_list(size)
-        print
-        print "======================================="*2
-        print "starting calculating DoA for size:", size
-        selected_turn_models = []
-        for item in sorted(classes_of_doa.keys()):
-            selected_turn_models.append(classes_of_doa[item][0])
-        print "selected turn models:", selected_turn_models
-        ft_dictionary_minimal = copy.deepcopy(odd_even_evaluation.evaluate_turn_model_fault_tolerance(selected_turn_models, size, "minimal", list_of_broken_links, ft_dictionary_minimal))
-        print
-        print "======================================="*2
-        print "starting calculating DoA_ex for size:", size
-        selected_turn_models = []
-        for item in sorted(classes_of_doax.keys()):
-            selected_turn_models.append(classes_of_doax[item][0])
-        print "selected turn models:", selected_turn_models
-        ft_dictionary_non_minimal = copy.deepcopy(odd_even_evaluation.evaluate_turn_model_fault_tolerance(selected_turn_models, size, "nonminimal", list_of_broken_links, ft_dictionary_non_minimal))
-        print
-        
-        for routing_type in ["MinimalPath", "NonMinimalPath"]:
-            selected_turn_models = []
-            turn_model_class_dict = odd_even_evaluation.odd_even_fault_tolerance_metric(size, routing_type)
-            print
-            for item in sorted(turn_model_class_dict.keys()):
-                selected_turn_models.append(turn_model_class_dict[item][0])
-            print "======================================="*2
-            print "calculating new metric for", routing_type, "routing"
-            print "selected turn models:", selected_turn_models
-            if routing_type == "MinimalPath":
-                ft_dictionary_minimal = copy.deepcopy(odd_even_evaluation.evaluate_turn_model_fault_tolerance(selected_turn_models, size, "minimal", list_of_broken_links, ft_dictionary_minimal))
-            else:
-                ft_dictionary_non_minimal = copy.deepcopy(odd_even_evaluation.evaluate_turn_model_fault_tolerance(selected_turn_models, size, "nonminimal", list_of_broken_links, ft_dictionary_non_minimal))
-            print
-    sys.exit()
 
+    odd_even_evaluation.evaluate_robustness_links(3)
+    odd_even_evaluation.evaluate_robustness_routers(3)
     #odd_even_evaluation.viz_all_turn_models_against_each_other()
     sys.exit()
 

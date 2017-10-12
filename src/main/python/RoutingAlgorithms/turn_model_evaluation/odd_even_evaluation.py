@@ -18,6 +18,10 @@ import re
 
 
 def evaluate_actual_odd_even_turn_model():
+    """
+    evaluates the classic odd-even turn model in terms of DoA and DoA_ex
+    :return: None
+    """
     turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
                                "W2N": False, "W2S": False, "E2N": False, "E2S": False}
     Config.ag.topology = '2DMesh'
@@ -61,13 +65,12 @@ def evaluate_actual_odd_even_turn_model():
         doa_ex = extended_degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
         print "doa:", doa
         print "doa_ex", doa_ex
-
-        sys.stdout.flush()
+    return None
 
 
 def enumerate_all_odd_even_turn_models(network_size, routing_type):
     all_odd_evens_file = open('Generated_Files/Turn_Model_Lists/'+str(network_size)+"x"
-                              +str(network_size)+'odd_even_tm_list_dl_free.txt', 'w')
+                              +str(network_size)+"_"+str(routing_type)+"_"+'odd_even_tm_list_dl_free.txt', 'w')
     turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
                                "W2N": False, "W2S": False, "E2N": False, "E2S": False}
     Config.ag.topology = '2DMesh'
@@ -278,11 +281,7 @@ def report_odd_even_turn_model_fault_tolerance(viz, routing_type, combination, n
     Config.ag.y_size = network_size
     Config.ag.z_size = 1
 
-
-    if routing_type == "minimal":
-        Config.RotingType = 'MinimalPath'
-    else:
-        Config.RotingType = 'NonMinimalPath'
+    Config.RotingType = routing_type
 
     ag = copy.deepcopy(AG_Functions.generate_ag(report=False))
     sub_ag_list = list(itertools.combinations(ag.edges(), combination))
@@ -369,6 +368,106 @@ def report_odd_even_turn_model_fault_tolerance(viz, routing_type, combination, n
         tm_counter += 1
     return ft_dictionary
 
+
+def report_odd_even_turn_model_router_fault_tolerance(viz, routing_type, combination, network_size, ft_dictionary,
+                                                      selected_turn_models):
+    """
+    generates 2D architecture graph with all combinations C(len(ag.nodes), combination)
+    of links and writes the average connectivity metric in a file.
+    :param viz: if true, generates the visualization files
+    :param routing_type: can be "minimal" or "nonminimal"
+    :param combination: number of links to be present in the network
+    :return: None
+    """
+
+    turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
+                               "W2N": False, "W2S": False, "E2N": False, "E2S": False}
+    tm_counter = 0
+    Config.ag.topology = '2DMesh'
+    Config.ag.x_size = network_size
+    Config.ag.y_size = network_size
+    Config.ag.z_size = 1
+
+    Config.RotingType = routing_type
+
+    ag = copy.deepcopy(AG_Functions.generate_ag(report=False))
+    router_list = list(itertools.combinations(ag.nodes(), combination))
+
+
+    for turn_id in selected_turn_models:
+        counter = 0
+        metric_sum = 0
+        turn_model = all_odd_even_list[turn_id]
+
+        turn_model_odd = turn_model[0]
+        turn_model_even = turn_model[1]
+
+        file_name = str(tm_counter)+'_eval'
+        turn_model_eval_file = open('Generated_Files/Turn_Model_Eval/'+file_name+'.txt', 'a+')
+        if viz:
+            file_name_viz = str(tm_counter)+'_eval_'+str(len(ag.nodes())-counter)
+            turn_model_eval_viz_file = open('Generated_Files/Internal/odd_even'+file_name_viz+'.txt', 'w')
+        else:
+            turn_model_eval_viz_file = None
+
+        for sub_router_list in router_list:
+            turns_health = copy.deepcopy(turns_health_2d_network)
+            shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
+            shmu.setup_noc_shm(ag, turns_health, False)
+            noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, [], False,  False))
+
+            for node in ag.nodes():
+                if node not in sub_router_list:
+                    node_x, node_y, node_z = AG_Functions.return_node_location(node)
+                    if node_x % 2 == 1:
+                        for turn in turn_model_odd:
+                            shmu.restore_broken_turn(node, turn, False)
+                            from_port = str(node)+str(turn[0])+"I"
+                            to_port = str(node)+str(turn[2])+"O"
+                            Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
+                    else:
+                        for turn in turn_model_even:
+                            shmu.restore_broken_turn(node, turn, False)
+                            from_port = str(node)+str(turn[0])+"I"
+                            to_port = str(node)+str(turn[2])+"O"
+                            Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
+                else:
+                    for port_1 in ["N", "S", "E", "W", "L"]:
+                        for port_2 in ["N", "S", "E", "W", "L"]:
+                            if port_1 != port_2:
+                                from_port = str(node)+str(port_1)+"I"
+                                to_port = str(node)+str(port_2)+"O"
+                                if (from_port, to_port) in noc_rg.edges():
+                                    Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
+
+
+            connectivity_metric = reachability_metric(ag, noc_rg, False)
+            counter += 1
+            metric_sum += connectivity_metric
+            if viz:
+                turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
+            # print "#:"+str(counter)+"\t\tC.M.:"+str(connectivity_metric)+"\t\t avg:", \
+            #     float(metric_sum)/counter, "\t\tstd:", std
+
+
+        shuffle(router_list)
+
+        if counter > 0:
+            avg_connectivity = float(metric_sum)/counter
+        else:
+            avg_connectivity = 0
+        turn_model_eval_file.write(str(len(ag.nodes())-combination)+"\t\t"+str(avg_connectivity)+"\n")
+        if turn_id in ft_dictionary.keys():
+            ft_dictionary[turn_id].append(avg_connectivity)
+        else:
+            ft_dictionary[turn_id] = [avg_connectivity]
+        if viz:
+            turn_model_eval_viz_file.close()
+        turn_model_eval_file.close()
+        sys.stdout.write("\rchecked TM: %i " % tm_counter+"\t\t\tnumber of broken routers: %i " % combination)
+        sys.stdout.flush()
+        tm_counter += 1
+    return ft_dictionary
 
 def return_links_in_path(path):
     links = []
@@ -590,3 +689,159 @@ def evaluate_turn_model_fault_tolerance(selected_turn_models, network_size, rout
                 print '%6s' %"{:3.3f}".format(value),"\t",
         print
     return ft_dictionary
+
+
+def evaluate_turn_model_router_fault_tolerance(selected_turn_models, network_size, routing_type, list_of_broken_routers,
+                                               previously_calculated_ft):
+
+    ft_dictionary = copy.deepcopy(previously_calculated_ft)
+
+    temp_turn_list = []
+    for item in selected_turn_models:
+        if item not in ft_dictionary.keys():
+            temp_turn_list.append(item)
+    print "number of turn models:", len(selected_turn_models)
+    print "number of unprocessed turn models:", len(temp_turn_list)
+    for i in list_of_broken_routers:
+        ft_dictionary = report_odd_even_turn_model_router_fault_tolerance(True, routing_type, i, network_size,
+                                                                          ft_dictionary, temp_turn_list)
+    print
+    print
+    print "\t\t\tnumber of broken routers:"
+    print "-------------------"*4
+    print '%5s' %"#", "\t",
+    for j in list_of_broken_routers:
+            print '%6s' %j,"\t",
+    print
+    print "-------------------"*4
+
+    for i in range(0, len(selected_turn_models)):
+        item = selected_turn_models[i]
+        print '%5s' %item, "\t",
+        if i>0:
+            prev_item = selected_turn_models[i-1]
+            for j in range(0, len(ft_dictionary[item])):
+                if ft_dictionary[item][j]<ft_dictionary[prev_item][j]:
+                    print '\033[91m'+'%6s' %"{:3.3f}".format(ft_dictionary[item][j])+'\033[0m',"\t",
+                else:
+                    print '%6s' %"{:3.3f}".format(ft_dictionary[item][j]),"\t",
+        else:
+            for value in ft_dictionary[item]:
+                print '%6s' %"{:3.3f}".format(value),"\t",
+        print
+    return ft_dictionary
+
+
+def evaluate_robustness_links(max_network_size):
+    ft_dictionary_minimal = {}
+    ft_dictionary_non_minimal = {}
+    for size in range(2, max_network_size+1):
+        ft_dictionary_minimal = {}
+        ft_dictionary_non_minimal = {}
+
+        list_of_broken_links = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+
+        classes_of_doa, classes_of_doax = evaluate_doa_for_all_odd_even_turn_model_list(size)
+        print
+        print "======================================="*2
+        print "starting calculating DoA for size:", size
+        selected_turn_models = []
+        for item in sorted(classes_of_doa.keys()):
+            selected_turn_models.append(classes_of_doa[item][0])
+        print "selected turn models:", selected_turn_models
+        ft_dictionary_minimal = copy.deepcopy(evaluate_turn_model_fault_tolerance(selected_turn_models, size,
+                                                                                  "MinimalPath", list_of_broken_links,
+                                                                                  ft_dictionary_minimal))
+        print
+        print "======================================="*2
+        print "starting calculating DoA_ex for size:", size
+        selected_turn_models = []
+        for item in sorted(classes_of_doax.keys()):
+            selected_turn_models.append(classes_of_doax[item][0])
+        print "selected turn models:", selected_turn_models
+        ft_dictionary_non_minimal = copy.deepcopy(evaluate_turn_model_fault_tolerance(selected_turn_models, size,
+                                                                                      "NonMinimalPath",
+                                                                                      list_of_broken_links,
+                                                                                      ft_dictionary_non_minimal))
+        print
+
+        for routing_type in ["MinimalPath", "NonMinimalPath"]:
+            selected_turn_models = []
+            turn_model_class_dict = odd_even_fault_tolerance_metric(size, routing_type)
+            print
+            for item in sorted(turn_model_class_dict.keys()):
+                selected_turn_models.append(turn_model_class_dict[item][0])
+            print "======================================="*2
+            print "calculating new metric for", routing_type, "routing"
+            print "selected turn models:", selected_turn_models
+
+            if routing_type == "MinimalPath":
+                ft_dictionary_minimal = copy.deepcopy(evaluate_turn_model_fault_tolerance(selected_turn_models, size,
+                                                                                          routing_type, list_of_broken_links,
+                                                                                          ft_dictionary_minimal))
+            else:
+                ft_dictionary_non_minimal = copy.deepcopy(evaluate_turn_model_fault_tolerance(selected_turn_models,
+                                                                                              size, routing_type,
+                                                                                              list_of_broken_links,
+                                                                                              ft_dictionary_non_minimal))
+            print
+
+    return ft_dictionary_minimal, ft_dictionary_non_minimal
+
+
+def evaluate_robustness_routers(max_network_size):
+    ft_dictionary_minimal = {}
+    ft_dictionary_non_minimal = {}
+
+    for size in range(2, max_network_size+1):
+        ft_dictionary_minimal = {}
+        ft_dictionary_non_minimal = {}
+        list_of_broken_routers = range(0, size**2+1)
+
+        classes_of_doa, classes_of_doax = evaluate_doa_for_all_odd_even_turn_model_list(size)
+        print
+        print "======================================="*2
+        print "starting calculating DoA for size:", size
+        selected_turn_models = []
+        for item in sorted(classes_of_doa.keys()):
+            selected_turn_models.append(classes_of_doa[item][0])
+        print "selected turn models:", selected_turn_models
+        ft_dictionary_minimal = copy.deepcopy(evaluate_turn_model_router_fault_tolerance(selected_turn_models, size,
+                                                                                         "MinimalPath",
+                                                                                         list_of_broken_routers,
+                                                                                         ft_dictionary_minimal))
+        print
+        print "======================================="*2
+        print "starting calculating DoA_ex for size:", size
+        selected_turn_models = []
+        for item in sorted(classes_of_doax.keys()):
+            selected_turn_models.append(classes_of_doax[item][0])
+        print "selected turn models:", selected_turn_models
+        ft_dictionary_non_minimal = copy.deepcopy(evaluate_turn_model_router_fault_tolerance(selected_turn_models,
+                                                                                             size, "NoneMinimalPath",
+                                                                                             list_of_broken_routers,
+                                                                                             ft_dictionary_minimal))
+        print
+
+        for routing_type in ["MinimalPath", "NonMinimalPath"]:
+            selected_turn_models = []
+            turn_model_class_dict = odd_even_fault_tolerance_metric(size, routing_type)
+            print
+            for item in sorted(turn_model_class_dict.keys()):
+                selected_turn_models.append(turn_model_class_dict[item][0])
+            print "======================================="*2
+            print "calculating new metric for", routing_type, "routing"
+            print "selected turn models:", selected_turn_models
+
+            if routing_type == "MinimalPath":
+                ft_dictionary_minimal = copy.deepcopy(evaluate_turn_model_router_fault_tolerance(selected_turn_models,
+                                                                                                 size, routing_type,
+                                                                                                 list_of_broken_routers,
+                                                                                                 ft_dictionary_minimal))
+            else:
+                ft_dictionary_non_minimal = copy.deepcopy(evaluate_turn_model_router_fault_tolerance(selected_turn_models,
+                                                                                                     size, routing_type,
+                                                                                                     list_of_broken_routers,
+                                                                                                     ft_dictionary_minimal))
+            print
+    return ft_dictionary_minimal, ft_dictionary_non_minimal
