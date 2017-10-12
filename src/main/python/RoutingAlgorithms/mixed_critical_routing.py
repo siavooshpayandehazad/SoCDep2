@@ -43,6 +43,105 @@ def find_all_leaves(noc_rg):
     return leaves
 
 
+def report_router_links(size, noc_rg):
+    node_turn_dict = {}
+    for i in range(0, size**2):
+        print i
+        node_turn_dict[i] = []
+        for edge in noc_rg.edges():
+            if int(edge[0][:-2]) == i and int(edge[1][:-2]) == i:
+                print "\t", edge[0][-2], "--->", edge[1][-2]
+                node_turn_dict[i].append(edge[0][-2]+"2"+edge[1][-2])
+        string = ""
+        if "S2E" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+        if "S2W" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+        if "W2N" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+        if "W2S" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+        if "E2N" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+        if "E2S" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+        if "N2E" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+        if "N2W" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+
+        if "N2S" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+        if "S2N" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+        if "E2W" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+        if "W2E" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+        if "L2N" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+        if "N2L" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+
+        if "L2E" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+        if "E2L" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+
+        if "L2W" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+        if "W2L" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+
+        if "L2S" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+
+        if "S2L" in node_turn_dict[i]:
+            string += "1"
+        else:
+            string += "0"
+        print "\tconnection string:", string[::-1]
+        print "-----------"
+
+
 def cleanup_routing_graph(ag, noc_rg):
     """
     removes un-used edges from noc routing graph
@@ -67,7 +166,7 @@ def cleanup_routing_graph(ag, noc_rg):
     return noc_rg
 
 
-def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_nodes, turn_model, viz):
+def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_nodes, turn_model, viz, report):
 
     turns_health_2d_network = {"N2W": True, "N2E": True, "S2W": True, "S2E": True,
                                "W2N": True, "W2S": True, "E2N": True, "E2S": True}
@@ -130,6 +229,7 @@ def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_no
                     if is_destination_reachable_from_source(noc_rg, node_1, node_2):
                         counter += 1
                     else:
-                        print node_1,"can not reach", node_2
-    print "average reachability for non-critical nodes:", float(counter)/(len(ag.nodes())-len(critical_nodes))
-    return float(counter)/(len(ag.nodes())-len(critical_nodes))
+                        if report:
+                            print node_1,"can not reach", node_2
+    print "average connectivity for non-critical nodes:", float(counter)/(len(ag.nodes())-len(critical_nodes))
+    return float(counter)/(len(ag.nodes())-len(critical_nodes)), noc_rg

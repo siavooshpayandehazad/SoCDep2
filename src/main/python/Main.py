@@ -175,8 +175,9 @@ elif "-MC" in sys.argv[1:]:
         for turn in forced_turns:
             if turn not in turn_model:
                 discard = True
-        if discard == False:
-            connectivity = mixed_critical_rg(4, "NonMinimalPath", critical_nodes, critical_rg_nodes, turn_model, False)
+        if not discard:
+            connectivity, noc_rg = mixed_critical_rg(4, "NonMinimalPath", critical_nodes, critical_rg_nodes,
+                                                     turn_model, False, False)
             if connectivity > max_connectivity:
                 max_connectivity = connectivity
                 best_turn_model = turn_model
@@ -184,7 +185,9 @@ elif "-MC" in sys.argv[1:]:
     print "==="*6
     print "max connectivity:", max_connectivity
     print "best turn model", best_turn_model
-    connectivity = mixed_critical_rg(4, "NonMinimalPath", critical_nodes, critical_rg_nodes, best_turn_model, True)
+    connectivity, noc_rg = mixed_critical_rg(4, "NonMinimalPath", critical_nodes, critical_rg_nodes,
+                                             best_turn_model, True, True)
+    report_router_links(4, noc_rg)
     sys.exit()
 
 Check_Config.check_config_file()
