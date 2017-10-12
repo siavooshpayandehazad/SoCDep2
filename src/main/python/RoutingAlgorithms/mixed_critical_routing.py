@@ -83,6 +83,9 @@ def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_no
     shmu.setup_noc_shm(ag, turns_health_2d_network, False)
     noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, turns_health_2d_network.keys(), False,  False))
 
+    for node in critical_rg_nodes:
+        if node not in noc_rg.nodes():
+            raise ValueError(str(node)+" doesnt exist in noc_rg")
 
     for node in noc_rg.nodes():
         if node in critical_rg_nodes:
@@ -126,28 +129,7 @@ def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_no
                 else:
                     if is_destination_reachable_from_source(noc_rg, node_1, node_2):
                         counter += 1
-    print "average reachability for non-critical nodes:", counter/(len(ag.nodes())-len(critical_nodes))
-    return counter/(len(ag.nodes())-len(critical_nodes))
-
-critical_path = [0, 1, 5, 9, 10, 14, 15]
-critical_rg_nodes = ["0LI", "0EO", "1WI", "1NO", "5SI", "5NO", "9SI", "9EO", "10WI", "10NO", "14SI", "14EO", "15WI", "15LO",
-                     "15LI", "15WO", "14EI", "14SO", "10NI", "10WO", "9EI", "9SO", "5NI", "5SO", "1NI", "1WO", "0EI", "0LO"]
-
-critical_nodes = [0, 15]
-misc.generate_file_directories()
-
-
-max_connectivity = 0
-best_turn_model = None
-
-for turn_model in all_2d_turn_models:
-    connectivity = mixed_critical_rg(4, "NonMinimalPath", critical_nodes, critical_rg_nodes, turn_model, False)
-    if connectivity > max_connectivity:
-        max_connectivity = connectivity
-        best_turn_model = turn_model
-
-print "==="*6
-print "max connectivity:", max_connectivity
-print "best turn model", best_turn_model
-connectivity = mixed_critical_rg(4, "NonMinimalPath", critical_nodes, critical_rg_nodes, best_turn_model, True)
-
+                    else:
+                        print node_1,"can not reach", node_2
+    print "average reachability for non-critical nodes:", float(counter)/(len(ag.nodes())-len(critical_nodes))
+    return float(counter)/(len(ag.nodes())-len(critical_nodes))

@@ -19,6 +19,7 @@ from pympler import tracker
 from Simulator import Simulator
 from RoutingAlgorithms.turn_model_evaluation import list_all_turn_models, turn_model_viz, turn_mode_classifier
 from RoutingAlgorithms.turn_model_evaluation import odd_even_evaluation
+from RoutingAlgorithms.mixed_critical_routing import *
 from multiprocessing import Pool
 
 
@@ -141,6 +142,50 @@ elif '-BENCHMARK' in sys.argv[1:]:
         pass
     else:
         sys.exit()
+elif "-MC" in sys.argv[1:]:
+    critical_nodes = [0, 15]
+    """
+    critical_path = [0, 1, 5, 9, 10, 14, 15]
+    critical_rg_nodes = ["0LI", "0EO", "1WI", "1NO", "5SI", "5NO", "9SI", "9EO", "10WI", "10NO", "14SI", "14EO", "15WI", "15LO",
+                         "15LI", "15WO", "14EI", "14SO", "10NI", "10WO", "9EI", "9SO", "5NI", "5SO", "1NI", "1WO", "0EI", "0LO"]
+    forced_turns = ["E2N", "S2E"]
+
+    """
+    """
+    critical_path = [0, 1, 2, 3, 7, 11, 15]
+    critical_rg_nodes = ["0LI", "0EO", "1WI", "1EO", "2WI", "2EO", "3WI", "3NO", "7SI", "7NO", "11SI", "11NO", "15SI", "15LO",
+                         "15LI", "15SO", "11NI", "11SO", "7NI", "7SO", "3NI", "3WO", "2EI", "2WO", "1EI", "1WO", "0EI", "0LO"]
+    forced_turns = ["W2N"]
+
+    """
+    critical_path = [0, 1, 5, 9, 13, 14, 15]
+    critical_rg_nodes = ["0LI", "0EO", "1WI", "1NO", "5SI", "5NO", "9SI", "9NO", "13SI", "13EO", "14WI", "14EO", "15WI", "15LO",
+                         "15LI", "15WO", "14EI", "14WO", "13EI", "13SO", "9NI", "9SO", "5NI", "5SO", "1NI", "1WO", "0EI", "0LO"]
+    forced_turns = ["E2N", "S2E"]
+
+
+
+    misc.generate_file_directories()
+
+    max_connectivity = 0
+    best_turn_model = None
+
+    for turn_model in all_2d_turn_models:
+        discard = False
+        for turn in forced_turns:
+            if turn not in turn_model:
+                discard = True
+        if discard == False:
+            connectivity = mixed_critical_rg(4, "NonMinimalPath", critical_nodes, critical_rg_nodes, turn_model, False)
+            if connectivity > max_connectivity:
+                max_connectivity = connectivity
+                best_turn_model = turn_model
+
+    print "==="*6
+    print "max connectivity:", max_connectivity
+    print "best turn model", best_turn_model
+    connectivity = mixed_critical_rg(4, "NonMinimalPath", critical_nodes, critical_rg_nodes, best_turn_model, True)
+    sys.exit()
 
 Check_Config.check_config_file()
 program_start_time = time.time()
