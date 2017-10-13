@@ -44,14 +44,129 @@ def find_all_leaves(noc_rg):
 
 
 def report_router_links(size, noc_rg):
+    print
+    print "-----------------------"
+    print "reconfiguration bits for :"
+
     node_turn_dict = {}
     for i in range(0, size**2):
-        print i
+
         node_turn_dict[i] = []
+        """
+        x,y,z = AG_Functions.return_node_location(i)
+
+        if x+1 < size:
+            node = AG_Functions.return_node_number(x+1, y, z)
+            west_in = str(node)+"WI"
+            north_out = str(node)+"NO"
+            edge=(west_in,north_out)
+            if edge in noc_rg.edges():
+                 node_turn_dict[i].append("W2S")
+            sout_out = str(node)+"SO"
+            edge=(west_in,sout_out)
+            if edge in noc_rg.edges():
+                node_turn_dict[i].append("W2N")
+            east_out = str(node)+"EO"
+            edge=(west_in,east_out)
+            if edge in noc_rg.edges():
+                node_turn_dict[i].append("W2E")
+
+        if x-1 > 0:
+            node = AG_Functions.return_node_number(x+1, y, z)
+            east_in = str(node)+"EI"
+            north_out = str(node)+"NO"
+            edge=(east_in,north_out)
+            if edge in noc_rg.edges():
+                 node_turn_dict[i].append("E2S")
+            sout_out = str(node)+"SO"
+            edge=(east_in,sout_out)
+            if edge in noc_rg.edges():
+                node_turn_dict[i].append("E2N")
+            west_out = str(node)+"WO"
+            edge=(east_in,west_out)
+            if edge in noc_rg.edges():
+                node_turn_dict[i].append("E2W")
+
+        if y-1 > 0:
+            node = AG_Functions.return_node_number(x+1, y, z)
+            north_in = str(node)+"NI"
+            west_out = str(node)+"WO"
+            edge=(north_in,west_out)
+            if edge in noc_rg.edges():
+                 node_turn_dict[i].append("S2W")
+            east_out = str(node)+"EO"
+            edge=(north_in,east_out)
+            if edge in noc_rg.edges():
+                node_turn_dict[i].append("S2E")
+            south_out = str(node)+"SO"
+            edge=(north_in,south_out)
+            if edge in noc_rg.edges():
+                node_turn_dict[i].append("S2N")
+
+        if y+1 < size:
+            node = AG_Functions.return_node_number(x+1, y, z)
+            south_in = str(node)+"SI"
+            west_out = str(node)+"WO"
+            edge=(south_in,north_out)
+            if edge in noc_rg.edges():
+                 node_turn_dict[i].append("N2W")
+            east_out = str(node)+"EO"
+            edge=(south_in,east_out)
+            if edge in noc_rg.edges():
+                node_turn_dict[i].append("N2E")
+            north_out = str(node)+"NO"
+            edge=(south_in,north_out)
+            if edge in noc_rg.edges():
+                node_turn_dict[i].append("N2S")
+
+        local_in = str(i)+"LI"
+        north_out = str(i)+"NO"
+        east_out = str(i)+"EO"
+        wast_out = str(i)+"WO"
+        south_out = str(i)+"SO"
+        if (local_in,north_out) in noc_rg.edges():
+            node_turn_dict[i].append("L2S")
+        if (local_in,east_out) in noc_rg.edges():
+            node_turn_dict[i].append("L2E")
+        if (local_in,wast_out) in noc_rg.edges():
+            node_turn_dict[i].append("L2W")
+        if (local_in,south_out) in noc_rg.edges():
+            node_turn_dict[i].append("L2N")
+
+        local_out = str(i)+"LO"
+        north_in = str(i)+"NI"
+        east_in = str(i)+"EI"
+        wast_in = str(i)+"WI"
+        south_in = str(i)+"SI"
+        if (north_in, local_out) in noc_rg.edges():
+            node_turn_dict[i].append("S2L")
+        if (east_in, local_out) in noc_rg.edges():
+            node_turn_dict[i].append("E2L")
+        if (wast_in, local_out) in noc_rg.edges():
+            node_turn_dict[i].append("W2L")
+        if (south_in, local_out) in noc_rg.edges():
+            node_turn_dict[i].append("N2L")
+
+        """
+        temp_list = []
         for edge in noc_rg.edges():
             if int(edge[0][:-2]) == i and int(edge[1][:-2]) == i:
-                print "\t", edge[0][-2], "--->", edge[1][-2]
-                node_turn_dict[i].append(edge[0][-2]+"2"+edge[1][-2])
+                turn_1 = edge[0][-2]
+                turn_2 =  edge[1][-2]
+                #print "\t", turn_1, "--->", turn_2
+                if turn_1 == "N":
+                    turn_1 = "S"
+                elif turn_1 == "S":
+                    turn_1 = "N"
+
+                if turn_2 == "N":
+                    turn_2 = "S"
+                elif turn_2 == "S":
+                    turn_2 = "N"
+
+
+                node_turn_dict[i].append(turn_1+"2"+turn_2)
+
         string = ""
         if "S2E" in node_turn_dict[i]:
             string += "1"
@@ -138,8 +253,7 @@ def report_router_links(size, noc_rg):
             string += "1"
         else:
             string += "0"
-        print "\tconnection string:", string[::-1]
-        print "-----------"
+        print "\tRxy_reconf_"+str(i)+" <=\""+str(string[::-1])+"\";"+"--"+str(int(string[::-1][12:],2))
 
 
 def cleanup_routing_graph(ag, noc_rg):
