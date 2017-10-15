@@ -144,7 +144,7 @@ elif '-BENCHMARK' in sys.argv[1:]:
         sys.exit()
 elif "-MC" in sys.argv[1:]:
     critical_nodes = [0, 15]
-    """
+
     critical_path = [0, 1, 5, 9, 10, 14, 15]
     critical_rg_nodes = ["0LI", "0EO", "1WI", "1NO", "5SI", "5NO", "9SI", "9EO", "10WI", "10NO", "14SI", "14EO", "15WI", "15LO",
                          "15LI", "15WO", "14EI", "14SO", "10NI", "10WO", "9EI", "9SO", "5NI", "5SO", "1NI", "1WO", "0EI", "0LO"]
@@ -157,6 +157,7 @@ elif "-MC" in sys.argv[1:]:
                          "15LI", "15SO", "11NI", "11SO", "7NI", "7SO", "3NI", "3WO", "2EI", "2WO", "1EI", "1WO", "0EI", "0LO"]
     forced_turns = ["W2N"]
 
+    """
     """
     critical_path = [0, 1, 5, 9, 13, 14, 15]
     critical_rg_nodes = ["0LI", "0EO", "1WI", "1NO", "5SI", "5NO", "9SI", "9NO", "13SI", "13EO", "14WI", "14EO", "15WI", "15LO",
@@ -176,7 +177,7 @@ elif "-MC" in sys.argv[1:]:
             if turn not in turn_model:
                 discard = True
         if not discard:
-            connectivity, noc_rg = mixed_critical_rg(4, "MinimalPath", critical_nodes, critical_rg_nodes,
+            connectivity, noc_rg = mixed_critical_rg(4, "NonMinimalPath", critical_nodes, critical_rg_nodes,
                                                      turn_model, False, False)
             if connectivity > max_connectivity:
                 max_connectivity = connectivity
@@ -185,9 +186,10 @@ elif "-MC" in sys.argv[1:]:
     print "==="*6
     print "max connectivity:", max_connectivity
     print "best turn model", best_turn_model
-    connectivity, noc_rg = mixed_critical_rg(4, "MinimalPath", critical_nodes, critical_rg_nodes,
-                                             PackageFile.XY_TurnModel, True, True)
+    connectivity, noc_rg = mixed_critical_rg(4, "NonMinimalPath", critical_nodes, critical_rg_nodes,
+                                             best_turn_model, True, True)
     report_router_links(4, noc_rg)
+    generate_routing_table(4, noc_rg, "NonMinimalPath")
     sys.exit()
 
 Check_Config.check_config_file()

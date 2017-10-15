@@ -1,10 +1,13 @@
 # Copyright (C) 2017 Siavoosh Payandeh Azad
 import copy
+from networkx import has_path, all_shortest_paths, all_simple_paths
 from ArchGraphUtilities import AG_Functions
+from ArchGraphUtilities.AG_Functions import manhattan_distance
 from ConfigAndPackages import Config, PackageFile
 from ConfigAndPackages.all_2d_turn_model_package import all_2d_turn_models
 from RoutingAlgorithms import Routing
-from RoutingAlgorithms.Calculate_Reachability import reachability_metric, is_destination_reachable_from_source
+from RoutingAlgorithms.Calculate_Reachability import reachability_metric, is_destination_reachable_from_source, \
+    is_destination_reachable_via_port
 from RoutingAlgorithms.Routing import return_minimal_paths
 from RoutingAlgorithms.Routing_Functions import check_deadlock_freeness
 from SystemHealthMonitoring import SystemHealthMonitoringUnit
@@ -347,3 +350,45 @@ def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_no
                             print node_1,"can not reach", node_2
     print "average connectivity for non-critical nodes:", float(counter)/(len(ag.nodes())-len(critical_nodes))
     return float(counter)/(len(ag.nodes())-len(critical_nodes)), noc_rg
+
+
+
+def generate_routing_table(size, noc_rg, routing_type):
+    for current_node in range(0, size**2):
+        print "===="*10
+        print "node:", current_node
+        print "               "*3+"input direction"
+        print "              "*3+"  -----------------"
+        print '%5s' % "dest",
+        for id in ["N", "E", "W", "S", "L"]:
+            print '%20s' % id,
+        print
+        print " ","------"*18
+
+        for destination_node in range(0, size**2):
+            print '%5s' % destination_node,
+            for dir in ["N", "E", "W", "S", "L"]:
+                current_port = str(current_node)+dir+"I"
+                if current_node == destination_node:
+                    print '%20s' % 0,
+                else:
+                    destination_port = str(destination_node)+"LO"
+                    if has_path(noc_rg, current_port, destination_port):
+                        all_paths = []
+                        if routing_type == "MinimalPath":
+                            max_hop_count = manhattan_distance(current_node, destination_node)
+                            all_found_paths = list(all_shortest_paths(noc_rg, current_port, destination_port))
+                            for Path in all_found_paths:
+                                if (len(Path)-2)/2 <= max_hop_count:
+                                    all_paths.append(Path)
+                        else:
+                            all_paths = list(all_simple_paths(noc_rg, current_port, destination_port))
+                        all_ports = []
+
+                        for path in all_paths:
+                            if path[1][-2] not in all_ports:
+                                all_ports.append(path[1][-2])
+                        print '%20s' % all_ports,
+                    else:
+                        print '%20s' % 0,
+            print
