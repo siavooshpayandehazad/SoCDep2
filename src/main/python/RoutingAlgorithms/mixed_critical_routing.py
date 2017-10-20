@@ -368,7 +368,7 @@ def generate_routing_table(size, noc_rg, routing_type):
 
         for destination_node in range(0, size**2):
             print '%5s' % destination_node,
-            for dir in ["N", "E", "W", "S", "L"]:
+            for dir in ["S", "E", "W", "N", "L"]:
                 current_port = str(current_node)+dir+"I"
                 if current_node == destination_node:
                     print '%20s' % "0000",
@@ -388,9 +388,14 @@ def generate_routing_table(size, noc_rg, routing_type):
 
                         for path in all_paths:
                             if path[1][-2] not in all_ports:
-                                all_ports.append(path[1][-2])
+                                if path[1][-2] == "N":
+                                    all_ports.append("S")
+                                elif path[1][-2] == "S":
+                                    all_ports.append("N")
+                                else:
+                                    all_ports.append(path[1][-2])
                         string = ""
-                        if "S" in all_ports:
+                        if "N" in all_ports:
                             string += "1"
                         else:
                             string += "0"
@@ -402,7 +407,7 @@ def generate_routing_table(size, noc_rg, routing_type):
                             string += "1"
                         else:
                             string += "0"
-                        if "N" in all_ports:
+                        if "S" in all_ports:
                             string += "1"
                         else:
                             string += "0"
