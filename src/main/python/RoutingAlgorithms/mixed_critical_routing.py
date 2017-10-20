@@ -47,6 +47,7 @@ def find_all_leaves(noc_rg):
 
 
 def report_router_links(size, noc_rg):
+    reconf_file = open("Generated_Files/MC_reconfigration_bits.txt","a")
     print
     print "-----------------------"
     print "reconfiguration bits for :"
@@ -55,102 +56,6 @@ def report_router_links(size, noc_rg):
     for i in range(0, size**2):
 
         node_turn_dict[i] = []
-        """
-        x,y,z = AG_Functions.return_node_location(i)
-
-        if x+1 < size:
-            node = AG_Functions.return_node_number(x+1, y, z)
-            west_in = str(node)+"WI"
-            north_out = str(node)+"NO"
-            edge=(west_in,north_out)
-            if edge in noc_rg.edges():
-                 node_turn_dict[i].append("W2S")
-            sout_out = str(node)+"SO"
-            edge=(west_in,sout_out)
-            if edge in noc_rg.edges():
-                node_turn_dict[i].append("W2N")
-            east_out = str(node)+"EO"
-            edge=(west_in,east_out)
-            if edge in noc_rg.edges():
-                node_turn_dict[i].append("W2E")
-
-        if x-1 > 0:
-            node = AG_Functions.return_node_number(x+1, y, z)
-            east_in = str(node)+"EI"
-            north_out = str(node)+"NO"
-            edge=(east_in,north_out)
-            if edge in noc_rg.edges():
-                 node_turn_dict[i].append("E2S")
-            sout_out = str(node)+"SO"
-            edge=(east_in,sout_out)
-            if edge in noc_rg.edges():
-                node_turn_dict[i].append("E2N")
-            west_out = str(node)+"WO"
-            edge=(east_in,west_out)
-            if edge in noc_rg.edges():
-                node_turn_dict[i].append("E2W")
-
-        if y-1 > 0:
-            node = AG_Functions.return_node_number(x+1, y, z)
-            north_in = str(node)+"NI"
-            west_out = str(node)+"WO"
-            edge=(north_in,west_out)
-            if edge in noc_rg.edges():
-                 node_turn_dict[i].append("S2W")
-            east_out = str(node)+"EO"
-            edge=(north_in,east_out)
-            if edge in noc_rg.edges():
-                node_turn_dict[i].append("S2E")
-            south_out = str(node)+"SO"
-            edge=(north_in,south_out)
-            if edge in noc_rg.edges():
-                node_turn_dict[i].append("S2N")
-
-        if y+1 < size:
-            node = AG_Functions.return_node_number(x+1, y, z)
-            south_in = str(node)+"SI"
-            west_out = str(node)+"WO"
-            edge=(south_in,north_out)
-            if edge in noc_rg.edges():
-                 node_turn_dict[i].append("N2W")
-            east_out = str(node)+"EO"
-            edge=(south_in,east_out)
-            if edge in noc_rg.edges():
-                node_turn_dict[i].append("N2E")
-            north_out = str(node)+"NO"
-            edge=(south_in,north_out)
-            if edge in noc_rg.edges():
-                node_turn_dict[i].append("N2S")
-
-        local_in = str(i)+"LI"
-        north_out = str(i)+"NO"
-        east_out = str(i)+"EO"
-        wast_out = str(i)+"WO"
-        south_out = str(i)+"SO"
-        if (local_in,north_out) in noc_rg.edges():
-            node_turn_dict[i].append("L2S")
-        if (local_in,east_out) in noc_rg.edges():
-            node_turn_dict[i].append("L2E")
-        if (local_in,wast_out) in noc_rg.edges():
-            node_turn_dict[i].append("L2W")
-        if (local_in,south_out) in noc_rg.edges():
-            node_turn_dict[i].append("L2N")
-
-        local_out = str(i)+"LO"
-        north_in = str(i)+"NI"
-        east_in = str(i)+"EI"
-        wast_in = str(i)+"WI"
-        south_in = str(i)+"SI"
-        if (north_in, local_out) in noc_rg.edges():
-            node_turn_dict[i].append("S2L")
-        if (east_in, local_out) in noc_rg.edges():
-            node_turn_dict[i].append("E2L")
-        if (wast_in, local_out) in noc_rg.edges():
-            node_turn_dict[i].append("W2L")
-        if (south_in, local_out) in noc_rg.edges():
-            node_turn_dict[i].append("N2L")
-
-        """
         temp_list = []
         for edge in noc_rg.edges():
             if int(edge[0][:-2]) == i and int(edge[1][:-2]) == i:
@@ -257,7 +162,9 @@ def report_router_links(size, noc_rg):
         else:
             string += "0"
         print "\tRxy_reconf_"+str(i)+" <=\""+str(string[::-1])+"\";"+"--"+str(int(string[::-1][12:],2))
-
+        reconf_file.write("\tRxy_reconf_"+str(i)+" <=\""+str(string[::-1])+"\";"+"--"+str(int(string[::-1][12:],2))+"\n")
+    reconf_file.close()
+    return None
 
 def cleanup_routing_graph(ag, noc_rg):
     """
@@ -354,24 +261,34 @@ def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_no
 
 
 def generate_routing_table(size, noc_rg, routing_type):
+    routing_table_file = open("Generated_Files/MC_routing_table.txt", 'a')
     for current_node in range(0, size**2):
-        print "===="*10
-        print "node:", current_node
-        print "bits are in this format: NEWS"
-        print "               "*3+"input direction"
-        print "              "*3+"  -----------------"
-        print '%5s' % "dest",
-        for id in ["N", "E", "W", "S", "L"]:
-            print '%20s' % id,
-        print
-        print " ","------"*18
 
-        for destination_node in range(0, size**2):
-            print '%5s' % destination_node,
-            for dir in ["S", "E", "W", "N", "L"]:
+
+        routing_table_file.write("-- Node "+str(current_node)+"\n")
+        routing_table_file.write("constant routing_table_bits_"+str(current_node)+": t_tata_long := (\n")
+
+
+        counter = 0
+        for dir in ["L", "S", "E", "W", "N"]:
+            if dir == "L":
+                routing_table_file.write("\t-- local\n")
+            elif dir == "S":
+                routing_table_file.write("\t-- north\n")
+            elif dir == "E":
+                routing_table_file.write("\t-- east\n")
+            elif dir == "W":
+                routing_table_file.write("\t-- west\n")
+            else:
+                routing_table_file.write("\t-- south\n")
+            for destination_node in range(0, size**2):
+
                 current_port = str(current_node)+dir+"I"
                 if current_node == destination_node:
-                    print '%20s' % "0000",
+                    if counter == size**2*5-1:
+                        routing_table_file.write("\t\t"+str(counter)+" => \"0000\"\n")
+                    else:
+                        routing_table_file.write("\t\t"+str(counter)+" => \"0000\",\n")
                 else:
                     destination_port = str(destination_node)+"LO"
                     if has_path(noc_rg, current_port, destination_port):
@@ -411,7 +328,21 @@ def generate_routing_table(size, noc_rg, routing_type):
                             string += "1"
                         else:
                             string += "0"
-                        print '%20s' % string,
+                        if counter == size**2*5-1:
+                            routing_table_file.write("\t\t"+str(counter)+" => \""+string+"\"\n")
+                        else:
+                            routing_table_file.write("\t\t"+str(counter)+" => \""+string+"\",\n")
+                        #print '%20s' % string,
                     else:
-                        print '%20s' % "0000",
-            print
+                        if counter == size**2*5-1:
+                            routing_table_file.write("\t\t"+str(counter)+" => \"0000\"\n")
+                        else:
+                            routing_table_file.write("\t\t"+str(counter)+" => \"0000\",\n")
+                        #print '%20s' % "0000",
+                        pass
+
+                counter += 1
+            #print
+        routing_table_file.write(" );\n")
+    routing_table_file.close()
+    return None
