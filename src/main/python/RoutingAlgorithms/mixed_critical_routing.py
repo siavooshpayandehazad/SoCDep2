@@ -205,6 +205,7 @@ def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_no
     shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
     shmu.setup_noc_shm(ag, turns_health_2d_network, False)
     noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, turns_health_2d_network.keys(), False,  False))
+    copy_rg =copy.deepcopy(noc_rg)
 
     for node in critical_rg_nodes:
         if node not in noc_rg.nodes():
@@ -242,7 +243,9 @@ def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_no
     if viz:
         noc_rg = copy.deepcopy(cleanup_routing_graph(ag, noc_rg))
         RoutingGraph_Reports.draw_rg(noc_rg)
-    counter = 0
+
+    reachability_counter = 0
+    connectivity_counter = 0
     print "its deadlock free:", check_deadlock_freeness(noc_rg)
     for node_1 in ag.nodes():
         for node_2 in ag.nodes():
@@ -250,13 +253,44 @@ def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_no
                 if node_1 in critical_nodes or node_2 in critical_nodes:
                     pass
                 else:
+
                     if is_destination_reachable_from_source(noc_rg, node_1, node_2):
-                        counter += 1
+                        connectivity_counter += 1
+                        if routing_type == "MinimalPath":
+                            paths = return_minimal_paths(noc_rg, node_1, node_2)
+                            all_minimal_paths = return_minimal_paths(copy_rg, node_1, node_2)
+                            valid_path = True
+                            for path in paths:
+                                for node in path:
+                                    successors = noc_rg.successors(node)
+                                    if str(node_2)+str('L')+str('O') in successors:
+                                        #print node_2, successors
+                                        break
+                                    else:
+                                        for successor in successors:
+                                            valid_successor = False
+
+                                            for path_1 in all_minimal_paths:
+                                                if successor in path_1:
+                                                    valid_successor = True
+                                                    break
+                                            if valid_successor:
+                                                #print path, node, node_2, successor
+                                                if not has_path(noc_rg, successor, str(node_2)+str('L')+str('O')):
+                                                    valid_path = False
+                                                    break
+                            if valid_path:
+                                reachability_counter += 1
+                            else:
+                                print node_1,"can not reach  ", node_2
+                        else:
+                            reachability_counter += 1
                     else:
                         if report:
-                            print node_1,"can not reach", node_2
-    print "average connectivity for non-critical nodes:", float(counter)/(len(ag.nodes())-len(critical_nodes))
-    return float(counter)/(len(ag.nodes())-len(critical_nodes)), noc_rg
+                            print node_1,"can not connect", node_2
+    print "average connectivity for non-critical nodes:", float(connectivity_counter)/(len(ag.nodes())-len(critical_nodes))
+    print "average reachability for non-critical nodes:", float(reachability_counter)/(len(ag.nodes())-len(critical_nodes))
+    return float(connectivity_counter)/(len(ag.nodes())-len(critical_nodes)), noc_rg
 
 
 
