@@ -17,6 +17,49 @@ from random import shuffle
 import re
 
 
+def update_rg_odd_even(ag, turn_model_odd, turn_model_even, shmu, noc_rg):
+    """
+    gets a turn model for odd and even columns, along with an noc_rg and a SHMU
+    and updates the SHMU and noc_rg connections based on the turn models
+    """
+    for node in ag.nodes():
+        node_x, node_y, node_z = AG_Functions.return_node_location(node)
+        if node_x % 2 == 1:
+            for turn in turn_model_odd:
+                shmu.restore_broken_turn(node, turn, False)
+                from_port = str(node)+str(turn[0])+"I"
+                to_port = str(node)+str(turn[2])+"O"
+                Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
+        else:
+            for turn in turn_model_even:
+                shmu.restore_broken_turn(node, turn, False)
+                from_port = str(node)+str(turn[0])+"I"
+                to_port = str(node)+str(turn[2])+"O"
+                Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
+    return
+
+
+def clean_rg_from_odd_even(ag, turn_model_odd, turn_model_even, shmu, noc_rg):
+    """
+    gets a turn model for odd and even columns, along with an noc_rg and a SHMU
+    and removes added connections in the SHMU and noc_rg based on the turn models
+    """
+    for node in ag.nodes():
+        node_x, node_y, node_z = AG_Functions.return_node_location(node)
+        if node_x % 2 == 1:
+            for turn in turn_model_odd:
+                shmu.restore_broken_turn(node, turn, False)
+                from_port = str(node)+str(turn[0])+"I"
+                to_port = str(node)+str(turn[2])+"O"
+                Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
+        else:
+            for turn in turn_model_even:
+                shmu.restore_broken_turn(node, turn, False)
+                from_port = str(node)+str(turn[0])+"I"
+                to_port = str(node)+str(turn[2])+"O"
+                Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
+    return
+
 def evaluate_actual_odd_even_turn_model():
     """
     evaluates the classic odd-even turn model in terms of DoA and DoA_ex
@@ -40,21 +83,7 @@ def evaluate_actual_odd_even_turn_model():
         shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
         shmu.setup_noc_shm(ag, turns_health, False)
         noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, [], False,  False))
-
-        for node in ag.nodes():
-            node_x, node_y, node_z = AG_Functions.return_node_location(node)
-            if node_x % 2 == 1:
-                for turn in turn_model_odd:
-                    shmu.restore_broken_turn(node, turn, False)
-                    from_port = str(node)+str(turn[0])+"I"
-                    to_port = str(node)+str(turn[2])+"O"
-                    Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
-            else:
-                for turn in turn_model_even:
-                    shmu.restore_broken_turn(node, turn, False)
-                    from_port = str(node)+str(turn[0])+"I"
-                    to_port = str(node)+str(turn[2])+"O"
-                    Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
+        update_rg_odd_even(ag, turn_model_odd, turn_model_even, shmu, noc_rg)
         draw_rg(noc_rg)
         connectivity_metric = reachability_metric(ag, noc_rg, False)
         print "connectivity_metric:", connectivity_metric
@@ -98,20 +127,8 @@ def enumerate_all_odd_even_turn_models(network_size, routing_type):
     for turn_model_odd in turn_model_list:
         for turn_model_even in turn_model_list:
             if not check_tm_domination(turn_model_odd, turn_model_even):   # taking out the domination!
-                for node in ag.nodes():
-                    node_x, node_y, node_z = AG_Functions.return_node_location(node)
-                    if node_x % 2 == 1:
-                        for turn in turn_model_odd:
-                            shmu.restore_broken_turn(node, turn, False)
-                            from_port = str(node)+str(turn[0])+"I"
-                            to_port = str(node)+str(turn[2])+"O"
-                            Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
-                    else:
-                        for turn in turn_model_even:
-                            shmu.restore_broken_turn(node, turn, False)
-                            from_port = str(node)+str(turn[0])+"I"
-                            to_port = str(node)+str(turn[2])+"O"
-                            Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
+
+                update_rg_odd_even(ag, turn_model_odd, turn_model_even, shmu, noc_rg)
                 connectivity_metric = reachability_metric(ag, noc_rg, False)
                 if connectivity_metric == number_of_pairs:
                     connected_counter += 1
@@ -125,20 +142,7 @@ def enumerate_all_odd_even_turn_models(network_size, routing_type):
                                  " number of deadlock free connected TM: %i" % deadlock_free_counter)
                 sys.stdout.flush()
 
-                for node in ag.nodes():
-                    node_x, node_y, node_z = AG_Functions.return_node_location(node)
-                    if node_x % 2 == 1:
-                        for turn in turn_model_odd:
-                            shmu.restore_broken_turn(node, turn, False)
-                            from_port = str(node)+str(turn[0])+"I"
-                            to_port = str(node)+str(turn[2])+"O"
-                            Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
-                    else:
-                        for turn in turn_model_even:
-                            shmu.restore_broken_turn(node, turn, False)
-                            from_port = str(node)+str(turn[0])+"I"
-                            to_port = str(node)+str(turn[2])+"O"
-                            Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
+                clean_rg_from_odd_even(ag, turn_model_odd, turn_model_even, shmu, noc_rg)
 
     all_odd_evens_file.write("checked TM: %i " + str(tm_counter) +
                              " number of fully connected TM: %i" +str(connected_counter) +
@@ -181,20 +185,7 @@ def evaluate_doa_for_all_odd_even_turn_model_list(network_size):
         shmu.setup_noc_shm(ag, turns_health, False)
         noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, [], False,  False))
 
-        for node in ag.nodes():
-            node_x, node_y, node_z = AG_Functions.return_node_location(node)
-            if node_x % 2 == 1:
-                for turn in turn_model_odd:
-                    shmu.restore_broken_turn(node, turn, False)
-                    from_port = str(node)+str(turn[0])+"I"
-                    to_port = str(node)+str(turn[2])+"O"
-                    Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
-            else:
-                for turn in turn_model_even:
-                    shmu.restore_broken_turn(node, turn, False)
-                    from_port = str(node)+str(turn[0])+"I"
-                    to_port = str(node)+str(turn[2])+"O"
-                    Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
+        update_rg_odd_even(ag, turn_model_odd, turn_model_even, shmu, noc_rg)
         doa = degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
         doa_ex = extended_degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
 
@@ -219,11 +210,6 @@ def evaluate_doa_for_all_odd_even_turn_model_list(network_size):
         tm_counter += 1
         sys.stdout.write("\rchecked TM: %i " % tm_counter)
         sys.stdout.flush()
-    # print
-    # print "----------------------------------------"
-    # print "classes of DOA:", sorted(classes_of_doa.keys())
-    #for item in sorted(classes_of_doa.keys()):
-    #    print item,  sorted(classes_of_doa[item])
 
     all_odd_evens_file.write("----------"*3+"\n")
     all_odd_evens_file.write("distribution of turn models"+"\n")
@@ -233,16 +219,9 @@ def evaluate_doa_for_all_odd_even_turn_model_list(network_size):
             turn_model = all_odd_even_list[tm]
             number_of_turns = len(turn_model[0])+len(turn_model[1])
             temp_list.append(number_of_turns)
-        # print item, temp_list.count(8), temp_list.count(9), temp_list.count(10),
-        #       temp_list.count(11), temp_list.count(12)
         all_odd_evens_file.write(str(item)+" "+str(temp_list.count(8))+" "+str(temp_list.count(9))+" " +
                                  str(temp_list.count(10))+" "+str(temp_list.count(11))+" " +
                                  str(temp_list.count(12))+"\n")
-
-    # print "------------------------------"
-    # print "classes of DOA_ex:", sorted(classes_of_doax.keys())
-    # for item in sorted(classes_of_doax.keys()):
-    #     print item,  sorted(classes_of_doax[item])
 
     all_odd_evens_file.write("----------"*3+"\n")
     all_odd_evens_file.write("distribution of turn models"+"\n")
@@ -252,8 +231,7 @@ def evaluate_doa_for_all_odd_even_turn_model_list(network_size):
             turn_model = all_odd_even_list[tm]
             number_of_turns = len(turn_model[0])+len(turn_model[1])
             temp_list.append(number_of_turns)
-        # print item, temp_list.count(8), temp_list.count(9), temp_list.count(10),
-        #      temp_list.count(11), temp_list.count(12)
+
         all_odd_evens_file.write(str(item)+" "+str(temp_list.count(8))+" "+str(temp_list.count(9))+" " +
                                  str(temp_list.count(10))+" "+str(temp_list.count(11))+" " +
                                  str(temp_list.count(12))+"\n")
@@ -270,7 +248,8 @@ def report_odd_even_turn_model_fault_tolerance(viz, routing_type, combination, n
     :param viz: if true, generates the visualization files
     :param routing_type: can be "minimal" or "nonminimal"
     :param combination: number of links to be present in the network
-    :return: None
+    :return: ft_dictionary a dictionary with turn mode id (from selected_turn_models)
+    as keys and average connectivity_metric as value.
     """
 
     turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
@@ -310,44 +289,17 @@ def report_odd_even_turn_model_fault_tolerance(viz, routing_type, combination, n
                 shmu.break_link(link, False)
 
             noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, [], False,  False))
-            for node in ag.nodes():
-                node_x, node_y, node_z = AG_Functions.return_node_location(node)
-                if node_x % 2 == 1:
-                    for turn in turn_model_odd:
-                        shmu.restore_broken_turn(node, turn, False)
-                        from_port = str(node)+str(turn[0])+"I"
-                        to_port = str(node)+str(turn[2])+"O"
-                        Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
-                else:
-                    for turn in turn_model_even:
-                        shmu.restore_broken_turn(node, turn, False)
-                        from_port = str(node)+str(turn[0])+"I"
-                        to_port = str(node)+str(turn[2])+"O"
-                        Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
+            update_rg_odd_even(ag, turn_model_odd, turn_model_even, shmu, noc_rg)
 
             connectivity_metric = reachability_metric(ag, noc_rg, False)
             counter += 1
             metric_sum += connectivity_metric
             if viz:
                 turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
-            # print "#:"+str(counter)+"\t\tC.M.:"+str(connectivity_metric)+"\t\t avg:", \
-            #     float(metric_sum)/counter, "\t\tstd:", std
+
             for link in list(sub_ag):
                 shmu.restore_broken_link(link, False)
-            for node in ag.nodes():
-                node_x, node_y, node_z = AG_Functions.return_node_location(node)
-                if node_x % 2 == 1:
-                    for turn in turn_model_odd:
-                        shmu.break_turn(node, turn, False)
-                        from_port = str(node)+str(turn[0])+"I"
-                        to_port = str(node)+str(turn[2])+"O"
-                        Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
-                else:
-                    for turn in turn_model_even:
-                        shmu.break_turn(node, turn, False)
-                        from_port = str(node)+str(turn[0])+"I"
-                        to_port = str(node)+str(turn[2])+"O"
-                        Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
+            clean_rg_from_odd_even(ag, turn_model_odd, turn_model_even, shmu, noc_rg)
 
         shuffle(sub_ag_list)
 
@@ -377,7 +329,8 @@ def report_odd_even_turn_model_router_fault_tolerance(viz, routing_type, combina
     :param viz: if true, generates the visualization files
     :param routing_type: can be "minimal" or "nonminimal"
     :param combination: number of links to be present in the network
-    :return: None
+    :return: ft_dictionary a dictionary with turn mode id (from selected_turn_models)
+    as keys and average connectivity_metric as value.
     """
 
     turns_health_2d_network = {"N2W": False, "N2E": False, "S2W": False, "S2E": False,
@@ -446,9 +399,6 @@ def report_odd_even_turn_model_router_fault_tolerance(viz, routing_type, combina
             metric_sum += connectivity_metric
             if viz:
                 turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
-            # print "#:"+str(counter)+"\t\tC.M.:"+str(connectivity_metric)+"\t\t avg:", \
-            #     float(metric_sum)/counter, "\t\tstd:", std
-
 
         shuffle(router_list)
 
@@ -470,6 +420,14 @@ def report_odd_even_turn_model_router_fault_tolerance(viz, routing_type, combina
     return ft_dictionary
 
 def return_links_in_path(path):
+    """
+    gets a path (as a list of ports) as an input and returns a list of links
+    used in the path.
+    :path   a list of ports (in form of "node_number""inputdirection""I/O" for
+            example 12SO wich is output port of node 12 in south direction!)
+    :return a list of strings indicating the links in the path in format
+            ["node1_node2", ...]
+    """
     links = []
     for i in range(0, len(path)-1):
         start = int(re.findall('\d+',  path[i])[0])
@@ -524,19 +482,7 @@ def odd_even_fault_tolerance_metric(network_size, routing_type):
     turn_model_class_dict = {}
     tm_counter = 0
 
-    """
-    selected_turn_models = []
-    for tm in all_odd_even_list:
-        if len(tm[0])+len(tm[1]) == 11 or len(tm[0])+len(tm[1]) == 12:
-            selected_turn_models.append(all_odd_even_list.index(tm))
-    """
-    #selected_turn_models = [677, 678, 697, 699, 717, 718, 737, 739, 757, 759, 778, 779, 797, 799, 818, 819,
-    #                        679, 698, 719, 738, 758, 777, 798, 817]
-
     for turn_model in all_odd_even_list:
-    #for item in selected_turn_models:
-        # print item
-        # turn_model = all_odd_even_list[item]
 
         sys.stdout.write("\rnumber of processed turn models: %i " % tm_counter)
         sys.stdout.flush()
@@ -546,20 +492,7 @@ def odd_even_fault_tolerance_metric(network_size, routing_type):
         turn_model_odd = turn_model[0]
         turn_model_even = turn_model[1]
 
-        for node in ag.nodes():
-                node_x, node_y, node_z = AG_Functions.return_node_location(node)
-                if node_x % 2 == 1:
-                    for turn in turn_model_odd:
-                        shmu.restore_broken_turn(node, turn, False)
-                        from_port = str(node)+str(turn[0])+"I"
-                        to_port = str(node)+str(turn[2])+"O"
-                        Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
-                else:
-                    for turn in turn_model_even:
-                        shmu.restore_broken_turn(node, turn, False)
-                        from_port = str(node)+str(turn[0])+"I"
-                        to_port = str(node)+str(turn[2])+"O"
-                        Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'ADD')
+        update_rg_odd_even(ag, turn_model_odd, turn_model_even, shmu, noc_rg)
 
         number_of_pairs = len(ag.nodes())*(len(ag.nodes())-1)
 
@@ -568,7 +501,6 @@ def odd_even_fault_tolerance_metric(network_size, routing_type):
                 for destination_node in ag.nodes():
                     if source_node != destination_node:
                         if is_destination_reachable_from_source(noc_rg, source_node, destination_node):
-                            # print source_node, "--->", destination_node
                             if Config.RotingType == 'MinimalPath':
                                 shortest_paths = list(all_shortest_paths(noc_rg, str(source_node)+str('L')+str('I'),
                                                                          str(destination_node)+str('L')+str('O')))
@@ -590,18 +522,12 @@ def odd_even_fault_tolerance_metric(network_size, routing_type):
 
         if Config.RotingType == 'MinimalPath':
             doa = degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
-            #metric = doa/(float(metric)/len(ag.edges()))
             metric = 1/(float(metric)/len(ag.edges()))
             metric = float("{:3.3f}".format(metric))
-            # print "Turn Model ", '%5s' %turn_model_index, "\tdoa:", "{:3.3f}".format(doa),
-            #       "\tmetric:", "{:3.3f}".format(metric)
         else:
             doa_ex = extended_degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
-            #metric = doa_ex/(float(metric)/len(ag.edges()))
             metric = 1/(float(metric)/len(ag.edges()))
             metric = float("{:3.3f}".format(metric))
-            # print "Turn Model ", '%5s' %turn_model_index, "\tdoa:", "{:3.3f}".format(doa_ex),
-            #       "\tmetric:", "{:3.3f}".format(metric)
 
         if metric not in classes_of_doa_ratio:
             classes_of_doa_ratio.append(metric)
@@ -609,29 +535,13 @@ def odd_even_fault_tolerance_metric(network_size, routing_type):
             turn_model_class_dict[metric].append(turn_model_index)
         else:
             turn_model_class_dict[metric] = [turn_model_index]
-
         # return SHMU and RG back to default
-        for node in ag.nodes():
-                node_x, node_y, node_z = AG_Functions.return_node_location(node)
-                if node_x % 2 == 1:
-                    for turn in turn_model_odd:
-                        shmu.break_turn(node, turn, False)
-                        from_port = str(node)+str(turn[0])+"I"
-                        to_port = str(node)+str(turn[2])+"O"
-                        Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
-                else:
-                    for turn in turn_model_even:
-                        shmu.break_turn(node, turn, False)
-                        from_port = str(node)+str(turn[0])+"I"
-                        to_port = str(node)+str(turn[2])+"O"
-                        Routing.update_noc_route_graph(noc_rg, from_port, to_port, 'REMOVE')
+        clean_rg_from_odd_even(ag, turn_model_odd, turn_model_even, shmu, noc_rg)
 
     all_odd_evens_file.write("classes of metric"+str(classes_of_doa_ratio)+"\n")
     all_odd_evens_file.write("----------"*3+"\n")
     all_odd_evens_file.write("turn models of class"+"\n")
-    # print "classes of metric", classes_of_doa_ratio
     for item in sorted(turn_model_class_dict.keys()):
-        # print item, turn_model_class_dict[item]
         all_odd_evens_file.write(str(item)+" "+str(turn_model_class_dict[item])+"\n")
 
     all_odd_evens_file.write("----------"*3+"\n")
@@ -642,8 +552,6 @@ def odd_even_fault_tolerance_metric(network_size, routing_type):
             turn_model = all_odd_even_list[tm]
             number_of_turns = len(turn_model[0])+len(turn_model[1])
             temp_list.append(number_of_turns)
-        # print item, temp_list.count(8), temp_list.count(9), temp_list.count(10),
-        # temp_list.count(11), temp_list.count(12)
         all_odd_evens_file.write(str(item)+" "+str(temp_list.count(8))+" "+str(temp_list.count(9))+" " +
                                  str(temp_list.count(10))+" "+str(temp_list.count(11))+" " +
                                  str(temp_list.count(12))+"\n")
@@ -732,14 +640,17 @@ def evaluate_turn_model_router_fault_tolerance(selected_turn_models, network_siz
     return ft_dictionary
 
 
-def evaluate_robustness_links(max_network_size):
+def evaluate_robustness_links(max_network_size, max_broken_links):
+    if max_network_size <= 1:
+        raise ValueError("max_network_size should be strictly bigger than 1!")
+
     ft_dictionary_minimal = {}
     ft_dictionary_non_minimal = {}
     for size in range(2, max_network_size+1):
         ft_dictionary_minimal = {}
         ft_dictionary_non_minimal = {}
 
-        list_of_broken_links = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        list_of_broken_links = range(0, max_broken_links+1)
 
         classes_of_doa, classes_of_doax = evaluate_doa_for_all_odd_even_turn_model_list(size)
         print
@@ -785,13 +696,12 @@ def evaluate_robustness_links(max_network_size):
                                                                                               list_of_broken_links,
                                                                                               ft_dictionary_non_minimal))
             print
-
     return ft_dictionary_minimal, ft_dictionary_non_minimal
 
 
 def evaluate_robustness_routers(max_network_size):
-    ft_dictionary_minimal = {}
-    ft_dictionary_non_minimal = {}
+    if max_network_size <= 1:
+        raise ValueError("max_network_size should be strictly bigger than 1!")
 
     for size in range(2, max_network_size+1):
         ft_dictionary_minimal = {}
@@ -820,7 +730,7 @@ def evaluate_robustness_routers(max_network_size):
         ft_dictionary_non_minimal = copy.deepcopy(evaluate_turn_model_router_fault_tolerance(selected_turn_models,
                                                                                              size, "NoneMinimalPath",
                                                                                              list_of_broken_routers,
-                                                                                             ft_dictionary_minimal))
+                                                                                             ft_dictionary_non_minimal))
         print
 
         for routing_type in ["MinimalPath", "NonMinimalPath"]:
@@ -842,6 +752,6 @@ def evaluate_robustness_routers(max_network_size):
                 ft_dictionary_non_minimal = copy.deepcopy(evaluate_turn_model_router_fault_tolerance(selected_turn_models,
                                                                                                      size, routing_type,
                                                                                                      list_of_broken_routers,
-                                                                                                     ft_dictionary_minimal))
+                                                                                                     ft_dictionary_non_minimal))
             print
     return ft_dictionary_minimal, ft_dictionary_non_minimal

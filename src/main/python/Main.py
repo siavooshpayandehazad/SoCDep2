@@ -39,12 +39,13 @@ elif '-GUI' in sys.argv[1:]:
 elif '-EvTM_odd_even' in sys.argv[1:]:
     misc.generate_file_directories()
 
-    for size in range(4, 8):
+
+    for size in range(2, 4):
         for routing_type in ["MinimalPath", "NonMinimalPath"]:
             odd_even_evaluation.enumerate_all_odd_even_turn_models(size, routing_type)
             print
 
-    odd_even_evaluation.evaluate_robustness_links(3)
+    odd_even_evaluation.evaluate_robustness_links(3,2)
     odd_even_evaluation.evaluate_robustness_routers(3)
     #odd_even_evaluation.viz_all_turn_models_against_each_other()
     sys.exit()
@@ -196,7 +197,7 @@ elif "-MC" in sys.argv[1:]:
                 max_connectivity = connectivity
                 best_turn_model = turn_model
 
-    
+
     print "==="*6
     print "max connectivity:", max_connectivity
     print "best turn model", best_turn_model
