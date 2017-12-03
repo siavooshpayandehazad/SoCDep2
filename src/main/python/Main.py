@@ -144,29 +144,37 @@ elif '-BENCHMARK' in sys.argv[1:]:
     else:
         sys.exit()
 elif "-MC" in sys.argv[1:]:
-    routing_type = "MinimalPath"
+    routing_type = "NonMinimalPath"
     scenario = 1
+    forced_turns = []
 
     if scenario == 1:       # L Scenario
         critical_nodes = [0, 15]
         critical_path = [0, 1, 2, 3, 7, 11, 15]
         critical_rg_nodes = ["0LI", "0EO", "1WI", "1EO", "2WI", "2EO", "3WI", "3NO", "7SI", "7NO", "11SI", "11NO", "15SI", "15LO",
                              "15LI", "15SO", "11NI", "11SO", "7NI", "7SO", "3NI", "3WO", "2EI", "2WO", "1EI", "1WO", "0EI", "0LO"]
-        forced_turns = ["W2N"]
+        #forced_turns = []
 
     elif scenario == 2:
         critical_nodes = [0, 15]
         critical_path = [0, 1, 5, 9, 10, 14, 15]
         critical_rg_nodes = ["0LI", "0EO", "1WI", "1NO", "5SI", "5NO", "9SI", "9EO", "10WI", "10NO", "14SI", "14EO", "15WI", "15LO",
                              "15LI", "15WO", "14EI", "14SO", "10NI", "10WO", "9EI", "9SO", "5NI", "5SO", "1NI", "1WO", "0EI", "0LO"]
-        forced_turns = ["E2N", "S2E"]
+        #forced_turns = ["W2N", "S2E"]
 
     elif scenario == 3:
         critical_nodes = [0, 15]
         critical_path = [0, 1, 5, 9, 13, 14, 15]
         critical_rg_nodes = ["0LI", "0EO", "1WI", "1NO", "5SI", "5NO", "9SI", "9NO", "13SI", "13EO", "14WI", "14EO", "15WI", "15LO",
                              "15LI", "15WO", "14EI", "14WO", "13EI", "13SO", "9NI", "9SO", "5NI", "5SO", "1NI", "1WO", "0EI", "0LO"]
-        forced_turns = ["E2N", "S2E"]
+        forced_turns = ["W2N", "S2E"]
+
+    elif scenario == 5:
+        critical_nodes = [0, 14]
+        critical_path = [0, 1, 2, 6, 10, 14]
+        critical_rg_nodes = ["0LI", "0EO", "1WI", "1EO", "2WI", "2NO", "6SI", "6NO", "10SI", "10NO", "14SI", "14LO",
+                             "14LI", "14SO", "10NI", "10SO", "6NI", "6SO", "2NI", "2WO", "1EI", "1WO", "0EI", "0LO"]
+        #forced_turns = ["W2N"]
 
     elif scenario == 4: # ISLAND
         critical_nodes = [0, 1]
