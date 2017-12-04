@@ -144,7 +144,7 @@ elif '-BENCHMARK' in sys.argv[1:]:
     else:
         sys.exit()
 elif "-MC" in sys.argv[1:]:
-    routing_type = "NonMinimalPath"
+    routing_type = "MinimalPath"
     scenario = 1
     forced_turns = []
 

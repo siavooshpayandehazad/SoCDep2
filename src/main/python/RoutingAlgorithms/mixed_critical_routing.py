@@ -275,10 +275,22 @@ def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_no
                                                     valid_successor = True
                                                     break
                                             if valid_successor:
-                                                #print path, node, node_2, successor
-                                                if not has_path(noc_rg, successor, str(node_2)+str('L')+str('O')):
+                                                sucessor_paths = []
+                                                max_hop_count = manhattan_distance(int(successor[:-2]), node_2)
+                                                if has_path(noc_rg, successor, str(node_2)+str('L')+str('O')):
+                                                    all_paths_from_sucessor = list(all_shortest_paths(noc_rg, successor, str(node_2)+str('L')+str('O')))
+                                                    for Path in all_paths_from_sucessor:
+                                                        if (len(Path)-2)/2 <= max_hop_count:
+                                                            sucessor_paths.append(Path)
+                                                if len(sucessor_paths)==0:
                                                     valid_path = False
+                                                    #print path, node, node_2, successor, "FALSE"
                                                     break
+                                                else:
+                                                    pass
+                                                    #print path, node, node_2, successor, "TRUE"
+
+
                             if valid_path:
                                 reachability_counter += 1
                             else:
