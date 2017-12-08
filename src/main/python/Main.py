@@ -147,7 +147,8 @@ elif "-MC" in sys.argv[1:]:
     routing_type = "MinimalPath"
     scenario = 1
     forced_turns = []
-
+    # write the link you want to break in the list bellow!
+    broken_links = [(10,11)]
     if scenario == 1:       # L Scenario
         critical_nodes = [0, 15]
         critical_path = [0, 1, 2, 3, 7, 11, 15]
@@ -199,7 +200,7 @@ elif "-MC" in sys.argv[1:]:
             if turn not in turn_model:
                 discard = True
         if not discard:
-            connectivity, noc_rg = mixed_critical_rg(4, routing_type, critical_nodes, critical_rg_nodes,
+            connectivity, noc_rg = mixed_critical_rg(4, routing_type, critical_nodes, critical_rg_nodes, broken_links,
                                                      turn_model, False, False)
             if connectivity > max_connectivity:
                 max_connectivity = connectivity
@@ -209,7 +210,7 @@ elif "-MC" in sys.argv[1:]:
     print "==="*6
     print "max connectivity:", max_connectivity
     print "best turn model", best_turn_model
-    connectivity, noc_rg = mixed_critical_rg(4, routing_type, critical_nodes, critical_rg_nodes,
+    connectivity, noc_rg = mixed_critical_rg(4, routing_type, critical_nodes, critical_rg_nodes, broken_links,
                                              best_turn_model, True, True)
     report_router_links(4, noc_rg)
     generate_routing_table(4, noc_rg, routing_type)

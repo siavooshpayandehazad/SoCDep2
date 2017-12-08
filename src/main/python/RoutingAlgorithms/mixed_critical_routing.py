@@ -190,7 +190,8 @@ def cleanup_routing_graph(ag, noc_rg):
     return noc_rg
 
 
-def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_nodes, turn_model, viz, report):
+def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_nodes, broken_links,
+                      turn_model, viz, report):
 
     turns_health_2d_network = {"N2W": True, "N2E": True, "S2W": True, "S2E": True,
                                "W2N": True, "W2S": True, "E2N": True, "E2S": True}
@@ -219,13 +220,18 @@ def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_no
 
     edges_to_be_removed = []
     for edge in noc_rg.edges():
+        if (int(edge[0][:-2]), int(edge[1][:-2]))in broken_links:
+            print "here"
+            edges_to_be_removed.append(edge)
+        # removing edges that go from non-critical ports to ports used by critical ports
         if noc_rg.node[edge[0]]["criticality"] != noc_rg.node[edge[1]]["criticality"]:
             edges_to_be_removed.append(edge)
         else:
             if noc_rg.node[edge[0]]["criticality"] == "L":
                 if edge[0][:-2] == edge[1][:-2]:
+                    # remove the links that do not follow the turn model rules!
                     if str(edge[0][-2])+"2"+str(edge[1][-2]) not in turn_model:
-                        if edge[0][-2] == "L" or  edge[1][-2] == "L":
+                        if edge[0][-2] == "L" or edge[1][-2] == "L":
                             pass
                         elif edge[0][-2] == "E" and edge[1][-2] == "W":
                             pass
