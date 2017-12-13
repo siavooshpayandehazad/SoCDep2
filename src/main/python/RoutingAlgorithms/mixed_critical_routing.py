@@ -221,7 +221,6 @@ def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_no
     edges_to_be_removed = []
     for edge in noc_rg.edges():
         if (int(edge[0][:-2]), int(edge[1][:-2]))in broken_links:
-            print "here"
             edges_to_be_removed.append(edge)
         # removing edges that go from non-critical ports to ports used by critical ports
         if noc_rg.node[edge[0]]["criticality"] != noc_rg.node[edge[1]]["criticality"]:
@@ -252,7 +251,7 @@ def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_no
 
     reachability_counter = 0
     connectivity_counter = 0
-    print "its deadlock free:", check_deadlock_freeness(noc_rg)
+    print "deadlock freeness:", check_deadlock_freeness(noc_rg)
     for node_1 in ag.nodes():
         for node_2 in ag.nodes():
             if node_1 != node_2:
@@ -300,7 +299,8 @@ def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_no
                             if valid_path:
                                 reachability_counter += 1
                             else:
-                                print node_1,"can not reach  ", node_2
+                                if report:
+                                    print node_1,"can not reach  ", node_2
                         else:
                             reachability_counter += 1
                     else:
@@ -309,7 +309,6 @@ def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_no
     print "average connectivity for non-critical nodes:", float(connectivity_counter)/(len(ag.nodes())-len(critical_nodes))
     print "average reachability for non-critical nodes:", float(reachability_counter)/(len(ag.nodes())-len(critical_nodes))
     return float(connectivity_counter)/(len(ag.nodes())-len(critical_nodes)), noc_rg
-
 
 
 def generate_routing_table(size, noc_rg, routing_type):
