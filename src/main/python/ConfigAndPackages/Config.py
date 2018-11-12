@@ -116,9 +116,10 @@ vl_opt = VerticalLinkPlacementOpt()
 ################################################
 # Todo: introduce more turn models
 # Available Turn Models :
-#         2D Turn Models: XY_TurnModel, YX_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel
+#         2D Turn Models: XY_TurnModel, YX_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel,
+#                         EastFirst_TurnModel, SouthFirst_TurnModel, NorthFirst_TurnModel
 #         3D Turn Models: XYZ_TurnModel, NegativeFirst3D_TurnModel
-UsedTurnModel = PackageFile.XY_TurnModel
+UsedTurnModel = PackageFile.NorthFirst_TurnModel
 
 # Available choices: 'MinimalPath', 'NonMinimalPath'
 RotingType = 'MinimalPath'
@@ -367,7 +368,7 @@ NodeTestComWeight = 2
 
 class Viz:
     def __init__(self):
-        self.rg = False
+        self.rg = True
         self.pmcg = False
         self.ttg = False
         self.mapping_distribution = False

@@ -5,7 +5,7 @@ import time
 
 from ArchGraphUtilities import Arch_Graph_Reports, AG_Functions
 from ArchGraphUtilities.vl_optimization import vl_opt, vl_opt_functions
-from ConfigAndPackages import Config
+from ConfigAndPackages import Config, PackageFile
 from Mapper import Mapping, Mapping_Reports, Mapping_Animation
 from Mapper import Mapping_Functions
 from RoutingAlgorithms import Routing, Calculate_Reachability, ReachabilityReports, \
@@ -138,3 +138,46 @@ def initialize_system(logging):
     if Config.viz.mapping_frames:
         Mapping_Animation.generate_frames(ag, shmu.SHM)
     return tg, ag, shmu, noc_rg, critical_rg, noncritical_rg, pmcg
+
+
+
+def initialize_system_DoS(logging):
+    """
+    Generates the Task graph, Architecture Graph, System Health Monitoring Unit, NoC routing graph(s) and
+    Test Task Graphs and does the mapping and scheduling and returns to the user the initial system
+    :param logging: logging file
+    :return:  ag, shmu, noc_rg
+    """
+
+    ####################################################################
+    ag = copy.deepcopy(AG_Functions.generate_ag(logging))
+    AG_Functions.update_ag_regions(ag)
+    AG_Functions.random_darkness(ag)
+    if Config.EnablePartitioning:
+        AG_Functions.setup_network_partitioning(ag)
+    if Config.FindOptimumAG:
+        Arch_Graph_Reports.draw_ag(ag, "AG_Full")
+    else:
+        Arch_Graph_Reports.draw_ag(ag, "AG")
+    ####################################################################
+    Config.setup_turns_health()
+    shmu = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
+    shmu.setup_noc_shm(ag, Config.TurnsHealth, True)
+    # Here we are injecting initial faults of the system: we assume these fault
+    # information is obtained by post manufacturing system diagnosis
+    SHMU_Functions.apply_initial_faults(shmu)
+    if Config.viz.shm:
+        SHMU_Reports.draw_shm(shmu.SHM)
+        SHMU_Reports.draw_temp_distribution(shmu.SHM)
+    # SHM_Reports.report_noc_shm()
+    ####################################################################
+    routing_graph_start_time = time.time()
+    noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
+                           Config.DebugInfo, Config.DebugDetails))
+    Routing_Functions.check_deadlock_freeness(noc_rg)
+    print ("\033[92mTIME::\033[0m ROUTING GRAPH GENERATION TOOK: " +
+           str(round(time.time()-routing_graph_start_time))+" SECONDS")
+    # Some visualization...
+    if Config.viz.rg:
+        RoutingGraph_Reports.draw_rg(noc_rg)
+    return ag, shmu, noc_rg

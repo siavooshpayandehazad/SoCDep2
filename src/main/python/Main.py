@@ -21,6 +21,7 @@ from RoutingAlgorithms.turn_model_evaluation import list_all_turn_models, turn_m
 from RoutingAlgorithms.turn_model_evaluation import odd_even_evaluation
 from RoutingAlgorithms.mixed_critical_routing import *
 from multiprocessing import Pool
+import statistics
 
 
 tr = None
@@ -145,11 +146,11 @@ elif '-BENCHMARK' in sys.argv[1:]:
         sys.exit()
 elif "-MC" in sys.argv[1:]:
     routing_type = "MinimalPath"
-    scenario = 6
+    scenario = 1
     forced_turns = []
     # write the link you want to break in the list bellow!
-    broken_links = [(7, 3), (3, 7)]
-    #broken_links = []
+    # broken_links = [(7, 3), (3, 7)]
+    broken_links = []
     if scenario == 1:       # L Scenario
         critical_nodes = [0, 15]
         critical_path = [0, 1, 2, 3, 7, 11, 15]
@@ -225,6 +226,91 @@ elif "-MC" in sys.argv[1:]:
                                              best_turn_model, True, True)
     report_router_links(4, noc_rg)
     generate_routing_table(4, noc_rg, routing_type)
+    sys.exit()
+elif "-DoS" in sys.argv[1:]:
+    Config.ag.x_size = 4
+    Config.ag.y_size = 4
+    destination = '13LO'
+    Source = '8LI'
+    counter = 0
+    checked_ports = []
+    no_dir_avg_count = []
+    dir_avg_count = []
+    from networkx import all_simple_paths, has_path, all_shortest_paths
+    ag, shmu, noc_rg = SystemInitialization.initialize_system_DoS(logging)
+
+    print "Secure Node:", Source, "Destination Node:", destination
+
+    if has_path(noc_rg, Source, destination):
+        for path in all_shortest_paths(noc_rg, Source, destination):
+            detected_nodes = []
+            print "currently checking path:", path
+            for out_port in path:
+                if "O" in out_port:
+                    if out_port not in checked_ports:
+                        counter = 0
+                        checked_ports.append(out_port)
+                        accessible_ports =[]
+                        for node in noc_rg.nodes():
+                            if node != Source and node != destination:
+                                hasPath = False
+                                if 'LI' in node:
+                                    if has_path(noc_rg, node, out_port):
+                                        WO = SO = EO = NO = 0
+                                        for path2 in all_shortest_paths(noc_rg, node, out_port):
+                                            for ports in path2:
+                                                if "WO" in ports:
+                                                    WO = True
+                                                if "SO" in ports:
+                                                    SO = True
+                                                if "NO" in ports:
+                                                    NO = True
+                                                if "EO" in ports:
+                                                    EO = True
+                                            if not ((WO and EO) or (SO and NO)):
+                                                hasPath = True
+                                                if node not in accessible_ports and node not in detected_nodes:
+                                                    accessible_ports.append(node)
+                                                    detected_nodes.append(node)
+                                if hasPath:
+                                    counter += 1
+                        print "\t new port:", out_port, "Accessible from", counter, "Nodes:", sorted(accessible_ports)
+
+                        distr_list = []
+                        for in_port in noc_rg.predecessors(out_port):
+                            cnt = 0
+                            print "\t\t", in_port[-2], ":",
+                            for node in accessible_ports:
+                                if has_path(noc_rg, node, in_port):
+                                    print node,
+                                    cnt += 1
+                            print
+                            if cnt != 0:
+                                distr_list.append(cnt)
+                        print "\t\t.-------------------"
+
+                        if len(distr_list)>0:
+                            no_dir_avg_count.append(len(accessible_ports))
+                            dir_avg_count.append(float(sum(distr_list))/len(distr_list))
+                            print "\t\t| Avg Without Dir: ", len(accessible_ports)
+                            print "\t\t| Avg with Dir:    ", float(sum(distr_list))/len(distr_list)
+                            print "\t\t|           BC:    ", min(distr_list)
+                            print "\t\t|           WC:    ", max(distr_list)
+                            if len(distr_list)>1:
+                                print "\t\t|           SD:    ", statistics.stdev(distr_list)
+                            else:
+                                print "\t\t|           SD:     --"
+                        else:
+                            print "\t\t  Avg: --"
+                        print "\t\t'-------------------"
+            print "----------------------------------------"
+    print "    max:", max(no_dir_avg_count)
+    print "no dir Avg:", float(sum(no_dir_avg_count))/len(no_dir_avg_count)
+    print "    min:", min(no_dir_avg_count)
+
+    print "Dir max:", max(dir_avg_count)
+    print "Dir Avg:", float(sum(dir_avg_count))/len(dir_avg_count)
+    print "Dir min:", min(dir_avg_count)
     sys.exit()
 
 Check_Config.check_config_file()
