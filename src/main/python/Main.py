@@ -8,11 +8,10 @@ if '--help' in sys.argv[1:] or '-help' in sys.argv[1:]:
 else:
     misc.check_for_dependencies()
 
-import copy
 import time
 import logging
-from ConfigAndPackages import Config, PackageFile, Check_Config
-from Utilities import Logger, Benchmark_Alg_Downloader, misc
+from ConfigAndPackages import Config, PackageFile, Check_Config, all_2d_turn_model_package
+from Utilities import Logger, Benchmark_Alg_Downloader
 import SystemInitialization
 from GUI_Util import GUI
 from pympler import tracker
@@ -40,15 +39,14 @@ elif '-GUI' in sys.argv[1:]:
 elif '-EvTM_odd_even' in sys.argv[1:]:
     misc.generate_file_directories()
 
-
     for size in range(2, 4):
         for routing_type in ["MinimalPath", "NonMinimalPath"]:
             odd_even_evaluation.enumerate_all_odd_even_turn_models(size, routing_type)
             print
 
-    odd_even_evaluation.evaluate_robustness_links(3,2)
+    odd_even_evaluation.evaluate_robustness_links(3, 2)
     odd_even_evaluation.evaluate_robustness_routers(3)
-    #odd_even_evaluation.viz_all_turn_models_against_each_other()
+    # odd_even_evaluation.viz_all_turn_models_against_each_other()
     sys.exit()
 
 elif '-odd_even_viz' in sys.argv[1:]:
@@ -154,25 +152,26 @@ elif "-MC" in sys.argv[1:]:
     if scenario == 1:       # L Scenario
         critical_nodes = [0, 15]
         critical_path = [0, 1, 2, 3, 7, 11, 15]
-        critical_rg_nodes = ["0LI", "0EO", "1WI", "1EO", "2WI", "2EO", "3WI", "3NO", "7SI", "7NO", "11SI", "11NO", "15SI", "15LO",
-                             "15LI", "15SO", "11NI", "11SO", "7NI", "7SO", "3NI", "3WO", "2EI", "2WO", "1EI", "1WO", "0EI", "0LO"]
-        #forced_turns = []
+        critical_rg_nodes = ["0LI", "0EO", "1WI", "1EO", "2WI", "2EO", "3WI", "3NO", "7SI", "7NO", "11SI", "11NO",
+                             "15SI", "15LO", "15LI", "15SO", "11NI", "11SO", "7NI", "7SO", "3NI", "3WO", "2EI",
+                             "2WO", "1EI", "1WO", "0EI", "0LO"]
+        # forced_turns = []
 
     elif scenario == 2:
         critical_nodes = [0, 15]
         critical_path = [0, 1, 5, 9, 10, 14, 15]
-        critical_rg_nodes = ["0LI", "0EO", "1WI", "1NO", "5SI", "5NO", "9SI", "9EO", "10WI", "10NO", "14SI", "14EO", "15WI", "15LO",
-                             "15LI", "15WO", "14EI", "14SO", "10NI", "10WO", "9EI", "9SO", "5NI", "5SO", "1NI", "1WO", "0EI", "0LO"]
-        #forced_turns = ["W2N", "S2E"]
+        critical_rg_nodes = ["0LI", "0EO", "1WI", "1NO", "5SI", "5NO", "9SI", "9EO", "10WI", "10NO", "14SI", "14EO",
+                             "15WI", "15LO", "15LI", "15WO", "14EI", "14SO", "10NI", "10WO", "9EI", "9SO", "5NI",
+                             "5SO", "1NI", "1WO", "0EI", "0LO"]
+        # forced_turns = ["W2N", "S2E"]
 
     elif scenario == 3:
         critical_nodes = [0, 15]
         critical_path = [0, 1, 5, 9, 13, 14, 15]
-        critical_rg_nodes = ["0LI", "0EO", "1WI", "1NO", "5SI", "5NO", "9SI", "9NO", "13SI", "13EO", "14WI", "14EO", "15WI", "15LO",
-                             "15LI", "15WO", "14EI", "14WO", "13EI", "13SO", "9NI", "9SO", "5NI", "5SO", "1NI", "1WO", "0EI", "0LO"]
+        critical_rg_nodes = ["0LI", "0EO", "1WI", "1NO", "5SI", "5NO", "9SI", "9NO", "13SI", "13EO", "14WI", "14EO",
+                             "15WI", "15LO", "15LI", "15WO", "14EI", "14WO", "13EI", "13SO", "9NI", "9SO", "5NI",
+                             "5SO", "1NI", "1WO", "0EI", "0LO"]
         forced_turns = ["W2N", "S2E"]
-
-
 
     elif scenario == 4:  # ISLAND
         critical_nodes = [0, 1]
@@ -180,22 +179,21 @@ elif "-MC" in sys.argv[1:]:
         critical_rg_nodes = ["0LI", "0EO", "1WI", "1LO"]
         forced_turns = []
 
-
-    elif scenario == 5: # this is scenario 4 in  the paper
+    elif scenario == 5:     # this is scenario 4 in  the paper
         critical_nodes = [0, 14]
         critical_path = [0, 1, 2, 6, 10, 14]
         critical_rg_nodes = ["0LI", "0EO", "1WI", "1EO", "2WI", "2NO", "6SI", "6NO", "10SI", "10NO", "14SI", "14LO",
                              "14LI", "14SO", "10NI", "10SO", "6NI", "6SO", "2NI", "2WO", "1EI", "1WO", "0EI", "0LO"]
-        #forced_turns = ["W2N"]
+        # forced_turns = ["W2N"]
 
     elif scenario == 6:
         critical_nodes = [0, 9, 15]
         critical_path = [0, 1, 5, 9, 10, 14, 15]
-        critical_rg_nodes = ["0LI", "0EO", "1WI", "1NO", "5SI", "5NO", "9SI", "9EO", "10WI", "10NO", "14SI", "14EO", "15WI", "15LO",
-                             "15LI", "15WO", "14EI", "14SO", "10NI", "10WO", "9EI", "9SO", "5NI", "5SO", "1NI", "1WO", "0EI", "0LO",
-                             "9LI", "9LO"]
+        critical_rg_nodes = ["0LI", "0EO", "1WI", "1NO", "5SI", "5NO", "9SI", "9EO", "10WI", "10NO", "14SI", "14EO",
+                             "15WI", "15LO", "15LI", "15WO", "14EI", "14SO", "10NI", "10WO", "9EI", "9SO", "5NI",
+                             "5SO", "1NI", "1WO", "0EI", "0LO", "9LI", "9LO"]
 
-    else: # BASELINE
+    else:   # BASELINE
         critical_nodes = []
         critical_path = []
         critical_rg_nodes = []
@@ -206,7 +204,7 @@ elif "-MC" in sys.argv[1:]:
     max_connectivity = 0
     best_turn_model = None
 
-    for turn_model in all_2d_turn_models:
+    for turn_model in all_2d_turn_model_package.all_2d_turn_models:
         discard = False
         for turn in forced_turns:
             if turn not in turn_model:
@@ -217,7 +215,6 @@ elif "-MC" in sys.argv[1:]:
             if connectivity > max_connectivity:
                 max_connectivity = connectivity
                 best_turn_model = turn_model
-
 
     print "==="*6
     print "max connectivity:", max_connectivity
@@ -250,7 +247,7 @@ elif "-DoS" in sys.argv[1:]:
                     if out_port not in checked_ports:
                         counter = 0
                         checked_ports.append(out_port)
-                        accessible_ports =[]
+                        accessible_ports = []
                         for node in noc_rg.nodes():
                             if node != Source and node != destination:
                                 hasPath = False
@@ -289,14 +286,14 @@ elif "-DoS" in sys.argv[1:]:
                                 distr_list.append(cnt)
                         print "\t\t.-------------------"
 
-                        if len(distr_list)>0:
+                        if len(distr_list) > 0:
                             no_dir_avg_count.append(len(accessible_ports))
                             dir_avg_count.append(float(sum(distr_list))/len(distr_list))
                             print "\t\t| Avg Without Dir: ", len(accessible_ports)
                             print "\t\t| Avg with Dir:    ", float(sum(distr_list))/len(distr_list)
                             print "\t\t|           BC:    ", min(distr_list)
                             print "\t\t|           WC:    ", max(distr_list)
-                            if len(distr_list)>1:
+                            if len(distr_list) > 1:
                                 print "\t\t|           SD:    ", statistics.stdev(distr_list)
                             else:
                                 print "\t\t|           SD:     --"
