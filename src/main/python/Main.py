@@ -23,7 +23,8 @@ from multiprocessing import Pool
 import statistics
 
 
-tr = None
+
+tr = None   # memory tracker!
 if Config.MemoryProfiler:
     tr = tracker.SummaryTracker()
 
@@ -76,7 +77,7 @@ elif '-ETMD' in sys.argv[1:]:     # Enumerate turn model based on deadlock
         elif routing_type == "NM":
             Config.RotingType = 'NonMinimalPath'
         else:
-            print "ARGUMENT ERROR:: Routing type should be either M or NM..."
+            print("ARGUMENT ERROR:: Routing type should be either M or NM...")
         number_of_multi_threads = int(sys.argv[sys.argv.index('-ETMD') + 3])
         p = Pool(number_of_multi_threads)
         if sys.argv[sys.argv.index('-ETMD') + 1] == '3D':
@@ -88,7 +89,7 @@ elif '-ETMD' in sys.argv[1:]:     # Enumerate turn model based on deadlock
             p.map(list_all_turn_models.enumerate_all_2d_turn_models_based_on_df, args)
             p.terminate()
         else:
-            print "ARGUMENT ERROR:: Dimension should be specified as 2D or 3D..."
+            print("ARGUMENT ERROR:: Dimension should be specified as 2D or 3D...")
     sys.exit()
 elif '-TMFT' in sys.argv[1:]:     # check All turn model's fault tolerance
     misc.generate_file_directories()
@@ -100,13 +101,13 @@ elif '-TMFT' in sys.argv[1:]:     # check All turn model's fault tolerance
     elif routing_type == "NM":
         Config.RotingType = 'NonMinimalPath'
     else:
-        print "ARGUMENT ERROR:: Routing type should be either M or NM..."
+        print("ARGUMENT ERROR:: Routing type should be either M or NM...")
 
     number_of_multi_threads = int(sys.argv[sys.argv.index('-TMFT') + 3])
     if "2D" in sys.argv[1:] or "3D" in sys.argv[1:]:
         pass
     else:
-        print "MISSING ARGUMENT:: A dimension value is required for this command"
+        print("MISSING ARGUMENT:: A dimension value is required for this command")
         sys.exit()
     dimension = sys.argv[sys.argv.index('-TMFT') + 1]
     if "-V" in sys.argv[1:]:
@@ -120,7 +121,7 @@ elif '-VIZTM' in sys.argv[1:]:     # visualizes the turn models in 2D or 3D
     if "2D" in sys.argv[1:] or "3D" in sys.argv[1:]:
         pass
     else:
-        print "MISSING ARGUMENT:: A dimension value is required for this command"
+        print("MISSING ARGUMENT:: A dimension value is required for this command")
         sys.exit()
     dimension = sys.argv[sys.argv.index('-VIZTM') + 1]
     routing_type = sys.argv[sys.argv.index('-VIZTM') + 2]
@@ -137,7 +138,7 @@ elif '-CONF' in sys.argv[1:]:
         misc.update_config(path_to_config_file)
 elif '-BENCHMARK' in sys.argv[1:]:
     benchmark = sys.argv[sys.argv.index('-BENCHMARK') + 1]
-    print benchmark
+    print(benchmark)
     if Benchmark_Alg_Downloader.download_benchmark_algorithms(str(benchmark)):
         pass
     else:
@@ -216,9 +217,9 @@ elif "-MC" in sys.argv[1:]:
                 max_connectivity = connectivity
                 best_turn_model = turn_model
 
-    print "==="*6
-    print "max connectivity:", max_connectivity
-    print "best turn model", best_turn_model
+    print("="*18)
+    print("max connectivity:", max_connectivity)
+    print("best turn model", best_turn_model)
     connectivity, noc_rg = mixed_critical_rg(4, routing_type, critical_nodes, critical_rg_nodes, broken_links,
                                              best_turn_model, True, True)
     report_router_links(4, noc_rg)
@@ -236,12 +237,12 @@ elif "-DoS" in sys.argv[1:]:
     from networkx import all_simple_paths, has_path, all_shortest_paths
     ag, shmu, noc_rg = SystemInitialization.initialize_system_DoS(logging)
 
-    print "Secure Node:", Source, "Destination Node:", destination
+    print("Secure Node:", Source, "Destination Node:", destination)
 
     if has_path(noc_rg, Source, destination):
         for path in all_shortest_paths(noc_rg, Source, destination):
             detected_nodes = []
-            print "currently checking path:", path
+            print("currently checking path:", path)
             for out_port in path:
                 if "O" in out_port:
                     if out_port not in checked_ports:
@@ -271,43 +272,43 @@ elif "-DoS" in sys.argv[1:]:
                                                     detected_nodes.append(node)
                                 if hasPath:
                                     counter += 1
-                        print "\t new port:", out_port, "Accessible from", counter, "Nodes:", sorted(accessible_ports)
+                        print("\t new port:", out_port, "Accessible from", counter, "Nodes:", sorted(accessible_ports))
 
                         distr_list = []
                         for in_port in noc_rg.predecessors(out_port):
                             cnt = 0
-                            print "\t\t", in_port[-2], ":",
+                            print("\t\t", in_port[-2], ":",end="")
                             for node in accessible_ports:
                                 if has_path(noc_rg, node, in_port):
-                                    print node,
+                                    print(node,end="")
                                     cnt += 1
-                            print
+                            print()
                             if cnt != 0:
                                 distr_list.append(cnt)
-                        print "\t\t.-------------------"
+                        print("\t\t.-------------------")
 
                         if len(distr_list) > 0:
                             no_dir_avg_count.append(len(accessible_ports))
                             dir_avg_count.append(float(sum(distr_list))/len(distr_list))
-                            print "\t\t| Avg Without Dir: ", len(accessible_ports)
-                            print "\t\t| Avg with Dir:    ", float(sum(distr_list))/len(distr_list)
-                            print "\t\t|           BC:    ", min(distr_list)
-                            print "\t\t|           WC:    ", max(distr_list)
+                            print("\t\t| Avg Without Dir: ", len(accessible_ports))
+                            print("\t\t| Avg with Dir:    ", float(sum(distr_list))/len(distr_list))
+                            print("\t\t|           BC:    ", min(distr_list))
+                            print("\t\t|           WC:    ", max(distr_list))
                             if len(distr_list) > 1:
-                                print "\t\t|           SD:    ", statistics.stdev(distr_list)
+                                print("\t\t|           SD:    ", statistics.stdev(distr_list))
                             else:
-                                print "\t\t|           SD:     --"
+                                print("\t\t|           SD:     --")
                         else:
-                            print "\t\t  Avg: --"
-                        print "\t\t'-------------------"
-            print "----------------------------------------"
-    print "    max:", max(no_dir_avg_count)
-    print "no dir Avg:", float(sum(no_dir_avg_count))/len(no_dir_avg_count)
-    print "    min:", min(no_dir_avg_count)
+                            print("\t\t  Avg: --")
+                        print("\t\t'-------------------")
+            print("----------------------------------------")
+    print("    max:", max(no_dir_avg_count))
+    print("no dir Avg:", float(sum(no_dir_avg_count))/len(no_dir_avg_count))
+    print("    min:", min(no_dir_avg_count))
 
-    print "Dir max:", max(dir_avg_count)
-    print "Dir Avg:", float(sum(dir_avg_count))/len(dir_avg_count)
-    print "Dir min:", min(dir_avg_count)
+    print("Dir max:", max(dir_avg_count))
+    print("Dir Avg:", float(sum(dir_avg_count))/len(dir_avg_count))
+    print("Dir min:", min(dir_avg_count))
     sys.exit()
 
 Check_Config.check_config_file()
@@ -330,9 +331,9 @@ misc.generate_configfile()
 tg, ag, shmu, noc_rg, CriticalRG, NonCriticalRG, pmcg = SystemInitialization.initialize_system(logging)
 
 # just to have a sense of how much time we are spending in each section
-print ("===========================================")
+print("===========================================")
 system_starting_time = time.time()
-print ("\033[92mTIME::\033[0m SYSTEM STARTS AT:"+str(round(system_starting_time-program_start_time)) +
+print("\033[92mTIME::\033[0m SYSTEM STARTS AT:"+str(round(system_starting_time-program_start_time)) +
        " SECONDS AFTER PROGRAM START...")
 
 if Config.enable_simulator:

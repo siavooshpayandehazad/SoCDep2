@@ -47,7 +47,7 @@ class ArchGraphTesting(unittest.TestCase):
                 self.assertTrue(node in proc_element_list)
             for link in ag.edges():
                 self.assertTrue(link in edge_list)
-                port = ag.edge[link[0]][link[1]]['Port']
+                port = ag.edges[link]['Port']
                 index = edge_list.index(link)
                 self.assertEqual(edge_port_list[index], port)
             del ag

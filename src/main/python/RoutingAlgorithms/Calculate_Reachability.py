@@ -6,7 +6,7 @@
 from networkx import has_path, shortest_path_length, all_simple_paths
 from copy import deepcopy
 from ConfigAndPackages import Config
-from Routing import generate_noc_route_graph
+from RoutingAlgorithms.Routing import generate_noc_route_graph
 from ArchGraphUtilities.AG_Functions import manhattan_distance, return_node_number, return_node_location
 
 
@@ -29,7 +29,7 @@ def calculate_reachability(ag, noc_rg):
             # if SourceNode != DestinationNode:
                 for port in port_list:
                     if not is_destination_reachable_via_port(noc_rg, source_node, port, destination_node, False):
-                        # print ("No Path From", SourceNode,Port,"To",DestinationNode)
+                        # print("No Path From", SourceNode,Port,"To",DestinationNode)
                         ag.node[source_node]['Router'].unreachable[port].append(destination_node)
     return None
 
@@ -53,7 +53,7 @@ def is_destination_reachable_via_port(noc_rg, source_node, port, destination_nod
         return True
     else:
         if report:
-            print ("\t\tNO PATH FOUND FROM: ", source, "TO:", destination)
+            print("\t\tNO PATH FOUND FROM: ", source, "TO:", destination)
         return False
 
 
@@ -112,8 +112,8 @@ def optimize_reachability_rectangles(ag, number_of_rectangles):
     # the idea of merging is that we make a rectangle with representing 2 vertex of it,
     # namely north-west and south-east vertex.
     # Then we try to generate optimal rectangle set that covers all of the nodes...
-    print ("=====================================")
-    print ("STARTING RECTANGLE OPTIMIZATION...")
+    print("=====================================")
+    print("STARTING RECTANGLE OPTIMIZATION...")
     for node in ag.nodes():
         for port in ag.node[node]['Router'].unreachable:
             rectangle_list = {}
@@ -125,7 +125,7 @@ def optimize_reachability_rectangles(ag, number_of_rectangles):
                 rectangle_list = deepcopy(merge_node_with_rectangles(rectangle_list,
                                                                      ag.node[node]['Router'].unreachable[port]))
             ag.node[node]['Router'].unreachable[port] = deepcopy(rectangle_list)
-    print ("RECTANGLE OPTIMIZATION FINISHED...")
+    print("RECTANGLE OPTIMIZATION FINISHED...")
     return None
 
 
@@ -155,7 +155,7 @@ def merge_node_with_rectangles(rectangle_list, unreachable_node_list):
                     location_1, location_2 = merge_rectangle_with_node(rectangle_list[rectangle][0],
                                                                        rectangle_list[rectangle][1],
                                                                        unreachable_node)
-                    # print ("Merged:" location_1, location_2)
+                    #print("Merged:", location_1, location_2)
                     loss_less_merge = True
                     for network_node_x in range(location_1[0], location_2[0]+1):        # (merged_x_1, merged_x_2+1)
                         for network_node_y in range(location_1[1], location_2[1]+1):
@@ -174,8 +174,8 @@ def merge_node_with_rectangles(rectangle_list, unreachable_node_list):
                         break
         if not covered:
             pass
-            # print ("COULD NOT PERFORM ANY LOSS-LESS MERGE FOR:"+str(UnreachableNode))
-            # print (RectangleList)
+            # print("COULD NOT PERFORM ANY LOSS-LESS MERGE FOR:"+str(UnreachableNode))
+            # print(RectangleList)
     return rectangle_list
 
 
@@ -239,7 +239,7 @@ def calculate_reachability_with_regions(ag, shmu):
     # first Add the VirtualBrokenLinksForNonCritical
     already_broken_links = []
     for virtual_broken_link in Config.VirtualBrokenLinksForNonCritical:
-        if shmu.SHM.edge[virtual_broken_link[0]][virtual_broken_link[1]]['LinkHealth']:
+        if shmu.SHM.edges[virtual_broken_link]['LinkHealth']:
             shmu.break_link(virtual_broken_link, True)
         else:
             already_broken_links.append(virtual_broken_link)
@@ -263,7 +263,7 @@ def calculate_reachability_with_regions(ag, shmu):
     already_broken_links = []
     # Add VirtualBrokenLinksForCritical
     for virtual_broken_link in Config.VirtualBrokenLinksForCritical:
-        if shmu.SHM.edge[virtual_broken_link[0]][virtual_broken_link[1]]['LinkHealth']:
+        if shmu.SHM.edges[virtual_broken_link]['LinkHealth']:
             shmu.break_link(virtual_broken_link, True)
         else:
             already_broken_links.append(virtual_broken_link)
@@ -308,8 +308,8 @@ def reachability_metric(ag, noc_rg, report):
     :return: reachability metric
     """
     if report:
-        print ("=====================================")
-        print ("CALCULATING REACH-ABILITY METRIC OF THE CURRENT ROUTING ALGORITHM UNDER CURRENT FAULT CONFIG")
+        print("=====================================")
+        print("CALCULATING REACH-ABILITY METRIC OF THE CURRENT ROUTING ALGORITHM UNDER CURRENT FAULT CONFIG")
     reachability_counter = 0
     for source_node in ag.nodes():
         for destination_node in ag.nodes():
@@ -318,5 +318,5 @@ def reachability_metric(ag, noc_rg, report):
                     reachability_counter += 1
     r_metric = float(reachability_counter)
     if report:
-        print ("REACH-ABILITY METRIC: "+str(r_metric))
+        print("REACH-ABILITY METRIC: "+str(r_metric))
     return r_metric

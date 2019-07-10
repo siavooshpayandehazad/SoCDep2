@@ -8,13 +8,13 @@ def classify_3d_turn_models():
     result_file = open('Generated_Files/Turn_Model_Eval/3D_18_turns_classification.txt', 'w')
     line = data_file.readline()
 
-    print "----------------------------------------------------------------------------------------------"
-    print "Description of classes:"
-    print "1: both restricted turns, start from the same direction"
-    print "2: both restricted turns, end to the same direction"
-    print "3: beginning direction of one restricted turn is ending direction of the other restricted turn"
-    print "0: none of above"
-    print "----------------------------------------------------------------------------------------------"
+    print("-"*94)
+    print("Description of classes:")
+    print("1: both restricted turns, start from the same direction")
+    print("2: both restricted turns, end to the same direction")
+    print("3: beginning direction of one restricted turn is ending direction of the other restricted turn")
+    print("0: none of above")
+    print("----------------------------------------------------------------------------------------------")
 
     result_file.write("---------------------------------------------------------" +
                       "-------------------------------------\n")
@@ -24,16 +24,14 @@ def classify_3d_turn_models():
     result_file.write("3: beginning direction of one restricted turn is ending direction " +
                       "of the other restricted turn\n")
     result_file.write("0: none of above\n")
-    result_file.write("--------------------------------------------------------------------------" +
-                      "--------------------\n")
-    print "\t\t Restricted Turns\t\t|\t  Classes \t\t\t\tBad Turn"
-    print "\tXY\t\tXZ\t\tYZ\t|\txy  xz  yz \t\t\t\tModel"
+    result_file.write("-"*94 + "\n")
+    print("\t\t Restricted Turns\t\t|\t  Classes \t\t\t\tBad Turn")
+    print("\tXY\t\tXZ\t\tYZ\t|\txy  xz  yz \t\t\t\tModel")
 
     result_file.write("\t\t Restricted Turns\t\t|\t Classes \t\t\t\t\tBad Turn\n")
     result_file.write("\tXY\t\tXZ\t\tYZ\t|\txy xz yz \t\t\t\t\tModel\n")
-    print "----------------------------------------------------------------------------------------------"
-    result_file.write("-------------------------------------------------------------------" +
-                      "---------------------------\n")
+    print("-"*94)
+    result_file.write("-"*94 + "\n")
     while line != "":
         start = line.index("[")
         end = line.index("]")+1
@@ -106,16 +104,16 @@ def classify_3d_turn_models():
             bad_turn_model = 1
 
         if bad_turn_model == 1:
-            print "\033[33m"+str(xy), "\t", xz, "\t", yz, "\t|\t", xy_class, " ", xz_class, " ", yz_class, \
-                "\t\t", case_2_2_3_2, case_1_1_3_2, case_3_3_3, "\t\t"+str(bad_turn_model)+"\033[0m"
+            print("\033[33m"+str(xy), "\t", xz, "\t", yz, "\t|\t", xy_class, " ", xz_class, " ", yz_class, \
+                "\t\t", case_2_2_3_2, case_1_1_3_2, case_3_3_3, "\t\t"+str(bad_turn_model)+"\033[0m")
         else:
-            print xy, "\t", xz, "\t", yz, "\t|\t", xy_class, " ", xz_class, " ", yz_class, \
-                "\t\t", case_2_2_3_2, case_1_1_3_2, case_3_3_3, "\t\t",bad_turn_model
+            print(xy, "\t", xz, "\t", yz, "\t|\t", xy_class, " ", xz_class, " ", yz_class, \
+                "\t\t", case_2_2_3_2, case_1_1_3_2, case_3_3_3, "\t\t",bad_turn_model)
 
         result_file.write(str(xy)+"\t"+str(xz)+"\t"+str(yz)+"\t|\t"+str(xy_class)+"  "+str(xz_class)+"  "+
                           str(yz_class) + "\t\t\t"+str(case_2_2_3_2)+"  "+str(case_1_1_3_2)+"  "+str(case_3_3_3) +
                           "\t\t\t"+str(bad_turn_model)+"\n")
-        # print "-------------------------------------------------------------------"
+        # print("-"*67)
         line = data_file.readline()
     data_file.close()
     result_file.close()

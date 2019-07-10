@@ -1,38 +1,38 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 from ConfigAndPackages import Config, PackageFile
 import os
-import ConfigParser
+import configparser as ConfigParser
 import ast
 
 
 def draw_logo():
-    print ("================================================================================================")
-    print ("                                                         ___   ")
-    print ("                                                       /'___`\  ")
-    print ("                                                      /\_\ /\ \ ")
-    print ("     ____            ____     ____                    \/_/// /__     ")
-    print ("    /\  _`\         /\  _`\  /\  _`\                     // /_\ \	 ")
-    print ("    \ \,\L\_\    ___\ \ \/\_\\\\ \ \/\ \     __   _____  /\______/   	")
-    print ("     \/_\__ \   / __`\ \ \/_/_\ \ \ \ \  /'__`\/\ '__`\\\\/_____/	 ")
-    print ("       /\ \L\ \/\ \L\ \ \ \L\ \\\\ \ \_\ \/\  __/\ \ \L\ \  	 			")
-    print ("       \ `\____\ \____/\ \____/ \ \____/\ \____\\\\ \ ,__/")
-    print ("        \/_____/\/___/  \/___/   \/___/  \/____/ \ \ \/ ")
-    print ("                                                  \ \_\ ")
-    print ("                                                   \/_/ ")
-    print ("================================================================================================")
-    print ("AUTHORS:")
-    print ("          SIAVOOSH PAYANDEH AZAD")
-    print ("          RENE PIHLAK")
-    print ("          BEHRAD NIAZMAND")
-    print ("          NEVIN GEORGE")
-    print ("DATE:    MAY 2015")
-    print ("THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME ")
-    print ("DEPENDABILITY MECHANISMS ON DIFFERENT ARCHITECTURES....")
-    print ("Copyright (C) 2015-2016 as collective work done by Siavoosh Payandeh Azad, Rene Pihlak and Behrad Niazmand")
-    print ("================================================================================")
-    print ("DEBUG DETAILS: "+str(Config.DebugDetails))
-    print ("DEBUG INFO: "+str(Config.DebugInfo))
-    print ("===========================================")
+    print("================================================================================================")
+    print("                                                         ___   ")
+    print("                                                       /'___`\  ")
+    print("                                                      /\_\ /\ \ ")
+    print("     ____            ____     ____                    \/_/// /__     ")
+    print("    /\  _`\         /\  _`\  /\  _`\                     // /_\ \	 ")
+    print("    \ \,\L\_\    ___\ \ \/\_\\\\ \ \/\ \     __   _____  /\______/   	")
+    print("     \/_\__ \   / __`\ \ \/_/_\ \ \ \ \  /'__`\/\ '__`\\\\/_____/	 ")
+    print("       /\ \L\ \/\ \L\ \ \ \L\ \\\\ \ \_\ \/\  __/\ \ \L\ \  	 			")
+    print("       \ `\____\ \____/\ \____/ \ \____/\ \____\\\\ \ ,__/")
+    print("        \/_____/\/___/  \/___/   \/___/  \/____/ \ \ \/ ")
+    print("                                                  \ \_\ ")
+    print("                                                   \/_/ ")
+    print("================================================================================================")
+    print("AUTHORS:")
+    print("          SIAVOOSH PAYANDEH AZAD")
+    print("          RENE PIHLAK")
+    print("          BEHRAD NIAZMAND")
+    print("          NEVIN GEORGE")
+    print("DATE:    MAY 2015")
+    print("THE GOAL OF THIS PROGRAM IS TO MAKE A PLATFORM FOR TESTING SOME ")
+    print("DEPENDABILITY MECHANISMS ON DIFFERENT ARCHITECTURES....")
+    print("Copyright (C) 2015-2016 as collective work done by Siavoosh Payandeh Azad, Rene Pihlak and Behrad Niazmand")
+    print("================================================================================")
+    print("DEBUG DETAILS: "+str(Config.DebugDetails))
+    print("DEBUG INFO: "+str(Config.DebugInfo))
+    print("===========================================")
     return None
 
 
@@ -105,7 +105,7 @@ def check_for_dependencies():
             __import__(module)
         except ImportError:
             raise ImportError("MODULE "+str(module)+" DOES NOT EXIST...")
-    print "\033[33m* INFO::\033[0m ALL REQUIRED MODULES AVAILABLE..."
+    print("\033[33m* INFO::\033[0m ALL REQUIRED MODULES AVAILABLE...")
     return True
 
 
@@ -114,7 +114,7 @@ def update_config(config_file_path):
         config_file = open(config_file_path, 'r')
         config_file.close()
     except IOError:
-        print ('CAN NOT OPEN config_file')
+        print('CAN NOT OPEN config_file')
 
     config = ConfigParser.ConfigParser(allow_no_value=True)
     config.read(config_file_path)
@@ -323,39 +323,39 @@ def generate_configfile():
     #               Program_Config
     # ------------------------------------------------
     cnfgpars.add_section('Program_Config')
-    cnfgpars.set('Program_Config', 'enable_simulator', Config.enable_simulator)
-    cnfgpars.set('Program_Config', 'ProgramRunTime', Config.ProgramRunTime)
-    cnfgpars.set('Program_Config', 'DebugInfo', Config.DebugInfo)
-    cnfgpars.set('Program_Config', 'DebugDetails', Config.DebugDetails)
+    cnfgpars.set('Program_Config', 'enable_simulator', str(Config.enable_simulator))
+    cnfgpars.set('Program_Config', 'ProgramRunTime', str(Config.ProgramRunTime))
+    cnfgpars.set('Program_Config', 'DebugInfo', str(Config.DebugInfo))
+    cnfgpars.set('Program_Config', 'DebugDetails', str(Config.DebugDetails))
 
-    cnfgpars.set('Program_Config', 'TestMode', Config.TestMode)
-    cnfgpars.set('Program_Config', 'MemoryProfiler', Config.MemoryProfiler)
-    cnfgpars.set('Program_Config', 'EventDrivenFaultInjection', Config.EventDrivenFaultInjection)
-    cnfgpars.set('Program_Config', 'fault_injection_method', Config.fault_injection_method)
-    cnfgpars.set('Program_Config', 'fault_injection_file', Config.fault_injection_file)
+    cnfgpars.set('Program_Config', 'TestMode', str(Config.TestMode))
+    cnfgpars.set('Program_Config', 'MemoryProfiler', str(Config.MemoryProfiler))
+    cnfgpars.set('Program_Config', 'EventDrivenFaultInjection', str(Config.EventDrivenFaultInjection))
+    cnfgpars.set('Program_Config', 'fault_injection_method', str(Config.fault_injection_method))
+    cnfgpars.set('Program_Config', 'fault_injection_file', str(Config.fault_injection_file))
     # ------------------------------------------------
     #               TG_Config
     # ------------------------------------------------
     cnfgpars.add_section('TG_Config')
-    cnfgpars.set('TG_Config', 'TG_Type', Config.tg.type)
-    cnfgpars.set('TG_Config', 'NumberOfTasks', Config.tg.num_of_tasks)
-    cnfgpars.set('TG_Config', 'NumberOfCriticalTasks', Config.tg.num_of_critical_tasks)
-    cnfgpars.set('TG_Config', 'NumberOfEdges', Config.tg.num_of_edges)
-    cnfgpars.set('TG_Config', 'WCET_Range', Config.tg.wcet_range)
-    cnfgpars.set('TG_Config', 'EdgeWeightRange', Config.tg.edge_weight_range)
-    cnfgpars.set('TG_Config', 'Release_Range', Config.tg.release_range)
-    cnfgpars.set('TG_Config', 'tg_random_seed', Config.tg.random_seed)
+    cnfgpars.set('TG_Config', 'TG_Type', str(Config.tg.type))
+    cnfgpars.set('TG_Config', 'NumberOfTasks', str(Config.tg.num_of_tasks))
+    cnfgpars.set('TG_Config', 'NumberOfCriticalTasks', str(Config.tg.num_of_critical_tasks))
+    cnfgpars.set('TG_Config', 'NumberOfEdges', str(Config.tg.num_of_edges))
+    cnfgpars.set('TG_Config', 'WCET_Range', str(Config.tg.wcet_range))
+    cnfgpars.set('TG_Config', 'EdgeWeightRange', str(Config.tg.edge_weight_range))
+    cnfgpars.set('TG_Config', 'Release_Range', str(Config.tg.release_range))
+    cnfgpars.set('TG_Config', 'tg_random_seed', str(Config.tg.random_seed))
 
     # ------------------------------------------------
     #               AG_Config
     # ------------------------------------------------
     cnfgpars.add_section('AG_Config')
 
-    cnfgpars.set('AG_Config', 'AG_Type', Config.ag.type)
-    cnfgpars.set('AG_Config', 'NetworkTopology', Config.ag.topology)
-    cnfgpars.set('AG_Config', 'Network_X_Size', Config.ag.x_size)
-    cnfgpars.set('AG_Config', 'Network_Y_Size', Config.ag.y_size)
-    cnfgpars.set('AG_Config', 'Network_Z_Size', Config.ag.z_size)
+    cnfgpars.set('AG_Config', 'AG_Type', str(Config.ag.type))
+    cnfgpars.set('AG_Config', 'NetworkTopology', str(Config.ag.topology))
+    cnfgpars.set('AG_Config', 'Network_X_Size', str(Config.ag.x_size))
+    cnfgpars.set('AG_Config', 'Network_Y_Size', str(Config.ag.y_size))
+    cnfgpars.set('AG_Config', 'Network_Z_Size', str(Config.ag.z_size))
     # VirtualChannelNum
     # Config.PE_List = map(int, config.get("AG_Config", "PE_List").split(","))
     # AG_Edge_List
@@ -365,28 +365,29 @@ def generate_configfile():
     #               VL_Config
     # ------------------------------------------------
     cnfgpars.add_section('VL_Config')
-    cnfgpars.set('VL_Config', 'FindOptimumAG', Config.FindOptimumAG)
-    cnfgpars.set('VL_Config', 'VL_OptAlg', Config.vl_opt.vl_opt_alg)
-    cnfgpars.set('VL_Config', 'AG_Opt_Iterations_ILS', Config.vl_opt.ils_iteration)
-    cnfgpars.set('VL_Config', 'AG_Opt_Iterations_LS', Config.vl_opt.ls_iteration)
-    cnfgpars.set('VL_Config', 'VerticalLinksNum', Config.vl_opt.vl_num)
+    cnfgpars.set('VL_Config', 'FindOptimumAG', str(Config.FindOptimumAG))
+    cnfgpars.set('VL_Config', 'VL_OptAlg', str(Config.vl_opt.vl_opt_alg))
+    cnfgpars.set('VL_Config', 'AG_Opt_Iterations_ILS', str(Config.vl_opt.ils_iteration))
+    cnfgpars.set('VL_Config', 'AG_Opt_Iterations_LS', str(Config.vl_opt.ls_iteration))
+    cnfgpars.set('VL_Config', 'VerticalLinksNum', str(Config.vl_opt.vl_num))
 
-    cnfgpars.set('VL_Config', 'random_seed', Config.vl_opt.random_seed)
-    cnfgpars.set('VL_Config', 'sa_annealing_schedule', Config.vl_opt.sa_annealing_schedule)
-    cnfgpars.set('VL_Config', 'termination_criteria', Config.vl_opt.termination_criteria)
-    cnfgpars.set('VL_Config', 'sa_initial_temp', Config.vl_opt.sa_initial_temp)
-    cnfgpars.set('VL_Config', 'sa_stop_temp', Config.vl_opt.sa_stop_temp)
-    cnfgpars.set('VL_Config', 'sa_iteration', Config.vl_opt.sa_iteration)
-    cnfgpars.set('VL_Config', 'sa_report_solutions', Config.vl_opt.sa_report_solutions)
-    cnfgpars.set('VL_Config', 'sa_alpha', Config.vl_opt.sa_alpha)
-    cnfgpars.set('VL_Config', 'sa_log_cooling_constant', Config.vl_opt.sa_log_cooling_constant)
+    cnfgpars.set('VL_Config', 'random_seed', str(Config.vl_opt.random_seed))
+    cnfgpars.set('VL_Config', 'sa_annealing_schedule', str(Config.vl_opt.sa_annealing_schedule))
+    cnfgpars.set('VL_Config', 'termination_criteria', str(Config.vl_opt.termination_criteria))
+    cnfgpars.set('VL_Config', 'sa_initial_temp', str(Config.vl_opt.sa_initial_temp))
+    cnfgpars.set('VL_Config', 'sa_stop_temp', str(Config.vl_opt.sa_stop_temp))
+    cnfgpars.set('VL_Config', 'sa_iteration', str(Config.vl_opt.sa_iteration))
+    cnfgpars.set('VL_Config', 'sa_report_solutions', str(Config.vl_opt.sa_report_solutions))
+    cnfgpars.set('VL_Config', 'sa_alpha', str(Config.vl_opt.sa_alpha))
+    cnfgpars.set('VL_Config', 'sa_log_cooling_constant', str(Config.vl_opt.sa_log_cooling_constant))
 
     # ------------------------------------------------
     #               Routing_Config
     # ------------------------------------------------
     cnfgpars.add_section('Routing_Config')
-    cnfgpars.set('Routing_Config', 'UsedTurnModel', Config.UsedTurnModel)
+    cnfgpars.set('Routing_Config', 'UsedTurnModel', str(Config.UsedTurnModel))
 
+    #TODO: there are new turn models available, need to update!
     if Config.UsedTurnModel == PackageFile.XY_TurnModel:
         cnfgpars.set('Routing_Config', 'UsedTurnModel', "XY_TurnModel")
     elif Config.UsedTurnModel == PackageFile.YX_TurnModel:
@@ -406,125 +407,125 @@ def generate_configfile():
     else:
         raise ValueError("Turn Model not Available")
 
-    cnfgpars.set('Routing_Config', 'RotingType', Config.RotingType)
-    cnfgpars.set('Routing_Config', 'RoutingFilePath', Config.RoutingFilePath)
-    cnfgpars.set('Routing_Config', 'SetRoutingFromFile', Config.SetRoutingFromFile)
-    cnfgpars.set('Routing_Config', 'FlowControl', Config.FlowControl)
+    cnfgpars.set('Routing_Config', 'RotingType', str(Config.RotingType))
+    cnfgpars.set('Routing_Config', 'RoutingFilePath', str(Config.RoutingFilePath))
+    cnfgpars.set('Routing_Config', 'SetRoutingFromFile', str(Config.SetRoutingFromFile))
+    cnfgpars.set('Routing_Config', 'FlowControl', str(Config.FlowControl))
     # ------------------------------------------------
     #               Dark_Sil_Config
     # ------------------------------------------------
     cnfgpars.add_section('Dark_Sil_Config')
-    cnfgpars.set('Dark_Sil_Config', 'DarkSiliconPercentage', Config.DarkSiliconPercentage)
+    cnfgpars.set('Dark_Sil_Config', 'DarkSiliconPercentage', str(Config.DarkSiliconPercentage))
     # ------------------------------------------------
     #               SHM_Config
     # ------------------------------------------------
     cnfgpars.add_section('SHM_Config')
-    cnfgpars.set('SHM_Config', 'NumberOfRects', Config.NumberOfRects)
+    cnfgpars.set('SHM_Config', 'NumberOfRects', str(Config.NumberOfRects))
     # ListOfBrokenLinks
-    cnfgpars.set('SHM_Config', 'ListOfBrokenTurns', Config.ListOfBrokenTurns)
-    cnfgpars.set('SHM_Config', 'MaxTemp', Config.MaxTemp)
+    cnfgpars.set('SHM_Config', 'ListOfBrokenTurns', str(Config.ListOfBrokenTurns))
+    cnfgpars.set('SHM_Config', 'MaxTemp', str(Config.MaxTemp))
     # ------------------------------------------------
     #               CTG_Config
     # ------------------------------------------------
     cnfgpars.add_section('CTG_Config')
-    cnfgpars.set('CTG_Config', 'task_clustering', Config.task_clustering)
-    cnfgpars.set('CTG_Config', 'Clustering_Optimization', Config.Clustering_Optimization)
-    cnfgpars.set('CTG_Config', 'ClusteringIteration', Config.clustering.iterations)
-    cnfgpars.set('CTG_Config', 'ctg_random_seed', Config.clustering.random_seed)
-    cnfgpars.set('CTG_Config', 'Clustering_Report', Config.clustering.report)
-    cnfgpars.set('CTG_Config', 'Clustering_DetailedReport', Config.clustering.detailed_report)
-    cnfgpars.set('CTG_Config', 'Clustering_CostFunctionType', Config.clustering.cost_function)
-    cnfgpars.set('CTG_Config', 'ClusteringOptMove', Config.clustering.opt_move)
-    cnfgpars.set('CTG_Config', 'CTG_CirculationLength', Config.clustering.circulation_length)
+    cnfgpars.set('CTG_Config', 'task_clustering', str(Config.task_clustering))
+    cnfgpars.set('CTG_Config', 'Clustering_Optimization', str(Config.Clustering_Optimization))
+    cnfgpars.set('CTG_Config', 'ClusteringIteration', str(Config.clustering.iterations))
+    cnfgpars.set('CTG_Config', 'ctg_random_seed', str(Config.clustering.random_seed))
+    cnfgpars.set('CTG_Config', 'Clustering_Report', str(Config.clustering.report))
+    cnfgpars.set('CTG_Config', 'Clustering_DetailedReport', str(Config.clustering.detailed_report))
+    cnfgpars.set('CTG_Config', 'Clustering_CostFunctionType', str(Config.clustering.cost_function))
+    cnfgpars.set('CTG_Config', 'ClusteringOptMove', str(Config.clustering.opt_move))
+    cnfgpars.set('CTG_Config', 'CTG_CirculationLength', str(Config.clustering.circulation_length))
     # ------------------------------------------------
     #               Mapping_Config
     # ------------------------------------------------
     cnfgpars.add_section('Mapping_Config')
-    cnfgpars.set('Mapping_Config', 'read_mapping_from_file', Config.read_mapping_from_file)
-    cnfgpars.set('Mapping_Config', 'mapping_file_path', Config.mapping_file_path)
-    cnfgpars.set('Mapping_Config', 'Mapping_Function', Config.Mapping_Function)
-    cnfgpars.set('Mapping_Config', 'LocalSearchIteration', Config.LocalSearchIteration)
-    cnfgpars.set('Mapping_Config', 'iterativelocalsearchiterations', Config.IterativeLocalSearchIterations)
-    cnfgpars.set('Mapping_Config', 'mapping_random_seed', Config.mapping_random_seed)
-    cnfgpars.set('Mapping_Config', 'SimulatedAnnealingIteration', Config.SimulatedAnnealingIteration)
-    cnfgpars.set('Mapping_Config', 'SA_InitialTemp', Config.SA_InitialTemp)
-    cnfgpars.set('Mapping_Config', 'SA_StopTemp', Config.SA_StopTemp)
-    cnfgpars.set('Mapping_Config', 'SA_ReportSolutions', Config.SA_ReportSolutions)
-    cnfgpars.set('Mapping_Config', 'SA_AnnealingSchedule', Config.SA_AnnealingSchedule)
-    cnfgpars.set('Mapping_Config', 'TerminationCriteria', Config.TerminationCriteria)
+    cnfgpars.set('Mapping_Config', 'read_mapping_from_file', str(Config.read_mapping_from_file))
+    cnfgpars.set('Mapping_Config', 'mapping_file_path', str(Config.mapping_file_path))
+    cnfgpars.set('Mapping_Config', 'Mapping_Function', str(Config.Mapping_Function))
+    cnfgpars.set('Mapping_Config', 'LocalSearchIteration', str(Config.LocalSearchIteration))
+    cnfgpars.set('Mapping_Config', 'iterativelocalsearchiterations', str(Config.IterativeLocalSearchIterations))
+    cnfgpars.set('Mapping_Config', 'mapping_random_seed', str(Config.mapping_random_seed))
+    cnfgpars.set('Mapping_Config', 'SimulatedAnnealingIteration', str(Config.SimulatedAnnealingIteration))
+    cnfgpars.set('Mapping_Config', 'SA_InitialTemp', str(Config.SA_InitialTemp))
+    cnfgpars.set('Mapping_Config', 'SA_StopTemp', str(Config.SA_StopTemp))
+    cnfgpars.set('Mapping_Config', 'SA_ReportSolutions', str(Config.SA_ReportSolutions))
+    cnfgpars.set('Mapping_Config', 'SA_AnnealingSchedule', str(Config.SA_AnnealingSchedule))
+    cnfgpars.set('Mapping_Config', 'TerminationCriteria', str(Config.TerminationCriteria))
     cnfgpars.set('Mapping_Config', 'LogCoolingConstant',
-                 Config.LogCoolingConstant if hasattr(Config, 'LogCoolingConstant') else 0)
+                 str(Config.LogCoolingConstant) if hasattr(Config, 'LogCoolingConstant') else "0")
     cnfgpars.set('Mapping_Config', 'CostMonitorQueSize',
-                 Config.CostMonitorQueSize if hasattr(Config, 'CostMonitorQueSize') else 0)
+                 str(Config.CostMonitorQueSize) if hasattr(Config, 'CostMonitorQueSize') else "0")
     cnfgpars.set('Mapping_Config', 'MaxSteadyState',
-                 Config.MaxSteadyState if hasattr(Config, 'MaxSteadyState') else 0)
+                 str(Config.MaxSteadyState) if hasattr(Config, 'MaxSteadyState') else "0")
     cnfgpars.set('Mapping_Config', 'MarkovNum',
-                 Config.MarkovNum if hasattr(Config, 'MarkovNum') else 0)
+                 str(Config.MarkovNum) if hasattr(Config, 'MarkovNum') else "0")
     cnfgpars.set('Mapping_Config', 'HuangN',
-                 Config.HuangN if hasattr(Config, 'HuangN') else 0)
+                 str(Config.HuangN) if hasattr(Config, 'HuangN') else "0")
     cnfgpars.set('Mapping_Config', 'HuangTargetValue1',
-                 Config.HuangTargetValue1 if hasattr(Config, 'HuangTargetValue1') else 0)
+                 str(Config.HuangTargetValue1) if hasattr(Config, 'HuangTargetValue1') else "0")
     cnfgpars.set('Mapping_Config', 'HuangTargetValue2',
-                 Config.HuangTargetValue2 if hasattr(Config, 'HuangTargetValue2') else 0)
+                 str(Config.HuangTargetValue2) if hasattr(Config, 'HuangTargetValue2') else "0")
     cnfgpars.set('Mapping_Config', 'SA_Alpha',
-                 Config.SA_Alpha if hasattr(Config, 'SA_Alpha') else 0)
+                 str(Config.SA_Alpha) if hasattr(Config, 'SA_Alpha') else 0)
     cnfgpars.set('Mapping_Config', 'SlopeRangeForCooling',
-                 Config.SlopeRangeForCooling if hasattr(Config, 'SlopeRangeForCooling') else 0)
+                 str(Config.SlopeRangeForCooling) if hasattr(Config, 'SlopeRangeForCooling') else "0")
     cnfgpars.set('Mapping_Config', 'MarkovTempStep',
-                 Config.MarkovTempStep if hasattr(Config, 'MarkovTempStep') else 0)
+                 str(Config.MarkovTempStep) if hasattr(Config, 'MarkovTempStep') else "0")
     cnfgpars.set('Mapping_Config', 'Delta',
-                 Config.Delta if hasattr(Config, 'Delta') else 0)
+                 str(Config.Delta) if hasattr(Config, 'Delta') else "0")
     cnfgpars.set('Mapping_Config', 'HuangAlpha',
-                 Config.HuangAlpha if hasattr(Config, 'HuangAlpha') else 0)
-    cnfgpars.set('Mapping_Config', 'Mapping_CostFunctionType', Config.Mapping_CostFunctionType)
-    cnfgpars.set('Mapping_Config', 'DistanceBetweenMapping', Config.DistanceBetweenMapping)
+                 str(Config.HuangAlpha) if hasattr(Config, 'HuangAlpha') else "0")
+    cnfgpars.set('Mapping_Config', 'Mapping_CostFunctionType', str(Config.Mapping_CostFunctionType))
+    cnfgpars.set('Mapping_Config', 'DistanceBetweenMapping', str(Config.DistanceBetweenMapping))
     # ------------------------------------------------
     #               Scheduling_Config
     # ------------------------------------------------
     cnfgpars.add_section('Scheduling_Config')
-    cnfgpars.set('Scheduling_Config', 'Communication_SlackCount', Config.Communication_SlackCount)
-    cnfgpars.set('Scheduling_Config', 'Task_SlackCount', Config.Task_SlackCount)
+    cnfgpars.set('Scheduling_Config', 'Communication_SlackCount', str(Config.Communication_SlackCount))
+    cnfgpars.set('Scheduling_Config', 'Task_SlackCount', str(Config.Task_SlackCount))
     # ------------------------------------------------
     #               Fault_Config
     # ------------------------------------------------
     cnfgpars.add_section('Fault_Config')
-    cnfgpars.set('Fault_Config', 'MTBF', Config.MTBF)
-    cnfgpars.set('Fault_Config', 'classification_method', Config.classification_method)
-    cnfgpars.set('Fault_Config', 'health_counter_threshold', Config.health_counter_threshold)
-    cnfgpars.set('Fault_Config', 'fault_counter_threshold', Config.fault_counter_threshold)
-    cnfgpars.set('Fault_Config', 'intermittent_counter_threshold', Config.intermittent_counter_threshold)
-    cnfgpars.set('Fault_Config', 'enable_link_counters', Config.enable_link_counters)
-    cnfgpars.set('Fault_Config', 'enable_router_counters', Config.enable_router_counters)
-    cnfgpars.set('Fault_Config', 'enable_pe_counters', Config.enable_pe_counters)
-    cnfgpars.set('Fault_Config', 'error_correction_rate', Config.error_correction_rate)
+    cnfgpars.set('Fault_Config', 'MTBF', str(Config.MTBF))
+    cnfgpars.set('Fault_Config', 'classification_method', str(Config.classification_method))
+    cnfgpars.set('Fault_Config', 'health_counter_threshold', str(Config.health_counter_threshold))
+    cnfgpars.set('Fault_Config', 'fault_counter_threshold', str(Config.fault_counter_threshold))
+    cnfgpars.set('Fault_Config', 'intermittent_counter_threshold', str(Config.intermittent_counter_threshold))
+    cnfgpars.set('Fault_Config', 'enable_link_counters', str(Config.enable_link_counters))
+    cnfgpars.set('Fault_Config', 'enable_router_counters', str(Config.enable_router_counters))
+    cnfgpars.set('Fault_Config', 'enable_pe_counters', str(Config.enable_pe_counters))
+    cnfgpars.set('Fault_Config', 'error_correction_rate', str(Config.error_correction_rate))
 
     # ------------------------------------------------
     #           Network_Partitioning
     # ------------------------------------------------
     cnfgpars.add_section('Network_Partitioning')
-    cnfgpars.set('Network_Partitioning', 'EnablePartitioning', Config.EnablePartitioning)
+    cnfgpars.set('Network_Partitioning', 'EnablePartitioning', str(Config.EnablePartitioning))
     # ------------------------------------------------
     #               PMCG_Config
     # ------------------------------------------------
     cnfgpars.add_section('PMCG_Config')
-    cnfgpars.set('PMCG_Config', 'GeneratePMCG', Config.GeneratePMCG)
-    cnfgpars.set('PMCG_Config', 'OneStepDiagnosable', Config.OneStepDiagnosable)
-    cnfgpars.set('PMCG_Config', 'TFaultDiagnosable', Config.TFaultDiagnosable)
-    cnfgpars.set('PMCG_Config', 'NodeTestExeTime', Config.NodeTestExeTime)
-    cnfgpars.set('PMCG_Config', 'NodeTestComWeight', Config.NodeTestComWeight)
+    cnfgpars.set('PMCG_Config', 'GeneratePMCG', str(Config.GeneratePMCG))
+    cnfgpars.set('PMCG_Config', 'OneStepDiagnosable', str(Config.OneStepDiagnosable))
+    cnfgpars.set('PMCG_Config', 'TFaultDiagnosable', str(Config.TFaultDiagnosable))
+    cnfgpars.set('PMCG_Config', 'NodeTestExeTime', str(Config.NodeTestExeTime))
+    cnfgpars.set('PMCG_Config', 'NodeTestComWeight', str(Config.NodeTestComWeight))
     # ------------------------------------------------
     #               Viz_Config
     # ------------------------------------------------
     cnfgpars.add_section('Viz_Config')
-    cnfgpars.set('Viz_Config', 'RG_Draw', Config.viz.rg)
-    cnfgpars.set('Viz_Config', 'PMCG_Drawing', Config.viz.pmcg)
-    cnfgpars.set('Viz_Config', 'TTG_Drawing', Config.viz.ttg)
-    cnfgpars.set('Viz_Config', 'Mapping_Dstr_Drawing', Config.viz.mapping_distribution)
-    cnfgpars.set('Viz_Config', 'Mapping_Drawing', Config.viz.mapping)
-    cnfgpars.set('Viz_Config', 'Scheduling_Drawing', Config.viz.scheduling)
-    cnfgpars.set('Viz_Config', 'SHM_Drawing', Config.viz.shm)
-    cnfgpars.set('Viz_Config', 'GenMappingFrames', Config.viz.mapping_frames)
-    cnfgpars.set('Viz_Config', 'FrameResolution', Config.viz.frame_resolution)
+    cnfgpars.set('Viz_Config', 'RG_Draw', str(Config.viz.rg))
+    cnfgpars.set('Viz_Config', 'PMCG_Drawing', str(Config.viz.pmcg))
+    cnfgpars.set('Viz_Config', 'TTG_Drawing', str(Config.viz.ttg))
+    cnfgpars.set('Viz_Config', 'Mapping_Dstr_Drawing', str(Config.viz.mapping_distribution))
+    cnfgpars.set('Viz_Config', 'Mapping_Drawing', str(Config.viz.mapping))
+    cnfgpars.set('Viz_Config', 'Scheduling_Drawing', str(Config.viz.scheduling))
+    cnfgpars.set('Viz_Config', 'SHM_Drawing', str(Config.viz.shm))
+    cnfgpars.set('Viz_Config', 'GenMappingFrames', str(Config.viz.mapping_frames))
+    cnfgpars.set('Viz_Config', 'FrameResolution', str(Config.viz.frame_resolution))
 
     cnfgpars.write(cfg_file)
     cfg_file.close()
@@ -534,29 +535,29 @@ def generate_configfile():
 
 def print_help_man():
     print("Usage:    python Main.py [option] [argument 1]... [argument n]")
-    print ""
+    print("")
     print("Options and arguments:")
     print("\t-GUI\t\t:Graphical User Interface for Configuration")
-    print ""
+    print("")
 
     print("\t-BENCHMARK [Benchmark Name] \t: Runs Benchmark Algorithms:")
     print("\t\t * idct: Inverse Discrete Cosine Transform")
     print("\t\t * fdct: Forward Discrete Cosine Transform")
     print("\t\t * mi: Matrix Inverse")
-    print ""
+    print("")
 
-    print "\t-ETM  [Dimension] : Enumerates turn models regardless of their characteristics."
-    print "\t\t Dimension: 2D or 3D"
-    print "\t\t *The result will be stored in Generated_Files/Turn_Model_Lists folder."
-    print ""
+    print("\t-ETM  [Dimension] : Enumerates turn models regardless of their characteristics.")
+    print("\t\t Dimension: 2D or 3D")
+    print("\t\t *The result will be stored in Generated_Files/Turn_Model_Lists folder.")
+    print("")
 
-    print "\t-ETMD [Dimension] [Routing Type] [number of threads]: Enumerates turn models based on " \
-          "deadlock-free-ness and reports the \n\t\treachability metric (number of connected pairs), doa and doa-ex"
-    print "\t\t Dimension: 2D or 3D"
-    print "\t\t Routing Type: \"M\" for minimal and \"NM\" for non-minimal"
-    print "\t\t number of threads: number of threads in integer"
-    print "\t\t *The result will be stored in Generated_Files/Turn_Model_Lists folder."
-    print ""
+    print("\t-ETMD [Dimension] [Routing Type] [number of threads]: Enumerates turn models based on " \
+          "deadlock-free-ness and reports the \n\t\treachability metric (number of connected pairs), doa and doa-ex")
+    print("\t\t Dimension: 2D or 3D")
+    print("\t\t Routing Type: \"M\" for minimal and \"NM\" for non-minimal")
+    print("\t\t number of threads: number of threads in integer")
+    print("\t\t *The result will be stored in Generated_Files/Turn_Model_Lists folder.")
+    print("")
 
     print("\t-TMFT  [Dimension] [Routing Type] [number of threads] [-V] : Checks the fault tolerance" +
           " of implemented routing algorithms \n\t\tand calculates the average reachability metric (number of" +
@@ -565,12 +566,12 @@ def print_help_man():
     print("\t\t Routing Type: \"M\" for minimal and \"NM\" for non-minimal")
     print("\t\t number of threads: number of threads in integer")
     print("\t\t -V: Enables visualization of every step of routing algorithm checks ")
-    print ""
+    print("")
 
     print("\t-VIZTM [Dimension] [Routing Type]: visualizes the turn models in the given dimension")
     print("\t\t Dimension: 2D or 3D")
     print("\t\t Routing Type: \"M\" for minimal and \"NM\" for non-minimal")
-    print ""
+    print("")
 
-    print ("\t-TMC: 3D 18-turn, turn model classification")
+    print("\t-TMC: 3D 18-turn, turn model classification")
     print("")

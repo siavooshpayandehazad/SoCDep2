@@ -1,7 +1,7 @@
 # Copyright (C) 2015 Rene Pihlak
 
-import CounterThreshold
-import MLTrainingSet as mlp
+import SystemHealthMonitoring.FaultClassifier.CounterThreshold as CounterThreshold
+import SystemHealthMonitoring.FaultClassifier.MLTrainingSet as mlp
 from ConfigAndPackages import Config
 import collections
 from sklearn import svm
@@ -196,7 +196,7 @@ class MachineLearning():
             # print location
             location = str(location)
         else:
-            print location, type(location)
+            print(location, type(location))
             raise ValueError("VEG: location type is wrong!")
 
         if location in self.dead_components:
@@ -318,7 +318,7 @@ class MachineLearning():
             else:
                 return None
         else:
-            print location, type(location)
+            print(location, type(location))
             raise ValueError("location type is wrong!")
         if location in self.dead_components:
             return None
@@ -396,7 +396,7 @@ class MachineLearning():
             else:
                 return None
         else:
-            print location, type(location)
+            print(location, type(location))
             raise ValueError("location type is wrong!")
         
         if location in self.intermittent_components:
@@ -495,18 +495,16 @@ class MachineLearning():
     #    return len(self.health_counters) + len(self.fault_counters)
 
     def report(self, number_of_nodes, number_of_links):
-        print "VEG: ==========================================="
-        print "VEG:         MACHINE LEARNING REPORT"
-        print "VEG: ==========================================="
-        print "VEG: TODO"
-        print "VEG: DEAD Components:", self.dead_components
-        print "VEG: INTERMITTENT Components:", self.intermittent_components
+        print("VEG: ===========================================")
+        print("VEG:         MACHINE LEARNING REPORT")
+        print("VEG: ===========================================")
+        print("VEG: TODO")
+        print("VEG: DEAD Components:", self.dead_components)
+        print("VEG: INTERMITTENT Components:", self.intermittent_components)
         for mem in self.memory_max.keys():
             if self.memory_max[mem] is not -1:
-                print "VEG: MAX memory (in bits) use of", mem, "::", self.memory_max[mem]
+                print("VEG: MAX memory (in bits) use of", mem, "::", self.memory_max[mem])
         for mem in {'intermediate', 'fault'}:
             if self.return_allocated_memory(mem) is not -1:
-                print "VEG: END memory (in bits) use of", mem, "::", self.return_allocated_memory(mem)
-        # print "MAX MEMORY USAGE:", self.memory_counter
-        # print "AVERAGE COUNTER PER Node: ", float(self.memory_counter)/number_of_nodes
+                print("VEG: END memory (in bits) use of", mem, "::", self.return_allocated_memory(mem))
         return None

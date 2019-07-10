@@ -11,7 +11,7 @@ Authors:
 
 date: may 2015
 
-python ver: 2.7.6
+python ver: 3.7
 
 The goal of this program is to provide a framwork for testing dependability mechanisms on different architecures... 
 

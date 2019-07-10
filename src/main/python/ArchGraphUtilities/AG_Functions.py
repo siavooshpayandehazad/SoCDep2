@@ -56,12 +56,12 @@ def generate_generic_topology_ag(topology, logging=None, report=True):
     size_z = Config.ag.z_size
     supported_topologies = ['2DTorus', '2DMesh', '2DRing', '2DLine', '3DMesh']
     if report:
-        print ("===========================================")
-        print ("PREPARING AN ARCHITECTURE GRAPH (AG)...")
-        print ("TOPOLOGY: "+topology)
-        print ("X SIZE:"+str(size_x))
-        print ("Y SIZE:"+str(size_y))
-        print ("Z SIZE:"+str(size_z))
+        print("===========================================")
+        print("PREPARING AN ARCHITECTURE GRAPH (AG)...")
+        print("TOPOLOGY: "+topology)
+        print("X SIZE:"+str(size_x))
+        print("Y SIZE:"+str(size_y))
+        print("Z SIZE:"+str(size_z))
     ag = networkx.DiGraph()
 
     if topology not in supported_topologies:
@@ -216,8 +216,8 @@ def update_ag_regions(ag):
     :param ag: Architecture graph
     :return: None
     """
-    print ("===========================================")
-    print ("UPDATING ARCHITECTURE GRAPH (AG) REGIONS...")
+    print("===========================================")
+    print("UPDATING ARCHITECTURE GRAPH (AG) REGIONS...")
     for node_id in ag.nodes():
         if node_id in Config.CriticalRegionNodes:
             ag.node[node_id]['Region'] = 'H'
@@ -242,8 +242,8 @@ def return_node_location(node_number):
     :return: Cartesian location of the node in the form of (x,y,z)
     """
     node_x = node_number % Config.ag.x_size
-    node_y = (node_number / Config.ag.x_size) % Config.ag.y_size
-    node_z = node_number / (Config.ag.y_size * Config.ag.x_size)
+    node_y = (node_number // Config.ag.x_size) % Config.ag.y_size
+    node_z = node_number // (Config.ag.y_size * Config.ag.x_size)
     return node_x, node_y, node_z
 
 
@@ -269,7 +269,7 @@ def node_neighbors(ag, system_health_map):
         number_of_neighbours = 0
         for Link in ag.edges():
             if Node in Link:
-                if system_health_map.edge[Link[0]][Link[1]]['LinkHealth']:
+                if system_health_map.edges[Link]['LinkHealth']:
                     number_of_neighbours += 1
         node_neighbor[Node] = number_of_neighbours
     return node_neighbor
@@ -313,8 +313,8 @@ def setup_network_partitioning(ag):
     :return: None
     """
     # Todo: This needs to be tested...
-    print ("===========================================")
-    print ("SETTING UP NETWORK PARTITIONING...")
+    print("===========================================")
+    print("SETTING UP NETWORK PARTITIONING...")
     non_critical_nodes = []
     for node in ag.nodes():
         if node not in Config.CriticalRegionNodes:
@@ -346,9 +346,9 @@ def setup_network_partitioning(ag):
         if link[0] in Config.GateToNonCritical and link[1] in non_critical_nodes:
             Config.VirtualBrokenLinksForCritical.append(link)
 
-    print "ListOfBrokenLinks:", Config.ListOfBrokenLinks
-    print "VirtualBrokenLinksForNonCritical:", Config.VirtualBrokenLinksForNonCritical
-    print "VirtualBrokenLinksForCritical:", Config.VirtualBrokenLinksForCritical
+    print("ListOfBrokenLinks:", Config.ListOfBrokenLinks)
+    print("VirtualBrokenLinksForNonCritical:", Config.VirtualBrokenLinksForNonCritical)
+    print("VirtualBrokenLinksForCritical:", Config.VirtualBrokenLinksForCritical)
     return None
 
 
@@ -396,8 +396,8 @@ def return_node_util(tg, ag, node):
 
 def return_link_util(tg, ag, link):
     utilization = 0
-    for task in ag.edge[link[0]][link[1]]['MappedTasks']:
-        utilization += tg.edge[task[0]][task[1]]['ComWeight']
+    for task in ag.edges[link]['MappedTasks']:
+        utilization += tg.edges[task]['ComWeight']
     return utilization
 
 def return_healthy_nodes(ag, system_health_map):

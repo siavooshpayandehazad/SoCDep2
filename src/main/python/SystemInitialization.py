@@ -64,7 +64,7 @@ def initialize_system(logging):
         noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
                                                                 Config.DebugInfo, Config.DebugDetails))
     Routing_Functions.check_deadlock_freeness(noc_rg)
-    print ("\033[92mTIME::\033[0m ROUTING GRAPH GENERATION TOOK: " +
+    print("\033[92mTIME::\033[0m ROUTING GRAPH GENERATION TOOK: " +
            str(round(time.time()-routing_graph_start_time))+" SECONDS")
     # this is for double checking...
     if Config.FindOptimumAG:
@@ -114,7 +114,7 @@ def initialize_system(logging):
         else:
             pmcg = TestSchedulingUnit.gen_sequentially_diagnosable_pmcg(ag, shmu.SHM)
         test_tg = TestSchedulingUnit.generate_test_tg_from_pmcg(pmcg)
-        print ("\033[92mTIME::\033[0m PMCG AND TTG GENERATION TOOK: " +
+        print("\033[92mTIME::\033[0m PMCG AND TTG GENERATION TOOK: " +
                str(round(time.time()-pmcg_start_time)) + " SECONDS")
         if Config.viz.pmcg:
             TestSchedulingUnit.draw_pmcg(pmcg)
@@ -131,8 +131,8 @@ def initialize_system(logging):
     else:
         pmcg = None
     Arch_Graph_Reports.gen_latex_ag(ag, shmu.SHM)
-    print ("===========================================")
-    print ("SYSTEM IS UP...")
+    print("===========================================")
+    print("SYSTEM IS UP...")
 
     TrafficTableGenerator.generate_noxim_traffic_table(ag, tg)
     if Config.viz.mapping_frames:
@@ -175,7 +175,7 @@ def initialize_system_DoS(logging):
     noc_rg = copy.deepcopy(Routing.generate_noc_route_graph(ag, shmu, Config.UsedTurnModel,
                            Config.DebugInfo, Config.DebugDetails))
     Routing_Functions.check_deadlock_freeness(noc_rg)
-    print ("\033[92mTIME::\033[0m ROUTING GRAPH GENERATION TOOK: " +
+    print("\033[92mTIME::\033[0m ROUTING GRAPH GENERATION TOOK: " +
            str(round(time.time()-routing_graph_start_time))+" SECONDS")
     # Some visualization...
     if Config.viz.rg:

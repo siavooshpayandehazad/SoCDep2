@@ -1,7 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
 from math import ceil
-import Scheduling_Functions_Tasks
+from Scheduler import Scheduling_Functions_Tasks
 
 
 def add_tg_task_to_node(tg, ag, task_id, node, start_time, end_time, logging=None):

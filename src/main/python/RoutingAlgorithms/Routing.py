@@ -4,7 +4,7 @@ from networkx import all_simple_paths, DiGraph, has_path, all_shortest_paths
 from re import search
 from ConfigAndPackages import Config
 from ArchGraphUtilities.AG_Functions import manhattan_distance
-from RoutingGraph_Reports import report_turn_model
+from RoutingAlgorithms.RoutingGraph_Reports import report_turn_model
 
 
 def generate_noc_route_graph(ag, shmu, turn_model, report, detailed_report):
@@ -41,8 +41,8 @@ def generate_noc_route_graph(ag, shmu, turn_model, report, detailed_report):
 
     # todo: add virtual channel support for the routing graph...
     if report:
-        print ("===========================================")
-        print ("STARTING BUILDING ROUTING ARCHITECTURE...")
+        print("===========================================")
+        print("STARTING BUILDING ROUTING ARCHITECTURE...")
         report_turn_model(turn_model)
 
     # the order is crucial... do not change
@@ -55,34 +55,34 @@ def generate_noc_route_graph(ag, shmu, turn_model, report, detailed_report):
     noc_rg = DiGraph()
     for node in ag.nodes():
         if detailed_report:
-            print ("GENERATING PORTS:")
+            print("GENERATING PORTS:")
         for port in port_list:
             if detailed_report:
-                print ("\t", str(node)+str(port)+str('I'), "&", str(node)+str(port)+str('O'))
+                print("\t", str(node)+str(port)+str('I'), "&", str(node)+str(port)+str('O'))
             noc_rg.add_node(str(node)+str(port)+str('I'), Node=node, Port=port, Dir='I')
             noc_rg.add_node(str(node)+str(port)+str('O'), Node=node, Port=port, Dir='O')
         if detailed_report:
-            print ("CONNECTING LOCAL PATHS:")
+            print("CONNECTING LOCAL PATHS:")
         for port in port_list:       # connect local to every output port
             if port != 'L':
                 noc_rg.add_edge(str(node)+str('L')+str('I'), str(node)+str(port)+str('O'))
                 if detailed_report:
-                    print ("\t", 'L', "--->", port)
+                    print("\t", 'L', "--->", port)
                 noc_rg.add_edge(str(node)+str(port)+str('I'), str(node)+str('L')+str('O'))
                 if detailed_report:
-                    print ("\t", port, "--->", 'L')
+                    print("\t", port, "--->", 'L')
         if detailed_report:
-            print ("CONNECTING DIRECT PATHS:")
+            print("CONNECTING DIRECT PATHS:")
         for i in range(0, int(len(port_list))):   # connect direct paths
             if port_list[i] != 'L':
                 if detailed_report:
-                    print ("\t", port_list[i], "--->", port_list[len(port_list)-1-i])
+                    print("\t", port_list[i], "--->", port_list[len(port_list)-1-i])
                 in_id = str(node)+str(port_list[i])+str('I')
                 out_id = str(node)+str(port_list[len(port_list)-1-i])+str('O')
                 noc_rg.add_edge(in_id, out_id)
 
         if detailed_report:
-            print ("CONNECTING TURNS:")
+            print("CONNECTING TURNS:")
         for turn in turn_model:
             if turn in shmu.SHM.node[node]['TurnsHealth']:
                 if shmu.SHM.node[node]['TurnsHealth'][turn]:
@@ -91,27 +91,27 @@ def generate_noc_route_graph(ag, shmu, turn_model, report, detailed_report):
                     if in_port != out_port:
                         noc_rg.add_edge(str(node)+str(in_port)+str('I'), str(node)+str(out_port)+str('O'))
                     else:       # just for defensive programming reasons...
-                        print ("\033[31mERROR::\033[0m U-TURN DETECTED!")
-                        print ("TERMINATING THE PROGRAM...")
-                        print ("HINT: CHECK YOUR TURN MODEL!")
+                        print("\033[31mERROR::\033[0m U-TURN DETECTED!")
+                        print("TERMINATING THE PROGRAM...")
+                        print("HINT: CHECK YOUR TURN MODEL!")
                         raise ValueError('U-TURN DETECTED IN TURN MODEL!')
                     if detailed_report:
-                        print ("\t", in_port, "--->", out_port)
+                        print("\t", in_port, "--->", out_port)
         if detailed_report:
-            print ("------------------------")
+            print("------------------------")
 
     for link in ag.edges():     # here we should connect connections between routers
-        port = ag.edge[link[0]][link[1]]['Port']
+        port = ag.edges[link]['Port']
         if shmu.SHM[link[0]][link[1]]['LinkHealth']:
             if detailed_report:
-                print ("CONNECTING LINK:", link, "BY CONNECTING:", str(link[0])+str(port[0])+str('-Out'),
+                print("CONNECTING LINK:", link, "BY CONNECTING:", str(link[0])+str(port[0])+str('-Out'),
                        "TO:", str(link[1])+str(port[1])+str('-In'))
             noc_rg.add_edge(str(link[0])+str(port[0])+str('O'), str(link[1])+str(port[1])+str('I'))
         else:
             if detailed_report:
-                print ("BROKEN LINK:", link)
+                print("BROKEN LINK:", link)
     if report:
-        print ("ROUTE GRAPH IS READY... ")
+        print("ROUTE GRAPH IS READY... ")
     return noc_rg
 
 
@@ -127,13 +127,13 @@ def gen_noc_route_graph_from_file(ag, shmu, routing_file_path, report, detailed_
     :return: noc routing graph
     """
     if report:
-        print ("===========================================")
-        print ("STARTING BUILDING ROUTING ARCHITECTURE...")
+        print("===========================================")
+        print("STARTING BUILDING ROUTING ARCHITECTURE...")
     noc_rg = DiGraph()
     try:
         routing_file = open(routing_file_path, 'r')
     except IOError:
-        print ('CAN NOT OPEN', routing_file_path)
+        print('CAN NOT OPEN', routing_file_path)
     nodes_covered_in_file = []
     while True:
         line = routing_file.readline()
@@ -141,39 +141,39 @@ def gen_noc_route_graph_from_file(ag, shmu, routing_file_path, report, detailed_
             ports = routing_file.readline()
             port_list = ports.split()
             if detailed_report:
-                print ("PortList", port_list)
+                print("PortList", port_list)
         if "Node" in line:
             node_id = int(search(r'\d+', line).group())
             nodes_covered_in_file.append(node_id)
             if detailed_report:
-                print ("NodeID", node_id)
-                print ("GENERATING PORTS:")
+                print("NodeID", node_id)
+                print("GENERATING PORTS:")
             for port in port_list:
                 if detailed_report:
-                    print ("\t", str(node_id)+str(port)+str('I'), "&", str(node_id)+str(port)+str('O'))
+                    print("\t", str(node_id)+str(port)+str('I'), "&", str(node_id)+str(port)+str('O'))
                 noc_rg.add_node(str(node_id)+str(port)+str('I'), Node=node_id, Port=port, Dir='I')
                 noc_rg.add_node(str(node_id)+str(port)+str('O'), Node=node_id, Port=port, Dir='O')
             if detailed_report:
-                print ("CONNECTING LOCAL PATHS:")
+                print("CONNECTING LOCAL PATHS:")
             for port in port_list:       # connect local to every output port
                 if port != 'L':
                     noc_rg.add_edge(str(node_id)+str('L')+str('I'), str(node_id)+str(port)+str('O'))
                     if detailed_report:
-                        print ("\t", 'L', "--->", port)
+                        print("\t", 'L', "--->", port)
                     noc_rg.add_edge(str(node_id)+str(port)+str('I'), str(node_id)+str('L')+str('O'))
                     if detailed_report:
-                        print ("\t", port, "--->", 'L')
+                        print("\t", port, "--->", 'L')
             if detailed_report:
-                print ("CONNECTING DIRECT PATHS:")
+                print("CONNECTING DIRECT PATHS:")
             for i in range(0, int(len(port_list))):   # connect direct paths
                 if port_list[i] != 'L':
                     if detailed_report:
-                        print ("\t", port_list[i], "--->", port_list[len(port_list)-1-i])
+                        print("\t", port_list[i], "--->", port_list[len(port_list)-1-i])
                     in_id = str(node_id)+str(port_list[i])+str('I')
                     out_id = str(node_id)+str(port_list[len(port_list)-1-i])+str('O')
                     noc_rg.add_edge(in_id, out_id)
             if detailed_report:
-                print ("CONNECTING TURNS:")
+                print("CONNECTING TURNS:")
             line = routing_file.readline()
             turns_list = line.split()
             for turn in turns_list:
@@ -184,57 +184,57 @@ def gen_noc_route_graph_from_file(ag, shmu, routing_file_path, report, detailed_
                         if in_port != out_port:
                             noc_rg.add_edge(str(node_id)+str(in_port)+str('I'), str(node_id)+str(out_port)+str('O'))
                         else:   # just for defensive programming reasons...
-                            print ("\033[31mERROR::\033[0m U-TURN DETECTED!")
-                            print ("TERMINATING THE PROGRAM...")
-                            print ("HINT: CHECK YOUR TURN MODEL!")
+                            print("\033[31mERROR::\033[0m U-TURN DETECTED!")
+                            print("TERMINATING THE PROGRAM...")
+                            print("HINT: CHECK YOUR TURN MODEL!")
                             raise ValueError('U-TURN DETECTED IN TURN MODEL!')
                         if detailed_report:
-                            print ("\t", in_port, "--->", out_port)
+                            print("\t", in_port, "--->", out_port)
             if detailed_report:
-                print ("------------------------")
+                print("------------------------")
         if line == '':
             break
     for node in ag.nodes():
         if node not in nodes_covered_in_file:
             if detailed_report:
-                print ("GENERATING PORTS:")
+                print("GENERATING PORTS:")
             for port in port_list:
                 if detailed_report:
-                    print "\t", str(node)+str(port)+str('I'), "&", str(node)+str(port)+str('O')
+                    print("\t", str(node)+str(port)+str('I'), "&", str(node)+str(port)+str('O'))
                 noc_rg.add_node(str(node)+str(port)+str('I'), Node=node, Port=port, Dir='I')
                 noc_rg.add_node(str(node)+str(port)+str('O'), Node=node, Port=port, Dir='O')
             if detailed_report:
-                print ("CONNECTING LOCAL PATHS:")
+                print("CONNECTING LOCAL PATHS:")
             for port in port_list:       # connect local to every output port
                 if port != 'L':
                     noc_rg.add_edge(str(node)+str('L')+str('I'), str(node)+str(port)+str('O'))
                     if detailed_report:
-                        print ("\t", 'L', "--->", port)
+                        print("\t", 'L', "--->", port)
                     noc_rg.add_edge(str(node)+str(port)+str('I'), str(node)+str('L')+str('O'))
                     if detailed_report:
-                        print ("\t", port, "--->", 'L')
+                        print("\t", port, "--->", 'L')
             if detailed_report:
-                print ("CONNECTING DIRECT PATHS:")
+                print("CONNECTING DIRECT PATHS:")
             for i in range(0, int(len(port_list))):   # connect direct paths
                 if port_list[i] != 'L':
                     if detailed_report:
-                        print ("\t", port_list[i], "--->", port_list[len(port_list)-1-i])
+                        print("\t", port_list[i], "--->", port_list[len(port_list)-1-i])
                     in_id = str(node)+str(port_list[i])+str('I')
                     out_id = str(node)+str(port_list[len(port_list)-1-i])+str('O')
                     noc_rg.add_edge(in_id, out_id)
 
     for link in ag.edges():     # here we should connect connections between routers
-        port = ag.edge[link[0]][link[1]]['Port']
+        port = ag.edges[link]['Port']
         if shmu.SHM[link[0]][link[1]]['LinkHealth']:
             if detailed_report:
-                print ("CONNECTING LINK:", link, "BY CONNECTING:", str(link[0])+str(port[0])+str('-Out'),
+                print("CONNECTING LINK:", link, "BY CONNECTING:", str(link[0])+str(port[0])+str('-Out'),
                        "TO:", str(link[1])+str(port[1])+str('-In'))
             noc_rg.add_edge(str(link[0])+str(port[0])+str('O'), str(link[1])+str(port[1])+str('I'))
         else:
             if detailed_report:
-                print ("BROKEN LINK:", link)
+                print("BROKEN LINK:", link)
     if report:
-        print ("ROUTE GRAPH IS READY... ")
+        print("ROUTE GRAPH IS READY... ")
     return noc_rg
 
 
@@ -247,18 +247,18 @@ def update_noc_route_graph(noc_rg, from_port, to_port, add_or_remove):
     :param add_or_remove: either add or remove path
     :return: None
     """
-    # print "ROUTING GRAPH BEING UPDATED..."
+    # print("ROUTING GRAPH BEING UPDATED...")
     if add_or_remove == 'REMOVE':
         if (from_port, to_port) in noc_rg.edges():
             noc_rg.remove_edge(from_port, to_port)
         else:
-            print "CONNECTION DIDN'T EXIST IN ROUTE GRAPH"
+            print("CONNECTION DIDN'T EXIST IN ROUTE GRAPH")
     if add_or_remove == 'ADD':
         if (from_port, to_port) in noc_rg.edges():
-            print "CONNECTION DIDN'T EXIST IN ROUTE GRAPH"
+            print("CONNECTION DIDN'T EXIST IN ROUTE GRAPH")
         else:
             noc_rg.add_edge(from_port, to_port)
-    # print "ROUTING GRAPH UPDATED..."
+    # print("ROUTING GRAPH UPDATED...")
     return None
 
 
@@ -301,12 +301,12 @@ def find_route_in_route_graph(noc_rg, critical_rg, non_critical_rg, source_node,
                     links.append((int(search(r"\d+", path[i]).group()), int(search(r"\d+", path[i+1]).group())))
             all_links.append(links)
         if report:
-            print "\t\tFINDING PATH(S) FROM: ", source, "TO:", destination, " ==>", all_links
+            print("\t\tFINDING PATH(S) FROM: ", source, "TO:", destination, " ==>", all_links)
 
         return all_links, len(all_paths)
     else:
         if report:
-            print "\t\tNO PATH FOUND FROM: ", source, "TO:", destination
+            print("\t\tNO PATH FOUND FROM: ", source, "TO:", destination)
         return None, None
 
 

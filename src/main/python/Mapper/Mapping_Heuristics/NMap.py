@@ -27,8 +27,8 @@ def n_map(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
     :param logging: logging File
     :return: TG and AG
     """
-    print ("===========================================")
-    print ("STARTING N-MAP MAPPING...\n")
+    print("===========================================")
+    print("STARTING N-MAP MAPPING...\n")
 
     if len(tg.nodes()) > len(ag.nodes()):
         raise ValueError("Number of tasks should be smaller or equal to number of PEs")
@@ -42,50 +42,50 @@ def n_map(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
     for node in unallocated_nodes:
         if not shm.node[node]['NodeHealth']:
             unallocated_nodes.remove(node)
-            print ("REMOVED BROKEN NODE "+str(node)+" FROM UN-ALLOCATED NODES")
+            print("REMOVED BROKEN NODE "+str(node)+" FROM UN-ALLOCATED NODES")
 
-    print ("------------------")
-    print ("STEP 1:")
+    print("------------------")
+    print("STEP 1:")
     # step 1: find the task with highest weighted communication volume
     tasks_com_dict = TG_Functions.tasks_communication_weight(tg)
     sorted_tasks_com = sorted(tasks_com_dict, key=tasks_com_dict.get, reverse=True)
-    print ("\t SORTED TASKS BY COMMUNICATION WEIGHT:\n"+"\t "+str(sorted_tasks_com))
-    print ("\t -------------")
+    print("\t SORTED TASKS BY COMMUNICATION WEIGHT:\n"+"\t "+str(sorted_tasks_com))
+    print("\t -------------")
     chosen_task = sorted_tasks_com[0]
-    print ("\t CHOSEN TASK: "+str(chosen_task))
+    print("\t CHOSEN TASK: "+str(chosen_task))
     mapped_tasks.append(chosen_task)
-    print ("\t ADDED TASK "+str(chosen_task)+"TO MAPPED TASKS LIST")
+    print("\t ADDED TASK "+str(chosen_task)+"TO MAPPED TASKS LIST")
     unmapped_tasks.remove(chosen_task)
-    print ("\t REMOVED TASK "+str(chosen_task)+"FROM UN-MAPPED TASKS LIST")
+    print("\t REMOVED TASK "+str(chosen_task)+"FROM UN-MAPPED TASKS LIST")
 
-    print ("------------------")
-    print ("STEP 2:")
+    print("------------------")
+    print("STEP 2:")
     node_neighbors_dict = AG_Functions.node_neighbors(ag, shm)
     sorted_node_neighbors = sorted(node_neighbors_dict, key=node_neighbors_dict.get, reverse=True)
     max_neighbors_node = AG_Functions.max_node_neighbors(node_neighbors_dict, sorted_node_neighbors)
-    print ("\t SORTED NODES BY NUMBER OF NEIGHBOURS:\n"+"\t "+str(sorted_node_neighbors))
-    print ("\t -------------")
-    print ("\t NODES WITH MAX NEIGHBOURS:\t"+str(max_neighbors_node))
+    print("\t SORTED NODES BY NUMBER OF NEIGHBOURS:\n"+"\t "+str(sorted_node_neighbors))
+    print("\t -------------")
+    print("\t NODES WITH MAX NEIGHBOURS:\t"+str(max_neighbors_node))
     chosen_node = random.choice(max_neighbors_node)
 
-    print ("\t CHOSEN NODE: "+str(chosen_node))
+    print("\t CHOSEN NODE: "+str(chosen_node))
     allocated_nodes.append(chosen_node)
-    print ("\t ADDED NODE "+str(chosen_node)+" TO ALLOCATED NODES LIST")
+    print("\t ADDED NODE "+str(chosen_node)+" TO ALLOCATED NODES LIST")
     unallocated_nodes.remove(chosen_node)
-    print ("\t REMOVED NODE "+str(chosen_node)+" FROM UN-ALLOCATED NODES LIST")
+    print("\t REMOVED NODE "+str(chosen_node)+" FROM UN-ALLOCATED NODES LIST")
     # Map Chosen Task on Chosen Node...
     if Mapping_Functions.map_task_to_node(tg, ag, shm, noc_rg, critical_rg,
                                           non_critical_rg, chosen_task, chosen_node, logging):
-        print ("\t \033[32m* NOTE::\033[0mTASK "+str(chosen_task)+" MAPPED ON NODE "+str(chosen_node))
+        print("\t \033[32m* NOTE::\033[0mTASK "+str(chosen_task)+" MAPPED ON NODE "+str(chosen_node))
     else:
         raise ValueError("Mapping task on node failed...")
 
-    print ("------------------")
-    print ("STEP 3:")
+    print("------------------")
+    print("STEP 3:")
     while len(unmapped_tasks) > 0:
-        print ("\033[33m==>\033[0m  UN-MAPPED TASKS #: "+str(len(unmapped_tasks)))
-        print ("\t -------------")
-        print ("\t STEP 3.1:")
+        print("\033[33m==>\033[0m  UN-MAPPED TASKS #: "+str(len(unmapped_tasks)))
+        print("\t -------------")
+        print("\t STEP 3.1:")
         # find the unmapped task which communicates most with mapped_tasks
         max_com = 0
         unmapped_tasks_com = {}
@@ -94,17 +94,17 @@ def n_map(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
             task_weight = 0
             for mapped_task in mapped_tasks:
                 if (Task, mapped_task) in tg.edges():
-                    task_weight += tg.edge[Task][mapped_task]["ComWeight"]
+                    task_weight += tg.edges[Task][mapped_task]["ComWeight"]
                 if (mapped_task, Task) in tg.edges():
-                    task_weight += tg.edge[mapped_task][Task]["ComWeight"]
+                    task_weight += tg.edges[mapped_task][Task]["ComWeight"]
             unmapped_tasks_com[Task] = task_weight
             if max_com < task_weight:
                 max_com = task_weight
                 tasks_with_max_com_to_mapped = [Task]
             elif max_com == task_weight:
                 tasks_with_max_com_to_mapped.append(Task)
-        print ("\t MAX COMMUNICATION WITH THE MAPPED TASKS: "+str(max_com))
-        print ("\t TASK(S) WITH MAX COMMUNICATION TO MAPPED TASKS: "+str(tasks_with_max_com_to_mapped))
+        print("\t MAX COMMUNICATION WITH THE MAPPED TASKS: "+str(max_com))
+        print("\t TASK(S) WITH MAX COMMUNICATION TO MAPPED TASKS: "+str(tasks_with_max_com_to_mapped))
         if len(tasks_with_max_com_to_mapped) > 1:
             # multiple tasks with same comm to mapped
             # Find the one that communicate most with Un-mapped takss...
@@ -114,14 +114,14 @@ def n_map(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                 task_weight = 0
                 for unmapped_task in unmapped_tasks:
                     if (Task, unmapped_task) in tg.edges():
-                        task_weight += tg.edge[Task][unmapped_task]["ComWeight"]
+                        task_weight += tg.edges[Task][unmapped_task]["ComWeight"]
                     if (unmapped_task, Task) in tg.edges():
-                        task_weight += tg.edge[unmapped_task][Task]["ComWeight"]
+                        task_weight += tg.edges[unmapped_task][Task]["ComWeight"]
                 if task_weight > max_com:
                     candid_task_with_max_com_to_unmapped = [CandidateTask]
                 elif task_weight == max_com:
                     candid_task_with_max_com_to_unmapped.append(CandidateTask)
-            print ("\t CANDIDATE TASK(S) THAT COMMUNICATE MOST WITH UN_MAPPED: " +
+            print("\t CANDIDATE TASK(S) THAT COMMUNICATE MOST WITH UN_MAPPED: " +
                    str(candid_task_with_max_com_to_unmapped))
             if len(candid_task_with_max_com_to_unmapped) > 1:
                 # if multiple tasks with the same com to unmmaped also,
@@ -131,11 +131,11 @@ def n_map(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                 chosen_task = candid_task_with_max_com_to_unmapped[0]
         else:
             chosen_task = tasks_with_max_com_to_mapped[0]
-        print ("\t CHOSEN TASK: "+str(chosen_task))
+        print("\t CHOSEN TASK: "+str(chosen_task))
 
         # Find the unallocated tile with lowest communication cost to/from the allocated_tiles_set.
-        print ("\t -------------")
-        print ("\t STEP 3.2:")
+        print("\t -------------")
+        print("\t STEP 3.2:")
         min_cost = float("inf")
         node_candidates = []
         for unallocated_node in unallocated_nodes:
@@ -144,8 +144,8 @@ def n_map(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
             for mapped_task in mapped_tasks:
                 com_weight = 0
                 if (chosen_task, mapped_task) in tg.edges():
-                    # print ("TASK CONNECTED TO MAPPED TASK:", mapped_task)
-                    com_weight += tg.edge[chosen_task][mapped_task]["ComWeight"]
+                    # print("TASK CONNECTED TO MAPPED TASK:", mapped_task)
+                    com_weight += tg.edges[chosen_task][mapped_task]["ComWeight"]
                     destination_node = tg.node[mapped_task]['task'].node
                     # here we check if this node is even reachable from the chosen node?
                     if Calculate_Reachability.is_destination_reachable_from_source(noc_rg, unallocated_node,
@@ -155,8 +155,8 @@ def n_map(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                     else:
                         reachable = False
                 elif (mapped_task, chosen_task) in tg.edges():
-                    # print ("TASK CONNECTED TO MAPPED TASK:", mapped_task)
-                    com_weight += tg.edge[mapped_task][chosen_task]["ComWeight"]
+                    # print("TASK CONNECTED TO MAPPED TASK:", mapped_task)
+                    com_weight += tg.edges[mapped_task][chosen_task]["ComWeight"]
                     destination_node = tg.node[mapped_task]['task'].node
                     # here we check if this node is even reachable from the chosen node?
                     if Calculate_Reachability.is_destination_reachable_from_source(noc_rg, destination_node,
@@ -172,9 +172,9 @@ def n_map(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
                 elif cost == min_cost:
                     node_candidates.append(unallocated_node)
             else:
-                print ("\t \033[33m* NOTE::\033[0m NODE "+str(unallocated_node)+" CAN NOT REACH...")
+                print("\t \033[33m* NOTE::\033[0m NODE "+str(unallocated_node)+" CAN NOT REACH...")
                 pass
-        print ("\t CANDIDATE NODES: "+str(node_candidates)+" MIN COST: "+str(min_cost))
+        print("\t CANDIDATE NODES: "+str(node_candidates)+" MIN COST: "+str(min_cost))
 
         if len(node_candidates) == 0:
             raise ValueError("COULD NOT FIND A REACHABLE CANDIDATE NODE...")
@@ -187,25 +187,25 @@ def n_map(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
             chosen_node = random.choice(unallocated_nodes)
 
         mapped_tasks.append(chosen_task)
-        print ("\t ADDED TASK "+str(chosen_task)+" TO MAPPED TASKS LIST")
+        print("\t ADDED TASK "+str(chosen_task)+" TO MAPPED TASKS LIST")
         unmapped_tasks.remove(chosen_task)
-        print ("\t REMOVED TASK "+str(chosen_task)+" FROM UN-MAPPED TASKS LIST")
+        print("\t REMOVED TASK "+str(chosen_task)+" FROM UN-MAPPED TASKS LIST")
 
         allocated_nodes.append(chosen_node)
-        print ("\t ADDED NODE "+str(chosen_node)+" TO ALLOCATED NODES LIST")
+        print("\t ADDED NODE "+str(chosen_node)+" TO ALLOCATED NODES LIST")
         unallocated_nodes.remove(chosen_node)
-        print ("\t REMOVED NODE "+str(chosen_node)+" FROM UN-ALLOCATED NODES LIST")
+        print("\t REMOVED NODE "+str(chosen_node)+" FROM UN-ALLOCATED NODES LIST")
 
         if Mapping_Functions.map_task_to_node(tg, ag, shm, noc_rg, critical_rg,
                                               non_critical_rg, chosen_task, chosen_node, logging):
-            print ("\t \033[32m* NOTE::\033[0mTASK "+str(chosen_task)+" MAPPED ON NODE "+str(chosen_node))
+            print("\t \033[32m* NOTE::\033[0mTASK "+str(chosen_task)+" MAPPED ON NODE "+str(chosen_node))
         else:
             raise ValueError("Mapping task on node failed...")
 
     # Added by Behrad (Still under development)
     # Swapping phase
-    print "-----------------------"
-    print "PHASE ONE IS DONE... STARTING SWAP PROCESS..."
+    print("-"*20)
+    print("PHASE ONE IS DONE... STARTING SWAP PROCESS...")
     for node_id_1 in range(0, len(ag.nodes())-1):
         for node_id_2 in range(node_id_1+1, len(ag.nodes())-1):
             pass
@@ -224,16 +224,16 @@ def n_map(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging):
             # Else
             #   Save new mapping as better mapping with less comm_cost
             if comm_cost_new < comm_cost:
-                print "\033[32m* NOTE::\033[0m BETTER SOLUTION FOUND WITH COST:", comm_cost_new
+                print("\033[32m* NOTE::\033[0m BETTER SOLUTION FOUND WITH COST:", comm_cost_new)
             else:
                 pass
-                # print "Reverting to old solution"
+                # print("Reverting to old solution")
                 swap_nodes(tg, ag, shm, noc_rg, critical_rg, non_critical_rg,
                            node_id_2, node_id_1, logging)
             # Reset the comm_cost after each swapping
 
     # End of Swapping phase
-    print "SWAP PROCESS FINISHED..."
+    print("SWAP PROCESS FINISHED...")
     Scheduler.schedule_all(tg, ag, shm, True, logging)
     return tg, ag
 
@@ -250,7 +250,7 @@ def calculate_com_cost(tg):
         task_2 = edge[1]
         node_1 = tg.node[task_1]['task'].node
         node_2 = tg.node[task_2]['task'].node
-        com_weight = tg.edge[edge[0]][edge[1]]["ComWeight"]
+        com_weight = tg.edges[edge]["ComWeight"]
         manhatan_distance = AG_Functions.manhattan_distance(node_1, node_2)
         cost += manhatan_distance * com_weight
     return cost

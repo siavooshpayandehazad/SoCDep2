@@ -1,6 +1,6 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
-import Config
-import PackageFile
+import ConfigAndPackages.Config as Config
+import ConfigAndPackages.PackageFile as PackageFile
 
 
 def check_config_file():
@@ -12,7 +12,7 @@ def check_config_file():
     check_tg_config()
     check_ag_config()
     check_routing_config()
-    print "\033[33m* INFO::\033[0m ALL CHECKS FOR CONFIG FILE PASSED..."
+    print("\033[33m* INFO::\033[0m ALL CHECKS FOR CONFIG FILE PASSED...")
     return True
 
 

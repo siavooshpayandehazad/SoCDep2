@@ -1,5 +1,5 @@
 # Copyright (C) Siavoosh Payandeh Azad
-import Tkinter as tk
+import tkinter as tk
 
 
 class Page(tk.Frame):

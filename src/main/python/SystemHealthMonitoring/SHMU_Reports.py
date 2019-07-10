@@ -13,22 +13,22 @@ def report_noc_shm(shmu):
     :param shmu: system health monitoring unit
     :return: None
     """
-    print ("===========================================")
-    print ("      REPORTING SYSTEM HEALTH MAP")
-    print ("===========================================")
+    print("===========================================")
+    print("      REPORTING SYSTEM HEALTH MAP")
+    print("===========================================")
     for node in shmu.SHM.nodes():
-        print ("\tNODE:", node)
-        print ("\t\tNODE HEALTH:", shmu.SHM.node[node]['NodeHealth'])
-        print ("\t\tNODE SPEED:", shmu.SHM.node[node]['NodeSpeed'])
-        print ("\t\tTURNS:", shmu.SHM.node[node]['TurnsHealth'])
-        print ("\t==============")
+        print("\tNODE:", node)
+        print("\t\tNODE HEALTH:", shmu.SHM.node[node]['NodeHealth'])
+        print("\t\tNODE SPEED:", shmu.SHM.node[node]['NodeSpeed'])
+        print("\t\tTURNS:", shmu.SHM.node[node]['TurnsHealth'])
+        print("\t==============")
     for edge in shmu.SHM.edges():
-        print ("\tLINK:", edge, "\t", shmu.SHM.edge[edge[0]][edge[1]]['LinkHealth'])
+        print("\tLINK:", edge, "\t", shmu.SHM.edges[edge]['LinkHealth'])
     return None
 
 
 def report_the_event(fault_location, fault_type):
-    print ("===========================================")
+    print("===========================================")
     if fault_type == 'T':    # Transient Fault
             string_to_print = "\033[33mSHM:: Event:\033[0m Transient Fault happened at "
     else:   # Permanent Fault
@@ -41,7 +41,7 @@ def report_the_event(fault_location, fault_type):
             string_to_print += 'Turn ' + str(turn) + ' of Node ' + str(node)
     else:
             string_to_print += 'Node ' + str(fault_location)
-    print (string_to_print)
+    print(string_to_print)
     return None
 
 
@@ -51,11 +51,11 @@ def report_mpm(shmu):
     :param shmu: System Health Monitoring Unit
     :return:
     """
-    print ("===========================================")
-    print ("      REPORTING MOST PROBABLE MAPPING ")
-    print ("===========================================")
+    print("===========================================")
+    print("      REPORTING MOST PROBABLE MAPPING ")
+    print("===========================================")
     for item in shmu.MPM:
-        print ("KEY:", item, "\t\tMAPPING:", shmu.MPM[item])
+        print("KEY:", item, "\t\tMAPPING:", shmu.MPM[item])
     return None
 
 
@@ -65,8 +65,8 @@ def draw_temp_distribution(shm):
     :param shm: System Health Map
     :return:
     """
-    print ("===========================================")
-    print ("GENERATING TEMPERATURE DISTRIBUTIONS VISUALIZATION...")
+    print("===========================================")
+    print("GENERATING TEMPERATURE DISTRIBUTIONS VISUALIZATION...")
     fig_util = plt.figure(figsize=(4*Config.ag.x_size, 4*Config.ag.y_size))
     max_temp = 0
     for node in shm.nodes():
@@ -117,8 +117,8 @@ def draw_shm(shm, iteration=None):
     :param shm: System Health Map
     :return:
     """
-    print ("===========================================")
-    print ("GENERATING SYSTEM HEALTH MAP DRAWING...")
+    print("===========================================")
+    print("GENERATING SYSTEM HEALTH MAP DRAWING...")
 
     x_size = float(Config.ag.x_size)
     y_size = float(Config.ag.y_size)
@@ -284,7 +284,7 @@ def draw_shm(shm, iteration=None):
                                                   0.01, 0, width=0.01, color=color))
 
     for link in shm.edges():
-        if shm.edge[link[0]][link[1]]['LinkHealth']:
+        if shm.edges[link]['LinkHealth']:
             color = 'black'
         else:
             color = 'r'

@@ -1,7 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
 import networkx
-import TG_Functions
+from TaskGraphUtilities import TG_Functions
 
 
 def generate_tg_from_xml():
@@ -21,7 +21,7 @@ def generate_tg_from_dot(file_path):
             line = tg_dot_file.readline()
             if "->" in line:
                 edge_list = line.split()
-                # print EdgeList[0], EdgeList[2], EdgeList[6]
+                # print(EdgeList[0], EdgeList[2], EdgeList[6])
                 if edge_list[0] not in tg.nodes():
                     tg.add_node(edge_list[0], WCET=1, Criticality='L', Cluster=None, Node=None, Priority=None,
                                 Distance=None, Release=0, Type='App')

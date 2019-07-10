@@ -1,7 +1,7 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 from ConfigAndPackages import Config
 import random
-import SHMU_Reports
+from SystemHealthMonitoring import SHMU_Reports
 from RoutingAlgorithms import Routing
 
 
@@ -40,19 +40,19 @@ def random_fault_generation(shm):
     random.seed(None)
     fault_type = random.choice(fault_types)
     if chosen_fault == 'Link':
-        chosen_link = random.choice(shm.edges())
-        while not shm.edge[chosen_link[0]][chosen_link[1]]['LinkHealth']:
-            chosen_link = random.choice(shm.edges())
+        chosen_link = random.choice(list(shm.edges()))
+        while not shm.edges[chosen_link]['LinkHealth']:
+            chosen_link = random.choice(list(shm.edges()))
         return chosen_link, fault_type
 
     elif chosen_fault == 'Turn':
-        chosen_node = random.choice(shm.nodes())
-        chosen_turn = random.choice(shm.node[chosen_node]['TurnsHealth'].keys())
+        chosen_node = random.choice(list(shm.nodes()))
+        chosen_turn = random.choice(list(shm.node[chosen_node]['TurnsHealth'].keys()))
         while chosen_turn not in Config.UsedTurnModel:
-            chosen_turn = random.choice(shm.node[chosen_node]['TurnsHealth'].keys())
+            chosen_turn = random.choice(list(shm.node[chosen_node]['TurnsHealth'].keys()))
         return {chosen_node: chosen_turn}, fault_type
     elif chosen_fault == 'Node':
-        chosen_node = random.choice(shm.nodes())
+        chosen_node = random.choice(list(shm.nodes()))
         return chosen_node, fault_type
 
 
@@ -76,13 +76,13 @@ def apply_fault_event(ag, shmu, noc_rg, fault_location, fault_type):
         SHMU_Reports.report_the_event(fault_location, fault_type)
         if type(fault_location) is tuple:      # its a Link fault
             if fault_type == 'T':    # Transient Fault
-                if shmu.SHM.edge[fault_location[0]][fault_location[1]]['LinkHealth']:
+                if shmu.SHM.edges[fault_location]['LinkHealth']:
                     shmu.break_link(fault_location, True)
                     shmu.restore_broken_link(fault_location, True)
                 else:
-                    print ("\033[33mSHM:: NOTE:\033[0mLINK ALREADY BROKEN")
+                    print("\033[33mSHM:: NOTE:\033[0mLINK ALREADY BROKEN")
             elif fault_type == 'P':   # Permanent Fault
-                port = ag.edge[fault_location[0]][fault_location[1]]['Port']
+                port = ag.edges[fault_location]['Port']
                 from_port = str(fault_location[0])+str(port[0])+str('O')
                 to_port = str(fault_location[1])+str(port[1])+str('I')
                 shmu.break_link(fault_location, True)
@@ -95,7 +95,7 @@ def apply_fault_event(ag, shmu, noc_rg, fault_location, fault_type):
                     shmu.break_turn(current_node, current_turn, True)
                     shmu.restore_broken_turn(current_node, current_turn, True)
                 else:
-                    print ("\033[33mSHM:: NOTE:\033[0mTURN ALREADY BROKEN")
+                    print("\033[33mSHM:: NOTE:\033[0mTURN ALREADY BROKEN")
             elif fault_type == 'P':   # Permanent Fault
                 from_port = str(current_node)+str(current_turn[0])+str('I')
                 to_port = str(current_node)+str(current_turn[2])+str('O')
@@ -107,7 +107,7 @@ def apply_fault_event(ag, shmu, noc_rg, fault_location, fault_type):
                     shmu.break_node(fault_location, True)
                     shmu.restore_broken_node(fault_location, True)
                 else:
-                    print ("\033[33mSHM:: NOTE:\033[0m NODE ALREADY BROKEN")
+                    print("\033[33mSHM:: NOTE:\033[0m NODE ALREADY BROKEN")
             elif fault_type == 'P':   # Permanent Fault
                 shmu.break_node(fault_location, True)
         return None

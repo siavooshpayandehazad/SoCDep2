@@ -1,11 +1,10 @@
 # Copyright (C) Siavoosh Payandeh Azad
 
-from Pages import page_1, page_2, page_3, page_4, page_5
-import Tkinter as tk
+from GUI_Util.Pages import page_1, page_2, page_3, page_4, page_5
+import tkinter as tk
 from PIL import ImageTk, Image
-import tkMessageBox
 from ConfigAndPackages import Config, PackageFile
-import ttk
+from tkinter import ttk
 
 
 class MainView(tk.Tk):
@@ -255,8 +254,8 @@ class MainView(tk.Tk):
 
     @staticmethod
     def _on_enter(self):
-        tkMessageBox.showinfo("License Message", "The logo picture is a derivative of \"Sea Ghost\" by Joey Gannon, " +
-                              "used under CC BY-SA. The original version can be found here: " +
-                              "https://www.flickr.com/photos/brunkfordbraun/679827214 " +
-                              "This work is under same license as the original."
-                              "(https://creativecommons.org/licenses/by-sa/2.0/)")
+        tk.messagebox.showinfo("License Message", "The logo picture is a derivative of \"Sea Ghost\" by Joey Gannon, " +
+                               "used under CC BY-SA. The original version can be found here: " +
+                               "https://www.flickr.com/photos/brunkfordbraun/679827214 " +
+                               "This work is under same license as the original."
+                               "(https://creativecommons.org/licenses/by-sa/2.0/)")

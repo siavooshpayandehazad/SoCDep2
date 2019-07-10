@@ -2,7 +2,7 @@
 
 
 import statistics
-import Clustering_Reports
+from Clusterer import Clustering_Reports
 from ConfigAndPackages import Config
 import random
 
@@ -16,28 +16,28 @@ def remove_task_from_ctg(tg, ctg, task):
     :return: None
     """
     task_cluster = tg.node[task]['task'].cluster
-    # print ("\tREMOVING TASK:", Task, " FROM CLUSTER:", task_cluster)
+    # print("\tREMOVING TASK:", Task, " FROM CLUSTER:", task_cluster)
     for edge in tg.edges():
         if task in edge:
-            weight_to_remove = tg.edge[edge[0]][edge[1]]['ComWeight']
+            weight_to_remove = tg.edges[edge]['ComWeight']
             source_cluster = tg.node[edge[0]]['task'].cluster
             destination_cluster = tg.node[edge[1]]['task'].cluster
             if source_cluster is not None and destination_cluster is not None:
                 if source_cluster != destination_cluster:
-                    # print ("\t\tREMOVING TG EDGE:", edge, "WITH WEIGHT", weight_to_remove, "FROM CLUSTER:", \
+                    # print("\t\tREMOVING TG EDGE:", edge, "WITH WEIGHT", weight_to_remove, "FROM CLUSTER:", \
                     #    source_cluster, "--->", destination_cluster)
                     if (source_cluster, destination_cluster) not in ctg.edges():
-                        print ("\t\033[31mERROR\033[0m:: EDGE ", source_cluster, "--->",
+                        print("\t\033[31mERROR\033[0m:: EDGE ", source_cluster, "--->",
                                destination_cluster, "DOESNT EXIST")
                         Clustering_Reports.report_ctg(ctg, "CTG_Error.png")
                         raise ValueError("remove_task_from_ctg::EDGE DOESNT EXIST")
                     else:
-                        if ctg.edge[source_cluster][destination_cluster]['Weight'] - weight_to_remove >= 0:
-                            ctg.edge[source_cluster][destination_cluster]['Weight'] -= weight_to_remove
-                            if ctg.edge[source_cluster][destination_cluster]['Weight'] == 0:
+                        if ctg.edges[(source_cluster, destination_cluster)]['Weight'] - weight_to_remove >= 0:
+                            ctg.edges[(source_cluster, destination_cluster)]['Weight'] -= weight_to_remove
+                            if ctg.edges[(source_cluster, destination_cluster)]['Weight'] == 0:
                                 ctg.remove_edge(source_cluster, destination_cluster)
                         else:
-                            print ("\t\033[31mERROR\033[0m::FINAL WEIGHT IS NEGATIVE")
+                            print("\t\033[31mERROR\033[0m::FINAL WEIGHT IS NEGATIVE")
                             raise ValueError("remove_task_from_ctg::FINAL WEIGHT IS NEGATIVE")
     tg.node[task]['task'].cluster = None
     ctg.node[task_cluster]['TaskList'].remove(task)
@@ -57,7 +57,7 @@ def add_task_to_ctg(tg, ctg, task, cluster):
     :param cluster: destination cluster fro mapping the Task
     :return: True if addition is success, False if otherwise...
     """
-    # print ("\tADDING TASK:", task, " TO CLUSTER:", cluster)
+    # print("\tADDING TASK:", task, " TO CLUSTER:", cluster)
     if len(ctg.node[cluster]['TaskList']) == 0:
         ctg.node[cluster]['Criticality'] = tg.node[task]['task'].criticality
     else:
@@ -71,21 +71,21 @@ def add_task_to_ctg(tg, ctg, task, cluster):
     tg.node[task]['task'].cluster = cluster
     for edge in tg.edges():
         if task in edge:
-            weight_to_add = tg.edge[edge[0]][edge[1]]['ComWeight']
+            weight_to_add = tg.edges[edge]['ComWeight']
             source_cluster = tg.node[edge[0]]['task'].cluster
             destination_cluster = tg.node[edge[1]]['task'].cluster
             if source_cluster is not None and destination_cluster is not None:
                 if source_cluster != destination_cluster:
                     if (source_cluster, destination_cluster) in ctg.edges():
                         if Config.clustering.detailed_report:
-                            print ("\t\tEDGE", source_cluster, "--->", destination_cluster,
+                            print("\t\tEDGE", source_cluster, "--->", destination_cluster,
                                    "ALREADY EXISTS... ADDING", weight_to_add, "TO WEIGHT...")
-                        ctg.edge[source_cluster][destination_cluster]['Weight'] += weight_to_add
+                        ctg.edges[(source_cluster, destination_cluster)]['Weight'] += weight_to_add
                     else:
                         if Config.clustering.detailed_report:
-                            print ("\t\tEDGE", source_cluster, destination_cluster,
+                            print("\t\tEDGE", source_cluster, destination_cluster,
                                    "DOES NOT EXISTS... ADDING EDGE WITH WEIGHT:",
-                                   tg.edge[edge[0]][edge[1]]['ComWeight'])
+                                   tg.edges[edge]['ComWeight'])
                         ctg.add_edge(source_cluster, destination_cluster, Weight=weight_to_add)
     return True
 
@@ -98,7 +98,7 @@ def ctg_cost_function(ctg):
     """
     com_weight_list = []
     for edge in ctg.edges():
-        com_weight_list .append(ctg.edge[edge[0]][edge[1]]['Weight'])
+        com_weight_list .append(ctg.edges[edge]['Weight'])
 
     cluster_utilization = []
     for node in ctg.nodes():

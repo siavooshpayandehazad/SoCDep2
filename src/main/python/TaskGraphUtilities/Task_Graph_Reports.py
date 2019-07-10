@@ -3,13 +3,13 @@
 import networkx
 import matplotlib.pyplot as plt
 from ConfigAndPackages import Config
-import TG_Functions
+from TaskGraphUtilities import TG_Functions
 
 
 def report_task_graph(tg, logging):
-    print ("===========================================")
-    print ("      REPORTING TASK GRAPH")
-    print ("===========================================")
+    print("===========================================")
+    print("      REPORTING TASK GRAPH")
+    print("===========================================")
     logging.info('TASK GRAPH REPORT:')
     logging.info('TASK GRAPH Type:\t'+str(Config.tg.type))
     for Node in tg.nodes():
@@ -18,24 +18,24 @@ def report_task_graph(tg, logging):
                   "\tNODE:"+str(tg.node[Node]['task'].node)+"\tPRIORITY:"+str(tg.node[Node]['task'].priority) +\
                   "\tRELEASE:"+str(tg.node[Node]['task'].release)
         logging.info(massage)
-        print (massage)
-    print ("====================")
-    print ("EDGES:")
+        print(massage)
+    print("====================")
+    print("EDGES:")
     for Edge in tg.edges():
-        massage = "EDGE: "+str(Edge)+"\tCRITICALITY: "+str(tg.edge[Edge[0]][Edge[1]]['Criticality'])+"\tLINK: " +\
-                  str(tg.edge[Edge[0]][Edge[1]]['Link'])+"\tCOM WEIGHTt: "+str(tg.edge[Edge[0]][Edge[1]]['ComWeight'])
+        massage = "EDGE: "+str(Edge)+"\tCRITICALITY: "+str(tg.edges[Edge]['Criticality'])+"\tLINK: " +\
+                  str(tg.edges[Edge]['Link'])+"\tCOM WEIGHTt: "+str(tg.edges[Edge]['ComWeight'])
         logging.info(massage)
-        print (massage)
+        print(massage)
     number_of_flits = 0
     for Edge in tg.edges():
-        number_of_flits += tg.edge[Edge[0]][Edge[1]]['ComWeight']
-    print "# OF FLITS:", number_of_flits
-    print "# OF PACKETS:", len(tg.edges())
+        number_of_flits += tg.edges[Edge]['ComWeight']
+    print("# OF FLITS:", number_of_flits)
+    print("# OF PACKETS:", len(tg.edges()))
     return None
 
 
 def draw_task_graph(tg, ttg=None):
-    print ("DRAWING TASK GRAPH...")
+    print("DRAWING TASK GRAPH...")
     plt.figure()
     node_colors = []
     for Node in tg.nodes():
@@ -49,7 +49,7 @@ def draw_task_graph(tg, ttg=None):
             node_colors.append('#A0CBE2')
     edge_colors = []
     for Edge in tg.edges():
-        if tg.edge[Edge[0]][Edge[1]]['Criticality'] == 'H':
+        if tg.edges[Edge]['Criticality'] == 'H':
             edge_colors.append('red')
         else:
             edge_colors.append('black')
@@ -57,7 +57,7 @@ def draw_task_graph(tg, ttg=None):
     tg_edge_weight = []
     for Edge in tg.edges():
         tg_edge_list.append(Edge)
-        tg_edge_weight.append(tg.edge[Edge[0]][Edge[1]]['ComWeight'])
+        tg_edge_weight.append(tg.edges[Edge]['ComWeight'])
 
     if Config.tg.type == "RandomIndependent":
         pos = networkx.shell_layout(tg)
@@ -99,5 +99,5 @@ def draw_task_graph(tg, ttg=None):
     else:
         plt.savefig("GraphDrawings/TG_And_TTG.png", dpi=200, bbox_inches='tight')
     plt.clf()
-    print ("\033[35m* VIZ::\033[0mTASK GRAPH DRAWINGS CREATED AT: GraphDrawings/TG.png")
+    print("\033[35m* VIZ::\033[0mTASK GRAPH DRAWINGS CREATED AT: GraphDrawings/TG.png")
     return None

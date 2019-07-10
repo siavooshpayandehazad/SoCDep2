@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 import networkx
 from ConfigAndPackages import Config
-from AG_Functions import return_node_location, return_node_number
+from ArchGraphUtilities.AG_Functions import return_node_location, return_node_number
 import math
 
 
@@ -33,7 +33,7 @@ def draw_ag(ag, file_name):
     for Node in ag.nodes():
         x, y, z = return_node_location(Node)
         position[Node] = [(x*node_distance_x)+(z*offset_x), (y*node_distance_y)+(z*offset_y)]
-        # print (x*node_distance_x)+(z*offset_x), (y*node_distance_y)+(z*offset_y)
+        # print(x*node_distance_x)+(z*offset_x), (y*node_distance_y)+(z*offset_y)
         if ag.node[Node]['Region'] == 'H':
             color_list.append('#FF878B')
         elif ag.node[Node]['Region'] == 'GH':   # gateway to high critical
@@ -57,8 +57,8 @@ def draw_vl_opt():
     Draws the cost evolution for the vl optimization
     :return: None
     """
-    print ("===========================================")
-    print ("GENERATING VL OPTIMIZATION VISUALIZATIONS...")
+    print("===========================================")
+    print("GENERATING VL OPTIMIZATION VISUALIZATIONS...")
     fig, ax1 = plt.subplots()
     solution_num = None
     try:
@@ -89,7 +89,7 @@ def draw_vl_opt():
                 ax1.plot((x1, x2), (y1, y2), 'g--')
 
     except IOError:
-        print ('CAN NOT OPEN Generated_Files/Internal/vl_opt_cost.txt')
+        print('CAN NOT OPEN Generated_Files/Internal/vl_opt_cost.txt')
 
     if Config.vl_opt.vl_opt_alg == 'SimulatedAnnealing':
         try:
@@ -108,12 +108,12 @@ def draw_vl_opt():
             for tl in ax2.get_yticklabels():
                 tl.set_color('g')
         except IOError:
-            print ('CAN NOT OPEN vlp_sa_temp.txt')
+            print('CAN NOT OPEN vlp_sa_temp.txt')
 
     plt.savefig("GraphDrawings/vl_opt_process.png", dpi=300)
     plt.clf()
     plt.close(fig)
-    print ("\033[35m* VIZ::\033[0mVL OPTIMIZATION PROCESS GRAPH CREATED AT: GraphDrawings/vl_opt_process.png")
+    print("\033[35m* VIZ::\033[0mVL OPTIMIZATION PROCESS GRAPH CREATED AT: GraphDrawings/vl_opt_process.png")
     return None
 
 
@@ -166,7 +166,7 @@ def gen_latex_ag(ag, shm):
 
             if i < Config.ag.x_size-1:
                 if ag.has_edge(return_node_number(i, j, 0), return_node_number(i+1, j, 0)):
-                    if shm.edge[return_node_number(i, j, 0)][return_node_number(i+1, j, 0)]["LinkHealth"]:
+                    if shm.edges[(return_node_number(i, j, 0), return_node_number(i+1, j, 0))]["LinkHealth"]:
                         color = 'blue'
                     else:
                         color = 'red'
@@ -175,7 +175,7 @@ def gen_latex_ag(ag, shm):
                                         ") -- ("+str(start_x+2*node_size)+","+str(start_y+node_size*0.25)+");\n")
 
                 if ag.has_edge(return_node_number(i+1, j, 0), return_node_number(i, j, 0)):
-                    if shm.edge[return_node_number(i+1, j, 0)][return_node_number(i, j, 0)]["LinkHealth"]:
+                    if shm.edges[(return_node_number(i+1, j, 0), return_node_number(i, j, 0))]["LinkHealth"]:
                         color = 'blue'
                     else:
                         color = 'red'
@@ -186,7 +186,7 @@ def gen_latex_ag(ag, shm):
             if j < Config.ag.y_size-1:
 
                 if ag.has_edge(return_node_number(i, j, 0), return_node_number(i, j+1, 0)):
-                    if shm.edge[return_node_number(i, j, 0)][return_node_number(i, j+1, 0)]["LinkHealth"]:
+                    if shm.edges[(return_node_number(i, j, 0), return_node_number(i, j+1, 0))]["LinkHealth"]:
                         color = 'blue'
                     else:
                         color = 'red'
@@ -195,7 +195,7 @@ def gen_latex_ag(ag, shm):
                                         ") -- ("+str(start_x+node_size*0.25)+","+str(start_y+node_size*2)+");\n")
 
                 if ag.has_edge(return_node_number(i, j+1, 0), return_node_number(i, j, 0)):
-                    if shm.edge[return_node_number(i, j+1, 0)][return_node_number(i, j, 0)]["LinkHealth"]:
+                    if shm.edges[(return_node_number(i, j+1, 0), return_node_number(i, j, 0))]["LinkHealth"]:
                         color = 'blue'
                     else:
                         color = 'red'
@@ -205,7 +205,7 @@ def gen_latex_ag(ag, shm):
 
             if j == Config.ag.y_size-1:
                 if ag.has_edge(return_node_number(i, j, 0), return_node_number(i, 0, 0)):
-                    if shm.edge[return_node_number(i, j, 0)][return_node_number(i, 0, 0)]["LinkHealth"]:
+                    if shm.edges[(return_node_number(i, j, 0), return_node_number(i, 0, 0))]["LinkHealth"]:
                         color = 'blue'
                     else:
                         color = 'red'
@@ -214,7 +214,7 @@ def gen_latex_ag(ag, shm):
                                         ") to  [bend left="+str(bend)+"] ("+str(start_x+node_size)+"," +
                                         str(node_size)+");\n")
                 if ag.has_edge(return_node_number(i, 0, 0), return_node_number(i, j, 0)):
-                    if shm.edge[return_node_number(i, 0, 0)][return_node_number(i, j, 0)]["LinkHealth"]:
+                    if shm.edges[(return_node_number(i, 0, 0), return_node_number(i, j, 0))]["LinkHealth"]:
                         color = 'blue'
                     else:
                         color = 'red'
@@ -226,7 +226,7 @@ def gen_latex_ag(ag, shm):
             if i == Config.ag.x_size-1:
                 if ag.has_edge(return_node_number(i, j, 0), return_node_number(0, j, 0)):
 
-                    if shm.edge[return_node_number(i, j, 0)][return_node_number(0, j, 0)]["LinkHealth"]:
+                    if shm.edges[(return_node_number(i, j, 0), return_node_number(0, j, 0))]["LinkHealth"]:
                         color = 'blue'
                     else:
                         color = 'red'
@@ -235,7 +235,7 @@ def gen_latex_ag(ag, shm):
                                         ") to  [bend left="+str(bend)+"] ("+str(node_size)+"," +
                                         str(start_y)+");\n")
                 if ag.has_edge(return_node_number(0, j, 0), return_node_number(i, j, 0)):
-                    if shm.edge[return_node_number(0, j, 0)][return_node_number(i, j, 0)]["LinkHealth"]:
+                    if shm.edges[(return_node_number(0, j, 0), return_node_number(i, j, 0))]["LinkHealth"]:
                         color = 'blue'
                     else:
                         color = 'red'

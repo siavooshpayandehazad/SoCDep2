@@ -5,7 +5,7 @@ import hashlib
 import copy
 import re
 from Mapper import Mapping_Functions
-import SHMU_Functions
+from SystemHealthMonitoring import SHMU_Functions
 from ConfigAndPackages import Config
 import random
 
@@ -20,7 +20,7 @@ class SystemHealthMonitoringUnit:
 
     def check_for_reconfiguration(self):
         degradation = self.calculate_system_degradation()
-        # print degradation, self.system_degradation
+        # print(degradation, self.system_degradation)
         # todo: this should not be a fix number! system should check if the conditions are ok or not
         if degradation > self.system_degradation * 1.02:
             self.system_degradation = degradation
@@ -37,7 +37,7 @@ class SystemHealthMonitoringUnit:
                 if not self.SHM.node[node]['TurnsHealth'][turn]:
                     broken_components += 1
         for link in self.SHM.edges():
-            if not self.SHM.edge[link[0]][link[1]]['LinkHealth']:
+            if not self.SHM.edges[link]['LinkHealth']:
                 broken_components += 1
         total_components = len(self.SHM.nodes())*(1+len(self.SHM.node[0]['TurnsHealth'])) + len(self.SHM.edges())
         degradation = float(broken_components)/total_components
@@ -45,8 +45,8 @@ class SystemHealthMonitoringUnit:
 
     def setup_noc_shm(self, ag, turns_health, report):
         if report:
-            print ("===========================================")
-            print ("PREPARING SYSTEM HEALTH MAP...")
+            print("===========================================")
+            print("PREPARING SYSTEM HEALTH MAP...")
         if not Config.SetRoutingFromFile:
             for node in ag.nodes():
                 self.SHM.add_node(node, TurnsHealth=copy.deepcopy(turns_health), NodeHealth=True, NodeSpeed=100,
@@ -55,14 +55,14 @@ class SystemHealthMonitoringUnit:
             try:
                 routing_file = open(Config.RoutingFilePath, 'r')
             except IOError:
-                print ('CAN NOT OPEN', Config.RoutingFilePath)
+                print('CAN NOT OPEN', Config.RoutingFilePath)
 
             while True:
                 line = routing_file.readline()
                 if "Ports" in line:
                     ports = routing_file.readline()
                     port_list = ports.split()
-                    print ("port_list:", port_list)
+                    print("port_list:", port_list)
                 if "Node" in line:
                     node_id = int(re.search(r'\d+', line).group())
                     node_turns_health = copy.deepcopy(turns_health)
@@ -84,41 +84,41 @@ class SystemHealthMonitoringUnit:
 
         self.system_degradation = self.calculate_system_degradation()
         if report:
-            print ("SYSTEM HEALTH MAP CREATED...")
+            print("SYSTEM HEALTH MAP CREATED...")
 
     ##################################################
     def break_link(self, link, report):
         if report:
-            print ("===========================================")
-            print ("\033[33mSHM::\033[0m BREAKING LINK: "+str(link))
-        self.SHM.edge[link[0]][link[1]]['LinkHealth'] = False
+            print("===========================================")
+            print("\033[33mSHM::\033[0m BREAKING LINK: "+str(link))
+        self.SHM.edges[link]['LinkHealth'] = False
 
     def restore_broken_link(self, link, report):
         if report:
-            print ("===========================================")
-            print ("\033[33mSHM::\033[0m LINK: "+str(link)+" RESTORED...")
-        self.SHM.edge[link[0]][link[1]]['LinkHealth'] = True
+            print("===========================================")
+            print("\033[33mSHM::\033[0m LINK: "+str(link)+" RESTORED...")
+        self.SHM.edges[link]['LinkHealth'] = True
 
     ##################################################
     def break_turn(self, node, turn, report):
         if report:
-            print ("===========================================")
-            print ("\033[33mSHM::\033[0m BREAKING TURN: "+str(turn)+" IN NODE "+str(node))
+            print("===========================================")
+            print("\033[33mSHM::\033[0m BREAKING TURN: "+str(turn)+" IN NODE "+str(node))
         self.SHM.node[node]['TurnsHealth'][turn] = False
 
     def restore_broken_turn(self, node, turn, report):
         if report:
-            print ("===========================================")
-            print ("\033[33mSHM::\033[0m TURN:"+str(turn)+" IN NODE"+str(node)+" RESTORED")
+            print("===========================================")
+            print("\033[33mSHM::\033[0m TURN:"+str(turn)+" IN NODE"+str(node)+" RESTORED")
         self.SHM.node[node]['TurnsHealth'][turn] = True
 
     ##################################################
     def introduce_aging(self, node, speed_down, report):
         if report:
-            print ("===========================================")
+            print("===========================================")
         self.SHM.node[node]['NodeSpeed'] *= 1-speed_down
         if report:
-            print ("\033[33mSHM::\033[0m AGEING NODE:"+str(node)+" ... SPEED DROPPED TO: " +
+            print("\033[33mSHM::\033[0m AGEING NODE:"+str(node)+" ... SPEED DROPPED TO: " +
                    str(self.SHM.node[node]['NodeSpeed'])+" %")
         if self.SHM.node[node]['NodeSpeed'] == 0:
             self.break_node(node, True)
@@ -126,28 +126,28 @@ class SystemHealthMonitoringUnit:
     ##################################################
     def break_node(self, node, report):
         if report:
-            print ("===========================================")
+            print("===========================================")
         self.SHM.node[node]['NodeHealth'] = False
         if report:
-            print ("\033[33mSHM::\033[0m NODE "+str(node)+" IS BROKEN...")
+            print("\033[33mSHM::\033[0m NODE "+str(node)+" IS BROKEN...")
 
     def restore_broken_node(self, node, report):
         if report:
-            print ("===========================================")
+            print("===========================================")
         self.SHM.node[node]['NodeHealth'] = True
         if report:
-            print ("\033[33mSHM::\033[0m NODE "+str(node)+" IS RESTORED...")
+            print("\033[33mSHM::\033[0m NODE "+str(node)+" IS RESTORED...")
 
     ##################################################
     def take_snapshot_of_shm(self):
         self.SnapShot = copy.deepcopy(self.SHM)
-        print ("A SNAPSHOT OF SYSTEM HEALTH HAS BEEN STORED...")
+        print("A SNAPSHOT OF SYSTEM HEALTH HAS BEEN STORED...")
         return None
 
     ##################################################
     def restore_previous_snapshot(self):
         self.SHM = copy.deepcopy(self.SnapShot)
-        print ("SYSTEM HEALTH MAP HAS BEEN RESTORED TO PREVIOUS SNAPSHOT...")
+        print("SYSTEM HEALTH MAP HAS BEEN RESTORED TO PREVIOUS SNAPSHOT...")
         self.SnapShot = None
         return None
 

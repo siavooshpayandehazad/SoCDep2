@@ -38,7 +38,7 @@ def generate_fault_time_dict_from_file():
     while line != '':
         line = line.rstrip()
         fault_item = line.split('\t')
-        # print literal_eval(fault_item[1])
+        # print(literal_eval(fault_item[1]))
         fault_time_dict[float("{0:.1f}".format(float(fault_item[0])))] = (literal_eval(fault_item[1]), fault_item[2])
         line = fault_file.readline()
     draw_faults_locations(fault_time_dict)
@@ -68,7 +68,7 @@ def draw_faults_locations(fault_time_dict):
             location_time_dictionary[fault_location] = [int(item)]
     for location in location_time_dictionary.keys():
         time_list = location_time_dictionary[location]
-        # print location, time_list
+        # print(location, time_list)
         values = []
         x_axis = []
 
@@ -81,9 +81,9 @@ def draw_faults_locations(fault_time_dict):
                 else:
                     values.append(0)
             x_axis.append(i)
-        # print values
-        # print x_axis
-        # print "---------------------------"
+        # print(values)
+        # print(x_axis)
+        # print("---------------------------")
         plt.xlim(xmin=0, xmax=Config.ProgramRunTime)
         plt.bar(x_axis, values, align='center')
 

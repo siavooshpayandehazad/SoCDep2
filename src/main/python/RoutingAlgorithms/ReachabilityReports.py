@@ -45,11 +45,11 @@ def report_reachability(ag):
     :param ag: architecture graph
     :return: None
     """
-    print ("=====================================")
+    print("=====================================")
     for node in ag.nodes():
-        print ("NODE", node, "UNREACHABLE NODES:")
+        print("NODE", node, "UNREACHABLE NODES:")
         for port in ag.node[node]['Router'].unreachable:
-            print ("Port:"+str(port)+" ==>"+str(ag.node[node]['Router'].unreachable[port]))
+            print("Port:"+str(port)+" ==>"+str(ag.node[node]['Router'].unreachable[port]))
     return None
 
 

@@ -19,23 +19,23 @@ def download_benchmark_algorithms(Benchmark):
         url = "http://express.ece.ucsb.edu/benchmark/mesa/invert_matrix_general_dfg__3.dot"
         DestinationFile = 'Benchmarks/mi.dot'
     else:
-        print "THIS BENCHMARK IS NOT SUPPORTED..."
+        print("THIS BENCHMARK IS NOT SUPPORTED...")
         return False
 
     if not os.path.isfile(DestinationFile):
         code = urllib.urlopen(url).code
         if code/100 >= 4:
-            print "BENCHMARK IS NOT AVAILABLE..."
+            print("BENCHMARK IS NOT AVAILABLE...")
             return False
         else:
-            print "DOWNLOADING BENCHMARK..."
+            print("DOWNLOADING BENCHMARK...")
             testfile.retrieve(url, DestinationFile)
-            print "FINISHED DOWNLOADING..."
+            print("FINISHED DOWNLOADING...")
             Config.tg.dot_file_path = DestinationFile
             Config.tg.type = 'FromDOTFile'
             return True
     else:
-        print "FILE ALREADY EXISTS..."
+        print("FILE ALREADY EXISTS...")
         Config.tg.dot_file_path = DestinationFile
         Config.tg.type = 'FromDOTFile'
         return True

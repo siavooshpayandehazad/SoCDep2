@@ -25,7 +25,7 @@ def clear_scheduling(ag):
         ag.node[node]['PE'].scheduling = {}
         ag.node[node]['Router'].scheduling = {}
     for link in ag.edges():
-        ag.edge[link[0]][link[1]]['Scheduling'] = {}
+        ag.edges[link]['Scheduling'] = {}
     return None
 
 
@@ -34,9 +34,9 @@ def check_if_all_deadlines_are_met(tg, ag):
         for task in ag.node[node]['PE'].scheduling.keys():
             if tg.node[task]['task'].criticality == 'H':
                 scheduling_time =  ag.node[node]['PE'].scheduling[task]
-                # print task, scheduling_time
+                # print(task, scheduling_time)
                 if tg.node[task]['task'].deadline < scheduling_time[1]:
-                    # print tg.node[task]['task'].deadline, scheduling_time[1]
+                    # print(tg.node[task]['task'].deadline, scheduling_time[1])
                     return False
-    # print "-----------------------------------"
+    # print("-"*35)
     return True

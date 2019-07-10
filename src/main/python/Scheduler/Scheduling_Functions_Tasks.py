@@ -1,6 +1,6 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
-import Scheduling_Functions_Nodes
+from Scheduler import Scheduling_Functions_Nodes
 from math import ceil
 from ConfigAndPackages import Config
 
@@ -60,7 +60,7 @@ def find_task_alap_scheduling():
 
 def task_predecessors_finish_time(tg, ag, task):
     finish_time = 0
-    if len(tg.predecessors(task)) > 0:
+    if len(list(tg.predecessors(task))) > 0:
         for Predecessor in tg.predecessors(task):
             if tg.node[Predecessor]['task'].node is not None:    # predecessor is mapped
                     node = tg.node[Predecessor]['task'].node

@@ -7,7 +7,6 @@ from random import shuffle, sample
 from functools import partial
 from multiprocessing import Pool
 from statistics import stdev
-from scipy.misc import comb
 from ConfigAndPackages import PackageFile, Config, all_2d_turn_model_package
 from ArchGraphUtilities import AG_Functions
 from RoutingAlgorithms import Routing
@@ -48,7 +47,7 @@ def enumerate_all_2d_turn_models_based_on_df(combination):
 
     deadlock_free_counter = 0
     deadlock_counter = 0
-    # print "Number of Turns:", combination
+    # print("Number of Turns:", combination)
     for turns in itertools.combinations(turn_model_list, combination):
         turns_health = copy.deepcopy(turns_health_2d_network)
         for turn in turns:
@@ -62,13 +61,11 @@ def enumerate_all_2d_turn_models_based_on_df(combination):
             doa = degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
             doa_ex = extended_degree_of_adaptiveness(ag, noc_rg, False)/float(number_of_pairs)
             deadlock_free_counter += 1
-            # print counter, "\t \033[92mDF\033[0m \t", list(turns), "\t\t", connectivity_metric
             all_turns_file.write(str(counter)+"\t\tDF\t"+'%51s' % str(list(turns)) +
                                  "\t\t"+'%10s' % str(connectivity_metric) +
                                  "\t\t"+'%10s' % str(round(doa, 2))+"\t\t"+'%10s' % str(round(doa_ex, 2))+"\n")
         else:
             deadlock_counter += 1
-            # print counter, "\t \033[31mDL\033[0m   \t", list(turns), "\t\t----"
             all_turns_file.write(str(counter)+"\t\tDL\t"+'%51s' % str(list(turns)) +
                                  "\t\t-----"+"\t\t-----"+"\t\t-----"+"\n")
         del shmu
@@ -111,7 +108,7 @@ def enumerate_all_3d_turn_models_based_on_df(combination):
 
     deadlock_free_counter = 0
     deadlock_counter = 0
-    # print "Number of Turns:", combination
+    # print("Number of Turns:", combination)
     for turns in itertools.combinations(turn_model_list, combination):
         turns_health = copy.deepcopy(turns_health_3d_network)
         for turn in turns:
@@ -124,12 +121,10 @@ def enumerate_all_3d_turn_models_based_on_df(combination):
             connectivity_metric = reachability_metric(ag, noc_rg, False)
             doa = degree_of_adaptiveness(ag, noc_rg, False)
             deadlock_free_counter += 1
-            # print counter, "\t \033[92mDF\033[0m \t", list(turns), "\t\t", connectivity_metric
             all_turns_file.write(str(counter)+"\t\tDF\t"+str(list(turns))+"\t\t"+str(connectivity_metric) +
                                  "\t\t"+str(doa)+"\n")
         else:
             deadlock_counter += 1
-            # print counter, "\t \033[31mDL\033[0m   \t", list(turns), "\t\t----"
             all_turns_file.write(str(counter)+"\t\tDL\t"+str(list(turns))+"\t\t-----""\n")
         del shmu
         del noc_rg
@@ -159,10 +154,10 @@ def enumerate_all_3d_turn_models(combination):
 
     turn_model_list = copy.deepcopy(PackageFile.FULL_TurnModel_3D)
 
-    # print "Number of Turns:", combination
+    # print("Number of Turns:", combination)
     for turns in itertools.combinations(turn_model_list, combination):
         counter += 1
-        # print counter, "\t\t", list(turns)
+        # print(counter, "\t\t", list(turns))
         all_turns_file.write(str(counter)+"\t\t"+str(list(turns))+"\n")
     all_turns_file.close()
     return None
@@ -200,10 +195,9 @@ def enumerate_all_2d_turn_models(combination):
     all_turns_file = open('Generated_Files/Turn_Model_Lists/all_2D_turn_models_'+str(combination)+'.txt', 'w')
     turn_model_list = copy.deepcopy(PackageFile.FULL_TurnModel_2D)
 
-    # print "Number of Turns:", combination
+    # print("Number of Turns:", combination)
     for turns in itertools.combinations(turn_model_list, combination):
         counter += 1
-        # print counter, "\t\t", list(turns)
         all_turns_file.write(str(counter)+"\t\t"+str(list(turns))+"\n")
     all_turns_file.close()
     return None
@@ -229,7 +223,7 @@ def check_fault_tolerance_of_routing_algs(dimension, number_of_multi_threads, vi
         args = list(range(0, 108, 4))
         turn_model_list = PackageFile.routing_alg_list_3d
     else:
-        print "Please choose a valid dimension!"
+        print("Please choose a valid dimension!")
         return False
     for turn_model in turn_model_list:
         if dimension == '2D':
@@ -310,8 +304,8 @@ def report_2d_turn_model_fault_tolerance(turn_model, viz, combination):
                 break
         if viz:
             turn_model_eval_viz_file.write(str(float(metric_sum)/counter)+"\n")
-        # print "#:"+str(counter)+"\t\tC.M.:"+str(connectivity_metric)+"\t\t avg:", \
-        #     float(metric_sum)/counter, "\t\tstd:", std
+        # print("#:"+str(counter)+"\t\tC.M.:"+str(connectivity_metric)+"\t\t avg:", \
+        #     float(metric_sum)/counter, "\t\tstd:", std)
         del shmu
         del noc_rg
 
@@ -387,8 +381,8 @@ def report_3d_turn_model_fault_tolerance(turn_model, viz, combination):
             del noc_rg
             break
 
-        # print "#:"+str(counter)+"\t\tC.M.:"+str(connectivity_metric)+"\t\t avg:", \
-        #    float(metric_sum)/counter, "\t\tstd:", std
+        # print("#:"+str(counter)+"\t\tC.M.:"+str(connectivity_metric)+"\t\t avg:", \
+        #    float(metric_sum)/counter, "\t\tstd:", std)
         del shmu
         del noc_rg
 

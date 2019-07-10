@@ -3,17 +3,13 @@ import copy
 from networkx import has_path, all_shortest_paths, all_simple_paths
 from ArchGraphUtilities import AG_Functions
 from ArchGraphUtilities.AG_Functions import manhattan_distance
-from ConfigAndPackages import Config, PackageFile
-from ConfigAndPackages.all_2d_turn_model_package import all_2d_turn_models
+from ConfigAndPackages import Config
 from RoutingAlgorithms import Routing
-from RoutingAlgorithms.Calculate_Reachability import reachability_metric, is_destination_reachable_from_source, \
-    is_destination_reachable_via_port
+from RoutingAlgorithms.Calculate_Reachability import is_destination_reachable_from_source
 from RoutingAlgorithms.Routing import return_minimal_paths
 from RoutingAlgorithms.Routing_Functions import check_deadlock_freeness
 from SystemHealthMonitoring import SystemHealthMonitoringUnit
-import RoutingGraph_Reports
-from SystemHealthMonitoring.SHMU_Reports import draw_shm
-from Utilities import misc
+from RoutingAlgorithms import RoutingGraph_Reports
 
 
 def find_all_roots(noc_rg):
@@ -48,9 +44,9 @@ def find_all_leaves(noc_rg):
 
 def report_router_links(size, noc_rg):
     reconf_file = open("Generated_Files/MC_reconfigration_bits.txt","a")
-    print
-    print "-----------------------"
-    print "reconfiguration bits for :"
+    print()
+    print("-"*23)
+    print("reconfiguration bits for :")
 
     node_turn_dict = {}
     for i in range(0, size**2):
@@ -61,7 +57,7 @@ def report_router_links(size, noc_rg):
             if int(edge[0][:-2]) == i and int(edge[1][:-2]) == i:
                 turn_1 = edge[0][-2]
                 turn_2 =  edge[1][-2]
-                #print "\t", turn_1, "--->", turn_2
+                #print("\t", turn_1, "--->", turn_2)
                 if turn_1 == "N":
                     turn_1 = "S"
                 elif turn_1 == "S":
@@ -161,7 +157,7 @@ def report_router_links(size, noc_rg):
             string += "1"
         else:
             string += "0"
-        print "\tRxy_reconf_"+str(i)+" <=\""+str(string[::-1])+"\";"+"--"+str(int(string[::-1][12:],2))
+        print("\tRxy_reconf_"+str(i)+" <=\""+str(string[::-1])+"\";"+"--"+str(int(string[::-1][12:],2)))
         reconf_file.write("\tRxy_reconf_"+str(i)+" <=\""+str(string[::-1])+"\";"+"--"+str(int(string[::-1][12:],2))+"\n")
     reconf_file.close()
     return None
@@ -251,7 +247,7 @@ def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_no
 
     reachability_counter = 0
     connectivity_counter = 0
-    print "deadlock freeness:", check_deadlock_freeness(noc_rg)
+    print("deadlock freeness:", check_deadlock_freeness(noc_rg))
     for node_1 in ag.nodes():
         for node_2 in ag.nodes():
             if node_1 != node_2:
@@ -269,7 +265,7 @@ def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_no
                                 for node in path:
                                     successors = noc_rg.successors(node)
                                     if str(node_2)+str('L')+str('O') in successors:
-                                        #print node_2, successors
+                                        #print(node_2, successors)
                                         break
                                     else:
                                         for successor in successors:
@@ -289,25 +285,25 @@ def mixed_critical_rg(network_size, routing_type, critical_nodes, critical_rg_no
                                                             sucessor_paths.append(Path)
                                                 if len(sucessor_paths)==0:
                                                     valid_path = False
-                                                    #print path, node, node_2, successor, "FALSE"
+                                                    #print(path, node, node_2, successor, "FALSE")
                                                     break
                                                 else:
                                                     pass
-                                                    #print path, node, node_2, successor, "TRUE"
+                                                    #print(path, node, node_2, successor, "TRUE")
 
 
                             if valid_path:
                                 reachability_counter += 1
                             else:
                                 if report:
-                                    print node_1,"can not reach  ", node_2
+                                    print(node_1,"can not reach  ", node_2)
                         else:
                             reachability_counter += 1
                     else:
                         if report:
-                            print node_1,"can not connect", node_2
-    print "average connectivity for non-critical nodes:", float(connectivity_counter)/(len(ag.nodes())-len(critical_nodes))
-    print "average reachability for non-critical nodes:", float(reachability_counter)/(len(ag.nodes())-len(critical_nodes))
+                            print(node_1,"can not connect", node_2)
+    print("average connectivity for non-critical nodes:", float(connectivity_counter)/(len(ag.nodes())-len(critical_nodes)))
+    print("average reachability for non-critical nodes:", float(reachability_counter)/(len(ag.nodes())-len(critical_nodes)))
     return float(connectivity_counter)/(len(ag.nodes())-len(critical_nodes)), noc_rg
 
 
@@ -383,17 +379,14 @@ def generate_routing_table(size, noc_rg, routing_type):
                             routing_table_file.write("\t\t"+str(counter)+" => \""+string+"\"\n")
                         else:
                             routing_table_file.write("\t\t"+str(counter)+" => \""+string+"\",\n")
-                        #print '%20s' % string,
                     else:
                         if counter == size**2*5-1:
                             routing_table_file.write("\t\t"+str(counter)+" => \"0000\"\n")
                         else:
                             routing_table_file.write("\t\t"+str(counter)+" => \"0000\",\n")
-                        #print '%20s' % "0000",
                         pass
 
                 counter += 1
-            #print
         routing_table_file.write(" );\n")
     routing_table_file.close()
     return None

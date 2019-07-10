@@ -5,10 +5,10 @@ from ConfigAndPackages import Config
 import statistics
 import random
 from math import ceil
-from Mapping_Reports import draw_mapping
+from Mapper.Mapping_Reports import draw_mapping
 from RoutingAlgorithms import Routing
 from ArchGraphUtilities import AG_Functions
-import ConfigParser
+import configparser as ConfigParser
 from Scheduler.Scheduling_Functions import check_if_all_deadlines_are_met
 
 def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, report,
@@ -28,8 +28,8 @@ def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, 
     """
     # todo: It Fails if it attempts n Times and fails... its not the best way to make sure...
     if report:
-        print ("===========================================")
-        print ("STARTING INITIAL MAPPING...")
+        print("===========================================")
+        print("STARTING INITIAL MAPPING...")
 
     if random_seed is not None:
         logging.info("NEW ROUND RANDOM SEED: "+str(random_seed))
@@ -44,7 +44,7 @@ def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, 
         if counter == 10*len(ctg.nodes()):
             return False
     if report:
-        print ("INITIAL MAPPING READY... ")
+        print("INITIAL MAPPING READY... ")
         if Config.viz.mapping:
             if iteration is None:
                 draw_mapping(tg, ag, shm, "Mapping_init")
@@ -56,23 +56,22 @@ def make_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, 
 def try_initial_mapping(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, report, logging):
     iteration = 0
     for cluster in ctg.nodes():
-        destination_node = random.choice(ag.nodes())
+        destination_node = random.choice(list(ag.nodes()))
         if Config.EnablePartitioning:
             while ctg.node[cluster]['Criticality'] != ag.node[destination_node]['Region']:
-                destination_node = random.choice(ag.nodes())
-        # print (CTG.node[Cluster]['Criticality'],AG.node[destination_node]['Region'])
+                destination_node = random.choice(list(ag.nodes()))
         while not add_cluster_to_node(tg, ctg, ag, shm, noc_rg, critical_rg,
                                       noncritical_rg, cluster, destination_node, logging):
             iteration += 1
-            destination_node = random.choice(ag.nodes())        # try another node
+            destination_node = random.choice(list(ag.nodes()))       # try another node
             if Config.EnablePartitioning:
                 while ctg.node[cluster]['Criticality'] != ag.node[destination_node]['Region']:
-                    destination_node = random.choice(ag.nodes())
-            # print (CTG.node[Cluster]['Criticality'],AG.node[destination_node]['Region'])
+                    destination_node = random.choice(list(ag.nodes()))
+            # print(CTG.node[Cluster]['Criticality'],AG.node[destination_node]['Region'])
             logging.info("\tMAPPING ATTEMPT: #"+str(iteration+1)+"FOR CLUSTER:"+str(cluster))
             if iteration == 10*len(ctg.nodes()):
                 if report:
-                    print ("\033[33mWARNING::\033[0m INITIAL MAPPING FAILED... AFTER "+str(iteration)+" ITERATIONS")
+                    print("\033[33mWARNING::\033[0m INITIAL MAPPING FAILED... AFTER "+str(iteration)+" ITERATIONS")
                 logging.warning("INITIAL MAPPING FAILED...")
                 clear_mapping(tg, ctg, ag)
                 return False
@@ -117,25 +116,25 @@ def map_task_to_node(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, task, nod
                     list_of_links, number_of_paths = Routing.find_route_in_route_graph(noc_rg, critical_rg,
                                                                                        noncritical_rg, source_node,
                                                                                        destination_node, False)
-                    # print number_of_paths, list_of_links
+                    # print(number_of_paths, list_of_links)
                     if list_of_links is not None:
                         # logging.info("\t\t\tADDING PATH FROM NODE:"+str(source_node)+"TO NODE"+str(destination_node))
                         # logging.info("\t\t\tLIST OF LINKS:"+str(list_of_links))
                         counter = 0
 
-                        if tg.edge[edge[0]][edge[1]]["Criticality"] == 'H':
+                        if tg.edges[edge]["Criticality"] == 'H':
                             probability = 1         # we reserve the whole bandwidth for critical packets...
                         else:
                             probability = 1.0/number_of_paths
 
                         for path in list_of_links:
                             for link in path:
-                                if edge in ag.edge[link[0]][link[1]]['MappedTasks'].keys():
-                                    ag.edge[link[0]][link[1]]['MappedTasks'][edge].append((counter, probability))
+                                if edge in ag.edges[link]['MappedTasks'].keys():
+                                    ag.edges[link]['MappedTasks'][edge].append((counter, probability))
                                     ag.node[link[0]]['Router'].mapped_tasks[edge].append((counter, probability))
                                     # logging.info("\t\t\t\tAdding Packet "+str(edge)+" To Router:"+str(link[0]))
                                 else:
-                                    ag.edge[link[0]][link[1]]['MappedTasks'][edge] = [(counter, probability)]
+                                    ag.edges[link]['MappedTasks'][edge] = [(counter, probability)]
                                     ag.node[link[0]]['Router'].mapped_tasks[edge] = [(counter, probability)]
                                     # logging.info("\t\t\t\tAdding Packet "+str(edge)+" To Router:"+str(link[0]))
 
@@ -143,15 +142,15 @@ def map_task_to_node(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, task, nod
                                 # logging.info("\t\t\t\tAdding Packet "+str(edge) +
                                 #              " To Router:"+str(path[len(path)-1][1]))
 
-                                edge_list_of_links = list(batch[1] for batch in tg.edge[edge[0]][edge[1]]['Link'])
+                                edge_list_of_links = list(batch[1] for batch in tg.edges[edge]['Link'])
                                 if link not in edge_list_of_links:
-                                    tg.edge[edge[0]][edge[1]]['Link'].append((counter, link, probability))
+                                    tg.edges[edge]['Link'].append((counter, link, probability))
 
                             counter += 1
                     else:
                         remove_task_from_node(tg, ag, noc_rg, critical_rg, noncritical_rg, task, node, logging)
                         logging.warning("\tNO PATH FOUND FROM "+str(source_node)+" TO "+str(destination_node)+"...")
-                        print ("NO PATH FOUND FROM "+str(source_node)+" TO "+str(destination_node)+" ...")
+                        print("NO PATH FOUND FROM "+str(source_node)+" TO "+str(destination_node)+" ...")
                         return False
     return True
 
@@ -189,13 +188,13 @@ def remove_task_from_node(tg, ag, noc_rg, critical_rg, noncritical_rg, task, nod
                         # logging.info("\t\t\tLIST OF LINKS:"+str(list_of_links))
                         for path in list_of_links:
                             for link in path:
-                                if edge in ag.edge[link[0]][link[1]]['MappedTasks'].keys():
-                                    del ag.edge[link[0]][link[1]]['MappedTasks'][edge]
+                                if edge in ag.edges[link]['MappedTasks'].keys():
+                                    del ag.edges[link]['MappedTasks'][edge]
                                     del ag.node[link[0]]['Router'].mapped_tasks[edge]
                                     # logging.info("\t\t\t\tRemoving Packet "+str(edge)+" To Router:"+str(link[0]))
-                                    for BatchAndLink in tg.edge[edge[0]][edge[1]]['Link']:
+                                    for BatchAndLink in tg.edges[edge]['Link']:
                                         if BatchAndLink[1] == link:
-                                            tg.edge[edge[0]][edge[1]]['Link'].remove(BatchAndLink)
+                                            tg.edges[edge]['Link'].remove(BatchAndLink)
                             del ag.node[path[len(path)-1][1]]['Router'].mapped_tasks[edge]
                             # logging.info("\t\t\t\tRemoving Packet "+str(edge)+" To Router:"+str(path[len(path)-1][1]))
                     else:
@@ -221,7 +220,7 @@ def add_cluster_to_node(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, c
     :param logging: logging file
     :return: True if maps the cluster successfully otherwise False
     """
-    if not shm.node[node]['NodeHealth']:
+    if not shm.nodes[node]['NodeHealth']:
         logging.info("CAN NOT MAP ON BROKEN NODE: "+str(node))
         return False
     elif ag.node[node]['PE'].dark:
@@ -249,15 +248,15 @@ def add_cluster_to_node(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, c
                                                                                        destination_node, False)
 
                     list_of_edges = []
-                    # print ("number_of_paths:", number_of_paths)
-                    # print number_of_paths, list_of_links
+                    # print("number_of_paths:", number_of_paths)
+                    # print(number_of_paths, list_of_links)
                     if list_of_links is not None:
                             # find all the edges in TaskGraph that contribute to this edge in CTG
                             for tg_edge in tg.edges():
                                 if tg.node[tg_edge[0]]['task'].cluster == ctg_edge[0] and \
                                         tg.node[tg_edge[1]]['task'].cluster == ctg_edge[1]:
                                     list_of_edges.append(tg_edge)
-                    # print ("LIST OF LINKS:", list_of_links)
+                    # print("LIST OF LINKS:", list_of_links)
                     # add edges from list of edges to all links from list of links
                     # todo: I have to think more... this is not enough to add all the links there...
                     if list_of_links is not None and len(list_of_edges) > 0:
@@ -268,31 +267,31 @@ def add_cluster_to_node(tg, ctg, ag, shm, noc_rg, critical_rg, noncritical_rg, c
                         for path in list_of_links:
                             for link in path:
                                 for chosen_edge in list_of_edges:
-                                    if tg.edge[chosen_edge[0]][chosen_edge[1]]["Criticality"] == 'H':
+                                    if tg.edges[chosen_edge]["Criticality"] == 'H':
                                         probability = 1         # we reserve the whole bandwidth for critical packets...
                                     else:
                                         probability = 1.0/number_of_paths
 
-                                    if chosen_edge in ag.edge[link[0]][link[1]]['MappedTasks'].keys():
-                                        ag.edge[link[0]][link[1]]['MappedTasks'][chosen_edge].append((counter,
+                                    if chosen_edge in ag.edges[link]['MappedTasks'].keys():
+                                        ag.edges[link]['MappedTasks'][chosen_edge].append((counter,
                                                                                                       probability))
                                         ag.node[link[0]]['Router'].mapped_tasks[chosen_edge].append((counter,
                                                                                                     probability))
                                         # logging.info("\t\t\t\tAdding Packet "+str(chosen_edge)+" To Router:" +
                                         #              str(link[0]))
                                     else:
-                                        ag.edge[link[0]][link[1]]['MappedTasks'][chosen_edge] = [(counter, probability)]
+                                        ag.edges[link]['MappedTasks'][chosen_edge] = [(counter, probability)]
                                         ag.node[link[0]]['Router'].mapped_tasks[chosen_edge] = [(counter, probability)]
                                         # logging.info("\t\t\t\tAdding Packet "+str(chosen_edge)+" To Router:" +
                                         #              str(link[0]))
                                     edge_list_of_links = list(batch[1] for batch in
-                                                              tg.edge[chosen_edge[0]][chosen_edge[1]]['Link'])
+                                                              tg.edges[chosen_edge]['Link'])
                                     if link not in edge_list_of_links:
-                                        tg.edge[chosen_edge[0]][chosen_edge[1]]['Link'].append((counter, link,
+                                        tg.edges[chosen_edge]['Link'].append((counter, link,
                                                                                                 probability))
 
                             for chosen_edge in list_of_edges:
-                                if tg.edge[chosen_edge[0]][chosen_edge[1]]["Criticality"] == 'H':
+                                if tg.edges[chosen_edge]["Criticality"] == 'H':
                                     probability = 1         # we reserve the whole bandwidth for critical packets...
                                 else:
                                     probability = 1.0/number_of_paths
@@ -352,15 +351,15 @@ def remove_cluster_from_node(tg, ctg, ag, noc_rg, critical_rg, noncritical_rg, c
                         for path in list_of_links:
                             for Link in path:
                                 for chosen_edge in list_of_edges:
-                                    if chosen_edge in ag.edge[Link[0]][Link[1]]['MappedTasks'].keys():
-                                        del ag.edge[Link[0]][Link[1]]['MappedTasks'][chosen_edge]
+                                    if chosen_edge in ag.edges[Link]['MappedTasks'].keys():
+                                        del ag.edges[Link]['MappedTasks'][chosen_edge]
                                         if chosen_edge in ag.node[Link[0]]['Router'].mapped_tasks.keys():
                                             del ag.node[Link[0]]['Router'].mapped_tasks[chosen_edge]
                                         # logging.info("\t\t\t\tRemoving Packet "+str(chosen_edge) +
                                         #             " To Router:"+str(Link[0]))
-                                        for LinkAndBatch in tg.edge[chosen_edge[0]][chosen_edge[1]]['Link']:
+                                        for LinkAndBatch in tg.edges[chosen_edge]['Link']:
                                             if LinkAndBatch[1] == Link:
-                                                tg.edge[chosen_edge[0]][chosen_edge[1]]['Link'].remove(LinkAndBatch)
+                                                tg.edges[chosen_edge]['Link'].remove(LinkAndBatch)
                             for chosen_edge in list_of_edges:
                                 if chosen_edge in ag.node[path[len(path)-1][1]]['Router'].mapped_tasks:
                                     del ag.node[path[len(path)-1][1]]['Router'].mapped_tasks[chosen_edge]
@@ -387,7 +386,7 @@ def clear_mapping(tg, ctg, ag):
     for node in tg.nodes():
         tg.node[node]['task'].node = None
     for edge in tg.edges():
-        tg.edge[edge[0]][edge[1]]['Link'] = []
+        tg.edges[edge]['Link'] = []
     for cluster in ctg.nodes():
         ctg.node[cluster]['Node'] = None
     for node in ag.nodes():
@@ -399,8 +398,8 @@ def clear_mapping(tg, ctg, ag):
         ag.node[node]['Router'].mapped_tasks = {}
 
     for link in ag.edges():
-        ag.edge[link[0]][link[1]]['MappedTasks'] = {}
-        ag.edge[link[0]][link[1]]['Scheduling'] = {}
+        ag.edges[link]['MappedTasks'] = {}
+        ag.edges[link]['Scheduling'] = {}
     return True
 
 
@@ -422,7 +421,7 @@ def mapping_cost_function(tg, ag, shm, report, initial_mapping_string=None):
             node_makespan_list.append(Scheduling_Functions_Nodes.find_last_allocated_time_on_node(ag, node,
                                                                                                   logging=None))
     for link in ag.edges():
-        if shm.edge[link[0]][link[1]]['LinkHealth']:
+        if shm.edges[link]['LinkHealth']:
             link_makespan_list.append(Scheduling_Functions_Links.find_last_allocated_time_on_link(ag, link,
                                                                                                   logging=None))
     node_makspan_sd = statistics.stdev(node_makespan_list)
@@ -466,16 +465,16 @@ def mapping_cost_function(tg, ag, shm, report, initial_mapping_string=None):
         distance = hamming_distance_of_mapping(initial_mapping_string, mapping_into_string(tg))
         cost += 20* distance
     if report:
-        print ("===========================================")
-        print ("      REPORTING MAPPING COST")
-        print ("===========================================")
-        print ("NODES MAKE SPAN MAX:"+str(node_makspan_max))
-        print ("NODES MAKE SPAN STANDARD DEVIATION:"+str(node_makspan_sd))
-        print ("LINKS MAKE SPAN MAX:"+str(link_makspan_max))
-        print ("LINKS MAKE SPAN STANDARD DEVIATION:"+str(link_makspan_sd))
+        print("===========================================")
+        print("      REPORTING MAPPING COST")
+        print("===========================================")
+        print("NODES MAKE SPAN MAX:"+str(node_makspan_max))
+        print("NODES MAKE SPAN STANDARD DEVIATION:"+str(node_makspan_sd))
+        print("LINKS MAKE SPAN MAX:"+str(link_makspan_max))
+        print("LINKS MAKE SPAN STANDARD DEVIATION:"+str(link_makspan_sd))
         if distance is not None:
-            print ("DISTANCE FROM STARTING SOLUTION:"+str(distance))
-        print ("MAPPING SCHEDULING COST:"+str(cost))
+            print("DISTANCE FROM STARTING SOLUTION:"+str(distance))
+        print("MAPPING SCHEDULING COST:"+str(cost))
 
     if cost == 0:
             raise ValueError("Mapping with 0 cost... Something is wrong here...")
@@ -551,9 +550,9 @@ def nodes_with_smallest_ct(ag, tg, shm, task):
     :return: list of nodes with smallest completion time for Task
     """
     node_with_smallest_ct = []
-    random_node = random.choice(ag.nodes())
+    random_node = random.choice(list(ag.nodes()))
     while (not shm.node[random_node]['NodeHealth']) or ag.node[random_node]['PE'].dark:
-        random_node = random.choice(ag.nodes())
+        random_node = random.choice(list(ag.nodes()))
     node_speed_down = 1+((100.0-shm.node[random_node]['NodeSpeed'])/100)
     task_execution_on_node = tg.node[task]['task'].wcet*node_speed_down
     last_allocated_time_on_node = Scheduling_Functions_Nodes.find_last_allocated_time_on_node(ag, random_node,
@@ -677,7 +676,7 @@ def write_mapping_to_file(ag, file_name):
     # mapping_file.write("\n[links]\n")
     # for link in ag.edges():
     #    mapping_file.write("link_"+str(link[0])+"_"+str(link[1])+": " +
-    #                       str(ag.edge[link[0]][link[1]]['MappedTasks'])+"\n")
+    #                       str(ag.edges[link]['MappedTasks'])+"\n")
     return None
 
 
@@ -703,7 +702,7 @@ def read_mapping_from_file(tg, ag, shm, noc_rg, critical_rg, noncritical_rg, fil
 
     print("===========================================")
     print("READING MAPPING FROM FILE...")
-    print "FILE LOCATED AT:", file_path
+    print("FILE LOCATED AT:", file_path)
     mapping = ConfigParser.ConfigParser(allow_no_value=True)
     mapping.read(file_path)
 
@@ -729,7 +728,7 @@ def clear_mapping_for_reconfiguration(tg, ag):
         tg.node[node]['task'].node = None
         tg.node[node]['task'].cluster = None
     for edge in tg.edges():
-        tg.edge[edge[0]][edge[1]]['Link'] = []
+        tg.edges[edge]['Link'] = []
     for node in ag.nodes():
         ag.node[node]['PE'].mapped_tasks = []
         ag.node[node]['PE'].utilization = 0
@@ -739,6 +738,6 @@ def clear_mapping_for_reconfiguration(tg, ag):
         ag.node[node]['Router'].mapped_tasks = {}
 
     for link in ag.edges():
-        ag.edge[link[0]][link[1]]['MappedTasks'] = {}
-        ag.edge[link[0]][link[1]]['Scheduling'] = {}
+        ag.edges[link]['MappedTasks'] = {}
+        ag.edges[link]['Scheduling'] = {}
     return True

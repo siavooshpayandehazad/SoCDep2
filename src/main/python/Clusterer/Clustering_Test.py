@@ -1,6 +1,6 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
-import Clustering_Reports
+from Clusterer import Clustering_Reports
 
 
 def double_check_ctg(tg, ctg):
@@ -14,16 +14,16 @@ def double_check_ctg(tg, ctg):
         cluster = tg.node[task]['task'].cluster
         if cluster in ctg.nodes():
             if task not in ctg.node[cluster]['TaskList']:
-                print ("DOUBLE CHECKING CTG with TG: \t\033[31mFAILED\033[0m")
-                print ("TASK", task, "DOES NOT EXIST IN CLUSTER:", cluster)
+                print("DOUBLE CHECKING CTG with TG: \t\033[31mFAILED\033[0m")
+                print("TASK", task, "DOES NOT EXIST IN CLUSTER:", cluster)
                 Clustering_Reports.report_ctg(ctg, "CTG_DoubleCheckError.png")
                 return False
             else:
-                # print "DOUBLE CHECKING CTG with TG: OK!"
+                # print("DOUBLE CHECKING CTG with TG: OK!")
                 pass
         else:
-            print ("DOUBLE CHECKING CTG with TG: \t\033[31mFAILED\033[0m")
-            print ("CLUSTER", cluster, " DOESNT EXIST...!!!")
+            print("DOUBLE CHECKING CTG with TG: \t\033[31mFAILED\033[0m")
+            print("CLUSTER", cluster, " DOESNT EXIST...!!!")
             Clustering_Reports.report_ctg(ctg, "CTG_DoubleCheckError.png")
             raise ValueError("DOUBLE CHECKING CTG with TG FAILED")
     return True

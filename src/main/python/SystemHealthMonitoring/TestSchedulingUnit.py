@@ -20,8 +20,8 @@ def gen_one_step_diagnosable_pmcg(ag, shm):
     :param shm: System Health Map
     :return:
     """
-    print ("===========================================")
-    print ("PREPARING ONE STEP DIAGNOSABLE PMC GRAPH (PMCG)...")
+    print("===========================================")
+    print("PREPARING ONE STEP DIAGNOSABLE PMC GRAPH (PMCG)...")
     pmcg = networkx.DiGraph()
     for PE in ag.nodes():
         if shm.node[PE]['NodeHealth']:
@@ -57,15 +57,15 @@ def gen_one_step_diagnosable_pmcg(ag, shm):
     for TesterNode in pmcg.nodes():
         for TestedNode in pmcg.nodes():
             if (TesterNode - TestedNode) % n in delta_m:
-                # print "Connecting:",TesterNode, "to", TestedNode, "---> i-j = ", (TesterNode - TestedNode)%n, "mod", n
+                # print("Connecting:",TesterNode, "to", TestedNode, "---> i-j = ", (TesterNode - TestedNode)%n, "mod", n
                 pmcg.add_edge(TesterNode, TestedNode, Weight=0)
-    print ("PMC GRAPH (PMCG) IS READY...")
+    print("PMC GRAPH (PMCG) IS READY...")
     return pmcg
 
 
 def gen_sequentially_diagnosable_pmcg(ag, shm):
-    print ("===========================================")
-    print ("PREPARING SEQUENTIALLY DIAGNOSABLE PMC GRAPH (PMCG)...")
+    print("===========================================")
+    print("PREPARING SEQUENTIALLY DIAGNOSABLE PMC GRAPH (PMCG)...")
     pmcg = networkx.DiGraph()
     for PE in ag.nodes():
         if shm.node[PE]['NodeHealth']:
@@ -88,7 +88,7 @@ def gen_sequentially_diagnosable_pmcg(ag, shm):
     chosen_tested_node = pmcg.nodes()[0]
     while counter < 2*t-2:
         chosen_tester = random.choice(pmcg.nodes())
-        # print (chosen_tester, counter)
+        # print(chosen_tester, counter)
         if chosen_tester != 0 and chosen_tester != n-1 and (chosen_tester, chosen_tested_node) not in pmcg.edges():
             pmcg.add_edge(chosen_tester, chosen_tested_node, Weight=0)
             counter += 1
@@ -119,8 +119,8 @@ def generate_test_tg_from_pmcg(pmcg):
 
 def insert_test_tasks_in_tg(pmcg, tg):
     # I don't know how we can use this at the moment!
-    print ("===========================================")
-    print ("INSERTING PMC TASKS FROM TG...")
+    print("===========================================")
+    print("INSERTING PMC TASKS FROM TG...")
 
     for edge in pmcg.edges():
         tg.add_node("S"+str(edge[0])+str(edge[1]), task=Task(wcet=Config.NodeTestExeTime, criticality='L',
@@ -145,8 +145,8 @@ def insert_test_tasks_in_tg(pmcg, tg):
 
 def remove_test_tasks_from_tg(tg):
     # I don't know how we can use this at the moment!
-    print ("===========================================")
-    print ("REMOVING PMC TASKS FROM TG...")
+    print("===========================================")
+    print("REMOVING PMC TASKS FROM TG...")
     for task_id in tg.nodes():
         if tg.node[task_id]['task'].type == 'Test':
             tg.remove_node(task_id)
@@ -172,21 +172,21 @@ def map_test_tasks(tg, ag, shm, noc_rg, logging):
 
 
 def draw_pmcg(pmcg):
-    print ("===========================================")
-    print ("PREPARING PMC GRAPH (PMCG) DRAWINGS...")
+    print("===========================================")
+    print("PREPARING PMC GRAPH (PMCG) DRAWINGS...")
     pos = networkx.circular_layout(pmcg)
     networkx.draw_networkx_nodes(pmcg, pos, node_size=300, color='b')
     networkx.draw_networkx_edges(pmcg, pos)
     networkx.draw_networkx_labels(pmcg, pos)
     plt.savefig("GraphDrawings/PMCG")
     plt.clf()
-    print ("\033[35m* VIZ::\033[0m PMC GRAPH (PMCG) DRAWING CREATED AT:  GraphDrawings/PMCG.png")
+    print("\033[35m* VIZ::\033[0m PMC GRAPH (PMCG) DRAWING CREATED AT:  GraphDrawings/PMCG.png")
     return None
 
 
 def draw_ttg(ttg):
-    print ("===========================================")
-    print ("PREPARING TEST TASK GRAPH (TTG) DRAWINGS...")
+    print("===========================================")
+    print("PREPARING TEST TASK GRAPH (TTG) DRAWINGS...")
 
     pos = networkx.circular_layout(ttg, scale=6)
     networkx.draw_networkx_nodes(ttg, pos, node_size=200, color='b')
@@ -194,5 +194,5 @@ def draw_ttg(ttg):
     networkx.draw_networkx_labels(ttg, pos, font_size=8)
     plt.savefig("GraphDrawings/TTG")
     plt.clf()
-    print ("\033[35m* VIZ::\033[0m TEST TASK GRAPH (TTG) DRAWING CREATED AT: GraphDrawings/TTG.png")
+    print("\033[35m* VIZ::\033[0m TEST TASK GRAPH (TTG) DRAWING CREATED AT: GraphDrawings/TTG.png")
     return None

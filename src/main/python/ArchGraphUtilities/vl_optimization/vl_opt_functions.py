@@ -63,7 +63,7 @@ def place_a_random_vl(ag, shmu):
         link = random.choice(all_broken_vls)
     else:
         raise ValueError("no broken link to restore!")
-    if shmu.SHM.edge[link[0]][link[1]]['LinkHealth']:
+    if shmu.SHM.edges[link]['LinkHealth']:
         raise ValueError("can not restore healthy link")
     shmu.restore_broken_link(link, False)
 
@@ -80,7 +80,7 @@ def find_all_broken_vls(ag, shm):
     list_of_broken_vls = []
     all_vertical_links = find_all_vertical_links(ag)
     for link in all_vertical_links:
-        if not shm.edge[link[0]][link[1]]['LinkHealth']:
+        if not shm.edges[link]['LinkHealth']:
             list_of_broken_vls.append(link)
     # print len(list_of_broken_vls)
     return list_of_broken_vls
@@ -127,7 +127,7 @@ def cleanup_ag(ag, shmu):
     :return:
     """
     for link in shmu.SHM.edges():
-        if not shmu.SHM.edge[link[0]][link[1]]['LinkHealth']:
+        if not shmu.SHM.edges[link]['LinkHealth']:
             ag.remove_edge(link[0], link[1])
     return None
 

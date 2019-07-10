@@ -38,19 +38,17 @@ class CounterThreshold:
 
     def increase_health_counter(self, ag, location, logging):
         if type(location) is dict:
-            # location is a router: {node_1: [turn]}
-            # print location, str(location.keys()[0])+str(location[location.keys()[0]])
-            location = "R"+str(location.keys()[0])
+            location = "R"+str(list(location.keys())[0])
         elif type(location) is tuple:
             # location is a link: (node1, node 2)
-            # print location, location[0], location[1]
+            # print(location, location[0], location[1])
             location = "L"+str(location[0])+str(location[1])
         elif type(location) is int:
             # location is a node
-            # print location
+            # print(location)
             location = str(location)
         else:
-            print location, type(location)
+            print(location, type(location))
             raise ValueError("location type is wrong!")
 
         if not self.check_counter_start(location, "Health"):
@@ -81,28 +79,22 @@ class CounterThreshold:
 
     def increase_intermittent_counter(self, ag, location, logging):
         if type(location) is dict:
-            # location is a router: {node_1: [turn]}
-            # print location, str(location.keys()[0])+str(location[location.keys()[0]])
             if Config.enable_router_counters:
-                location = "R"+str(location.keys()[0])
+                location = "R"+str(list(location.keys())[0])
             else:
                 return None
         elif type(location) is tuple:
-            # location is a link: (node1, node 2)
-            # print location, location[0], location[1]
             if Config.enable_link_counters:
                 location = "L"+str(location[0])+str(location[1])
             else:
                 return None
         elif type(location) is int:
-            # location is a node
-            # print location
             if Config.enable_pe_counters:
                 location = str(location)
             else:
                 return None
         else:
-            print location, type(location)
+            print(location, type(location))
             raise ValueError("location type is wrong!")
 
         if not self.check_counter_start(location, "Intermittent"):
@@ -134,10 +126,8 @@ class CounterThreshold:
     def increase_fault_counter(self, ag, location, logging):
         over_flow = False
         if type(location) is dict:
-            # location is a router: {node_1: [turn]}
-            # print location, str(location.keys()[0])+str(location[location.keys()[0]])
             if Config.enable_router_counters:
-                location = "R"+str(location.keys()[0])
+                location = "R"+str(list(location.keys())[0])
             else:
                 return None
         elif type(location) is tuple:
@@ -155,7 +145,7 @@ class CounterThreshold:
             else:
                 return None
         else:
-            print location, type(location)
+            print(location, type(location))
             raise ValueError("location type is wrong!")
 
         if not self.check_counter_start(location, "Fault"):
@@ -438,27 +428,27 @@ class CounterThreshold:
         return len(self.health_counters) + len(self.fault_counters) + len(self.intermittent_counters)
 
     def report(self, number_of_nodes, number_of_links):
-        print "==========================================="
-        print "        COUNTER-THRESHOLD REPORT"
-        print "==========================================="
-        print "DEAD Components:", self.dead_components
-        print "Intermittent Components:", self.intermittent_components
+        print("===========================================")
+        print("        COUNTER-THRESHOLD REPORT")
+        print("===========================================")
+        print("DEAD Components:", self.dead_components)
+        print("Intermittent Components:", self.intermittent_components)
         # number of links + number of routers + number of PEs
         number_of_components = number_of_links + 2 * number_of_nodes
         bits_required_for_address = ceil(log(number_of_components, 2))
 
-        print "MAX NUMBER OF COUNTERS:", self.memory_counter
-        print "\t| NUMBER OF BITS FOR ADDRESS FOR EACH COUNTER:", bits_required_for_address
+        print("MAX NUMBER OF COUNTERS:", self.memory_counter)
+        print("\t| NUMBER OF BITS FOR ADDRESS FOR EACH COUNTER:", bits_required_for_address)
         max_counter_bits = max(ceil(log(Config.fault_counter_threshold)), ceil(log(Config.health_counter_threshold)),
                                ceil(log(Config.intermittent_counter_threshold)))
-        print "\t| MAX NUMBER OF BITS FOR EACH COUNTER:", max_counter_bits
+        print("\t| MAX NUMBER OF BITS FOR EACH COUNTER:", max_counter_bits)
         counter_total_bits = max_counter_bits + bits_required_for_address
-        print "\t| TOTAL BITS PER COUNTER:", counter_total_bits
+        print("\t| TOTAL BITS PER COUNTER:", counter_total_bits)
 
-        print "\t| MAX LEN OF COMP OF INTEREST:", self.max_comp_of_interest
+        print("\t| MAX LEN OF COMP OF INTEREST:", self.max_comp_of_interest)
 
-        print "MAX MEM USAGE:", self.memory_counter * counter_total_bits, " BITS"
-        print "AVERAGE COUNTER PER Node: ", float(self.memory_counter)/number_of_nodes
-        print "AVERAGE BITS PER Node: ", float(self.memory_counter * counter_total_bits)/number_of_nodes
-        print "NUMBER OF FAULTS:", self.number_of_faults
+        print("MAX MEM USAGE:", self.memory_counter * counter_total_bits, " BITS")
+        print("AVERAGE COUNTER PER Node: ", float(self.memory_counter)/number_of_nodes)
+        print("AVERAGE BITS PER Node: ", float(self.memory_counter * counter_total_bits)/number_of_nodes)
+        print("NUMBER OF FAULTS:", self.number_of_faults)
         return None

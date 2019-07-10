@@ -17,8 +17,8 @@ def generate_frames(ag, shm):
     :param shm: System Health Map
     :return: None
     """
-    print ("===========================================")
-    print ("GENERATING MAPPING ANIMATION FRAMES...")
+    print("===========================================")
+    print("GENERATING MAPPING ANIMATION FRAMES...")
     mapping_process_file = open("Generated_Files/Internal/MappingProcess.txt", 'r')
     x_size = float(Config.ag.x_size)
     y_size = float(Config.ag.y_size)
@@ -32,7 +32,7 @@ def generate_frames(ag, shm):
         mapped_pe_list = line.split(" ")
         for node in ag.nodes():
             location = AG_Functions.return_node_location(node)
-            # print (node, location)
+            # print(node, location)
             if shm.node[node]['NodeHealth']:
                 if Config.EnablePartitioning:
                     if node in Config.CriticalRegionNodes:
@@ -79,5 +79,5 @@ def generate_frames(ag, shm):
         counter += 1
         line = mapping_process_file.readline()
     mapping_process_file.close()
-    print ("\033[35m* VIZ::\033[0mMAPPING ANIMATION FRAMES READY AT: GraphDrawings/Mapping_Animation_Material")
+    print("\033[35m* VIZ::\033[0mMAPPING ANIMATION FRAMES READY AT: GraphDrawings/Mapping_Animation_Material")
     return None

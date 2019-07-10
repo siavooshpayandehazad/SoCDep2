@@ -3,7 +3,7 @@
 import networkx
 import random
 from ConfigAndPackages import Config
-import TG_File_Parser
+from TaskGraphUtilities import TG_File_Parser
 
 
 class Task():     # Task class
@@ -28,7 +28,7 @@ def generate_manual_tg(task_list, tg_edge_list, task_criticality_list, task_wcet
         tg.add_node(task_list[i], task=Task(wcet=task_wcet_list[i], criticality=task_criticality_list[i],
                                             cluster=None, node=None, priority=None, distance=None,
                                             release=0, type='App'))
-    print ("\tCALCULATING THE CRITICALITY OF LINKS...")
+    print("\tCALCULATING THE CRITICALITY OF LINKS...")
     gateway_edges = []
     gateway_counter = 0
     for edge in tg_edge_list:
@@ -63,7 +63,7 @@ def generate_manual_tg(task_list, tg_edge_list, task_criticality_list, task_wcet
             gateway_counter += 1
         else:
             edge_criticality_list.append('L')
-    print ("\tLINKS CRITICALITY CALCULATED!")
+    print("\tLINKS CRITICALITY CALCULATED!")
 
     for edge in gateway_edges:
         tg_edge_list.remove(edge)
@@ -116,7 +116,7 @@ def generate_random_tg(number_of_tasks, number_of_critical_tasks, number_of_edge
                                             cluster=None, node=None, priority=None, distance=None,
                                             release=0, type='App'))
 
-    print ("\tCALCULATING THE CRITICALITY OF LINKS...")
+    print("\tCALCULATING THE CRITICALITY OF LINKS...")
     gateway_edges = []
     gateway_counter = 0
     for edge in tg_edge_list:
@@ -155,7 +155,7 @@ def generate_random_tg(number_of_tasks, number_of_critical_tasks, number_of_edge
             gateway_counter += 1
         else:
             edge_criticality_list.append('L')
-    print ("\tLINKS CRITICALITY CALCULATED!")
+    print("\tLINKS CRITICALITY CALCULATED!")
 
     for edge in gateway_edges:
         tg_edge_list.remove(edge)
@@ -220,7 +220,7 @@ def find_source_nodes(tg):
     """
     source_node = []
     for task in tg.nodes():
-        if len(tg.predecessors(task)) == 0:
+        if len(list(tg.predecessors(task))) == 0:
             source_node.append(task)
     return source_node
 
@@ -282,6 +282,6 @@ def tasks_communication_weight(tg):
         task_com = 0
         for links in tg.edges():
             if task in links:
-                task_com += tg.edge[links[0]][links[1]]["ComWeight"]
+                task_com += tg.edges[links]["ComWeight"]
         tasks_com[task] = task_com
     return tasks_com

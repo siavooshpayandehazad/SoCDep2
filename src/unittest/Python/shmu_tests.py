@@ -31,7 +31,7 @@ class SystemHealthMonitoringUnitTesting(unittest.TestCase):
 
         for link in shmu_4_test.SHM.edges():
             shmu_4_test.break_link(link, False)
-            self.assertEqual(shmu_4_test.SHM.edge[link[0]][link[1]]['LinkHealth'], False)
+            self.assertEqual(shmu_4_test.SHM.edges[link]['LinkHealth'], False)
         # testing Restore
         for node in shmu_4_test.SHM.nodes():
             shmu_4_test.restore_broken_node(node, False)
@@ -43,7 +43,7 @@ class SystemHealthMonitoringUnitTesting(unittest.TestCase):
 
         for link in shmu_4_test.SHM.edges():
             shmu_4_test.restore_broken_link(link, False)
-            self.assertEqual(shmu_4_test.SHM.edge[link[0]][link[1]]['LinkHealth'], True)
+            self.assertEqual(shmu_4_test.SHM.edges[link]['LinkHealth'], True)
         del ag_4_test
         del shmu_4_test
 
@@ -66,7 +66,7 @@ class SystemHealthMonitoringUnitTesting(unittest.TestCase):
         shmu_4_test.setup_noc_shm(ag_4_test, Config.TurnsHealth, False)
         SHMU_Functions.apply_initial_faults(shmu_4_test)
         for broken_link in Config.ListOfBrokenLinks:
-            self.assertEqual(shmu_4_test.SHM.edge[broken_link[0]][broken_link[1]]['LinkHealth'], False)
+            self.assertEqual(shmu_4_test.SHM.edges[broken_link]['LinkHealth'], False)
         for router_with_broken_turn in Config.ListOfBrokenTurns:
             broken_turn = Config.ListOfBrokenTurns[router_with_broken_turn]
             self.assertEqual(shmu_4_test.SHM.node[router_with_broken_turn]['TurnsHealth'][broken_turn], False)

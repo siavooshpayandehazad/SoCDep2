@@ -27,7 +27,7 @@ class MLTrainingSet():
         tmpf = collections.deque(maxlen=self.buf_size-1)
         # cur_set = ""
         for i in range(0, self.error_size):
-            # print "the i: "+str(i+1)
+            #(print "the i: "+str(i+1))
             for j in range(0, self.buf_size):
                 tmp.append(a)
             for j in range(0, i):

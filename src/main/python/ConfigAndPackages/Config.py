@@ -1,5 +1,5 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
-import PackageFile
+from ConfigAndPackages.PackageFile import *
 import copy
 ################################################
 #          Program  Config
@@ -119,7 +119,7 @@ vl_opt = VerticalLinkPlacementOpt()
 #         2D Turn Models: XY_TurnModel, YX_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel,
 #                         EastFirst_TurnModel, SouthFirst_TurnModel, NorthFirst_TurnModel
 #         3D Turn Models: XYZ_TurnModel, NegativeFirst3D_TurnModel
-UsedTurnModel = PackageFile.NorthFirst_TurnModel
+UsedTurnModel = XY_TurnModel
 
 # Available choices: 'MinimalPath', 'NonMinimalPath'
 RotingType = 'MinimalPath'
@@ -140,9 +140,9 @@ DarkSiliconPercentage = 0       # should be an integer between 0 and 100
 def setup_turns_health():
     turns_health = {}
     if '2D' in ag.topology:
-        turns_health = copy.deepcopy(PackageFile.TurnsHealth_2DNetwork)
+        turns_health = copy.deepcopy(TurnsHealth_2DNetwork)
         if not SetRoutingFromFile:
-            for Turn in PackageFile.FULL_TurnModel_2D:
+            for Turn in FULL_TurnModel_2D:
                 if Turn not in UsedTurnModel:
                     if Turn in turns_health.keys():
                         turns_health[Turn] = False
@@ -150,9 +150,9 @@ def setup_turns_health():
                     if Turn in turns_health.keys():
                         turns_health[Turn] = True
     elif '3D' in ag.topology:
-        turns_health = copy.deepcopy(PackageFile.TurnsHealth_3DNetwork)
+        turns_health = copy.deepcopy(TurnsHealth_3DNetwork)
         if not SetRoutingFromFile:
-            for Turn in PackageFile.FULL_TurnModel_3D:
+            for Turn in FULL_TurnModel_3D:
                 if Turn not in UsedTurnModel:
                     if Turn in turns_health.keys():
                         turns_health[Turn] = False
@@ -233,7 +233,7 @@ mapping_file_path = "mapping_report.txt"
 # Mapping_Function can be : 'MinMin','MaxMin','MinExecutionTime','MinimumCompletionTime'
 #                           'LocalSearch','IterativeLocalSearch','SimulatedAnnealing', 'NMap'
 Mapping_Function = 'LocalSearch'
-LocalSearchIteration = 5000
+LocalSearchIteration = 2000
 IterativeLocalSearchIterations = 100
 mapping_random_seed = 2000
 #######################

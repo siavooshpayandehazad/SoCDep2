@@ -3,10 +3,10 @@
 import copy
 import time
 from ConfigAndPackages import Config
-import Mapping_Functions
-import Mapping_Reports
+import Mapper.Mapping_Functions as Mapping_Functions
+import Mapper.Mapping_Reports as Mapping_Reports
 from Clusterer import Clustering, Clustering_Reports, Clustering_Functions
-from Mapping_Heuristics import SimpleGreedy, Local_Search, SimulatedAnnealing, NMap
+from Mapper.Mapping_Heuristics import SimpleGreedy, Local_Search, SimulatedAnnealing, NMap
 from Scheduler import Scheduler, Scheduling_Reports, Scheduling_Functions
 
 
@@ -74,15 +74,15 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging, iteratio
                     Clustering_Reports.report_ctg(ctg, "CTG_PostOpt.png")
                     Clustering_Reports.viz_clustering_opt()
                 else:
-                    print ("CLUSTERING OPTIMIZATION TURNED OFF...")
-                    print ("REMOVING EMPTY CLUSTERS...")
+                    print("CLUSTERING OPTIMIZATION TURNED OFF...")
+                    print("REMOVING EMPTY CLUSTERS...")
                     Clustering_Functions.remove_empty_clusters(ctg)
                     Clustering_Reports.report_ctg(ctg, "CTG_PostCleaning.png")
 
-                print ("\033[92mTIME::\033[0m CLUSTERING AND OPTIMIZATION TOOK: "
+                print("\033[92mTIME::\033[0m CLUSTERING AND OPTIMIZATION TOOK: "
                        + str(round(time.time()-clustering_start_time))+" SECONDS")
             else:
-                print ("Initial Clustering Failed....")
+                print("Initial Clustering Failed....")
                 raise ValueError("INITIAL CLUSTERING FAILED...")
         else:
             ctg = copy.deepcopy(Clustering.gen_transparent_clusters(tg))
@@ -93,7 +93,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging, iteratio
                                                   True, logging, random_seed, iteration):
             #if Config.DistanceBetweenMapping:
             #    init_mapping_string = Mapping_Functions.mapping_into_string(tg)
-                # print (init_mapping_string)
+                # print(init_mapping_string)
             #else:
             #    init_mapping_string = None
 
@@ -149,8 +149,8 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging, iteratio
                 tg = copy.deepcopy(best_tg)
                 ag = copy.deepcopy(best_ag)
                 del best_tg, best_ctg, best_ag
-            # print (Mapping_Functions.mapping_into_string(TG))
-            print ("\033[92mTIME::\033[0m MAPPING AND OPTIMIZATION TOOK: "
+            # print(Mapping_Functions.mapping_into_string(TG))
+            print("\033[92mTIME::\033[0m MAPPING AND OPTIMIZATION TOOK: "
                    + str(round(time.time()-mapping_start_time))+" SECONDS")
 
             Mapping_Reports.report_mapping(ag, logging)
@@ -163,7 +163,7 @@ def mapping(tg, ag, noc_rg, critical_rg, non_critical_rg, shm, logging, iteratio
             return tg, ag
         else:
             Mapping_Reports.report_mapping(ag, logging)
-            print ("===========================================")
+            print("===========================================")
             raise ValueError("INITIAL MAPPING FAILED...")
 
     return None, None

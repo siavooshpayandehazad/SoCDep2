@@ -107,8 +107,8 @@ def viz_2d_odd_even_turn_model():
     Reads all the 2D turn models and draw them in a file at GraphDrawings/Turn_Model.png
     :return: None
     """
-    print ("===========================================")
-    print ("GENERATING TURN MODEL VISUALIZATIONS...")
+    print("===========================================")
+    print("GENERATING TURN MODEL VISUALIZATIONS...")
 
     odd_even_directory = "GraphDrawings/odd_even_viz"
     if not os.path.isdir(odd_even_directory):
@@ -128,9 +128,9 @@ def viz_2d_odd_even_turn_model():
         plt.savefig(odd_even_directory+"/Turn_Model_"+str(all_odd_even_list.index(turn_model_set))+".png", dpi=300, bbox_inches='tight')
         plt.clf()
         plt.close(fig)
-    # print ("\033[35m* VIZ::\033[0m Turn Model viz " +
+    # print("\033[35m* VIZ::\033[0m Turn Model viz " +
     #       "TURN MODEL VIZ CREATED AT: GraphDrawings/Turn_Model_"+turn_model_name+".png")
-    print ("TURN MODEL VISUALIZATIONS READY...")
+    print("TURN MODEL VISUALIZATIONS READY...")
     return None
 
 
@@ -144,7 +144,7 @@ def viz_all_turn_models(dimension, routing_type):
         if routing_type in ["M", "NM"]:
             viz_2d_turn_model(all_2d_turn_model_package.all_2d_turn_models)
         else:
-            print "ARGUMENT ERROR:: Routing type should be either M or NM..."
+            print("ARGUMENT ERROR:: Routing type should be either M or NM...")
 
     if dimension == '3D':
         if routing_type == "NM":
@@ -174,9 +174,9 @@ def viz_turn_model_evaluation(cost_file_name):
     :param cost_file_name: Name of the Cost File (Holds values of cost function for different mapping steps)
     :return: None
     """
-    print ("===========================================")
-    print ("GENERATING TURN MODEL EVALUATION VISUALIZATIONS...")
-    print 'READING Generated_Files/Internal/'+cost_file_name+'.txt'
+    print("===========================================")
+    print("GENERATING TURN MODEL EVALUATION VISUALIZATIONS...")
+    print('READING Generated_Files/Internal/'+cost_file_name+'.txt')
     fig, ax1 = plt.subplots()
     try:
         viz_file = open('Generated_Files/Internal/'+cost_file_name+'.txt', 'r')
@@ -194,10 +194,10 @@ def viz_turn_model_evaluation(cost_file_name):
         ax1.plot(solution_num, con_metric, '#5095FD')
 
     except IOError:
-        print ('CAN NOT OPEN', cost_file_name+'.txt')
+        print('CAN NOT OPEN', cost_file_name+'.txt')
 
     plt.savefig("GraphDrawings/"+str(cost_file_name)+".png", dpi=300)
-    print ("\033[35m* VIZ::\033[0m Turn Model Evaluation " +
+    print("\033[35m* VIZ::\033[0m Turn Model Evaluation " +
            "GRAPH CREATED AT: GraphDrawings/"+str(cost_file_name)+".png")
     plt.clf()
     plt.close(fig)
@@ -210,8 +210,8 @@ def viz_all_turn_models_against_each_other():
     in the network
     :return: None
     """
-    print ("===========================================")
-    print ("GENERATING TURN MODEL EVALUATION VISUALIZATIONS...")
+    print("===========================================")
+    print("GENERATING TURN MODEL EVALUATION VISUALIZATIONS...")
     fig = plt.figure()
 
     ax1 = plt.subplot(111)
@@ -252,7 +252,7 @@ def viz_all_turn_models_against_each_other():
                 bbox_inches='tight', dpi=300)
     plt.clf()
     plt.close(fig)
-    print ("\033[35m* VIZ::\033[0m Turn Model Evaluation " +
+    print("\033[35m* VIZ::\033[0m Turn Model Evaluation " +
            "GRAPH CREATED AT: GraphDrawings/Turn_Models_Fault_Tolerance_Eval.png")
     return None
 
@@ -262,8 +262,8 @@ def viz_2d_turn_model(turn_model_list):
     Reads all the 2D turn models and draw them in a file at GraphDrawings/Turn_Model.png
     :return: None
     """
-    print ("===========================================")
-    print ("GENERATING TURN MODEL VISUALIZATIONS...")
+    print("===========================================")
+    print("GENERATING TURN MODEL VISUALIZATIONS...")
     fig = plt.figure(figsize=(19, 12))
     count = 1
     for turn_model in turn_model_list:
@@ -366,9 +366,9 @@ def viz_2d_turn_model(turn_model_list):
     plt.savefig("GraphDrawings/Turn_Model.png", dpi=300, bbox_inches='tight')
     plt.clf()
     plt.close(fig)
-    # print ("\033[35m* VIZ::\033[0m Turn Model viz " +
+    # print("\033[35m* VIZ::\033[0m Turn Model viz " +
     #       "TURN MODEL VIZ CREATED AT: GraphDrawings/Turn_Model_"+turn_model_name+".png")
-    print ("TURN MODEL VISUALIZATIONS READY...")
+    print("TURN MODEL VISUALIZATIONS READY...")
     return None
 
 
@@ -383,8 +383,8 @@ def viz_3d_turn_model(file_name, size_x, size_y, rows, columns):
     :param columns: number of columns of turn models per canvas
     :return: None
     """
-    print ("===========================================")
-    print ("GENERATING TURN MODEL VISUALIZATIONS...")
+    print("===========================================")
+    print("GENERATING TURN MODEL VISUALIZATIONS...")
     fig = plt.figure(figsize=(size_x, size_y))
     page_counter = 0
     count = 1
@@ -423,7 +423,7 @@ def viz_3d_turn_model(file_name, size_x, size_y, rows, columns):
             count = 1
             del fig
             del ax1
-            print ("GENERATING TURN MODEL VISUALIZATIONS... Page:"+str(page_counter))
+            print("GENERATING TURN MODEL VISUALIZATIONS... Page:"+str(page_counter))
             fig = plt.figure(figsize=(size_x, size_y))
         line = data_file.readline()
     if page_counter == 0:
@@ -437,9 +437,9 @@ def viz_3d_turn_model(file_name, size_x, size_y, rows, columns):
                     dpi=100, bbox_inches='tight')
         plt.clf()
         plt.close(fig)
-    # print ("\033[35m* VIZ::\033[0m Turn Model viz " +
+    # print("\033[35m* VIZ::\033[0m Turn Model viz " +
     #       "TURN MODEL VIZ CREATED AT: GraphDrawings/Turn_Model_"+turn_model_name+".png")
-    print ("TURN MODEL VISUALIZATIONS READY...")
+    print("TURN MODEL VISUALIZATIONS READY...")
     return None
 
 

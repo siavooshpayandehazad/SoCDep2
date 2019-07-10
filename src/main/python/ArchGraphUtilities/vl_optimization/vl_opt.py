@@ -1,8 +1,8 @@
 # Copyright (C) Siavoosh Payandeh Azad
 
 from ArchGraphUtilities.Arch_Graph_Reports import draw_vl_opt
-from vl_opt_local_search import opt_ag_vertical_link_iterative_local_search, opt_ag_vertical_link_local_search
-from vl_opt_simulated_annealing import opt_ag_vertical_link_sa
+from ArchGraphUtilities.vl_optimization.vl_opt_local_search import opt_ag_vertical_link_iterative_local_search, opt_ag_vertical_link_local_search
+from ArchGraphUtilities.vl_optimization.vl_opt_simulated_annealing import opt_ag_vertical_link_sa
 from ConfigAndPackages import Config
 
 

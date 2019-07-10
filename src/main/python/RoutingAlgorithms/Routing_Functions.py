@@ -1,6 +1,6 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 from networkx import all_simple_paths, all_shortest_paths, is_directed_acyclic_graph, find_cycle
-from Calculate_Reachability import is_destination_reachable_from_source
+from RoutingAlgorithms.Calculate_Reachability import is_destination_reachable_from_source
 from ConfigAndPackages import PackageFile, all_2d_turn_model_package
 from ArchGraphUtilities.AG_Functions import manhattan_distance
 
@@ -12,8 +12,8 @@ def extended_degree_of_adaptiveness(ag, noc_rg, report):
     :return: reachability metric
     """
     if report:
-        print ("=====================================")
-        print ("CALCULATING REACH-ABILITY METRIC OF THE CURRENT ROUTING ALGORITHM UNDER CURRENT FAULT CONFIG")
+        print("=====================================")
+        print("CALCULATING REACH-ABILITY METRIC OF THE CURRENT ROUTING ALGORITHM UNDER CURRENT FAULT CONFIG")
     reachability_counter = 0
     for source_node in ag.nodes():
         for destination_node in ag.nodes():
@@ -24,7 +24,7 @@ def extended_degree_of_adaptiveness(ag, noc_rg, report):
                                                 str(destination_node)+str('L')+str('O'))))
     r_metric = float(reachability_counter)
     if report:
-        print ("REACH-ABILITY METRIC: "+str(r_metric))
+        print("REACH-ABILITY METRIC: "+str(r_metric))
     return r_metric
 
 
@@ -36,8 +36,8 @@ def degree_of_adaptiveness(ag, noc_rg, report):
     :return: reachability metric
     """
     if report:
-        print ("=====================================")
-        print ("CALCULATING REACH-ABILITY METRIC OF THE CURRENT ROUTING ALGORITHM UNDER CURRENT FAULT CONFIG")
+        print("=====================================")
+        print("CALCULATING REACH-ABILITY METRIC OF THE CURRENT ROUTING ALGORITHM UNDER CURRENT FAULT CONFIG")
     reachability_counter = 0
     for source_node in ag.nodes():
         for destination_node in ag.nodes():
@@ -50,7 +50,7 @@ def degree_of_adaptiveness(ag, noc_rg, report):
 
     r_metric = float(reachability_counter)
     if report:
-        print ("REACH-ABILITY METRIC: "+str(r_metric))
+        print("REACH-ABILITY METRIC: "+str(r_metric))
     return r_metric
 
 
@@ -64,7 +64,7 @@ def check_deadlock_freeness(noc_rg):
     if is_directed_acyclic_graph(noc_rg):
         return True
     else:
-        #print find_cycle(noc_rg, orientation='original')
+        #print(find_cycle(noc_rg, orientation='original'))
         return False
 
 

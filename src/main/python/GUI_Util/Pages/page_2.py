@@ -1,8 +1,8 @@
 # Copyright (C) Siavoosh Payandeh Azad
-from page_class import Page
-import Tkinter as tk
-import tkFileDialog
-import ttk
+from GUI_Util.Pages.page_class import Page
+import tkinter as tk
+from tkinter import ttk, filedialog
+
 
 
 class Page2(Page):  # architecture graph
@@ -270,7 +270,7 @@ class Page2(Page):  # architecture graph
             self.routing_browse_button.grid_forget()
 
     def _get_routing_file(self):
-        path = tkFileDialog.askopenfilename()
+        path = filedialog.askopenfilename()
         if path:
             self.routing_browse.delete(0, 'end')
             self.routing_browse.insert(1, path)

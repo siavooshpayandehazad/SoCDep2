@@ -29,7 +29,8 @@ NegativeFirst3D_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'S2E', 'N2E',
                              'N2U', 'N2D', 'S2U', 'S2D', 'E2U', 'E2D', 'W2U', 'W2D',
                              'U2N', 'U2S', 'U2E', 'D2S', 'D2N', 'D2E']
 
-routing_alg_list_2d = [YX_TurnModel, XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel]
+routing_alg_list_2d = [YX_TurnModel, XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel,
+                       EastFirst_TurnModel, SouthFirst_TurnModel, NorthFirst_TurnModel]
 routing_alg_list_3d = [XYZ_TurnModel, NegativeFirst3D_TurnModel]
 ################################################
 #          SHM Sets
@@ -47,7 +48,7 @@ TurnsHealth_3DNetwork = {"N2W": True, "N2E": True, "S2W": True, "S2E": True,
 ################################################
 #          System Package info
 ################################################
-ImportModules = ['Tkinter', 'ttk', 'networkx',
+ImportModules = ['tkinter', 'networkx',
                  'matplotlib', 'scipy', 'PIL',
                  'pympler', 'simpy', 'collections',
                  'sklearn'] #,'image']

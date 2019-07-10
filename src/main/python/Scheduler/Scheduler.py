@@ -1,13 +1,13 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
 
 from TaskGraphUtilities import TG_Functions
-from Scheduling_Functions import find_schedule_make_span
-from Scheduling_Functions_Tasks import find_task_asap_scheduling, find_test_task_asap_scheduling
-from Scheduling_Functions_Edges import find_edge_asap_scheduling_link, find_edge_asap_scheduling_router
-from Scheduling_Functions_Edges import find_test_edge_asap_scheduling
-from Scheduling_Functions_Links import add_tg_edge_to_link
-from Scheduling_Functions_Nodes import add_tg_task_to_node
-from Scheduling_Functions_Routers import add_tg_edge_to_router
+from Scheduler.Scheduling_Functions import find_schedule_make_span
+from Scheduler.Scheduling_Functions_Tasks import find_task_asap_scheduling, find_test_task_asap_scheduling
+from Scheduler.Scheduling_Functions_Edges import find_edge_asap_scheduling_link, find_edge_asap_scheduling_router
+from Scheduler.Scheduling_Functions_Edges import find_test_edge_asap_scheduling
+from Scheduler.Scheduling_Functions_Links import add_tg_edge_to_link
+from Scheduler.Scheduling_Functions_Nodes import add_tg_task_to_node
+from Scheduler.Scheduling_Functions_Routers import add_tg_edge_to_router
 
 
 def schedule_all(tg, ag, shm, report, logging):
@@ -53,8 +53,8 @@ def asap_scheduling(tg, ag, shm, report, logging=None):
                     for edge in tg.edges():
                         if edge[0] == task:
                             destination_node = tg.node[edge[1]]['task'].node
-                            if len(tg.edge[edge[0]][edge[1]]['Link']) > 0:
-                                for batch_and_link in tg.edge[edge[0]][edge[1]]['Link']:
+                            if len(tg.edges[edge]['Link']) > 0:
+                                for batch_and_link in tg.edges[edge]['Link']:
                                     batch = batch_and_link[0]
                                     link = batch_and_link[1]
                                     probability = batch_and_link[2]
@@ -123,8 +123,8 @@ def schedule_test_in_tg(tg, ag, shm, report, logging):
                     for edge in tg.edges():
                         destination_node = tg.node[edge[1]]['task'].node
                         if edge[0] == Task:
-                            if len(tg.edge[edge[0]][edge[1]]['Link']) > 0:
-                                for batch_and_link in tg.edge[edge[0]][edge[1]]['Link']:
+                            if len(tg.edges[edge]['Link']) > 0:
+                                for batch_and_link in tg.edges[edge]['Link']:
                                     link = batch_and_link[1]
                                     batch = batch_and_link[0]
                                     probability = batch_and_link[2]

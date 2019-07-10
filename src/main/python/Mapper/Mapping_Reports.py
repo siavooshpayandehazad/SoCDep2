@@ -21,7 +21,7 @@ def report_mapping(ag, logging):
         logging.info("NODE: "+str(node)+" CONTAINS: "+str(ag.node[node]['PE'].mapped_tasks))
         logging.info("NODE: "+str(node)+"'s Router CONTAINS: "+str(ag.node[node]['Router'].mapped_tasks))
     for link in ag.edges():
-        logging.info("LINK: "+str(link)+" CONTAINS: "+str(ag.edge[link[0]][link[1]]['MappedTasks']))
+        logging.info("LINK: "+str(link)+" CONTAINS: "+str(ag.edges[link]['MappedTasks']))
     return None
 
 
@@ -32,8 +32,8 @@ def draw_mapping_distribution(ag, shmu):
     :param shmu: System health Monitoring Unit
     :return: None
     """
-    print ("===========================================")
-    print ("GENERATING MAPPING DISTRIBUTIONS VISUALIZATION...")
+    print("===========================================")
+    print("GENERATING MAPPING DISTRIBUTIONS VISUALIZATION...")
     fig_num = plt.figure(figsize=(4*Config.ag.x_size, 4*Config.ag.y_size))
     fig_util = plt.figure(figsize=(4*Config.ag.x_size, 4*Config.ag.y_size))
     max_number_of_tasks = 0
@@ -80,8 +80,8 @@ def draw_mapping_distribution(ag, shmu):
     fig_util.clf()
     plt.close(fig_num)
     plt.close(fig_util)
-    print ("\033[35m* VIZ::\033[0mMAPPING UTILIZATION DISTRIBUTION DRAWING CREATED AT: GraphDrawings/Mapping_Util.png")
-    print ("\033[35m* VIZ::\033[0mMAPPING TASK NUMBER DISTRIBUTION DRAWING CREATED AT: GraphDrawings/Mapping_Num.png")
+    print("\033[35m* VIZ::\033[0mMAPPING UTILIZATION DISTRIBUTION DRAWING CREATED AT: GraphDrawings/Mapping_Util.png")
+    print("\033[35m* VIZ::\033[0mMAPPING TASK NUMBER DISTRIBUTION DRAWING CREATED AT: GraphDrawings/Mapping_Num.png")
     return None
 
 
@@ -95,8 +95,8 @@ def draw_mapping(tg, ag, shm, mapping_file_name):
     :param mapping_file_name: string containing name of the file in which the mapping would be generated
     :return: None
     """
-    print ("===========================================")
-    print ("GENERATING MAPPING VISUALIZATION...")
+    print("===========================================")
+    print("GENERATING MAPPING VISUALIZATION...")
     fig = plt.figure(figsize=(4*Config.ag.x_size, 4*Config.ag.y_size))
     color_list = []
     position = {}
@@ -178,7 +178,7 @@ def draw_mapping(tg, ag, shm, mapping_file_name):
     fig.savefig("GraphDrawings/"+mapping_file_name+".png", bbox_inches='tight')
     plt.clf()
     plt.close(fig)
-    print ("\033[35m* VIZ::\033[0mMAPPING DRAWING CREATED AT: GraphDrawings/"+mapping_file_name+".png")
+    print("\033[35m* VIZ::\033[0mMAPPING DRAWING CREATED AT: GraphDrawings/"+mapping_file_name+".png")
     return None
 
 
@@ -188,8 +188,8 @@ def viz_mapping_opt(cost_file_name, iteration=None):
     :param cost_file_name: Name of the Cost File (Holds values of cost function for different mapping steps)
     :return: None
     """
-    print ("===========================================")
-    print ("GENERATING MAPPING OPTIMIZATION VISUALIZATIONS...")
+    print("===========================================")
+    print("GENERATING MAPPING OPTIMIZATION VISUALIZATIONS...")
 
     fig, ax1 = plt.subplots()
     solution_num = None
@@ -221,7 +221,7 @@ def viz_mapping_opt(cost_file_name, iteration=None):
                 ax1.plot((x1, x2), (y1, y2), 'g')
 
     except IOError:
-        print ('CAN NOT OPEN', cost_file_name+'.txt')
+        print('CAN NOT OPEN', cost_file_name+'.txt')
 
     if Config.Mapping_Function == 'SimulatedAnnealing':
         try:
@@ -232,21 +232,21 @@ def viz_mapping_opt(cost_file_name, iteration=None):
                 temp.append(float(line))
                 line = sa_temp_file.readline()
             sa_temp_file.close()
-            # print (len(temp), len(solution_num))
+            # print(len(temp), len(solution_num))
             ax2 = ax1.twinx()
             ax2.plot(solution_num, temp, 'g--')
             ax2.set_ylabel('Temperature')
             for tl in ax2.get_yticklabels():
                 tl.set_color('g')
         except IOError:
-            print ('CAN NOT OPEN SATemp.txt')
+            print('CAN NOT OPEN SATemp.txt')
     if iteration is None:
         plt.savefig("GraphDrawings/Mapping_Opt_Process.png", dpi=300)
-        print ("\033[35m* VIZ::\033[0mMAPPING OPTIMIZATION PROCESS " +
+        print("\033[35m* VIZ::\033[0mMAPPING OPTIMIZATION PROCESS " +
                "GRAPH CREATED AT: GraphDrawings/Mapping_Opt_Process.png")
     else:
         plt.savefig("GraphDrawings/Mapping_Opt_Process_"+str(iteration)+".png", dpi=300)
-        print ("\033[35m* VIZ::\033[0mMAPPING OPTIMIZATION PROCESS " +
+        print("\033[35m* VIZ::\033[0mMAPPING OPTIMIZATION PROCESS " +
                "GRAPH CREATED AT: GraphDrawings/Mapping_Opt_Process"+str(iteration)+".png")
     plt.clf()
     plt.close(fig)
@@ -259,8 +259,8 @@ def viz_cost_slope():
     Visualises the mapping Cost slope for Simulated Annealing. This is like derivative of the cost graph.
     :return: None
     """
-    print ("===========================================")
-    print ("GENERATING MAPPING OPTIMIZATION COST SLOPE VISUALIZATION...")
+    print("===========================================")
+    print("GENERATING MAPPING OPTIMIZATION COST SLOPE VISUALIZATION...")
 
     fig, ax1 = plt.subplots()
     try:
@@ -271,16 +271,16 @@ def viz_cost_slope():
             cost_slope.append(float(line))
             line = cost_slope_file.readline()
         cost_slope_file.close()
-        # print (len(temp), len(solution_num))
+        # print(len(temp), len(solution_num))
 
         ax1.plot(range(0, len(cost_slope)), cost_slope)
         ax1.set_ylabel('Cost Slope')
         plt.savefig("GraphDrawings/Mapping_Cost_Slope.png")
         plt.clf()
         plt.close(fig)
-        print ("\033[35m* VIZ::\033[0mSA COST SLOPE GRAPH CREATED AT: GraphDrawings/Mapping_Cost_Slope.png")
+        print("\033[35m* VIZ::\033[0mSA COST SLOPE GRAPH CREATED AT: GraphDrawings/Mapping_Cost_Slope.png")
     except IOError:
-            print ('CAN NOT OPEN SAcost_slope.txt')
+            print('CAN NOT OPEN SAcost_slope.txt')
 
     return None
 
@@ -290,8 +290,8 @@ def viz_huang_race():
     Visualizes The progress of Huang's cooling scheduling counters progress
     :return:    None
     """
-    print ("===========================================")
-    print ("GENERATING HUANG COUNTERS STATES VISUALIZATION...")
+    print("===========================================")
+    print("GENERATING HUANG COUNTERS STATES VISUALIZATION...")
     fig, ax1 = plt.subplots()
     try:
         huang_race_file = open('Generated_Files/Internal/SAHuangRace.txt', 'r')
@@ -310,7 +310,7 @@ def viz_huang_race():
         plt.savefig("GraphDrawings/Mapping_HuangCounters.png", dpi=300)
         plt.clf()
         plt.close(fig)
-        print ("\033[35m* VIZ::\033[0mSA HUANG COUNTERS GRAPH CREATED AT: GraphDrawings/Mapping_HuangCounters.png")
+        print("\033[35m* VIZ::\033[0mSA HUANG COUNTERS GRAPH CREATED AT: GraphDrawings/Mapping_HuangCounters.png")
     except IOError:
-            print ('CAN NOT OPEN SAHuangRace.txt')
+            print('CAN NOT OPEN SAHuangRace.txt')
     return None

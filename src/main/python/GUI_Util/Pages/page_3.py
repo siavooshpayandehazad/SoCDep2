@@ -1,6 +1,6 @@
 # Copyright (C) Siavoosh Payandeh Azad
-from page_class import Page
-import Tkinter as tk
+from GUI_Util.Pages.page_class import Page
+import tkinter as tk
 
 
 class Page3(Page):

@@ -27,14 +27,14 @@ def fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict, counter
     fault = False
     while True:
         for fault_time in fault_time_dict.keys():
-            # print env.now, fault_time
+            # print(env.now, fault_time)
             if float("{0:.1f}".format(env.now)) == fault_time:
                 fault_location, fault_type = fault_time_dict[fault_time]
                 fault = True
-                # print "Fault Location:", FaultLocation, "Type:", FaultType
+                # print("Fault Location:", FaultLocation, "Type:", FaultType)
                 pass
             else:
-                # print env.now, FaultTime
+                # print(env.now, FaultTime)
                 pass
         if fault:
             if type(fault_location) is int:
@@ -51,9 +51,9 @@ def fault_event(env, ag, shmu, noc_rg, schedule_length, fault_time_dict, counter
                             counter_threshold.increase_intermittent_counter(ag, fault_location, logging)
 
             elif type(fault_location) is tuple:
-                for scheduling_item in ag.edge[fault_location[0]][fault_location[1]]["Scheduling"]:
-                    start_time = ag.edge[fault_location[0]][fault_location[1]]["Scheduling"][scheduling_item][0][0]
-                    end_time = ag.edge[fault_location[0]][fault_location[1]]["Scheduling"][scheduling_item][0][1]
+                for scheduling_item in ag.edges[fault_location]["Scheduling"]:
+                    start_time = ag.edges[fault_location]["Scheduling"][scheduling_item][0][0]
+                    end_time = ag.edges[fault_location]["Scheduling"][scheduling_item][0][1]
                     if start_time < env.now % schedule_length < end_time:
                         SHMU_Functions.apply_fault_event(ag, shmu, noc_rg, fault_location, fault_type)
                         if random.random() > Config.error_correction_rate:

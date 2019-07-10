@@ -1,8 +1,7 @@
 # Copyright (C) Siavoosh Payandeh Azad
-from page_class import Page
-import Tkinter as tk
-import ttk
-import tkFileDialog
+from GUI_Util.Pages.page_class import Page
+import tkinter as tk
+from tkinter import ttk, filedialog
 
 
 class Page1(Page):
@@ -109,7 +108,7 @@ class Page1(Page):
         self.clustering_opt_enable.grid(column=self.cl_opt_start_col, row=self.cl_opt_start_row+1)
 
     def _get_tg_file(self):
-        path = tkFileDialog.askopenfilename()
+        path = filedialog.askopenfilename()
         if path:
             self.tg_browse.delete(0, 'end')
             self.tg_browse.insert(1, path)

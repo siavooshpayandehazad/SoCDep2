@@ -15,7 +15,7 @@ def report_turn_model(turn_model):
     :param turn_model: set of allowed turns in a 2D network
     :return: None
     """
-    print "\tUSING TURN MODEL: ", turn_model
+    print("\tUSING TURN MODEL: ", turn_model)
     return None
 
 
@@ -25,8 +25,8 @@ def draw_rg(rg):
     :param rg: routing graph
     :return: None
     """
-    print ("===========================================")
-    print ("GENERATING ROUTING GRAPH VISUALIZATION...")
+    print("===========================================")
+    print("GENERATING ROUTING GRAPH VISUALIZATION...")
     line_width = 2
     pos = {}
     color_list = []
@@ -127,5 +127,5 @@ def draw_rg(rg):
 
     plt.savefig("GraphDrawings/RG.png", dpi=100)
     plt.clf()
-    print ("\033[35m* VIZ::\033[0mROUTING GRAPH DRAWING CREATED AT: GraphDrawings/RG.png")
+    print("\033[35m* VIZ::\033[0mROUTING GRAPH DRAWING CREATED AT: GraphDrawings/RG.png")
     return None
