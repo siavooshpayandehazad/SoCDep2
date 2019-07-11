@@ -7,6 +7,7 @@ import re
 # Setting up the python path to import the functions
 current_path = re.sub('unittest', '', str(os.getcwd()))
 sys.path.append(current_path)
+
 # Add Imports here:
 from ArchGraphUtilities.AG_Functions import return_node_location, return_node_number, manhattan_distance, generate_ag
 from ArchGraphUtilities.AG_Functions import update_ag_regions, max_node_neighbors, return_healthy_nodes
@@ -269,7 +270,7 @@ class ArchGraphTesting(unittest.TestCase):
         Config.GateToCritical = [20]
 
         ag_4_test = copy.deepcopy(generate_ag(logging=None))
-        self.assertEqual(len(ag_4_test.nodes()), Config.ag.x_size*Config.ag.y_size*Config.ag.z_size)
+        self.assertEqual(len(ag_4_test.nodes()), Config.ag.x_size*Config.ag.y_size*Config.ag.z_size, msg ="number of nodes are wrong!")
 
         update_ag_regions(ag_4_test)
 
@@ -312,14 +313,14 @@ class ArchGraphTesting(unittest.TestCase):
         shmu_4_test = SystemHealthMonitoringUnit.SystemHealthMonitoringUnit()
         shmu_4_test.setup_noc_shm(ag_4_test, Config.TurnsHealth, False)
 
-        healthy_nodes = copy.deepcopy(ag_4_test.nodes())
+        healthy_nodes = list(ag_4_test.nodes())[:]
         for node in ag_4_test.nodes():
             if random.choice(['Healthy', 'Faulty']) == 'Faulty':
                 healthy_nodes.remove(node)
                 shmu_4_test.break_node(node, False)
 
         test_healthy_nodes = return_healthy_nodes(ag_4_test, shmu_4_test.SHM)
-        self.assertEqual(test_healthy_nodes, healthy_nodes)
+        self.assertEqual(test_healthy_nodes, healthy_nodes, msg=f"heathy nodes {healthy_nodes}, test healthy nodes: {test_healthy_nodes}")
         del ag_4_test
         del shmu_4_test
 

@@ -55,7 +55,7 @@ def generate_noc_route_graph(ag, shmu, turn_model, report, detailed_report):
     noc_rg = DiGraph()
     for node in ag.nodes():
         if detailed_report:
-            print("GENERATING PORTS:")
+            print(f"GENERATING PORTS for node {node}:")
         for port in port_list:
             if detailed_report:
                 print("\t", str(node)+str(port)+str('I'), "&", str(node)+str(port)+str('O'))
@@ -197,7 +197,7 @@ def gen_noc_route_graph_from_file(ag, shmu, routing_file_path, report, detailed_
     for node in ag.nodes():
         if node not in nodes_covered_in_file:
             if detailed_report:
-                print("GENERATING PORTS:")
+                print(f"GENERATING PORTS for node {node}:")
             for port in port_list:
                 if detailed_report:
                     print("\t", str(node)+str(port)+str('I'), "&", str(node)+str(port)+str('O'))

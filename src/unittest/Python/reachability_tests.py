@@ -5,8 +5,7 @@ import os
 import re
 
 # Setting up the python path to import the functions
-current_path = re.sub('unittest', '', str(os.getcwd()))
-sys.path.append(current_path)
+
 # Add Imports here:
 from copy import deepcopy
 from RoutingAlgorithms.Calculate_Reachability import is_node_inside_rectangle, how_many_paths_from_source, \

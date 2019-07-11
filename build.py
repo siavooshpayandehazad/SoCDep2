@@ -14,7 +14,7 @@ default_task = ['install_dependencies', 'publish']
 def initialize(project):
     project.version = "0.1.1"
     project.depends_on('networkx')
-    # project.depends_on('Tkinter')
+    # project.depends_on('tkinter')
     # project.depends_on('ttk')
     project.depends_on('scipy')
     project.depends_on('Pillow')

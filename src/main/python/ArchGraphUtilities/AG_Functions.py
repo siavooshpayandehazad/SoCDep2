@@ -22,7 +22,7 @@ class PE():     # PROCESSING ELEMENT
         self.type = 'Processor'       # Can be accelerator or something else
 
 
-def generate_manual_ag(proc_element_list, ag_edge_list, ag_edge_port_list):
+def generate_manual_ag(proc_element_list, ag_edge_list, ag_edge_port_list, report = False):
     """
     Generates an architecture graph from manually defined AG in  Config file
     :param proc_element_list:  List of Processing Elements
@@ -30,21 +30,23 @@ def generate_manual_ag(proc_element_list, ag_edge_list, ag_edge_port_list):
     :param ag_edge_port_list:  Port connection for each of the links between PEs
     :return: ag
     """
-    print("===========================================")
-    print("PREPARING AN ARCHITECTURE GRAPH (AG)...")
+    if report:
+        print("===========================================")
+        print("PREPARING AN ARCHITECTURE GRAPH (AG)...")
     ag = networkx.DiGraph()
     for processing_element in proc_element_list:
         ag.add_node(processing_element, PE=PE(), Router=Router(), Region='L')
     for i in range(0, len(ag_edge_list)):
         edge = ag_edge_list[i]
         ag.add_edge(edge[0], edge[1], Port=ag_edge_port_list[i], MappedTasks={}, Scheduling={})
-    print("\tNODES: "+str(ag.nodes(data=False)))
-    print("\tEDGES: "+str(ag.edges(data=False)))
-    print("ARCHITECTURE GRAPH (AG) IS READY...")
+    if report:
+        print("\tNODES: "+str(ag.nodes(data=False)))
+        print("\tEDGES: "+str(ag.edges(data=False)))
+        print("ARCHITECTURE GRAPH (AG) IS READY...")
     return ag
 
 
-def generate_generic_topology_ag(topology, logging=None, report=True):
+def generate_generic_topology_ag(topology, logging=None, report=False):
     """
     Takes a generic topology: 2DTorus, 2DMesh, 2DLine, 2DRing etc. and returns AG
     :param topology: a string with topology name
@@ -196,7 +198,7 @@ def generate_generic_topology_ag(topology, logging=None, report=True):
     return ag
 
 
-def generate_ag(logging=None, report=True):
+def generate_ag(logging=None, report=False):
     """
     This function generates the architecture graph based on the configuration in Config File
     :param logging: logging file

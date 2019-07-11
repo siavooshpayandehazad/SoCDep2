@@ -31,7 +31,8 @@ NegativeFirst3D_TurnModel = ['E2N', 'E2S', 'W2N', 'W2S', 'S2E', 'N2E',
 
 routing_alg_list_2d = [YX_TurnModel, XY_TurnModel, WestFirst_TurnModel, NorthLast_TurnModel, NegativeFirst2D_TurnModel,
                        EastFirst_TurnModel, SouthFirst_TurnModel, NorthFirst_TurnModel]
-routing_alg_list_3d = [XYZ_TurnModel, NegativeFirst3D_TurnModel]
+
+routing_alg_list_3d = [XYZ_TurnModel] # , NegativeFirst3D_TurnModel] # TODO: test this for deadlock freeness!
 ################################################
 #          SHM Sets
 ################################################

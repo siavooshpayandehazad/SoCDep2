@@ -1,5 +1,6 @@
 # Copyright (C) 2015 Siavoosh Payandeh Azad
-from networkx import all_simple_paths, all_shortest_paths, is_directed_acyclic_graph, find_cycle
+from networkx import all_simple_paths, all_shortest_paths
+from networkx.algorithms.dag import is_directed_acyclic_graph
 from RoutingAlgorithms.Calculate_Reachability import is_destination_reachable_from_source
 from ConfigAndPackages import PackageFile, all_2d_turn_model_package
 from ArchGraphUtilities.AG_Functions import manhattan_distance
@@ -28,7 +29,7 @@ def extended_degree_of_adaptiveness(ag, noc_rg, report):
     return r_metric
 
 
-def degree_of_adaptiveness(ag, noc_rg, report):
+def degree_of_adaptiveness(ag, noc_rg, report=False):
     """
     :param ag: architecture graph
     :param noc_rg: NoC routing graph
@@ -43,7 +44,7 @@ def degree_of_adaptiveness(ag, noc_rg, report):
         for destination_node in ag.nodes():
             if source_node != destination_node:
                 if is_destination_reachable_from_source(noc_rg, source_node, destination_node):
-                    for path in  all_shortest_paths(noc_rg, str(source_node)+str('L')+str('I'),
+                    for path in all_shortest_paths(noc_rg, str(source_node)+str('L')+str('I'),
                                                     str(destination_node)+str('L')+str('O')):
                         if (len(path)/2)-1 <= manhattan_distance(source_node, destination_node):
                             reachability_counter += 1
