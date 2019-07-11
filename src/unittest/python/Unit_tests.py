@@ -5,7 +5,7 @@ import os
 import re
 
 # Setting up the python path to import the functions
-current_path = re.sub('src/unittest/Python', '', str(os.getcwd()))
+current_path = re.sub('src/unittest/python', '', str(os.getcwd()))
 print("current path:", current_path)
 sys.path.append(current_path)
 
